@@ -1,0 +1,23 @@
+root: true
+extends:
+  - semistandard
+  - plugin:prettier/recommended
+parserOptions:
+  ecmaVersion: 2016
+rules:
+  strict:
+    - error
+    - safe
+overrides:
+  - files:
+      - index.js
+      - test/setup.js
+      - .mocharc.js
+    parserOptions:
+      sourceType: script
+  - files:
+      - test/**/*.spec.js
+    env:
+      mocha: true
+    globals:
+      expect: false

@@ -1,0 +1,309 @@
+{
+  "header": {
+    "event": "JavaScript API",
+    "location": "TriggerReport",
+    "filename": "report.20190326.131927.31923.001.json",
+    "dumpEventTime": "2019-03-26T13:19:27Z",
+    "dumpEventTimeStamp": "1553631567694",
+    "processId": 31923,
+    "commandLine": [
+      "node",
+      "--experimental-report",
+      "-e",
+      "process.report.triggerReport()"
+    ],
+    "nodejsVersion": "v11.10.0",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "darwin",
+    "componentVersions": {
+      "node": "11.10.0",
+      "v8": "7.0.276.38-node.17",
+      "uv": "1.26.0",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "67",
+      "nghttp2": "1.34.0",
+      "napi": "4",
+      "llhttp": "1.1.1",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1a",
+      "cldr": "34.0",
+      "icu": "63.1",
+      "tz": "2018e",
+      "unicode": "11.0"
+    },
+    "release": {
+      "name": "node",
+      "headersUrl": "https://nodejs.org/download/release/v11.10.0/node-v11.10.0-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v11.10.0/node-v11.10.0.tar.gz"
+    },
+    "osName": "Darwin",
+    "osRelease": "18.2.0",
+    "osVersion": "Darwin Kernel Version 18.2.0: Fri Oct  5 19:41:49 PDT 2018; root:xnu-4903.221.2~2/RELEASE_X86_64",
+    "osMachine": "x86_64",
+    "host": "yoyodyne"
+  },
+  "javascriptStack": {
+    "message": "Error [ERR_SYNTHETIC]: JavaScript Callstack",
+    "stack": [
+      "at Object.triggerReport (internal/process/report.js:88:33)",
+      "at [eval]:1:16",
+      "at Script.runInThisContext (vm.js:124:20)",
+      "at Object.runInThisContext (vm.js:314:38)",
+      "at Object.<anonymous> ([eval]-wrapper:9:26)",
+      "at Module._compile (internal/modules/cjs/loader.js:738:30)",
+      "at evalScript (internal/process/execution.js:60:25)"
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x0000000100125d34",
+      "symbol": "report::TriggerNodeReport(v8::Isolate*, node::Environment*, char const*, char const*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, v8::Local<v8::String>) [/usr/local/bin/node]"
+    },
+    {
+      "pc": "0x000000010012c7f6",
+      "symbol": "report::TriggerReport(v8::FunctionCallbackInfo<v8::Value> const&) [/usr/local/bin/node]"
+    },
+    {
+      "pc": "0x000000010048e0e6",
+      "symbol": "v8::internal::FunctionCallbackArguments::Call(v8::internal::CallHandlerInfo*) [/usr/local/bin/node]"
+    },
+    {
+      "pc": "0x00000001001ddb20",
+      "symbol": "v8::internal::MaybeHandle<v8::internal::Object> v8::internal::(anonymous namespace)::HandleApiCallHelper<false>(v8::internal::Isolate*, v8::internal::Handle<v8::internal::HeapObject>, v8::internal::Handle<v8::internal::HeapObject>, v8::internal::Handle<v8::internal::FunctionTemplateInfo>, v8::internal::Handle<v8::internal::Object>, v8::internal::BuiltinArguments) [/usr/local/bin/node]"
+    },
+    {
+      "pc": "0x00000001001dd34c",
+      "symbol": "v8::internal::Builtin_Impl_HandleApiCall(v8::internal::BuiltinArguments, v8::internal::Isolate*) [/usr/local/bin/node]"
+    },
+    {
+      "pc": "0x000014d8396cfc7d",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 5455872,
+    "totalCommittedMemory": 3918376,
+    "usedMemory": 2775424,
+    "availableMemory": 1521972680,
+    "memoryLimit": 1526909922,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 524288,
+        "committedMemory": 42224,
+        "capacity": 515584,
+        "used": 33520,
+        "available": 482064
+      },
+      "new_space": {
+        "memorySize": 2097152,
+        "committedMemory": 1860592,
+        "capacity": 1031168,
+        "used": 802632,
+        "available": 228536
+      },
+      "old_space": {
+        "memorySize": 1249280,
+        "committedMemory": 1154648,
+        "capacity": 1128536,
+        "used": 1128536,
+        "available": 0
+      },
+      "code_space": {
+        "memorySize": 1048576,
+        "committedMemory": 565024,
+        "capacity": 532256,
+        "used": 532256,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 536576,
+        "committedMemory": 295888,
+        "capacity": 278480,
+        "used": 278480,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 1521262080,
+        "used": 0,
+        "available": 1521262080
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 0,
+        "used": 0,
+        "available": 0
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 0.082367,
+    "kernelCpuSeconds": 0.082367,
+    "cpuConsumptionPercent": 1.06032e-8,
+    "maxRss": 24360517632,
+    "pageFaults": {
+      "IORequired": 75,
+      "IONotRequired": 8931
+    },
+    "fsActivity": {
+      "reads": 0,
+      "writes": 0
+    }
+  },
+  "libuv": [
+    {
+      "type": "async",
+      "is_active": true,
+      "is_referenced": false,
+      "address": "0x0000000105a02330"
+    },
+    {
+      "repeat": 0,
+      "firesInMsFromNow": -498487730,
+      "expired": true,
+      "type": "timer",
+      "is_active": false,
+      "is_referenced": false,
+      "address": "0x00007ffeefbfe250"
+    },
+    {
+      "type": "check",
+      "is_active": true,
+      "is_referenced": false,
+      "address": "0x00007ffeefbfe2e8"
+    },
+    {
+      "type": "idle",
+      "is_active": false,
+      "is_referenced": true,
+      "address": "0x00007ffeefbfe360"
+    },
+    {
+      "type": "prepare",
+      "is_active": false,
+      "is_referenced": false,
+      "address": "0x00007ffeefbfe3d8"
+    },
+    {
+      "type": "check",
+      "is_active": false,
+      "is_referenced": false,
+      "address": "0x00007ffeefbfe450"
+    },
+    {
+      "type": "async",
+      "is_active": true,
+      "is_referenced": false,
+      "address": "0x0000000100f3ef18"
+    },
+    {
+      "type": "loop",
+      "is_active": false,
+      "address": "0x0000000100f50100"
+    }
+  ],
+  "environmentVariables": {
+    "SHELL": "/usr/local/bin/zsh",
+    "LSCOLORS": "Gxfxcxdxbxegedabagacad",
+    "ITERM_PROFILE": "yoyodyne",
+    "COLORTERM": "truecolor",
+    "LESS": " -R",
+    "XPC_FLAGS": "0x0",
+    "DISABLE_AUTO_UPDATE": "true",
+    "TERM_PROGRAM_VERSION": "1.32.3",
+    "GITHUB_USER": "boneskull",
+    "PKG_CONFIG_PATH": "/usr/local/opt/ruby/lib/pkgconfig",
+    "ENABLE_CORRECTION": "true",
+    "NNN_BMS": "d:/Users/boneskull/projects",
+    "SSH_AUTH_SOCK": "[REDACTED]",
+    "TERM_SESSION_ID": "[REDACTED]",
+    "EDITOR": "code -w",
+    "PWD": "/Users/boneskull/projects/christopher-hiller/gnostic",
+    "LOGNAME": "boneskull",
+    "ITERM_SESSION_ID": "[REDACTED]",
+    "LDFLAGS": "-L/usr/local/opt/ruby/lib",
+    "HOME": "/Users/boneskull",
+    "LANG": "en_US.UTF-8",
+    "ANTIGEN_HOME": "/usr/local/share/antigen/",
+    "SECURITYSESSIONID": "[REDACTED]",
+    "TMPDIR": "/var/folders/74/p0gxrmy93fq88nm66cs7z42h0000gn/T/",
+    "CPPFLAGS": "-I/usr/local/opt/ruby/include",
+    "COMPLETION_WAITING_DOTS": "true",
+    "JEKYLL_GITHUB_TOKEN": "[REDACTED]",
+    "NVM_DIR": "/Users/boneskull/.nvm",
+    "HOMEBREW_BREWFILE": "/Users/boneskull/.Brewfile",
+    "SAUCE_USERNAME": "mochajs",
+    "TERM": "xterm-256color",
+    "LESSOPEN": "| /usr/bin/env src-hilite-lesspipe.sh %s 2>/dev/null",
+    "USER": "boneskull",
+    "COLORFGBG": "15;0",
+    "SAUCE_ACCESS_KEY": "[REDACTED]",
+    "MANPAGER": "less",
+    "DISPLAY": "[REDACTED]",
+    "SHLVL": "3",
+    "NVM_CD_FLAGS": "-q",
+    "HELPDIR": "/usr/local/share/zsh/help",
+    "PAGER": "less",
+    "XPC_SERVICE_NAME": "0",
+    "LC_CTYPE": "en_US.UTF-8",
+    "Apple_PubSub_Socket_Render": "[REDACTED]",
+    "PATH": "/usr/local/opt/ruby/bin:/usr/local/opt/ccache/libexec:/opt/X11/bin:./node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/sbin:/usr/local/MacGPG2/bin:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS",
+    "HOMEBREW_CASK_OPTS": "--appdir=/Users/boneskull/Applications",
+    "NNN_USE_EDITOR": "1",
+    "DISABLE_UNTRACKED_FILES_DIRTY": "true",
+    "NAME_YOUR_CONTRIBUTORS_GITHUB_TOKEN": "[REDACTED]",
+    "OLDPWD": "/Users/boneskull/projects/christopher-hiller",
+    "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0",
+    "TERM_PROGRAM": "vscode",
+    "APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL": "true",
+    "_": "/usr/local/bin/node"
+  },
+  "userLimits": {
+    "core_file_size_blocks": {
+      "soft": 0,
+      "hard": "unlimited"
+    },
+    "data_seg_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "file_size_blocks": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_locked_memory_bytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_memory_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "open_files": {
+      "soft": 524288,
+      "hard": 524288
+    },
+    "stack_size_bytes": {
+      "soft": 8388608,
+      "hard": 67104768
+    },
+    "cpu_time_seconds": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_user_processes": {
+      "soft": 2048,
+      "hard": 2048
+    },
+    "virtual_memory_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    }
+  },
+  "sharedObjects": "[REDACTED]"
+}
