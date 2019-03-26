@@ -7,6 +7,9 @@
     "pretest": "eslint .",
     "test": "mocha"
   },
+  "bin": {
+    "gnostic": "index.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.ibm.com/christopher-hiller/gnostic"
