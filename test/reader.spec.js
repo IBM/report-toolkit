@@ -1,7 +1,24 @@
 import {GnosticErrorCodes} from '../lib/error';
-import {readReportFromFS} from '../lib/reader';
+import {createSandbox} from 'sinon';
+import proxyquire from 'proxyquire';
 
 describe('module:reader', function() {
+  let sandbox;
+  let redact;
+  let readReportFromFS;
+
+  beforeEach(function() {
+    sandbox = createSandbox();
+    redact = sandbox.stub().returnsArg(0);
+    readReportFromFS = proxyquire('../lib/reader', {
+      './redact.js': {redact}
+    }).readReportFromFS;
+  });
+
+  afterEach(function() {
+    sandbox.restore();
+  });
+
   describe('readReportFromFS()', function() {
     describe('when provided no filepath', function() {
       it('should reject with GNOSTIC_ERR_INVALID_ARG', function() {
@@ -25,7 +42,7 @@ describe('module:reader', function() {
       });
     });
 
-    describe('when provided path to invalid (non-JSON) report file', function() {
+    describe('when provided path to invalid (or non-JSON) report file', function() {
       it('should reject with GNOSTIC_ERR_INVALID_REPORT', function() {
         return expect(
           readReportFromFS(__filename),
@@ -42,6 +59,17 @@ describe('module:reader', function() {
           'to be fulfilled with',
           require('./fixture/report-001.json')
         );
+      });
+
+      it('should attempt to redact the parsed object', function() {
+        return readReportFromFS(
+          require.resolve('./fixture/report-001.json')
+        ).then(() => {
+          expect(redact, 'was called once').and(
+            'was called with',
+            require('./fixture/report-001.json')
+          );
+        });
       });
     });
   });
