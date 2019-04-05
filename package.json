@@ -21,13 +21,12 @@
     "node": ">=6"
   },
   "dependencies": {
-    "ansi-colors": "^3.2.4",
-    "callbackify": "^1.1.0",
     "cosmiconfig": "^5.2.0",
     "debug": "^4.1.1",
-    "esm": "^3.2.20",
+    "esm": "^3.2.22",
+    "lodash": "^4.17.11",
+    "rxjs": "^6.4.0",
     "traverse": "^0.6.6",
-    "util.promisify": "^1.0.0",
     "yargs": "^13.2.2"
   },
   "devDependencies": {
@@ -46,7 +45,7 @@
     "mocha": "^6.0.2",
     "prettier": "^1.16.4",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.3.0",
+    "sinon": "^7.3.1",
     "unexpected": "^11.2.0",
     "unexpected-sinon": "^10.11.1"
   },

@@ -4,7 +4,8 @@ const AWS_STR = '(AWS|aws|Aws)?_?';
 const QUOTE_STR = '("|\')';
 const CONNECT_STR = 's*(:|=>|=)s*';
 const OPT_QUOTE_STR = `${QUOTE_STR}?`;
-export const REDACTED = '[REDACTED]';
+
+export const REDACTED_TOKEN = '[REDACTED]';
 
 export const SECRETS = [
   /passw(or)?d/i,
@@ -46,6 +47,6 @@ export const redact = obj =>
       INTERESTING_KEYS.some(key => path.includes(key)) &&
       SECRETS.some(regex => regex.test(this.key) || regex.test(value))
     ) {
-      this.update(REDACTED);
+      this.update(REDACTED_TOKEN);
     }
   });

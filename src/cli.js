@@ -1,7 +1,5 @@
 import {createDebugger, enableDebugger} from './debug.js';
 
-import {GnosticError} from './error';
-import colors from 'ansi-colors';
 import pkg from '../package.json';
 import {search} from './config';
 import yargs from 'yargs';
@@ -39,18 +37,11 @@ export const main = () => {
       .help()
       .fail((msg, err, yargs) => {
         // if `msg` is present, this is a "handled" error.
-        // The `GnosticError` is usually invalid usage; other stuff with `msg` present
-        // would be coming out of yargs' validation.
         if (msg) {
           console.error(`${yargs.help()}\n`);
         }
 
-        console.error(
-          msg || err instanceof GnosticError
-            ? `${colors.redBright(`Error (${err.code}):`)} ${msg}`
-            : err
-        );
-        process.exit(1);
+        throw err;
       })
       .version()
       .middleware(argv => {

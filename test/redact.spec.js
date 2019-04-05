@@ -1,4 +1,4 @@
-import {REDACTED, redact} from '../lib/redact';
+import {REDACTED_TOKEN, redact} from '../src/redact';
 
 describe('module:redact', function() {
   describe('redact()', function() {
@@ -25,10 +25,10 @@ describe('module:redact', function() {
           PASSWD: 'alsjkdfkl',
           OK: 'ok',
           environmentVariables: {
-            SECRET: REDACTED,
-            API_KEY: REDACTED,
-            'ACCESS-KEY': REDACTED,
-            things: REDACTED
+            SECRET: REDACTED_TOKEN,
+            API_KEY: REDACTED_TOKEN,
+            'ACCESS-KEY': REDACTED_TOKEN,
+            things: REDACTED_TOKEN
           }
         });
       });

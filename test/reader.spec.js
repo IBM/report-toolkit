@@ -1,75 +1,54 @@
-import {GnosticErrorCodes} from '../lib/error';
 import {createSandbox} from 'sinon';
 import proxyquire from 'proxyquire';
 
 describe('module:reader', function() {
   let sandbox;
   let redact;
-  let readReportFromFS;
+  let readReport;
+  let filepath;
 
   beforeEach(function() {
+    filepath = require.resolve('./fixture/report-001.json');
     sandbox = createSandbox();
     redact = sandbox.stub().returnsArg(0);
-    readReportFromFS = proxyquire('../lib/reader', {
+    readReport = proxyquire('../src/reader', {
       './redact.js': {redact}
-    }).readReportFromFS;
+    }).readReport;
   });
 
   afterEach(function() {
     sandbox.restore();
   });
 
-  describe('readReportFromFS()', function() {
-    describe('when provided no filepath', function() {
-      it('should reject with GNOSTIC_ERR_INVALID_ARG', function() {
-        return expect(
-          readReportFromFS(),
-          'to be rejected with error satisfying',
-          {
-            code: GnosticErrorCodes.GNOSTIC_ERR_INVALID_ARG
-          }
-        );
-      });
-    });
+  describe('readReport()', function() {
+    describe('when given valid filepath to report', function() {
+      let observable;
 
-    describe('when provided an invalid filepath', function() {
-      it('should reject with ENOENT', function() {
-        return expect(
-          readReportFromFS('/does/not/exist'),
-          'to be rejected with error satisfying',
-          {code: 'ENOENT'}
-        );
+      beforeEach(function() {
+        observable = readReport(filepath);
       });
-    });
 
-    describe('when provided path to invalid (or non-JSON) report file', function() {
-      it('should reject with GNOSTIC_ERR_INVALID_REPORT', function() {
+      it('should parse the report JSON', function() {
         return expect(
-          readReportFromFS(__filename),
-          'to be rejected with error satisfying',
-          {code: GnosticErrorCodes.GNOSTIC_ERR_INVALID_REPORT}
-        );
-      });
-    });
-
-    describe('when provided path to valid (JSON) report file', function() {
-      it('should return the parsed JSON', function() {
-        return expect(
-          readReportFromFS(require.resolve('./fixture/report-001.json')),
+          observable.toPromise(),
           'to be fulfilled with',
           require('./fixture/report-001.json')
         );
       });
 
-      it('should attempt to redact the parsed object', function() {
-        return readReportFromFS(
-          require.resolve('./fixture/report-001.json')
-        ).then(() => {
-          expect(redact, 'was called once').and(
-            'was called with',
-            require('./fixture/report-001.json')
-          );
-        });
+      it('should redact the report JSON', async function() {
+        await observable.toPromise();
+        expect(redact, 'was called once');
+      });
+    });
+
+    describe('when not passed a filepath', function() {
+      it('should throw', function() {
+        return expect(
+          readReport().toPromise(),
+          'to be rejected with error satisfying',
+          {code: 'ERR_INVALID_ARG_TYPE'}
+        );
       });
     });
   });

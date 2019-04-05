@@ -3,14 +3,15 @@ extends:
   - semistandard
   - plugin:prettier/recommended
 parserOptions:
-  ecmaVersion: 2016
+  ecmaVersion: 2018
 rules:
   strict:
     - error
     - safe
+  standard/computed-property-even-spacing: false
 overrides:
   - files:
-      - index.js
+      - ./index.js
       - test/setup.js
       - .mocharc.js
     parserOptions:
