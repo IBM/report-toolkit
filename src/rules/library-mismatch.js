@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 exports.meta = {
   type: 'info',
   docs: {
@@ -17,7 +15,8 @@ exports.meta = {
 exports.match = (context, opts = {}) => {
   const {sharedObjects, header} = context;
   const problems = {};
-  _.each(header.componentVersions, (version, component) => {
+  Object.keys(header.componentVersions).forEach(component => {
+    const version = header.componentVersions[component];
     sharedObjects.forEach(filepath => {
       if (!problems[component] && filepath.includes(component)) {
         const sharedVersion = filepath.match(/(\d+(?:\.\d+)+[a-z]?)/);
@@ -29,7 +28,7 @@ exports.match = (context, opts = {}) => {
       }
     });
   });
-  _.each(problems, msg => {
-    context.report(msg);
+  Object.keys(problems).forEach(component => {
+    context.report(problems[component]);
   });
 };
