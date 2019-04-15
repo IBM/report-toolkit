@@ -2,4 +2,7 @@
 
 const unexpected = require('unexpected');
 
-global.expect = unexpected.clone().use(require('unexpected-sinon'));
+global.expect = unexpected
+  .clone()
+  .use(require('unexpected-sinon'))
+  .use(require('./unexpected-rxjs'));

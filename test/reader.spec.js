@@ -30,8 +30,8 @@ describe('module:reader', function() {
 
       it('should parse the report JSON', function() {
         return expect(
-          observable.toPromise(),
-          'to be fulfilled with',
+          observable,
+          'to emit value',
           require('./fixture/report-001.json')
         );
       });
@@ -43,12 +43,10 @@ describe('module:reader', function() {
     });
 
     describe('when not passed a filepath', function() {
-      it('should throw', function() {
-        return expect(
-          readReport().toPromise(),
-          'to be rejected with error satisfying',
-          {code: 'ERR_INVALID_ARG_TYPE'}
-        );
+      it('should emit an error', function() {
+        return expect(readReport(), 'to emit error satisfying', {
+          code: 'ERR_INVALID_ARG_TYPE'
+        });
       });
     });
   });

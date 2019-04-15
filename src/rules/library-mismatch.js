@@ -12,23 +12,24 @@ exports.meta = {
   }
 };
 
-exports.match = (context, opts = {}) => {
+const VERSION_REGEXP = /(\d+(?:\.\d+)+[a-z]?)/;
+
+exports.match = (context, {ignore = []} = {}) => {
+  const ignoredComponents = new Set(ignore);
   const {sharedObjects, header} = context;
-  const problems = {};
-  Object.keys(header.componentVersions).forEach(component => {
-    const version = header.componentVersions[component];
-    sharedObjects.forEach(filepath => {
-      if (!problems[component] && filepath.includes(component)) {
-        const sharedVersion = filepath.match(/(\d+(?:\.\d+)+[a-z]?)/);
-        if (sharedVersion && sharedVersion[1] !== version) {
-          problems[
-            component
-          ] = `Potential problem: custom shared library at ${filepath} in use conflicting with ${component}@${version}`;
-        }
-      }
+  Object.keys(header.componentVersions)
+    .filter(component => !ignoredComponents.has(component))
+    .forEach(component => {
+      const version = header.componentVersions[component];
+      sharedObjects
+        .filter(filepath => filepath.includes(component))
+        .forEach(filepath => {
+          const sharedVersion = VERSION_REGEXP.exec(filepath);
+          if (sharedVersion && sharedVersion[1] !== version) {
+            context.report(
+              `Potential problem: custom shared library at ${filepath} in use conflicting with ${component}@${version}`
+            );
+          }
+        });
     });
-  });
-  Object.keys(problems).forEach(component => {
-    context.report(problems[component]);
-  });
 };

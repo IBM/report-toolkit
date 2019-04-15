@@ -1,41 +1,50 @@
 import _ from 'lodash';
 
-const rules = new WeakMap();
+export const kRuleId = Symbol('ruleId');
+export const kRuleMeta = Symbol('ruleMeta');
+export const kRuleMatch = Symbol('ruleMatch');
 
-export class RuleEntry {
-  constructor(ruleEntry) {
-    Object.assign(this, ruleEntry);
-  }
+/**
+ * @typedef {Object} RuleDefinition
+ * @property {Object} meta - (schema for `meta` prop)
+ * @property {Function} match - Async function which receives `Context` object and optional configuration
+ */
 
-  static create(ruleEntry) {
-    return new RuleEntry(ruleEntry);
-  }
-}
-
+/**
+ * A Rule which can be matched against a Context
+ */
 export class Rule {
-  constructor(rule, config = {}) {
-    const {match, meta} = rule;
-    Object.defineProperties(this, {
-      _match: {value: match},
-      _meta: {value: meta},
-      _config: {value: config}
+  /**
+   *
+   * @param {RuleDefinition} ruleDef
+   */
+  constructor(ruleDef) {
+    ruleDef = Rule.applyDefaults(ruleDef);
+    Object.assign(this, {
+      [kRuleMatch]: ruleDef.match,
+      [kRuleMeta]: ruleDef.meta,
+      [kRuleId]: ruleDef[kRuleId]
     });
   }
 
-  validate() {
-    // validate the config against meta.schema using ajv
-  }
-
-  async match(context) {
-    this._match(context, this.config);
-  }
-
-  static create(ruleEntry) {
-    const ruleDef = Rule.applyDefaults(require(ruleEntry.filepath));
-    const ctor = RULE_MODE_MAP.get(ruleDef.meta.mode);
-    return Reflect.construct(ctor, [ruleDef, ruleEntry.config]);
+  /**
+   *
+   * @param {Context} context - Context object
+   * @param {Object} [config] - Optional rule-specific config
+   */
+  async match(context, config = {}) {
+    this[kRuleMatch].call(null, context, config);
   }
 }
+
+/**
+ *
+ * @param {RuleDefinition} ruleDef
+ */
+Rule.create = _.memoize(ruleDef => {
+  const ctor = RULE_MODE_MAP.get(ruleDef.meta.mode);
+  return Reflect.construct(ctor, [ruleDef]);
+});
 
 Rule.applyDefaults = _.memoize(ruleDef =>
   _.defaultsDeep({}, ruleDef, {meta: {type: 'info', mode: 'simple'}})
@@ -44,15 +53,3 @@ Rule.applyDefaults = _.memoize(ruleDef =>
 export class SimpleRule extends Rule {}
 
 const RULE_MODE_MAP = new Map([['simple', SimpleRule]]);
-
-/**
- * Get a (cached) `Rule` from a `RuleEntry`
- * @param {RuleEntry} ruleEntry
- * @returns {Rule}
- */
-export const getRule = ruleEntry => {
-  if (!rules.has(ruleEntry)) {
-    rules.set(ruleEntry, Rule.create(ruleEntry));
-  }
-  return rules.get(ruleEntry);
-};

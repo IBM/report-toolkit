@@ -3,5 +3,5 @@
 module.exports = {
   require: ['esm', 'test/setup'],
   'forbid-only': Boolean(process.env.CI),
-  spec: 'test/**/*.spec.js'
+  recursive: true
 };
