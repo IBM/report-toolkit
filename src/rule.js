@@ -23,7 +23,7 @@ export class Rule {
     Object.assign(this, {
       [kRuleMatch]: ruleDef.match,
       [kRuleMeta]: ruleDef.meta,
-      [kRuleId]: ruleDef[kRuleId]
+      [kRuleId]: ruleDef.id
     });
   }
 

@@ -17,8 +17,7 @@ export const main = async () => {
   } else {
     debug('no config file found');
   }
-
-  return yargs
+  yargs()
     .scriptName(pkg.name)
     .commandDir('commands')
     .demandCommand()
@@ -40,7 +39,9 @@ export const main = async () => {
         console.error(`${yargs.help()}\n`);
       }
 
-      throw err;
+      if (err) {
+        throw err;
+      }
     })
     .version()
     .middleware(argv => {
@@ -51,5 +52,10 @@ export const main = async () => {
 
       return argv;
     })
-    .parse();
+    .parse(process.argv.slice(2));
 };
+
+process.on('unhandledRejection', err => {
+  console.error(err);
+  process.exit(1);
+});

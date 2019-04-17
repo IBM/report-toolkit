@@ -28,7 +28,8 @@
     "ms": "^2.1.1",
     "rxjs": "^6.4.0",
     "traverse": "^0.6.6",
-    "yargs": "^13.2.2"
+    "yargs": "^13.2.2",
+    "yurnalist": "^1.0.5"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

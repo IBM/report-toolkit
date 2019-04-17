@@ -4,13 +4,12 @@ import {map, mergeAll, mergeMap} from 'rxjs/operators';
 import _ from 'lodash';
 import {bindNodeCallback} from 'rxjs';
 import fs from 'fs';
-import {kRuleId} from './rule';
 
 const readdir = bindNodeCallback(fs.readdir);
 
 export const loadRuleFromRuleDef = async ({filepath, id}) =>
   Object.assign(_.pick(await import(filepath), ['match', 'meta']), {
-    [kRuleId]: id
+    id
   });
 
 export const createRuleDefFromDirpath = _.curry((dirpath, entry) =>
@@ -35,11 +34,14 @@ export const loadRuleFromFilepath = _.memoize(
  * @param {string} [dirpath]
  * @returns {Observable<Object>} Exports of rule file w/ ruleId
  */
-export const loadRulesFromDirpath = _.memoize(
+export const loadRulesFromDirpath = _.memoize(dirpath =>
+  findRulesFromDirpath(dirpath).pipe(mergeMap(loadRuleFromRuleDef))
+);
+
+export const findRulesFromDirpath = _.memoize(
   (dirpath = join(__dirname, 'rules')) =>
     readdir(dirpath).pipe(
       mergeAll(),
-      map(createRuleDefFromDirpath(dirpath)),
-      mergeMap(loadRuleFromRuleDef)
+      map(createRuleDefFromDirpath(dirpath))
     )
 );

@@ -3,7 +3,7 @@
 'use strict';
 
 const esmRequire = require('esm')(module);
-const cli = esmRequire('./lib/cli');
+const cli = esmRequire('../src/cli');
 
 if (require.main === module) {
   cli.main();
