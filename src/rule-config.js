@@ -35,8 +35,6 @@ export class RuleConfig {
   }
 
   static create(rule, config) {
-    // if config is not an array, the rule is just considered to be enabled
-    config = (Array.isArray(config) && config.slice(1).shift()) || [];
     return new RuleConfig(rule, config);
   }
 }

@@ -4,6 +4,8 @@ import {RuleConfig} from './rule-config';
 import _ from 'lodash';
 import {mergeMap} from 'rxjs/operators';
 
+const configMap = new WeakMap();
+
 /**
  * Object output by inspection
  * @typedef {Object} Report
@@ -20,7 +22,7 @@ export class Inspector {
    * @param {RuleConfig} config
    */
   constructor(config) {
-    this.config = config;
+    configMap.set(this, config);
   }
 
   inspect(...reports) {
@@ -28,7 +30,8 @@ export class Inspector {
       mergeMap(
         report =>
           new Observable(async observer => {
-            const id = this.config.id;
+            const config = configMap.get(this);
+            const {id} = config;
             const ctx = _.create(
               {
                 report(message, data = {}) {
@@ -39,7 +42,7 @@ export class Inspector {
               report
             );
             try {
-              await this.config.inspect(ctx);
+              await config.inspect(ctx);
             } catch (err) {
               observer.error(err);
             }
@@ -65,14 +68,14 @@ export class Inspector {
  * rules by ID.
  * @param {Report} report - Parsed JSON report
  * @param {Rule} rule - Rule
- * @param {Object|any[]|string} [config] - Rule-specific configuration
+ * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration
  * @returns {Observable<Report>} Observable of `{message, data}`
  * reports, generated from rule implementations. Could be empty.
  */
-export const inspect = (report, rule, config = {}) => {
-  if (Array.isArray(config)) {
-    config = _.find(config, _.isObject) || {};
+export const inspect = (report, rule, rawConfig = {}) => {
+  if (Array.isArray(rawConfig)) {
+    rawConfig = _.find(rawConfig, _.isObject) || {};
   }
-  const inspector = Inspector.create(RuleConfig.create(rule, config));
+  const inspector = Inspector.create(RuleConfig.create(rule, rawConfig));
   return inspector.inspect(report);
 };
