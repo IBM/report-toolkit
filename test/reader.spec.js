@@ -11,7 +11,7 @@ describe('module:reader', function() {
     filepath = require.resolve('./fixture/report-001.json');
     sandbox = createSandbox();
     redact = sandbox.stub().returnsArg(0);
-    readReport = proxyquire('../src/reader', {
+    readReport = proxyquire('../src/report-reader', {
       './redact.js': {redact}
     }).readReport;
   });

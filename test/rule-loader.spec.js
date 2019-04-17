@@ -1,14 +1,13 @@
 import {join, resolve} from 'path';
 
 import {createSandbox} from 'sinon';
-import {kRuleId} from '../src/rule';
 import proxyquire from 'proxyquire';
 
 proxyquire.noPreserveCache();
 
 const BUILTIN_RULES_DIR = resolve(__dirname, '..', 'src', 'rules');
 
-describe('module:load-rules', function() {
+describe('module:rule-loader', function() {
   describe('loadRulesFromDirpath()', function() {
     let sandbox;
     let readdir;
@@ -22,12 +21,12 @@ describe('module:load-rules', function() {
       readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
       readdir.onSecondCall().callsArgWithAsync(1, null, ['oops.js']);
       fooRule = {
-        match: () => {},
+        inspect: () => {},
         meta: {},
         '@noCallThru': true
       };
       barRule = {
-        match: () => {},
+        inspect: () => {},
         meta: {},
         '@noCallThru': true
       };
@@ -39,15 +38,15 @@ describe('module:load-rules', function() {
 
     describe('when called without parameters', function() {
       beforeEach(function() {
-        const loadRules = proxyquire('../src/load-rules', {
+        const loadRules = proxyquire('../src/rule-loader', {
           fs: {readdir},
           [join(BUILTIN_RULES_DIR, 'foo.js')]: fooRule,
           [join(BUILTIN_RULES_DIR, 'bar.js')]: barRule
         });
         loadRulesFromDirpath = loadRules.loadRulesFromDirpath;
-        // these are memoized; clear it before each test run
-        loadRules.findRulesFromDirpath.cache.clear();
-        loadRulesFromDirpath.cache.clear();
+        // memoized; clear it before each test run
+        loadRules.loadRuleFromRuleDef.cache.clear();
+        loadRules.readDirpath.cache.clear();
       });
 
       it('should return a list of rules from ../src/rules/', function() {
@@ -55,14 +54,16 @@ describe('module:load-rules', function() {
           loadRulesFromDirpath(),
           'to complete with values',
           {
-            match: fooRule.match,
+            inspect: fooRule.inspect,
             meta: {},
-            [kRuleId]: 'foo'
+            id: 'foo',
+            filepath: join(BUILTIN_RULES_DIR, 'foo.js')
           },
           {
-            match: barRule.match,
+            inspect: barRule.inspect,
             meta: {},
-            [kRuleId]: 'bar'
+            id: 'bar',
+            filepath: join(BUILTIN_RULES_DIR, 'bar.js')
           }
         );
       });
@@ -72,14 +73,14 @@ describe('module:load-rules', function() {
       const dirpath = '/some/path';
 
       beforeEach(function() {
-        const loadRules = proxyquire('../src/load-rules', {
+        const loadRules = proxyquire('../src/rule-loader', {
           fs: {readdir},
           [join(dirpath, 'foo.js')]: fooRule,
           [join(dirpath, 'bar.js')]: barRule
         });
         loadRulesFromDirpath = loadRules.loadRulesFromDirpath;
-        // loadRules is memoized; clear it before each test run
-        loadRulesFromDirpath.cache.clear();
+        loadRules.readDirpath.cache.clear();
+        loadRules.loadRuleFromRuleDef.cache.clear();
       });
 
       it('should return a list of rules from specified dirpath', function() {
@@ -87,14 +88,16 @@ describe('module:load-rules', function() {
           loadRulesFromDirpath(dirpath),
           'to complete with values',
           {
-            match: fooRule.match,
+            inspect: fooRule.inspect,
             meta: {},
-            [kRuleId]: 'foo'
+            id: 'foo',
+            filepath: join(dirpath, 'foo.js')
           },
           {
-            match: barRule.match,
+            inspect: barRule.inspect,
             meta: {},
-            [kRuleId]: 'bar'
+            id: 'bar',
+            filepath: join(dirpath, 'bar.js')
           }
         );
       });

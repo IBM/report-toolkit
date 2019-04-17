@@ -11,7 +11,7 @@ exports.meta = {
   messages: {}
 };
 
-exports.match = (context, {threshold = 10000} = {}) => {
+exports.inspect = (context, {threshold = 10000} = {}) => {
   const {libuv} = context;
   libuv
     .filter(

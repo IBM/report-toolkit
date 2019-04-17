@@ -13,7 +13,7 @@ export const main = async () => {
   let config;
   if (configResult) {
     config = configResult.config;
-    debug(`using config at ${configResult.filepath}`);
+    debug(`using config at ${configResult.filepath}: %O`, config);
   } else {
     debug('no config file found');
   }

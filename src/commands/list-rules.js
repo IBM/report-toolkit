@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {loadRulesFromDirpath} from '../load-rules';
+import {loadRulesFromDirpath} from '../rule-loader';
 import {reporter} from '../cli-reporter';
 import {toArray} from 'rxjs/operators';
 export const command = 'list-rules';

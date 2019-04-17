@@ -2,12 +2,13 @@ import _ from 'lodash';
 
 export const kRuleId = Symbol('ruleId');
 export const kRuleMeta = Symbol('ruleMeta');
-export const kRuleMatch = Symbol('ruleMatch');
+export const kRuleInspect = Symbol('ruleInspect');
+export const kRuleFilepath = Symbol('ruleFilepath');
 
 /**
  * @typedef {Object} RuleDefinition
  * @property {Object} meta - (schema for `meta` prop)
- * @property {Function} match - Async function which receives `Context` object and optional configuration
+ * @property {Function} inspect - Async function which receives `Context` object and optional configuration
  */
 
 /**
@@ -21,9 +22,10 @@ export class Rule {
   constructor(ruleDef) {
     ruleDef = Rule.applyDefaults(ruleDef);
     Object.assign(this, {
-      [kRuleMatch]: ruleDef.match,
+      [kRuleInspect]: ruleDef.inspect,
       [kRuleMeta]: ruleDef.meta,
-      [kRuleId]: ruleDef.id
+      [kRuleId]: ruleDef.id,
+      [kRuleFilepath]: ruleDef.filepath
     });
   }
 
@@ -32,8 +34,17 @@ export class Rule {
    * @param {Context} context - Context object
    * @param {Object} [config] - Optional rule-specific config
    */
-  async match(context, config = {}) {
-    this[kRuleMatch].call(null, context, config);
+  async inspect(context, config = {}) {
+    this[kRuleInspect].call(null, context, config);
+  }
+
+  static applyDefaults(ruleDef) {
+    return _.defaultsDeep(ruleDef, {
+      meta: {type: 'info', mode: 'simple', docs: {}},
+      inspect: () => {
+        throw new Error(`Rule "${ruleDef.id}" has no implementation!`);
+      }
+    });
   }
 }
 
@@ -42,13 +53,9 @@ export class Rule {
  * @param {RuleDefinition} ruleDef
  */
 Rule.create = _.memoize(ruleDef => {
-  const ctor = RULE_MODE_MAP.get(ruleDef.meta.mode);
+  const ctor = RULE_MODE_MAP.get(_.get(ruleDef, 'meta.mode', 'simple'));
   return Reflect.construct(ctor, [ruleDef]);
 });
-
-Rule.applyDefaults = _.memoize(ruleDef =>
-  _.defaultsDeep({}, ruleDef, {meta: {type: 'info', mode: 'simple'}})
-);
 
 export class SimpleRule extends Rule {}
 

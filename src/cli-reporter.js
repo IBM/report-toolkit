@@ -1,3 +1,3 @@
-import {createReporter} from 'yurnalist';
+import yurnalist from 'yurnalist';
 
-export const reporter = createReporter();
+export const reporter = yurnalist.createReporter();

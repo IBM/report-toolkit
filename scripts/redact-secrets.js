@@ -9,7 +9,7 @@ if (!filepath) {
 
 const esmRequire = require('esm')(module);
 const {map} = require('rxjs/operators');
-const {readReport} = esmRequire('../src/reader');
+const {readReport} = esmRequire('../src/report-reader');
 
 readReport(filepath)
   .pipe(map(report => JSON.stringify(report, null, 2)))
