@@ -1,5 +1,7 @@
-module.exports = {
+exports.config = {
+  name: 'recommended',
   rules: {
-    'library-mismatch': 'on'
+    'library-mismatch': 'on',
+    'long-timeout': 'on'
   }
 };

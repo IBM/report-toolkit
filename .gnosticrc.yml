@@ -1,5 +1,0 @@
-rules:
-  long-timeout:
-    - on
-    - threshold: 5000 # 5s threshold (down from default of 10s)
-  library-mismatch: on

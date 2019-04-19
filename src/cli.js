@@ -1,7 +1,7 @@
 import {createDebugger, enableDebugger} from './debug.js';
+import {flattenConfig, search} from './config';
 
 import pkg from '../package.json';
-import {search} from './config';
 import yargs from 'yargs/yargs';
 
 const debug = createDebugger('cli');
@@ -14,6 +14,8 @@ export const main = async () => {
   if (configResult) {
     config = configResult.config;
     debug(`using config at ${configResult.filepath}: %O`, config);
+    config = flattenConfig(config.config);
+    debug(`flattened config: %O`, config);
   } else {
     debug('no config file found');
   }
