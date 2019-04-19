@@ -1,28 +1,17 @@
-import {Inspector} from '../../src/inspector';
-import {RuleConfig} from '../../src/rule-config';
-import {loadRuleFromFilepath} from '../../src/rule-loader';
-import {mergeMap} from 'rxjs/operators';
-import {readReport} from '../../src/report-reader';
+import {createInspect} from './rules-helper';
 
 describe('rule:long-timeout', function() {
-  let ruleConfig;
-  let inspector;
+  let inspect;
 
   beforeEach(async function() {
-    const rule = await loadRuleFromFilepath(
-      require.resolve('../../src/rules/long-timeout')
-    );
-    ruleConfig = RuleConfig.create(rule);
-    inspector = Inspector.create(ruleConfig);
+    inspect = await createInspect('../../src/rules/long-timeout');
   });
 
   describe('when the report contains an active libuv handle containing a timer beyond the default threshold', function() {
     describe('when the timer is referenced', function() {
       it('should report', function() {
         return expect(
-          readReport(
-            require.resolve('../fixture/report-003-long-timeout.json')
-          ).pipe(mergeMap(report => inspector.inspect(report))),
+          inspect('../fixture/report-003-long-timeout.json'),
           'to complete with values',
           {
             id: 'long-timeout',
@@ -37,9 +26,7 @@ describe('rule:long-timeout', function() {
     describe('when the timer is unreferenced', function() {
       it('should not report', function() {
         return expect(
-          readReport(
-            require.resolve('../fixture/report-004-long-timeout-unref.json')
-          ).pipe(mergeMap(report => inspector.inspect(report))),
+          inspect('../fixture/report-004-long-timeout-unref.json'),
           'to complete without values'
         );
       });

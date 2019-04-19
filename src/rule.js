@@ -29,6 +29,18 @@ export class Rule {
     });
   }
 
+  get id() {
+    return this[kRuleId];
+  }
+
+  get meta() {
+    return this[kRuleMeta];
+  }
+
+  get filepath() {
+    return this[kRuleFilepath];
+  }
+
   /**
    *
    * @param {Context} context - Context object

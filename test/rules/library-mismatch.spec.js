@@ -1,27 +1,16 @@
-import {Inspector} from '../../src/inspector';
-import {RuleConfig} from '../../src/rule-config';
-import {loadRuleFromFilepath} from '../../src/rule-loader';
-import {mergeMap} from 'rxjs/operators';
-import {readReport} from '../../src/report-reader';
+import {createInspect} from './rules-helper';
 
 describe('rule:library-mismatch', function() {
-  let ruleConfig;
-  let inspector;
+  let inspect;
 
   beforeEach(async function() {
-    const rule = await loadRuleFromFilepath(
-      require.resolve('../../src/rules/library-mismatch')
-    );
-    ruleConfig = RuleConfig.create(rule);
-    inspector = Inspector.create(ruleConfig);
+    inspect = await createInspect('../../src/rules/library-mismatch');
   });
 
   describe('when the report contains a shared lib with a mismatched version', function() {
     it('should report', function() {
       return expect(
-        readReport(
-          require.resolve('../fixture/report-002-library-mismatch.json')
-        ).pipe(mergeMap(report => inspector.inspect(report))),
+        inspect('../fixture/report-002-library-mismatch.json'),
         'to complete with values',
         {
           id: 'library-mismatch',
@@ -42,9 +31,7 @@ describe('rule:library-mismatch', function() {
   describe('when the report does not contain a shared lib with a mismatched version', function() {
     it('should not report', function() {
       return expect(
-        readReport(require.resolve('../fixture/report-001.json')).pipe(
-          mergeMap(report => inspector.inspect(report))
-        ),
+        inspect('../fixture/report-001.json'),
         'to complete without values'
       );
     });

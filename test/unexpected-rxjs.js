@@ -79,7 +79,7 @@ exports.installInto = expect => {
   expect.addAssertion(
     '<Observable> [not] to complete with values <any+>',
     (expect, observable, ...any) => {
-      expect.errorMode = 'bubble';
+      expect.errorMode = 'default';
       return expect(
         pify(observable),
         'when fulfilled',

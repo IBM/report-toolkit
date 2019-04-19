@@ -1,5 +1,6 @@
 import {join, resolve} from 'path';
 
+import {Rule} from '../src/rule';
 import {createSandbox} from 'sinon';
 import proxyquire from 'proxyquire';
 
@@ -53,18 +54,18 @@ describe('module:rule-loader', function() {
         return expect(
           loadRulesFromDirpath(),
           'to complete with values',
-          {
+          Rule.create({
             inspect: fooRule.inspect,
-            meta: {},
+            meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'foo',
             filepath: join(BUILTIN_RULES_DIR, 'foo.js')
-          },
-          {
+          }),
+          Rule.create({
             inspect: barRule.inspect,
-            meta: {},
+            meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'bar',
             filepath: join(BUILTIN_RULES_DIR, 'bar.js')
-          }
+          })
         );
       });
     });
@@ -87,18 +88,18 @@ describe('module:rule-loader', function() {
         return expect(
           loadRulesFromDirpath(dirpath),
           'to complete with values',
-          {
+          Rule.create({
             inspect: fooRule.inspect,
-            meta: {},
+            meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'foo',
             filepath: join(dirpath, 'foo.js')
-          },
-          {
+          }),
+          Rule.create({
             inspect: barRule.inspect,
-            meta: {},
+            meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'bar',
             filepath: join(dirpath, 'bar.js')
-          }
+          })
         );
       });
 

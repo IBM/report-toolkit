@@ -1,5 +1,3 @@
-import {kRuleId} from './rule';
-
 const ruleMap = new WeakMap();
 
 export class RuleConfig {
@@ -16,7 +14,10 @@ export class RuleConfig {
       // do something
     }
     this.config = Object.freeze(config);
-    Object.defineProperty(this, 'id', {value: rule[kRuleId], enumerable: true});
+  }
+
+  get id() {
+    return ruleMap.get(this).id;
   }
 
   /**
