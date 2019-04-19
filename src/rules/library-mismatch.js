@@ -1,5 +1,4 @@
 exports.meta = {
-  type: 'info',
   docs: {
     description: 'Identify potential library version mismatches',
     category: 'runtime',

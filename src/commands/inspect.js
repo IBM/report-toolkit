@@ -10,7 +10,16 @@ export const command = 'inspect <file>';
 
 export const desc = 'Inspect diagnostic report JSON against rules';
 
-export const builder = {};
+const GROUP_RULES = 'Rules:';
+
+export const builder = yargs =>
+  yargs.options({
+    rule: {
+      description: 'Run rule(s) by name',
+      type: 'array',
+      group: GROUP_RULES
+    }
+  });
 
 export const handler = ({file, rules = {}} = {}) => {
   const disabledRuleIds = !_.isEmpty(rules)
@@ -33,9 +42,11 @@ export const handler = ({file, rules = {}} = {}) => {
         reporter.success(results[0]);
       } else {
         reporter.table(
-          ['Rule ID', 'Message', 'Data'],
+          ['Rule ID', 'Message', 'Data'].map(header =>
+            reporter.format.dim(header)
+          ),
           results.map(({id, message, data}) => [
-            id,
+            reporter.format.green(id),
             message,
             JSON.stringify(data)
           ])

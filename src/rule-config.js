@@ -32,7 +32,7 @@ export class RuleConfig {
   }
 
   async inspect(ctx) {
-    ruleMap.get(this).inspect(ctx, this.config);
+    return ruleMap.get(this).inspect(ctx, this.config);
   }
 
   static create(rule, config) {

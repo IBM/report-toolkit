@@ -47,7 +47,7 @@ export class Rule {
    * @param {Object} [config] - Optional rule-specific config
    */
   async inspect(context, config = {}) {
-    this[kRuleInspect].call(null, context, config);
+    return this[kRuleInspect].call(null, context, config);
   }
 
   static applyDefaults(ruleDef) {

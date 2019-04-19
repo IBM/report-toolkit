@@ -8,10 +8,36 @@ const configMap = new WeakMap();
 
 /**
  * Object output by inspection
- * @typedef {Object} Report
+ * @typedef {Object} RuleResult
  * @property {string} message - Info/error/warning message from rule
  * @property {any?} data - Any extra data
  */
+
+/**
+ * Given a value returned (fulfilled) by a Rule's `inspect()` function,
+ * determine how to emit it from the `Observer`, if at all.
+ * @param {Observer} observer
+ * @param {string} id
+ * @param {string|string[]|RuleResult|RuleResult[]} [result] Whatever `inspect()` returned
+ */
+const processResult = (observer, id, result) => {
+  if (result) {
+    (function process(result) {
+      if (_.isArray(result)) {
+        return result.forEach(process);
+      }
+      const nextValue = {id};
+      if (_.isObject(result)) {
+        return observer.next(
+          _.defaults(nextValue, result, {message: '(no description)', data: {}})
+        );
+      }
+      if (_.isString(result)) {
+        observer.next(_.defaults(nextValue, {message: result, data: {}}));
+      }
+    })(result);
+  }
+};
 
 /**
  * Runs a rule against reports.
@@ -42,7 +68,8 @@ export class Inspector {
               report
             );
             try {
-              await config.inspect(ctx);
+              const result = await config.inspect(ctx);
+              processResult(observer, id, result);
             } catch (err) {
               observer.error(err);
             }
@@ -69,7 +96,7 @@ export class Inspector {
  * @param {Report} report - Parsed JSON report
  * @param {Rule} rule - Rule
  * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration
- * @returns {Observable<Report>} Observable of `{message, data}`
+ * @returns {Observable<RuleResult>} Observable of `{message, data}`
  * reports, generated from rule implementations. Could be empty.
  */
 export const inspect = (report, rule, rawConfig = {}) => {
