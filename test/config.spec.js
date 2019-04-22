@@ -9,8 +9,8 @@ describe('module:config', function() {
         it('should return a flattened config', function() {
           expect(flattenConfig(config), 'to equal', {
             rules: {
-              'long-timeout': ['on', {timeout: 5000}],
-              'library-mismatch': 'on'
+              'long-timeout': [true, {timeout: 5000}],
+              'library-mismatch': false
             }
           });
         });

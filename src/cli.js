@@ -14,12 +14,13 @@ export const main = async () => {
   if (configResult) {
     config = configResult.config;
     debug(`using config at ${configResult.filepath}: %O`, config);
-    config = flattenConfig(config.config);
+    config = {config: flattenConfig(config.config)};
     debug(`flattened config: %O`, config);
   } else {
     debug('no config file found');
   }
   yargs()
+    .parserConfiguration({'camel-case-expansion': false})
     .scriptName(pkg.name)
     .commandDir('commands')
     .demandCommand()

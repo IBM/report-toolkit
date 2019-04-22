@@ -1,38 +1,28 @@
 import {defaultIfEmpty, mergeMap, toArray} from 'rxjs/operators';
 import {findRules, loadRuleFromRuleDef} from '../rule-loader';
+import {reporter, tableHeader} from '../cli-reporter';
 
-import _ from 'lodash';
+import _ from 'lodash/fp';
+import {combineLatest} from 'rxjs';
+import {enabledRules} from '../config';
 import {inspect} from '../inspector';
 import {readReport} from '../report-reader';
-import {reporter} from '../cli-reporter';
 
 export const command = 'inspect <file>';
 
 export const desc = 'Inspect diagnostic report JSON against rules';
 
-const GROUP_RULES = 'Rules:';
+export const handler = ({file, config = {}} = {}) => {
+  const ruleIds = enabledRules(config);
+  const rules = _.getOr({}, 'rules', config);
 
-export const builder = yargs =>
-  yargs.options({
-    rule: {
-      description: 'Run rule(s) by name',
-      type: 'array',
-      group: GROUP_RULES
-    }
-  });
-
-export const handler = ({file, rules = {}} = {}) => {
-  const disabledRuleIds = !_.isEmpty(rules)
-    ? _.filter(rules, value => value === false || value === 'off')
-    : [];
-
-  readReport(file)
+  combineLatest(
+    findRules({ruleIds}).pipe(mergeMap(loadRuleFromRuleDef)),
+    readReport(file)
+  )
     .pipe(
-      mergeMap(report =>
-        findRules({disabledRuleIds}).pipe(
-          mergeMap(loadRuleFromRuleDef),
-          mergeMap(rule => inspect(report, rule, rules[rule.id]))
-        )
+      mergeMap(([rule, report]) =>
+        inspect(report, rule, _.get(rule.id, rules))
       ),
       defaultIfEmpty(`${file} contains no known issues`),
       toArray()
@@ -42,9 +32,7 @@ export const handler = ({file, rules = {}} = {}) => {
         reporter.success(results[0]);
       } else {
         reporter.table(
-          ['Rule ID', 'Message', 'Data'].map(header =>
-            reporter.format.dim(header)
-          ),
+          tableHeader(['Rule ID', 'Message', 'Data']),
           results.map(({id, message, data}) => [
             reporter.format.green(id),
             message,
