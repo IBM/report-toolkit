@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash/fp';
 
 export const kRuleId = Symbol('ruleId');
 export const kRuleMeta = Symbol('ruleMeta');
@@ -51,12 +51,15 @@ export class Rule {
   }
 
   static applyDefaults(ruleDef) {
-    return _.defaultsDeep(ruleDef, {
-      meta: {type: 'info', mode: 'simple', docs: {}},
-      inspect: () => {
-        throw new Error(`Rule "${ruleDef.id}" has no implementation!`);
-      }
-    });
+    return _.defaultsDeep(
+      {
+        meta: {type: 'info', mode: 'simple', docs: {}},
+        inspect: () => {
+          throw new Error(`Rule "${ruleDef.id}" has no implementation!`);
+        }
+      },
+      ruleDef
+    );
   }
 }
 
@@ -65,7 +68,7 @@ export class Rule {
  * @param {RuleDefinition} ruleDef
  */
 Rule.create = _.memoize(ruleDef => {
-  const ctor = RULE_MODE_MAP.get(_.get(ruleDef, 'meta.mode', 'simple'));
+  const ctor = RULE_MODE_MAP.get(_.getOr('simple', 'meta.mode', ruleDef));
   return Reflect.construct(ctor, [ruleDef]);
 });
 

@@ -1,6 +1,6 @@
 import {reporter, tableHeader} from '../cli-reporter';
 
-import _ from 'lodash';
+import _ from 'lodash/fp';
 import {loadRulesFromDirpath} from '../rule-loader';
 import {toArray} from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export const handler = () => {
         tableHeader(['Rule ID', 'Description']),
         rules.map(rule => [
           reporter.format.green(rule.id),
-          _.get(rule, 'meta.docs.description', '(no description)')
+          _.getOr('(no description)', 'meta.docs.description', rule)
         ])
       );
     });

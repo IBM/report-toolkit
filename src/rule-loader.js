@@ -2,7 +2,7 @@ import {basename, join, resolve} from 'path';
 import {filter, map, mergeAll, mergeMap} from 'rxjs/operators';
 
 import {Rule} from './rule';
-import _ from 'lodash';
+import _ from 'lodash/fp';
 import {bindNodeCallback} from 'rxjs';
 import fs from 'fs';
 
@@ -19,14 +19,14 @@ const createRuleDefFromFilepath = filepath => ({
 
 export const loadRuleFromRuleDef = _.memoize(async ({filepath, id}) =>
   Rule.create(
-    _.assign(_.pick(await import(filepath), ['inspect', 'meta']), {
+    _.assign(_.pick(['inspect', 'meta'], await import(filepath)), {
       id,
       filepath
     })
   )
 );
 
-export const loadRuleFromFilepath = _.flow(
+export const loadRuleFromFilepath = _.pipe(
   createRuleDefFromFilepath,
   loadRuleFromRuleDef
 );

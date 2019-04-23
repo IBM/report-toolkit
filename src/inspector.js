@@ -1,7 +1,7 @@
 import {Observable, from} from 'rxjs';
 
 import {RuleConfig} from './rule-config';
-import _ from 'lodash';
+import _ from 'lodash/fp';
 import {mergeMap} from 'rxjs/operators';
 
 const configMap = new WeakMap();
@@ -29,11 +29,14 @@ const processResult = (observer, id, result) => {
       const nextValue = {id};
       if (_.isObject(result)) {
         return observer.next(
-          _.defaults(nextValue, result, {message: '(no description)', data: {}})
+          _.defaults(
+            {message: '(no description)', data: {}},
+            _.assign(nextValue, result)
+          )
         );
       }
       if (_.isString(result)) {
-        observer.next(_.defaults(nextValue, {message: result, data: {}}));
+        observer.next(_.defaults({message: result, data: {}}, nextValue));
       }
     })(result);
   }
@@ -59,13 +62,15 @@ export class Inspector {
             const config = configMap.get(this);
             const {id} = config;
             const ctx = _.create(
-              {
-                report(message, data = {}) {
-                  observer.next({id, message, data});
-                  return this;
-                }
-              },
-              report
+              _.assign(
+                {
+                  report(message, data = {}) {
+                    observer.next({id, message, data});
+                    return this;
+                  }
+                },
+                report
+              )
             );
             try {
               const result = await config.inspect(ctx);
@@ -101,7 +106,7 @@ export class Inspector {
  */
 export const inspect = (report, rule, rawConfig = {}) => {
   if (Array.isArray(rawConfig)) {
-    rawConfig = _.find(rawConfig, _.isObject) || {};
+    rawConfig = _.find(_.isObject, rawConfig) || {};
   }
   const inspector = Inspector.create(RuleConfig.create(rule, rawConfig));
   return inspector.inspect(report);
