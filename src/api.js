@@ -1,6 +1,6 @@
 import {combineLatest, of} from 'rxjs';
 import {enabledRules, fromDir, fromFile} from './config';
-import {findRules, loadRuleFromRuleDef} from './rule-loader';
+import {findRuleDefs, loadRuleFromRuleDef} from './rule-loader';
 import {map, mergeMap, tap, toArray} from 'rxjs/operators';
 
 import _ from 'lodash/fp';
@@ -36,7 +36,7 @@ export const inspect = async (
       }),
       mergeMap(({ruleIds, config}) =>
         combineLatest(
-          findRules({ruleIds}).pipe(mergeMap(loadRuleFromRuleDef)),
+          findRuleDefs({ruleIds}).pipe(mergeMap(loadRuleFromRuleDef)),
           _.isString(report) ? readReport(report) : of(report)
         ).pipe(
           mergeMap(([rule, report]) =>

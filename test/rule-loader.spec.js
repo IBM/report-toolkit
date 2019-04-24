@@ -9,29 +9,32 @@ proxyquire.noPreserveCache();
 const BUILTIN_RULES_DIR = resolve(__dirname, '..', 'src', 'rules');
 
 describe('module:rule-loader', function() {
-  describe('loadRulesFromDirpath()', function() {
-    let sandbox;
-    let readdir;
-    let loadRulesFromDirpath;
-    let fooRule;
-    let barRule;
+  let sandbox;
+  let readdir;
 
-    beforeEach(function() {
-      sandbox = createSandbox();
-      readdir = sandbox.stub();
-      readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
-      readdir.onSecondCall().callsArgWithAsync(1, null, ['oops.js']);
-      fooRule = {
-        inspect: () => {},
-        meta: {},
-        '@noCallThru': true
-      };
-      barRule = {
-        inspect: () => {},
-        meta: {},
-        '@noCallThru': true
-      };
-    });
+  let fooRule;
+  let barRule;
+
+  beforeEach(function() {
+    fooRule = {
+      inspect: () => {},
+      meta: {},
+      '@noCallThru': true
+    };
+    barRule = {
+      inspect: () => {},
+      meta: {},
+      '@noCallThru': true
+    };
+
+    sandbox = createSandbox();
+    readdir = sandbox.stub();
+    readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
+    readdir.onSecondCall().callsArgWithAsync(1, null, ['oops.js']);
+  });
+
+  describe('loadRulesFromDirpath()', function() {
+    let loadRulesFromDirpath;
 
     afterEach(function() {
       sandbox.restore();
@@ -115,6 +118,48 @@ describe('module:rule-loader', function() {
             await obs1.toPromise()
           );
         });
+      });
+    });
+  });
+
+  describe('findRuleDefs()', function() {
+    let findRuleDefs;
+
+    beforeEach(function() {
+      const loadRules = proxyquire('../src/rule-loader', {
+        fs: {readdir},
+        [join(BUILTIN_RULES_DIR, 'foo.js')]: fooRule,
+        [join(BUILTIN_RULES_DIR, 'bar.js')]: barRule
+      });
+      findRuleDefs = loadRules.findRuleDefs;
+      // memoized; clear it before each test run
+      loadRules.readDirpath.cache.clear();
+    });
+
+    describe('when called with a list of rule IDs', function() {
+      it('should only emit rule defs having IDs included in the list', function() {
+        return expect(
+          findRuleDefs({ruleIds: ['foo']}),
+          'to complete with values',
+          {filepath: join(BUILTIN_RULES_DIR, 'foo.js'), id: 'foo'}
+        ).and('to emit once');
+      });
+    });
+
+    describe('when called without a list of rule IDs', function() {
+      it('should emit all rule defs within default dirpath', function() {
+        return expect(
+          findRuleDefs(),
+          'to complete with values',
+          {
+            filepath: join(BUILTIN_RULES_DIR, 'foo.js'),
+            id: 'foo'
+          },
+          {
+            filepath: join(BUILTIN_RULES_DIR, 'bar.js'),
+            id: 'bar'
+          }
+        ).and('to emit twice');
       });
     });
   });

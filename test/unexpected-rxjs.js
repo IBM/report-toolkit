@@ -32,6 +32,40 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
+    '<Observable> [not] to emit times <number>',
+    (expect, observable, count) => {
+      expect.errorMode = 'bubble';
+      return expect(
+        observable.pipe(toArray()).toPromise(),
+        'when fulfilled',
+        '[not] to have length',
+        count
+      );
+    }
+  );
+
+  expect.addAssertion(
+    '<Observable> [not] to emit once',
+    (expect, observable) => {
+      return expect(observable, '[not] to emit times', 1);
+    }
+  );
+
+  expect.addAssertion(
+    '<Observable> [not] to emit twice',
+    (expect, observable) => {
+      return expect(observable, '[not] to emit times', 2);
+    }
+  );
+
+  expect.addAssertion(
+    '<Observable> [not] to emit thrice',
+    (expect, observable) => {
+      return expect(observable, '[not] to emit times', 3);
+    }
+  );
+
+  expect.addAssertion(
     '<Observable> [not] to emit error <any>',
     (expect, observable, any) => {
       expect.errorMode = 'bubble';

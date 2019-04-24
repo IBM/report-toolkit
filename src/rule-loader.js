@@ -38,13 +38,13 @@ export const loadRuleFromFilepath = _.pipe(
  * @returns {Observable<Object>} Exports of rule file w/ ruleId
  */
 export const loadRulesFromDirpath = dirpath =>
-  findRules({dirpath}).pipe(mergeMap(loadRuleFromRuleDef));
+  findRuleDefs({dirpath}).pipe(mergeMap(loadRuleFromRuleDef));
 
 export const readDirpath = _.memoize((dirpath = join(__dirname, 'rules')) =>
   readdir(dirpath).pipe(mergeAll())
 );
 
-export const findRules = ({
+export const findRuleDefs = ({
   dirpath = join(__dirname, 'rules'),
   ruleIds = []
 } = {}) => {

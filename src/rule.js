@@ -63,7 +63,9 @@ export class Rule {
       {
         meta: {type: 'info', mode: 'simple', docs: {}},
         inspect: () => {
-          throw new Error(`Rule "${ruleDef.id}" has no implementation!`);
+          throw new Error(
+            `Rule "${ruleDef.id}" has no "inspect" implementation`
+          );
         }
       },
       ruleDef
@@ -77,9 +79,17 @@ export class Rule {
  */
 Rule.create = _.memoize(ruleDef => {
   const ctor = RULE_MODE_MAP.get(_.getOr('simple', 'meta.mode', ruleDef));
+  if (!ctor) {
+    throw new Error(`Unknown rule mode ${_.get('meta.mode', ruleDef)}`);
+  }
   return Reflect.construct(ctor, [ruleDef]);
 });
 
 export class SimpleRule extends Rule {}
 
-const RULE_MODE_MAP = new Map([['simple', SimpleRule]]);
+export class TemporalRule extends Rule {}
+
+const RULE_MODE_MAP = new Map([
+  ['simple', SimpleRule],
+  ['temporal', TemporalRule]
+]);
