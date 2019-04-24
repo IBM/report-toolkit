@@ -59,8 +59,8 @@ export class Inspector {
       mergeMap(
         report =>
           new Observable(async observer => {
-            const config = configMap.get(this);
-            const {id} = config;
+            const {ruleConfig} = this;
+            const {id} = ruleConfig;
             const ctx = _.create(
               _.assign(
                 {
@@ -73,7 +73,7 @@ export class Inspector {
               )
             );
             try {
-              const result = await config.inspect(ctx);
+              const result = await ruleConfig.inspect(ctx);
               processResult(observer, id, result);
             } catch (err) {
               observer.error(err);
@@ -90,24 +90,28 @@ export class Inspector {
    * @returns {Inspector}
    */
   static create(config) {
-    return new Inspector(config);
+    return Reflect.construct(Inspector, [config]);
+  }
+
+  get ruleConfig() {
+    return configMap.get(this);
+  }
+
+  /**
+   * Inspect a report, given a list of loaded `Rule`s and
+   * rule-specific configurations.  Associates the configurations with
+   * rules by ID.
+   * @param {Report} report - Parsed JSON report
+   * @param {Rule} rule - Rule
+   * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration
+   * @todo accept multiple reports
+   * @returns {Observable<RuleResult>} Observable of `{message, data}`
+   * reports, generated from rule implementations. Could be empty.
+   */
+  static inspectReport(report, rule, rawConfig = {}) {
+    if (Array.isArray(rawConfig)) {
+      rawConfig = _.find(_.isObject, rawConfig) || {};
+    }
+    return Inspector.create(RuleConfig.create(rule, rawConfig)).inspect(report);
   }
 }
-
-/**
- * Inspect one or more reports, given a list of loaded `Rule`s and
- * rule-specific configurations.  Associates the configurations with
- * rules by ID.
- * @param {Report} report - Parsed JSON report
- * @param {Rule} rule - Rule
- * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration
- * @returns {Observable<RuleResult>} Observable of `{message, data}`
- * reports, generated from rule implementations. Could be empty.
- */
-export const inspectReport = (report, rule, rawConfig = {}) => {
-  if (Array.isArray(rawConfig)) {
-    rawConfig = _.find(_.isObject, rawConfig) || {};
-  }
-  const inspector = Inspector.create(RuleConfig.create(rule, rawConfig));
-  return inspector.inspect(report);
-};

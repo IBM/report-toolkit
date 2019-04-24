@@ -3,9 +3,9 @@ import {enabledRules, fromDir, fromFile} from './config';
 import {findRuleDefs, loadRuleFromRuleDef} from './rule-loader';
 import {map, mergeMap, tap, toArray} from 'rxjs/operators';
 
+import {Inspector} from './inspector';
 import _ from 'lodash/fp';
 import {createDebugger} from './debug';
-import {inspectReport} from './inspector';
 import {readReport} from './report-reader';
 
 const debug = createDebugger(module);
@@ -40,7 +40,11 @@ export const inspect = async (
           _.isString(report) ? readReport(report) : of(report)
         ).pipe(
           mergeMap(([rule, report]) =>
-            inspectReport(report, rule, _.getOr({}, `rules.${rule.id}`, config))
+            Inspector.inspectReport(
+              report,
+              rule,
+              _.getOr({}, `rules.${rule.id}`, config)
+            )
           )
         )
       ),

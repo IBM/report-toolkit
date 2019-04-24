@@ -36,6 +36,6 @@ export class RuleConfig {
   }
 
   static create(rule, config) {
-    return new RuleConfig(rule, config);
+    return Reflect.construct(RuleConfig, [rule, config]);
   }
 }
