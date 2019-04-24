@@ -16,7 +16,7 @@ export const handler = () => {
         tableHeader(['Rule ID', 'Description']),
         rules.map(rule => [
           reporter.format.green(rule.id),
-          _.getOr('(no description)', 'meta.docs.description', rule)
+          _.getOr('(no description)', 'description', rule)
         ])
       );
     });

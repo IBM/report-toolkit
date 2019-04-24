@@ -36,13 +36,11 @@ const flattenConfig = configResult => {
   return config;
 };
 
-export const fromDir = async (fromDirpath, opts = {}) => {
-  return flattenConfig(await search(fromDirpath, opts));
-};
+export const fromDir = async (fromDirpath, opts = {}) =>
+  flattenConfig(await search(fromDirpath, opts));
 
-export const fromFile = async (filepath, opts = {}) => {
-  return flattenConfig(await load(filepath, opts));
-};
+export const fromFile = async (filepath, opts = {}) =>
+  flattenConfig(await load(filepath, opts));
 
 const pushToConfigList = list => value => list.push(_.omit('name', value));
 

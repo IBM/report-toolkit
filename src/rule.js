@@ -33,12 +33,20 @@ export class Rule {
     return this[kRuleId];
   }
 
-  get meta() {
-    return this[kRuleMeta];
+  get description() {
+    return _.get('docs.description', this[kRuleMeta]);
+  }
+
+  get url() {
+    return _.get('docs.url', this[kRuleMeta]);
   }
 
   get filepath() {
     return this[kRuleFilepath];
+  }
+
+  get meta() {
+    return this[kRuleMeta];
   }
 
   /**
