@@ -10,12 +10,10 @@ rules:
   standard/computed-property-even-spacing: false
 overrides:
   - files:
-      - index.js
+      - src/index.js
       - bin/gnostic.js
       - test/setup.js
       - .mocharc.js
-    excludedFiles:
-      - '**/index.js'
     parserOptions:
       sourceType: script
   - files:

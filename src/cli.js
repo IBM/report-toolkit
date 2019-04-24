@@ -1,24 +1,16 @@
 import {createDebugger, enableDebugger} from './debug.js';
-import {flattenConfig, search} from './config';
 
+import {fromDir} from './config';
 import pkg from '../package.json';
 import yargs from 'yargs/yargs';
 
-const debug = createDebugger('cli');
+const debug = createDebugger(module);
 
 const GROUP_OUTPUT = 'Output:';
 
 export const main = async () => {
-  const configResult = await search();
-  let config;
-  if (configResult) {
-    config = configResult.config;
-    debug(`using config at ${configResult.filepath}: %O`, config);
-    config = {config: flattenConfig(config.config)};
-    debug(`flattened config: %O`, config);
-  } else {
-    debug('no config file found');
-  }
+  const configResult = await fromDir();
+  debug(configResult);
   yargs()
     .parserConfiguration({'camel-case-expansion': false})
     .scriptName(pkg.name)
@@ -33,7 +25,7 @@ export const main = async () => {
         type: 'boolean'
       }
     })
-    .config(config)
+    .config(configResult)
     .env(pkg.name)
     .help()
     .fail((msg, err, yargs) => {

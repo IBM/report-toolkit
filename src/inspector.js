@@ -104,7 +104,7 @@ export class Inspector {
  * @returns {Observable<RuleResult>} Observable of `{message, data}`
  * reports, generated from rule implementations. Could be empty.
  */
-export const inspect = (report, rule, rawConfig = {}) => {
+export const inspectReport = (report, rule, rawConfig = {}) => {
   if (Array.isArray(rawConfig)) {
     rawConfig = _.find(_.isObject, rawConfig) || {};
   }

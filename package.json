@@ -2,7 +2,7 @@
   "name": "gnostic",
   "version": "0.0.0",
   "description": "consumes Node.js diagnostic reports, outputs useful information",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "pretest": "markdownlint --ignore node_modules . && eslint .",
     "test": "mocha"
@@ -18,7 +18,7 @@
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "dependencies": {
     "cosmiconfig": "^5.2.0",

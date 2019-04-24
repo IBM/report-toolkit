@@ -1,8 +1,11 @@
 import {BUILTIN_CONFIGS} from '../config/index';
 import _ from 'lodash/fp';
 import cosmiconfig from 'cosmiconfig';
+import {createDebugger} from './debug';
 import pkg from '../package.json';
 import traverse from 'traverse';
+
+const debug = createDebugger(module);
 
 const ON = 'on';
 const OFF = 'off';
@@ -19,8 +22,27 @@ const getExplorer = _.memoize(opts =>
   )
 );
 
-export const search = (fromDirpath, opts = {}) =>
+const search = async (fromDirpath, opts = {}) =>
   getExplorer(opts).search(fromDirpath);
+
+const load = async (filepath, opts = {}) => getExplorer(opts).load(filepath);
+
+const flattenConfig = configResult => {
+  let config = {};
+  if (configResult) {
+    debug(`found file at ${configResult.filepath}`);
+    config = {config: flatten(_.getOr({}, 'config.config', configResult))};
+  }
+  return config;
+};
+
+export const fromDir = async (fromDirpath, opts = {}) => {
+  return flattenConfig(await search(fromDirpath, opts));
+};
+
+export const fromFile = async (filepath, opts = {}) => {
+  return flattenConfig(await load(filepath, opts));
+};
 
 const pushToConfigList = list => value => list.push(_.omit('name', value));
 
@@ -35,7 +57,7 @@ const normalizeValue = obj =>
     }
   });
 
-export const flattenConfig = (config, configObjects = [], breadcrumbs = []) => {
+export const flatten = (config, configObjects = [], breadcrumbs = []) => {
   const push = pushToConfigList(configObjects);
   const flatten = (value, idx = 0) => {
     if (_.isString(value)) {
@@ -49,7 +71,7 @@ export const flattenConfig = (config, configObjects = [], breadcrumbs = []) => {
     } else if (_.isObject(value)) {
       push(
         _.has('config', value)
-          ? flattenConfig(value, configObjects, breadcrumbs.concat(idx))
+          ? flatten(value, configObjects, breadcrumbs.concat(idx))
           : normalizeValue(value)
       );
     } else {
