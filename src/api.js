@@ -1,7 +1,7 @@
 import {combineLatest, of} from 'rxjs';
 import {enabledRules, fromDir, fromFile} from './config';
 import {findRules, loadRuleFromRuleDef} from './rule-loader';
-import {map, mergeMap, switchMap, tap, toArray} from 'rxjs/operators';
+import {map, mergeMap, tap, toArray} from 'rxjs/operators';
 
 import _ from 'lodash/fp';
 import {createDebugger} from './debug';
@@ -34,7 +34,7 @@ export const inspect = async (
       tap(({ruleIds}) => {
         debug(`found ${ruleIds.length} enabled rule(s)`);
       }),
-      switchMap(({ruleIds, config}) =>
+      mergeMap(({ruleIds, config}) =>
         combineLatest(
           findRules({ruleIds}).pipe(mergeMap(loadRuleFromRuleDef)),
           _.isString(report) ? readReport(report) : of(report)
