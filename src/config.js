@@ -1,4 +1,4 @@
-import {BUILTIN_CONFIGS} from '../config/index';
+import {BUILTIN_CONFIGS} from './configs';
 import _ from 'lodash/fp';
 import cosmiconfig from 'cosmiconfig';
 import {createDebugger} from './debug';

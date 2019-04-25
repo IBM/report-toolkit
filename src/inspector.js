@@ -109,6 +109,7 @@ export class Inspector {
    * reports, generated from rule implementations. Could be empty.
    */
   static inspectReport(report, rule, rawConfig = {}) {
+    // XXX this is not right.
     if (Array.isArray(rawConfig)) {
       rawConfig = _.find(_.isObject, rawConfig) || {};
     }
