@@ -2,11 +2,13 @@ import {reporter, tableHeader} from '../cli-reporter';
 
 import {inspect} from '../api';
 
-export const command = 'inspect <file>';
+export const command = 'inspect <file..>';
 
 export const desc = 'Inspect diagnostic report JSON against rules';
 
-export const handler = async ({file, config} = {}) => {
+export const builder = yargs => yargs.positional('file', {type: 'array'});
+
+export const handler = async ({file, config}) => {
   const results = await inspect(file, {config, autoload: false});
   if (!results.length) {
     reporter.success(`${file} contains no known issues`);

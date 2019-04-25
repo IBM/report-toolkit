@@ -1,5 +1,6 @@
 import {Observable, from} from 'rxjs';
 
+import {Rule} from './rule';
 import {RuleConfig} from './rule-config';
 import _ from 'lodash/fp';
 import {mergeMap} from 'rxjs/operators';
@@ -14,35 +15,6 @@ const configMap = new WeakMap();
  */
 
 /**
- * Given a value returned (fulfilled) by a Rule's `inspect()` function,
- * determine how to emit it from the `Observer`, if at all.
- * @param {Observer} observer
- * @param {string} id
- * @param {string|string[]|RuleResult|RuleResult[]} [result] Whatever `inspect()` returned
- */
-const processResult = (observer, id, result) => {
-  if (result) {
-    (function process(result) {
-      if (_.isArray(result)) {
-        return result.forEach(process);
-      }
-      const nextValue = {id};
-      if (_.isObject(result)) {
-        return observer.next(
-          _.defaults(
-            {message: '(no description)', data: {}},
-            _.assign(nextValue, result)
-          )
-        );
-      }
-      if (_.isString(result)) {
-        observer.next(_.defaults({message: result, data: {}}, nextValue));
-      }
-    })(result);
-  }
-};
-
-/**
  * Runs a rule against reports.
  */
 export class Inspector {
@@ -54,6 +26,11 @@ export class Inspector {
     configMap.set(this, config);
   }
 
+  /**
+   * @todo add helper to format output better
+   * @param  {...Report} reports
+   * @returns {Observable<RuleReport>}
+   */
   inspect(...reports) {
     return from(reports).pipe(
       mergeMap(
@@ -61,24 +38,50 @@ export class Inspector {
           new Observable(async observer => {
             const {ruleConfig} = this;
             const {id} = ruleConfig;
-            const ctx = _.create(
-              _.assign(
-                {
-                  report(message, data = {}) {
-                    observer.next({id, message, data});
-                    return this;
-                  }
-                },
-                report
-              )
-            );
-            try {
-              const result = await ruleConfig.inspect(ctx);
-              processResult(observer, id, result);
-            } catch (err) {
-              observer.error(err);
-            }
-            observer.complete();
+            const basicInfo = {filepath: report.filepath, id};
+            const reporter = function(message, data = {}) {
+              observer.next(
+                _.assign({message: String(message), data}, basicInfo)
+              );
+              return this;
+            };
+            const ctx = Proxy.revocable(report, {
+              get(target, prop) {
+                if (prop === 'report') {
+                  return reporter;
+                } else if (prop === 'filepath') {
+                  return report.filepath;
+                }
+                return Reflect.get(...arguments);
+              }
+            });
+
+            from(ruleConfig.inspect(ctx.proxy)).subscribe({
+              next: result => {
+                if (_.isString(result)) {
+                  observer.next(_.assign({message: result}, basicInfo));
+                } else if (_.isObject(result)) {
+                  observer.next(
+                    _.assign(
+                      {
+                        message: String(result.message),
+                        data: result.data
+                      },
+                      basicInfo
+                    )
+                  );
+                } else if (!_.isUndefined(result)) {
+                  observer.error(new Error(`Invalid result: ${result}`));
+                }
+              },
+              error: err => {
+                observer.error(err);
+              },
+              complete: () => {
+                ctx.revoke();
+                observer.complete();
+              }
+            });
           })
       )
     );
@@ -86,11 +89,20 @@ export class Inspector {
 
   /**
    * Creates a configured Inspector
-   * @param {RuleConfig} config
+   * @param {Rule|RuleConfig} ruleConfig - Rule or RuleConfig
+   * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration; unused if `rule` is a `RuleConfig`
    * @returns {Inspector}
    */
-  static create(config) {
-    return Reflect.construct(Inspector, [config]);
+  static create(ruleConfig, rawConfig = {}) {
+    if (ruleConfig instanceof Rule) {
+      // XXX this is not right.
+      if (Array.isArray(rawConfig)) {
+        rawConfig = _.find(_.isObject, rawConfig) || {};
+      }
+      ruleConfig = RuleConfig.create(ruleConfig, rawConfig);
+    }
+
+    return Reflect.construct(Inspector, [ruleConfig]);
   }
 
   get ruleConfig() {
@@ -102,17 +114,13 @@ export class Inspector {
    * rule-specific configurations.  Associates the configurations with
    * rules by ID.
    * @param {Report} report - Parsed JSON report
-   * @param {Rule} rule - Rule
-   * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration
+   * @param {Rule|RuleConfig} ruleConfig - Rule or RuleConfig
+   * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration; unused if `rule` is a `RuleConfig`
    * @todo accept multiple reports
    * @returns {Observable<RuleResult>} Observable of `{message, data}`
    * reports, generated from rule implementations. Could be empty.
    */
-  static inspectReport(report, rule, rawConfig = {}) {
-    // XXX this is not right.
-    if (Array.isArray(rawConfig)) {
-      rawConfig = _.find(_.isObject, rawConfig) || {};
-    }
-    return Inspector.create(RuleConfig.create(rule, rawConfig)).inspect(report);
+  static inspectReport(report, ...args) {
+    return Inspector.create(...args).inspect(report);
   }
 }

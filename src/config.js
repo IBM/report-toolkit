@@ -42,9 +42,7 @@ export const fromDir = async (fromDirpath, opts = {}) =>
 export const fromFile = async (filepath, opts = {}) =>
   flattenConfig(await load(filepath, opts));
 
-const pushToConfigList = list => value => list.push(_.omit('name', value));
-
-const normalizeValue = obj =>
+const normalize = obj =>
   traverse(obj).map(function(value) {
     if (_.isString(value)) {
       if (value === ON) {
@@ -55,37 +53,43 @@ const normalizeValue = obj =>
     }
   });
 
-export const flatten = (config, configObjects = [], breadcrumbs = []) => {
+const pushToConfigList = list => value =>
+  list.push(normalize(_.omit('name', value)));
+
+/**
+ *
+ * @param {Object} config - A config object
+ * @param {Object[]} configObjects - Flattened config objects
+ * @todo Configs must be validated against a config schema in a depth-first manner
+ * @returns {Object} Flattened config
+ */
+export const flatten = (config, configObjects = []) => {
   const push = pushToConfigList(configObjects);
-  const flatten = (value, idx = 0) => {
+  const flattenValue = (value, idx = 0) => {
     if (_.isString(value)) {
       if (BUILTIN_CONFIGS.has(value)) {
-        push(BUILTIN_CONFIGS.get(value));
+        push(BUILTIN_CONFIGS.get(normalize(value)));
       } else {
         throw new Error(
-          `unknown builtin config at position ${idx} via ${breadcrumbs}: "${value}"`
+          `unknown builtin config at position ${idx}: "${value}"`
         );
       }
     } else if (_.isObject(value)) {
-      push(
-        _.has('config', value)
-          ? flatten(value, configObjects, breadcrumbs.concat(idx))
-          : normalizeValue(value)
-      );
+      push(_.has('config', value) ? flattenValue(value, configObjects) : value);
     } else {
-      throw new Error(`invalid config value via ${breadcrumbs}: "${value}"`);
+      throw new Error(`invalid config value: "${value}"`);
     }
   };
 
   if (_.isArray(config)) {
-    config.forEach(flatten);
-    return _.defaultsDeepAll(configObjects.reverse());
+    config.forEach(flattenValue);
+    return _.defaultsDeepAll(configObjects.reverse().concat({}));
   }
 
-  return flatten(config);
+  return flattenValue(config);
 };
 
-export const enabledRules = _.pipe(
+const enabledRules = _.pipe(
   _.getOr({}, 'rules'),
   _.toPairs,
   _.reduce(
@@ -94,3 +98,13 @@ export const enabledRules = _.pipe(
     []
   )
 );
+
+export const findRuleConfigs = config => {
+  const ruleIds = enabledRules(config);
+  return _.reduce(
+    (acc, ruleId) =>
+      _.assign(acc, {[ruleId]: _.getOr({}, `rules.${ruleId}`, config)}),
+    {},
+    ruleIds
+  );
+};

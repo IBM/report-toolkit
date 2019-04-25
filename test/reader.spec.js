@@ -31,7 +31,7 @@ describe('module:reader', function() {
       it('should parse the report JSON', function() {
         return expect(
           observable,
-          'to emit value',
+          'to complete with value satisfying',
           require('./fixture/report-001.json')
         );
       });

@@ -1,3 +1,5 @@
+import _ from 'lodash/fp';
+
 const ruleMap = new WeakMap();
 
 export class RuleConfig {
@@ -18,6 +20,10 @@ export class RuleConfig {
 
   get id() {
     return ruleMap.get(this).id;
+  }
+
+  get severity() {
+    return _.getOr('high', 'config.severity', this);
   }
 
   /**

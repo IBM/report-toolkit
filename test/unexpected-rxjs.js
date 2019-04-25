@@ -83,9 +83,9 @@ exports.installInto = expect => {
     (expect, observable, any) => {
       expect.errorMode = 'bubble';
       return expect(
-        observable.pipe(first(value => expect.equal(value, any))).toPromise(),
+        observable.pipe(toArray()).toPromise(),
         'when fulfilled',
-        'to [exhausively] satisfy',
+        '[not] to have an item [exhausively] satisfying',
         any
       );
     }

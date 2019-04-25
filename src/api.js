@@ -1,7 +1,7 @@
-import {combineLatest, of} from 'rxjs';
-import {enabledRules, fromDir, fromFile} from './config';
+import {defer, of} from 'rxjs';
+import {findRuleConfigs, fromDir, fromFile} from './config';
 import {findRuleDefs, loadRuleFromRuleDef} from './rule-loader';
-import {map, mergeMap, tap, toArray} from 'rxjs/operators';
+import {map, mergeMap, toArray} from 'rxjs/operators';
 
 import {Inspector} from './inspector';
 import _ from 'lodash/fp';
@@ -11,7 +11,7 @@ import {readReport} from './report-reader';
 const debug = createDebugger(module);
 
 export const inspect = async (
-  report,
+  reports = [],
   {config, autoload = true, searchPath = process.cwd()} = {}
 ) => {
   let loadConfig;
@@ -28,25 +28,24 @@ export const inspect = async (
   } else {
     loadConfig = of(config);
   }
+
+  const reportObjects = defer(() =>
+    (_.isArray(reports) ? of(...reports) : of(reports)).pipe(
+      mergeMap(readReport)
+    )
+  );
+
   return loadConfig
     .pipe(
-      map(config => ({ruleIds: enabledRules(config), config})),
-      tap(({ruleIds}) => {
-        debug(`found ${ruleIds.length} enabled rule(s)`);
-      }),
-      mergeMap(({ruleIds, config}) =>
-        combineLatest(
-          findRuleDefs({ruleIds}).pipe(mergeMap(loadRuleFromRuleDef)),
-          _.isString(report) ? readReport(report) : of(report)
-        ).pipe(
-          mergeMap(([rule, report]) =>
-            Inspector.inspectReport(
-              report,
-              rule,
-              _.getOr({}, `rules.${rule.id}`, config)
-            )
-          )
+      map(findRuleConfigs),
+      mergeMap(ruleConfigs =>
+        findRuleDefs({ruleConfigs}).pipe(
+          mergeMap(loadRuleFromRuleDef),
+          map(rule => Inspector.create(rule, ruleConfigs[rule.id]))
         )
+      ),
+      mergeMap(inspector =>
+        reportObjects.pipe(mergeMap(report => inspector.inspect(report)))
       ),
       toArray()
     )

@@ -1,16 +1,12 @@
-import {createDebugger, enableDebugger} from './debug.js';
-
+import {enableDebugger} from './debug.js';
 import {fromDir} from './config';
 import pkg from '../package.json';
 import yargs from 'yargs/yargs';
-
-const debug = createDebugger(module);
 
 const GROUP_OUTPUT = 'Output:';
 
 export const main = async () => {
   const configResult = await fromDir();
-  debug(configResult);
   yargs()
     .parserConfiguration({'camel-case-expansion': false})
     .scriptName(pkg.name)
@@ -42,15 +38,10 @@ export const main = async () => {
     .middleware(argv => {
       // "verbose" enables debug statements
       if (argv.verbose) {
-        enableDebugger();
+        enableDebugger(module, '*');
       }
 
       return argv;
     })
     .parse(process.argv.slice(2));
 };
-
-process.on('unhandledRejection', err => {
-  console.error(err);
-  process.exit(1);
-});

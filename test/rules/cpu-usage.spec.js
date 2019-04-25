@@ -21,7 +21,8 @@ describe('rule:cpu-usage', function() {
             id: 'cpu-usage',
             message:
               'Kernel+User Avg CPU (ms) is under the specified threshold',
-            data: {threshold: 1000, usage: 82}
+            data: {threshold: 1000, usage: 82},
+            filepath: '../fixture/report-001.json'
           }
         );
       });
@@ -45,7 +46,8 @@ describe('rule:cpu-usage', function() {
           {
             id: 'cpu-usage',
             message: 'Kernel+User Avg CPU (ms) is over the specified threshold',
-            data: {threshold: 82, usage: 83}
+            data: {threshold: 82, usage: 83},
+            filepath: '../fixture/report-001.json'
           }
         );
       });
