@@ -38,8 +38,7 @@ describe('module:api', function() {
               context.report('foo');
             }
           },
-          meta: {},
-          '@noCallThru': true
+          meta: {}
         },
         bar: {
           inspect: context => {
@@ -47,8 +46,7 @@ describe('module:api', function() {
               context.report('bar');
             }
           },
-          meta: {},
-          '@noCallThru': true
+          meta: {}
         }
       };
       const configStubs = {

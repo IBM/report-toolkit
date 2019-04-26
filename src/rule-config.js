@@ -37,7 +37,7 @@ export class RuleConfig {
     return true;
   }
 
-  async inspect(ctx) {
+  inspect(ctx) {
     return ruleMap.get(this).inspect(ctx, this.config);
   }
 

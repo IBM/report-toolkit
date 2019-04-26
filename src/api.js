@@ -21,11 +21,11 @@ export const inspect = async (
   let loadConfig;
   if (_.isString(config)) {
     debug(`trying to load config at path ${config}`);
-    loadConfig = of(fromFile(config));
+    loadConfig = fromFile(config);
   } else if (_.isEmpty(config)) {
     if (autoload) {
       debug(`searching for config from ${searchPath}`);
-      loadConfig = of(fromDir(searchPath));
+      loadConfig = fromDir(searchPath);
     } else {
       throw new Error('Missing config');
     }

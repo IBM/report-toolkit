@@ -1,18 +1,44 @@
-import {config} from './fixture/gnosticrc-array-builtin';
-import {flatten} from '../src/config';
+import {fromDir, fromFile} from '../src/config';
+
+import {join} from 'path';
 
 describe('module:config', function() {
-  describe('flattenConfig()', function() {
-    describe('when provided config-as-array', function() {
-      describe('when array contains reference to builtin', function() {
-        it('should return a flattened config', function() {
-          expect(flatten(config), 'to equal', {
-            rules: {
-              'long-timeout': [true, {timeout: 5000}],
-              'library-mismatch': false
+  describe('function', function() {
+    describe('fromFile()', function() {
+      it('should load a config file', async function() {
+        return expect(
+          fromFile(require.resolve('./fixture/gnostic.config.js')),
+          'to complete with value',
+          {
+            config: {
+              rules: {
+                'long-timeout': [true, {timeout: 5000}],
+                'library-mismatch': false
+              }
             }
-          });
-        });
+          }
+        )
+          .and('to emit once')
+          .and('not to emit error');
+      });
+    });
+
+    describe('fromDir()', function() {
+      it('should load a config file', async function() {
+        return expect(
+          fromDir(join(__dirname, 'fixture')),
+          'to complete with value',
+          {
+            config: {
+              rules: {
+                'long-timeout': [true, {timeout: 5000}],
+                'library-mismatch': false
+              }
+            }
+          }
+        )
+          .and('to emit once')
+          .and('not to emit error');
       });
     });
   });

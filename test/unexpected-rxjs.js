@@ -66,28 +66,20 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to emit error <any>',
+    '<Observable> [not] to emit error <any?>',
     (expect, observable, any) => {
       expect.errorMode = 'bubble';
-      return expect(
-        observable.pipe(catchError(of)).toPromise(),
-        'when fulfilled',
-        '[not] to contain',
-        any
-      );
-    }
-  );
-
-  expect.addAssertion(
-    '<Observable> [not] to complete with value [exhaustively] satisfying <any>',
-    (expect, observable, any) => {
-      expect.errorMode = 'bubble';
-      return expect(
-        observable.pipe(toArray()).toPromise(),
-        'when fulfilled',
-        '[not] to have an item [exhausively] satisfying',
-        any
-      );
+      const promise = observable
+        .pipe(
+          ignoreElements(),
+          catchError(of),
+          toArray()
+        )
+        .toPromise();
+      if (any) {
+        return expect(promise, 'when fulfilled', '[not] to contain', any);
+      }
+      return expect(promise, 'when fulfilled', '[not] to be empty');
     }
   );
 
@@ -111,7 +103,7 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to complete with values <any+>',
+    '<Observable> [not] to complete with (values|value) <any+>',
     (expect, observable, ...any) => {
       expect.errorMode = 'bubble';
       return expect(
@@ -124,7 +116,7 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to complete without (values|values)',
+    '<Observable> [not] to complete without (values|value)',
     (expect, observable) => {
       expect.errorMode = 'bubble';
       return expect(pify(observable), 'when fulfilled', '[not] to be empty');
@@ -132,7 +124,7 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to complete with values [exhaustively] satisfying <any+>',
+    '<Observable> [not] to complete with (values|value) [exhaustively] satisfying <any+>',
     (expect, observable, ...any) => {
       expect.errorMode = 'bubble';
       return expect(
