@@ -46,12 +46,12 @@ export const readDirpath = _.memoize((dirpath = join(__dirname, 'rules')) =>
 
 export const findRuleDefs = ({
   dirpath = join(__dirname, 'rules'),
-  ruleConfigs = {}
+  configs = {}
 } = {}) => {
   const ruleDefs = readDirpath(dirpath).pipe(
     map(createRuleDefFromDirpath(dirpath))
   );
-  return _.size(ruleConfigs)
-    ? ruleDefs.pipe(filter(({id}) => _.has(id, ruleConfigs)))
+  return _.size(configs)
+    ? ruleDefs.pipe(filter(({id}) => _.has(id, configs)))
     : ruleDefs;
 };

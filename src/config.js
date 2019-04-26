@@ -99,7 +99,7 @@ const enabledRules = _.pipe(
   )
 );
 
-export const findRuleConfigs = config => {
+export const findConfigs = config => {
   const ruleIds = enabledRules(config);
   return _.reduce(
     (acc, ruleId) =>

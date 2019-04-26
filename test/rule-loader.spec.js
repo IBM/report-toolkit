@@ -11,20 +11,20 @@ const BUILTIN_RULES_DIR = resolve(__dirname, '..', 'src', 'rules');
 describe('module:rule-loader', function() {
   let sandbox;
   let readdir;
-
-  let fooRule;
-  let barRule;
+  let rules;
 
   beforeEach(function() {
-    fooRule = {
-      inspect: () => {},
-      meta: {},
-      '@noCallThru': true
-    };
-    barRule = {
-      inspect: () => {},
-      meta: {},
-      '@noCallThru': true
+    rules = {
+      foo: {
+        inspect: () => {},
+        meta: {},
+        '@noCallThru': true
+      },
+      bar: {
+        inspect: () => {},
+        meta: {},
+        '@noCallThru': true
+      }
     };
 
     sandbox = createSandbox();
@@ -44,8 +44,8 @@ describe('module:rule-loader', function() {
       beforeEach(function() {
         const loadRules = proxyquire('../src/rule-loader', {
           fs: {readdir},
-          [join(BUILTIN_RULES_DIR, 'foo.js')]: fooRule,
-          [join(BUILTIN_RULES_DIR, 'bar.js')]: barRule
+          [join(BUILTIN_RULES_DIR, 'foo.js')]: rules.foo,
+          [join(BUILTIN_RULES_DIR, 'bar.js')]: rules.bar
         });
         loadRulesFromDirpath = loadRules.loadRulesFromDirpath;
         // memoized; clear it before each test run
@@ -58,13 +58,13 @@ describe('module:rule-loader', function() {
           loadRulesFromDirpath(),
           'to complete with values',
           Rule.create({
-            inspect: fooRule.inspect,
+            inspect: rules.foo.inspect,
             meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'foo',
             filepath: join(BUILTIN_RULES_DIR, 'foo.js')
           }),
           Rule.create({
-            inspect: barRule.inspect,
+            inspect: rules.bar.inspect,
             meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'bar',
             filepath: join(BUILTIN_RULES_DIR, 'bar.js')
@@ -79,8 +79,8 @@ describe('module:rule-loader', function() {
       beforeEach(function() {
         const loadRules = proxyquire('../src/rule-loader', {
           fs: {readdir},
-          [join(dirpath, 'foo.js')]: fooRule,
-          [join(dirpath, 'bar.js')]: barRule
+          [join(dirpath, 'foo.js')]: rules.foo,
+          [join(dirpath, 'bar.js')]: rules.bar
         });
         loadRulesFromDirpath = loadRules.loadRulesFromDirpath;
         loadRules.readDirpath.cache.clear();
@@ -92,13 +92,13 @@ describe('module:rule-loader', function() {
           loadRulesFromDirpath(dirpath),
           'to complete with values',
           Rule.create({
-            inspect: fooRule.inspect,
+            inspect: rules.foo.inspect,
             meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'foo',
             filepath: join(dirpath, 'foo.js')
           }),
           Rule.create({
-            inspect: barRule.inspect,
+            inspect: rules.bar.inspect,
             meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'bar',
             filepath: join(dirpath, 'bar.js')
@@ -128,18 +128,18 @@ describe('module:rule-loader', function() {
     beforeEach(function() {
       const loadRules = proxyquire('../src/rule-loader', {
         fs: {readdir},
-        [join(BUILTIN_RULES_DIR, 'foo.js')]: fooRule,
-        [join(BUILTIN_RULES_DIR, 'bar.js')]: barRule
+        [join(BUILTIN_RULES_DIR, 'foo.js')]: rules.foo,
+        [join(BUILTIN_RULES_DIR, 'bar.js')]: rules.bar
       });
       findRuleDefs = loadRules.findRuleDefs;
-      // memoized; clear it before each test run
+      // memoized; clear it before each test rulon
       loadRules.readDirpath.cache.clear();
     });
 
     describe('when called with an object of rule configs', function() {
       it('should only emit rule defs having IDs included in the list', function() {
         return expect(
-          findRuleDefs({ruleConfigs: {foo: {some: 'rule'}}}),
+          findRuleDefs({configs: {foo: {some: 'rule'}}}),
           'to complete with values',
           {filepath: join(BUILTIN_RULES_DIR, 'foo.js'), id: 'foo'}
         ).and('to emit once');
