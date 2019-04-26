@@ -5,7 +5,7 @@ import {join} from 'path';
 describe('module:config', function() {
   describe('function', function() {
     describe('fromFile()', function() {
-      it('should load a config file', async function() {
+      it('should load a config file', function() {
         return expect(
           fromFile(require.resolve('./fixture/gnostic.config.js')),
           'to complete with value',
@@ -24,7 +24,7 @@ describe('module:config', function() {
     });
 
     describe('fromDir()', function() {
-      it('should load a config file', async function() {
+      it('should load a config file', function() {
         return expect(
           fromDir(join(__dirname, 'fixture')),
           'to complete with value',
