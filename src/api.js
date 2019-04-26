@@ -1,4 +1,4 @@
-import {findConfigs, fromDir, fromFile} from './config';
+import {filterEnabledRules, fromDir, fromFile} from './config';
 import {findRuleDefs, loadRuleFromRuleDef} from './rule-loader';
 import {map, mergeMap, toArray} from 'rxjs/operators';
 
@@ -40,11 +40,10 @@ export const inspect = async (
 
   return loadConfig
     .pipe(
-      map(findConfigs),
-      mergeMap(configs =>
-        findRuleDefs({configs}).pipe(
+      mergeMap(config =>
+        findRuleDefs({ruleIds: filterEnabledRules(config)}).pipe(
           mergeMap(loadRuleFromRuleDef),
-          map(rule => Inspector.create(rule, configs[rule.id]))
+          map(rule => Inspector.create(rule, config[rule.id]))
         )
       ),
       mergeMap(inspector =>

@@ -1,4 +1,4 @@
-import {fromDir, fromFile} from '../src/config';
+import {filterEnabledRules, fromDir, fromFile} from '../src/config';
 
 import {join} from 'path';
 
@@ -39,6 +39,16 @@ describe('module:config', function() {
         )
           .and('to emit once')
           .and('not to emit error');
+      });
+    });
+
+    describe('filterEnabledRules', function() {
+      it('should return an array of enabled rule IDs', function() {
+        expect(
+          filterEnabledRules({rules: {foo: true, bar: false}}),
+          'to equal',
+          ['foo']
+        );
       });
     });
   });

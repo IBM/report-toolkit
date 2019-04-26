@@ -87,7 +87,7 @@ const flattenConfig = (config, configObjects = []) => {
   return flatten(config);
 };
 
-const enabledRules = _.pipe(
+export const filterEnabledRules = _.pipe(
   _.getOr({}, 'rules'),
   _.toPairs,
   _.reduce(
@@ -96,16 +96,6 @@ const enabledRules = _.pipe(
     []
   )
 );
-
-export const findConfigs = config => {
-  const ruleIds = enabledRules(config);
-  return _.reduce(
-    (acc, ruleId) =>
-      _.assign(acc, {[ruleId]: _.getOr({}, `rules.${ruleId}`, config)}),
-    {},
-    ruleIds
-  );
-};
 
 export const fromDir = (dirpath, opts = {}) =>
   search(dirpath, opts).pipe(map(process));

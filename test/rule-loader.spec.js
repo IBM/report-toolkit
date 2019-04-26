@@ -136,10 +136,10 @@ describe('module:rule-loader', function() {
       loadRules.readDirpath.cache.clear();
     });
 
-    describe('when called with an object of rule configs', function() {
+    describe('when called with an list of rule IDs', function() {
       it('should only emit rule defs having IDs included in the list', function() {
         return expect(
-          findRuleDefs({configs: {foo: {some: 'rule'}}}),
+          findRuleDefs({ruleIds: ['foo']}),
           'to complete with values',
           {filepath: join(BUILTIN_RULES_DIR, 'foo.js'), id: 'foo'}
         ).and('to emit once');
