@@ -4,6 +4,7 @@ import {Rule} from './rule';
 import {RuleConfig} from './rule-config';
 import _ from 'lodash/fp';
 import {mergeMap} from 'rxjs/operators';
+import stringify from 'fast-safe-stringify';
 
 const configMap = new WeakMap();
 
@@ -36,13 +37,19 @@ export class Inspector {
       mergeMap(
         report =>
           new Observable(async observer => {
+            const formatResult = (message, data) =>
+              _.assign(
+                {
+                  message: String(message).trim(),
+                  data: data ? stringify(data) : ''
+                },
+                basicInfo
+              );
             const {ruleConfig} = this;
             const {id} = ruleConfig;
             const basicInfo = {filepath: report.filepath, id};
-            const reporter = function(message, data = {}) {
-              observer.next(
-                _.assign({message: String(message), data}, basicInfo)
-              );
+            const reporter = function() {
+              observer.next(formatResult(...arguments));
               return this;
             };
             const ctx = Proxy.revocable(report, {
@@ -59,17 +66,9 @@ export class Inspector {
             from(ruleConfig.inspect(ctx.proxy)).subscribe({
               next: result => {
                 if (_.isString(result)) {
-                  observer.next(_.assign({message: result}, basicInfo));
+                  observer.next(formatResult(result));
                 } else if (_.isObject(result)) {
-                  observer.next(
-                    _.assign(
-                      {
-                        message: String(result.message),
-                        data: result.data
-                      },
-                      basicInfo
-                    )
-                  );
+                  observer.next(formatResult(result.message, result.data));
                 } else if (!_.isUndefined(result)) {
                   observer.error(new Error(`Invalid result: ${result}`));
                 }

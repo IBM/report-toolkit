@@ -21,15 +21,17 @@
     "node": ">=8"
   },
   "dependencies": {
+    "ansi-colors": "^3.2.4",
+    "cli-table3": "^0.5.1",
     "cosmiconfig": "^5.2.0",
     "debug": "^4.1.1",
     "esm": "^3.2.22",
+    "fast-safe-stringify": "^2.0.6",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
     "rxjs": "^6.4.0",
     "traverse": "^0.6.6",
-    "yargs": "^13.2.2",
-    "yurnalist": "^1.0.5"
+    "yargs": "^13.2.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

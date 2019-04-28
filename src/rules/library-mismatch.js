@@ -26,7 +26,7 @@ exports.inspect = (context, {ignore = []} = {}) => {
           const sharedVersion = VERSION_REGEXP.exec(filepath);
           if (sharedVersion && sharedVersion[1] !== version) {
             context.report(
-              `Potential problem: custom shared library at ${filepath} in use conflicting with ${component}@${version}`
+              `Custom shared library at ${filepath} in use conflicting with ${component}@${version}`
             );
           }
         });
