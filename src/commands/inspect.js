@@ -1,10 +1,11 @@
-import {fail, ok, outputHeader, table} from '../console';
+import {EMPTY, concat, iif, of} from 'rxjs';
+import {concatMap, map, toArray} from 'rxjs/operators';
+import {fail, outputHeader, table} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
 import {inspect$} from '../api';
 import stringify from 'fast-safe-stringify';
-import {toArray} from 'rxjs/operators';
 
 export const command = 'inspect <file..>';
 
@@ -17,23 +18,15 @@ export const builder = yargs =>
   });
 
 export const handler = ({file: files, config}) => {
-  inspect$(files, {config, autoload: false})
-    .pipe(toArray())
-    .subscribe(results => {
-      console.log(outputHeader('Diagnostic Report Inspection'));
-      if (!results.length) {
-        _.forEach(
-          filename => console.log(ok(`${filename}: no issues found`)),
-          files
-        );
-      } else {
-        const t = table(['File', 'Rule', 'Message', 'Data']);
-        const groups = _.groupBy('filepath', results);
-        t.push(
+  concat(
+    inspect$(files, {config, autoload: false}).pipe(
+      toArray(),
+      map(results =>
+        table(['File', 'Rule', 'Message', 'Data']).concat([
           ..._.reduce(
             (acc, group) => {
               const rowSpan = group.length;
-              const firstRow = group.shift();
+              const firstRow = group[0];
               return acc.concat([
                 [
                   {
@@ -50,18 +43,26 @@ export const handler = ({file: files, config}) => {
                     row.message,
                     row.data ? stringify(row.data) : ''
                   ],
-                  group
+                  group.slice(1)
                 )
               ]);
             },
             [],
-            groups
+            _.groupBy('filepath', results)
           )
-        );
-        console.log(String(t));
-        console.log(
-          '\n' + fail(`Found ${results.length} issues in ${files.length} files`)
-        );
-      }
-    });
+        ])
+      ),
+      concatMap(results =>
+        iif(
+          () => results.length,
+          of(
+            outputHeader('Diagnostic Report Inspection'),
+            String(results),
+            fail(`Found ${results.length} issues in ${files.length} files`)
+          ),
+          EMPTY
+        )
+      )
+    )
+  ).subscribe(console.log);
 };

@@ -1,28 +1,29 @@
-import {map, reduce} from 'rxjs/operators';
+import {map, reduce, startWith} from 'rxjs/operators';
 import {outputHeader, table} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
-import {loadRules} from '../rule-loader';
+import {queryRules$} from '../api';
 
 export const command = 'list-rules';
 
 export const desc = 'Lists built-in rules';
 
 export const handler = () => {
-  loadRules()
+  queryRules$()
     .pipe(
-      reduce((table, rule) => {
-        table.push([
-          color.cyan(rule.id),
-          _.getOr(color.dim('(no description)'), 'description', rule)
-        ]);
-        return table;
-      }, table(['Rule', 'Description'])),
-      map(String)
+      reduce(
+        (t, rule) =>
+          t.concat([
+            [
+              color.cyan(rule.id),
+              _.getOr(color.dim('(no description)'), 'description', rule)
+            ]
+          ]),
+        table(['Rule', 'Description'])
+      ),
+      map(String),
+      startWith(outputHeader('Available Rules'))
     )
-    .subscribe(table => {
-      console.log(outputHeader('Available Rules'));
-      console.log(table);
-    });
+    .subscribe(console.log);
 };
