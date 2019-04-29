@@ -4,7 +4,6 @@ import {Rule} from './rule';
 import {RuleConfig} from './rule-config';
 import _ from 'lodash/fp';
 import {mergeMap} from 'rxjs/operators';
-import stringify from 'fast-safe-stringify';
 
 const configMap = new WeakMap();
 
@@ -41,7 +40,7 @@ export class Inspector {
               _.assign(
                 {
                   message: String(message).trim(),
-                  data: data ? stringify(data) : ''
+                  data
                 },
                 basicInfo
               );

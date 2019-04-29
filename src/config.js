@@ -1,8 +1,9 @@
+import {from, of} from 'rxjs';
+
 import {BUILTIN_CONFIGS} from './configs';
 import _ from 'lodash/fp';
 import cosmiconfig from 'cosmiconfig';
 import {createDebugger} from './debug';
-import {from} from 'rxjs';
 import {map} from 'rxjs/operators';
 import pkg from '../package.json';
 import traverse from 'traverse';
@@ -11,6 +12,8 @@ const debug = createDebugger(module);
 
 const TRUE_VALUES = new Set(['on', 'yes']);
 const FALSE_VALUES = new Set(['off', 'no']);
+
+const kFlattenedConfig = Symbol('flattenedConfig');
 
 const getExplorer = _.memoize(opts =>
   cosmiconfig(
@@ -79,12 +82,18 @@ const flattenConfig = (config, configObjects = []) => {
     }
   };
 
-  if (_.isArray(config)) {
-    config.forEach(flatten);
-    return _.defaultsDeepAll(configObjects.reverse().concat({}));
+  if (config[kFlattenedConfig]) {
+    return config;
   }
 
-  return flatten(config);
+  if (_.isArray(config)) {
+    config.forEach(flatten);
+    return _.defaultsDeepAll(
+      configObjects.reverse().concat({[kFlattenedConfig]: true})
+    );
+  }
+
+  return _.assign({[kFlattenedConfig]: true}, flatten(config));
 };
 
 export const filterEnabledRules = _.pipe(
@@ -102,3 +111,5 @@ export const fromDir = (dirpath, opts = {}) =>
 
 export const fromFile = (filepath, opts = {}) =>
   load(filepath, opts).pipe(map(process));
+
+export const fromObject = obj => of(flattenConfig(obj));

@@ -3,14 +3,14 @@ import {outputHeader, table} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
-import {loadRulesFromDirpath} from '../rule-loader';
+import {loadRules} from '../rule-loader';
 
 export const command = 'list-rules';
 
 export const desc = 'Lists built-in rules';
 
 export const handler = () => {
-  loadRulesFromDirpath()
+  loadRules()
     .pipe(
       reduce((table, rule) => {
         table.push([

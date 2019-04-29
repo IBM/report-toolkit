@@ -17,6 +17,10 @@ const createRuleDefFromFilepath = filepath => ({
   id: basename(filepath, '.js')
 });
 
+export const readDirpath = _.memoize((dirpath = join(__dirname, 'rules')) =>
+  readdir(dirpath).pipe(mergeAll())
+);
+
 export const loadRuleFromRuleDef = _.memoize(async ({filepath, id}) =>
   Rule.create(
     _.assign(_.pick(['inspect', 'meta'], await import(filepath)), {
@@ -37,12 +41,8 @@ export const loadRuleFromFilepath = _.pipe(
  * @param {string} [dirpath]
  * @returns {Observable<Object>} Exports of rule file w/ ruleId
  */
-export const loadRulesFromDirpath = dirpath =>
-  findRuleDefs({dirpath}).pipe(mergeMap(loadRuleFromRuleDef));
-
-export const readDirpath = _.memoize((dirpath = join(__dirname, 'rules')) =>
-  readdir(dirpath).pipe(mergeAll())
-);
+export const loadRules = (...args) =>
+  findRuleDefs(...args).pipe(mergeMap(loadRuleFromRuleDef));
 
 export const findRuleDefs = ({
   dirpath = join(__dirname, 'rules'),

@@ -1,36 +1,23 @@
-import {filterEnabledRules, fromDir, fromFile} from './config';
-import {findRuleDefs, loadRuleFromRuleDef} from './rule-loader';
+import {EMPTY, of, throwError} from 'rxjs';
+import {filterEnabledRules, fromDir, fromFile, fromObject} from './config';
 import {map, mergeMap, toArray} from 'rxjs/operators';
 
 import {Inspector} from './inspector';
 import _ from 'lodash/fp';
 import {createDebugger} from './debug';
-import {of} from 'rxjs';
+import {loadRules} from './rule-loader';
 import {readReport} from './report-reader';
 
 const debug = createDebugger(module);
 
-export const inspect = async (
+export const inspect$ = (
   reports = [],
-  {config, autoload = true, searchPath = process.cwd()} = {}
+  {config, search = true, searchPath = process.cwd()} = {}
 ) => {
   if (_.isEmpty(reports)) {
-    throw new Error('Invalid parameters: one or more reports is required');
-  }
-
-  let loadConfig;
-  if (_.isString(config)) {
-    debug(`trying to load config at path ${config}`);
-    loadConfig = fromFile(config);
-  } else if (_.isEmpty(config)) {
-    if (autoload) {
-      debug(`searching for config from ${searchPath}`);
-      loadConfig = fromDir(searchPath);
-    } else {
-      throw new Error('Missing config');
-    }
-  } else {
-    loadConfig = of(config);
+    return throwError(
+      new Error('Invalid parameters: one or more reports is required')
+    );
   }
 
   const reportObjects = (_.isArray(reports)
@@ -38,18 +25,44 @@ export const inspect = async (
     : of(reports)
   ).pipe(mergeMap(readReport));
 
-  return loadConfig
-    .pipe(
-      mergeMap(config =>
-        findRuleDefs({ruleIds: filterEnabledRules(config)}).pipe(
-          mergeMap(loadRuleFromRuleDef),
-          map(rule => Inspector.create(rule, config[rule.id]))
-        )
-      ),
-      mergeMap(inspector =>
-        reportObjects.pipe(mergeMap(report => inspector.inspect(report)))
-      ),
-      toArray()
+  return loadConfig$(config, {searchPath, search}).pipe(
+    mergeMap(config =>
+      loadRules({ruleIds: filterEnabledRules(config)}).pipe(
+        map(rule => Inspector.create(rule, config[rule.id]))
+      )
+    ),
+    mergeMap(inspector =>
+      reportObjects.pipe(mergeMap(report => inspector.inspect(report)))
     )
-    .toPromise();
+  );
 };
+
+export const inspect = async (...args) =>
+  inspect$(...args)
+    .pipe(toArray())
+    .toPromise();
+
+export const loadConfig$ = (
+  config,
+  {search = true, searchPath = process.cwd()} = {}
+) => {
+  if (_.isString(config)) {
+    debug(`trying to load config at path ${config}`);
+    return fromFile(config);
+  } else if (_.isPlainObject(config) || _.isArray(config)) {
+    return fromObject(config);
+  } else if (search) {
+    debug(`searching for config from ${searchPath}`);
+    return fromDir(searchPath);
+  }
+  return EMPTY;
+};
+
+export const loadConfig = async (...args) => loadConfig$(...args).toPromise();
+
+export const queryRules$ = (...args) => loadRules(...args);
+
+export const queryRules = async (...args) =>
+  queryRules$(...args)
+    .pipe(toArray())
+    .toPromise();

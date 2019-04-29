@@ -4,6 +4,7 @@ import {Report} from '../src/report';
 import {Rule} from '../src/rule';
 import _ from 'lodash/fp';
 import {createSandbox} from 'sinon';
+import {mergeMap} from 'rxjs/operators';
 import proxyquire from 'proxyquire';
 
 proxyquire.noPreserveCache();
@@ -55,9 +56,12 @@ describe('module:api', function() {
         fromFile: sandbox.stub().returns(of({rules: {foo: true, bar: true}}))
       };
       const ruleLoaderStubs = {
-        findRuleDefs: sandbox.spy(() => from(ruleDefs)),
-        loadRuleFromRuleDef: sandbox.spy(({id, filepath}) =>
-          of(Rule.create(_.assign({id: id, filepath: filepath}, rules[id])))
+        loadRules: sandbox.spy(() =>
+          from(ruleDefs).pipe(
+            mergeMap(({id, filepath}) =>
+              of(Rule.create(_.assign({id: id, filepath: filepath}, rules[id])))
+            )
+          )
         )
       };
       const reportReaderStubs = {
@@ -87,7 +91,6 @@ describe('module:api', function() {
           [
             {
               message: 'foo',
-              data: {},
               filepath: report1Filepath,
               id: 'foo'
             }
@@ -106,13 +109,11 @@ describe('module:api', function() {
           [
             {
               message: 'foo',
-              data: {},
               filepath: report1Filepath,
               id: 'foo'
             },
             {
               message: 'bar',
-              data: {},
               filepath: report2Filepath,
               id: 'bar'
             }

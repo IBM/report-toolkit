@@ -33,8 +33,8 @@ describe('module:rule-loader', function() {
     readdir.onSecondCall().callsArgWithAsync(1, null, ['oops.js']);
   });
 
-  describe('loadRulesFromDirpath()', function() {
-    let loadRulesFromDirpath;
+  describe('loadRules()', function() {
+    let loadRules;
 
     afterEach(function() {
       sandbox.restore();
@@ -42,20 +42,20 @@ describe('module:rule-loader', function() {
 
     describe('when called without parameters', function() {
       beforeEach(function() {
-        const loadRules = proxyquire('../src/rule-loader', {
+        const ruleLoader = proxyquire('../src/rule-loader', {
           fs: {readdir},
           [join(BUILTIN_RULES_DIR, 'foo.js')]: rules.foo,
           [join(BUILTIN_RULES_DIR, 'bar.js')]: rules.bar
         });
-        loadRulesFromDirpath = loadRules.loadRulesFromDirpath;
+        loadRules = ruleLoader.loadRules;
         // memoized; clear it before each test run
-        loadRules.loadRuleFromRuleDef.cache.clear();
-        loadRules.readDirpath.cache.clear();
+        ruleLoader.loadRuleFromRuleDef.cache.clear();
+        ruleLoader.readDirpath.cache.clear();
       });
 
       it('should return a list of rules from ../src/rules/', function() {
         return expect(
-          loadRulesFromDirpath(),
+          loadRules(),
           'to complete with values',
           Rule.create({
             inspect: rules.foo.inspect,
@@ -77,19 +77,19 @@ describe('module:rule-loader', function() {
       const dirpath = '/some/path';
 
       beforeEach(function() {
-        const loadRules = proxyquire('../src/rule-loader', {
+        const ruleLoader = proxyquire('../src/rule-loader', {
           fs: {readdir},
           [join(dirpath, 'foo.js')]: rules.foo,
           [join(dirpath, 'bar.js')]: rules.bar
         });
-        loadRulesFromDirpath = loadRules.loadRulesFromDirpath;
-        loadRules.readDirpath.cache.clear();
-        loadRules.loadRuleFromRuleDef.cache.clear();
+        loadRules = ruleLoader.loadRules;
+        ruleLoader.readDirpath.cache.clear();
+        ruleLoader.loadRuleFromRuleDef.cache.clear();
       });
 
       it('should return a list of rules from specified dirpath', function() {
         return expect(
-          loadRulesFromDirpath(dirpath),
+          loadRules({dirpath}),
           'to complete with values',
           Rule.create({
             inspect: rules.foo.inspect,
@@ -108,10 +108,7 @@ describe('module:rule-loader', function() {
 
       describe('when called twice with the same dirpath parameter', function() {
         it('should not re-read the directory', async function() {
-          const [obs1, obs2] = [
-            loadRulesFromDirpath(dirpath),
-            loadRulesFromDirpath(dirpath)
-          ];
+          const [obs1, obs2] = [loadRules({dirpath}), loadRules({dirpath})];
           return expect(
             obs2.toPromise(),
             'to be fulfilled with',
@@ -126,14 +123,14 @@ describe('module:rule-loader', function() {
     let findRuleDefs;
 
     beforeEach(function() {
-      const loadRules = proxyquire('../src/rule-loader', {
+      const ruleLoader = proxyquire('../src/rule-loader', {
         fs: {readdir},
         [join(BUILTIN_RULES_DIR, 'foo.js')]: rules.foo,
         [join(BUILTIN_RULES_DIR, 'bar.js')]: rules.bar
       });
-      findRuleDefs = loadRules.findRuleDefs;
+      findRuleDefs = ruleLoader.findRuleDefs;
       // memoized; clear it before each test rulon
-      loadRules.readDirpath.cache.clear();
+      ruleLoader.readDirpath.cache.clear();
     });
 
     describe('when called with an list of rule IDs', function() {
