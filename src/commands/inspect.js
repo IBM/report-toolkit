@@ -20,6 +20,9 @@ export const builder = yargs =>
 export const handler = ({file: files, config}) => {
   concat(
     inspect$(files, {config, autoload: false}).pipe(
+      // note that we have to flatten the observable here,
+      // because we need the count for each filepath to compute
+      // the row span in the table.
       toArray(),
       map(results =>
         table(['File', 'Rule', 'Message', 'Data']).concat([
