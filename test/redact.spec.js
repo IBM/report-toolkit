@@ -1,6 +1,6 @@
 import {REDACTED_TOKEN, redact} from '../src/redact';
-
 describe('module:redact', function() {
+  describe('function', function() {});
   describe('redact()', function() {
     describe('when provided an object with secret keys', function() {
       let obj;

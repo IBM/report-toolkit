@@ -12,31 +12,30 @@ export const outputHeader = headerText =>
   color.magenta(headerText) +
   '\n';
 
-export const table = (headers, opts = {}) => {
-  opts = _.defaultsDeep(
-    {
-      chars: {
-        bottom: '',
-        'bottom-left': '',
-        'bottom-mid': '',
-        'bottom-right': '',
-        left: '',
-        'left-mid': '',
-        mid: '─',
-        'mid-mid': '',
-        middle: '',
-        right: '',
-        'right-mid': '',
-        top: '',
-        'top-left': '',
-        'top-mid': '',
-        'top-right': ''
-      },
-      style: {head: []},
-      wordWrap: true
-    },
-    opts
-  );
+const TABLE_DEFAULT_STYLE = Object.freeze({
+  chars: {
+    bottom: '',
+    'bottom-left': '',
+    'bottom-mid': '',
+    'bottom-right': '',
+    left: '',
+    'left-mid': '',
+    mid: '─',
+    'mid-mid': '',
+    middle: '',
+    right: '',
+    'right-mid': '',
+    top: '',
+    'top-left': '',
+    'top-mid': '',
+    'top-right': ''
+  },
+  style: {head: []},
+  wordWrap: true
+});
+
+export const createTable = (headers, opts = {}) => {
+  opts = _.defaultsDeep(TABLE_DEFAULT_STYLE, opts);
   return new Table(_.assign(opts, {head: headers.map(color.underline)}));
 };
 

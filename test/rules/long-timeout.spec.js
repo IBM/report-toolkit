@@ -27,7 +27,7 @@ describe('rule:long-timeout', function() {
       it('should not report', function() {
         return expect(
           inspect('../fixture/report-004-long-timeout-unref.json'),
-          'to complete without values'
+          'not to emit values'
         );
       });
     });

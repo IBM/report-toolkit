@@ -4,7 +4,6 @@ const {ignoreElements, catchError, toArray, first} = require('rxjs/operators');
 const pify = observable => observable.pipe(toArray()).toPromise();
 
 exports.name = 'unexpected-rxjs';
-exports.version = '0.0.0';
 exports.installInto = expect => {
   expect.addType({
     base: 'object',
@@ -116,7 +115,7 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to complete without (values|value)',
+    '<Observable> [not] to emit values',
     (expect, observable) => {
       expect.errorMode = 'bubble';
       return expect(pify(observable), 'when fulfilled', '[not] to be empty');
@@ -124,14 +123,24 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to complete with (values|value) [exhaustively] satisfying <any+>',
+    '<Observable> [not] to complete with (value|values) [exhaustively] satisfying <any+>',
     (expect, observable, ...any) => {
       expect.errorMode = 'bubble';
-      return expect(
-        pify(observable),
-        'when fulfilled',
-        '[not] to have items [exhaustively] satisfying',
-        ...any
+      const promise = pify(observable);
+      return expect.promise.all(
+        any.map(item =>
+          expect(
+            promise,
+            'when fulfilled',
+            expect.it(subject => {
+              expect(
+                subject,
+                '[not] to have an item [exhaustively] satisfying',
+                item
+              );
+            })
+          )
+        )
       );
     }
   );

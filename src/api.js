@@ -1,12 +1,17 @@
-import {EMPTY, of, throwError} from 'rxjs';
+import {
+  DIFF_DEFAULT_PROPERTIES,
+  diffReports,
+  pathToProperty
+} from './diff-report';
+import {EMPTY, of, throwError, zip} from 'rxjs';
+import {filter, map, mergeMap, toArray} from 'rxjs/operators';
 import {filterEnabledRules, fromDir, fromFile, fromObject} from './config';
-import {map, mergeMap, toArray} from 'rxjs/operators';
 
-import {Inspector} from './inspector';
+import {Inspector} from './inspect-report';
 import _ from 'lodash/fp';
 import {createDebugger} from './debug';
 import {loadRules} from './rule-loader';
-import {readReport} from './report-reader';
+import {readReport} from './read-report';
 
 const debug = createDebugger(module);
 
@@ -64,5 +69,20 @@ export const queryRules$ = (...args) => loadRules(...args);
 
 export const queryRules = async (...args) =>
   queryRules$(...args)
+    .pipe(toArray())
+    .toPromise();
+
+export const diff$ = (
+  reportA,
+  reportB,
+  {properties = DIFF_DEFAULT_PROPERTIES} = {}
+) =>
+  zip(readReport(reportA), readReport(reportB)).pipe(
+    mergeMap(([reportObjA, reportObjB]) => diffReports(reportObjA, reportObjB)),
+    filter(({path}) => properties.includes(pathToProperty(path)))
+  );
+
+export const diff = async (...args) =>
+  diff$(...args)
     .pipe(toArray())
     .toPromise();

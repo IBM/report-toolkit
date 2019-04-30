@@ -1,7 +1,7 @@
-import {Inspector} from '../src/inspector';
+import {Inspector} from '../src/inspect-report';
 import {createSandbox} from 'sinon';
 
-describe('module:inspector', function() {
+describe('module:inspect-report', function() {
   let sandbox;
 
   beforeEach(function() {

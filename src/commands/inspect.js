@@ -1,6 +1,6 @@
 import {EMPTY, concat, iif, of} from 'rxjs';
 import {concatMap, map, toArray} from 'rxjs/operators';
-import {fail, outputHeader, table} from '../console';
+import {createTable, fail, outputHeader} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
@@ -25,7 +25,7 @@ export const handler = ({file: files, config}) => {
       // the row span in the table.
       toArray(),
       map(results =>
-        table(['File', 'Rule', 'Message', 'Data']).concat([
+        createTable(['File', 'Rule', 'Message', 'Data']).concat([
           ..._.reduce(
             (acc, group) => {
               const rowSpan = group.length;

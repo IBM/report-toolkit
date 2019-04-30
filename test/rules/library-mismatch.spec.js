@@ -32,7 +32,7 @@ describe('rule:library-mismatch', function() {
     it('should not report', function() {
       return expect(
         inspect('../fixture/report-001.json'),
-        'to complete without values'
+        'not to emit values'
       );
     });
   });

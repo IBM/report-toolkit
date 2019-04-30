@@ -1,5 +1,5 @@
+import {createTable, outputHeader} from '../console';
 import {map, reduce, startWith} from 'rxjs/operators';
-import {outputHeader, table} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
@@ -20,7 +20,7 @@ export const handler = () => {
               _.getOr(color.dim('(no description)'), 'description', rule)
             ]
           ]),
-        table(['Rule', 'Description'])
+        createTable(['Rule', 'Description'])
       ),
       map(String),
       startWith(outputHeader('Available Rules'))
