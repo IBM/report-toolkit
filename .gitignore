@@ -64,3 +64,6 @@ typings/
 # terminalizer stuff
 *.gif
 gnostic*.yml
+
+# generated reports
+report.*.json
