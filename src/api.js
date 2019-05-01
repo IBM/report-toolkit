@@ -25,11 +25,6 @@ export const inspectStream = (
     );
   }
 
-  const reportObjects = (_.isArray(reports)
-    ? of(...reports)
-    : of(reports)
-  ).pipe(mergeMap(report => readReport(report, {redactSecrets})));
-
   return loadConfigStream(config, {searchPath, search}).pipe(
     mergeMap(config =>
       loadRules({ruleIds: filterEnabledRules(config)}).pipe(
@@ -37,7 +32,10 @@ export const inspectStream = (
       )
     ),
     mergeMap(inspector =>
-      reportObjects.pipe(mergeMap(report => inspector.inspect(report)))
+      (_.isArray(reports) ? of(...reports) : of(reports)).pipe(
+        mergeMap(report => readReport(report, {redactSecrets})),
+        mergeMap(report => inspector.inspect(report))
+      )
     )
   );
 };
@@ -50,18 +48,21 @@ export const inspect = async (...args) =>
 export const loadConfigStream = (
   config,
   {search = true, searchPath = process.cwd()} = {}
-) => {
-  if (_.isString(config)) {
-    debug(`trying to load config at path ${config}`);
-    return fromFile(config);
-  } else if (_.isPlainObject(config) || _.isArray(config)) {
-    return fromObject(config);
-  } else if (search) {
-    debug(`searching for config from ${searchPath}`);
-    return fromDir(searchPath);
-  }
-  return EMPTY;
-};
+) =>
+  of(config).pipe(
+    map(config => {
+      if (_.isString(config)) {
+        debug(`trying to load config at path ${config}`);
+        return fromFile(config);
+      } else if (_.isPlainObject(config) || _.isArray(config)) {
+        return fromObject(config);
+      } else if (search) {
+        debug(`searching for config from ${searchPath}`);
+        return fromDir(searchPath);
+      }
+      return EMPTY;
+    })
+  );
 
 export const loadConfig = async (...args) =>
   loadConfigStream(...args).toPromise();
