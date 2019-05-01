@@ -24,8 +24,9 @@ export const handler = ({file: files, config}) => {
       // because we need the count for each filepath to compute
       // the row span in the table.
       toArray(),
-      map(results =>
-        createTable(['File', 'Rule', 'Message', 'Data']).concat([
+      map(results => {
+        const t = createTable(['File', 'Rule', 'Message', 'Data']);
+        t.push(
           ..._.reduce(
             (acc, group) => {
               const rowSpan = group.length;
@@ -53,8 +54,9 @@ export const handler = ({file: files, config}) => {
             [],
             _.groupBy('filepath', results)
           )
-        ])
-      ),
+        );
+        return t;
+      }),
       concatMap(results =>
         iif(
           () => results.length,
