@@ -15,7 +15,7 @@ import {readReport} from './read-report';
 
 const debug = createDebugger(module);
 
-export const inspect$ = (
+export const inspectStream = (
   reports = [],
   {config, search = true, searchPath = process.cwd()} = {}
 ) => {
@@ -30,7 +30,7 @@ export const inspect$ = (
     : of(reports)
   ).pipe(mergeMap(readReport));
 
-  return loadConfig$(config, {searchPath, search}).pipe(
+  return loadConfigStream(config, {searchPath, search}).pipe(
     mergeMap(config =>
       loadRules({ruleIds: filterEnabledRules(config)}).pipe(
         map(rule => Inspector.create(rule, config[rule.id]))
@@ -43,11 +43,11 @@ export const inspect$ = (
 };
 
 export const inspect = async (...args) =>
-  inspect$(...args)
+  inspectStream(...args)
     .pipe(toArray())
     .toPromise();
 
-export const loadConfig$ = (
+export const loadConfigStream = (
   config,
   {search = true, searchPath = process.cwd()} = {}
 ) => {
@@ -63,16 +63,17 @@ export const loadConfig$ = (
   return EMPTY;
 };
 
-export const loadConfig = async (...args) => loadConfig$(...args).toPromise();
+export const loadConfig = async (...args) =>
+  loadConfigStream(...args).toPromise();
 
-export const queryRules$ = (...args) => loadRules(...args);
+export const queryRulesStream = (...args) => loadRules(...args);
 
 export const queryRules = async (...args) =>
-  queryRules$(...args)
+  queryRulesStream(...args)
     .pipe(toArray())
     .toPromise();
 
-export const diff$ = (
+export const diffStream = (
   reportA,
   reportB,
   {properties = DIFF_DEFAULT_PROPERTIES} = {}
@@ -83,6 +84,6 @@ export const diff$ = (
   );
 
 export const diff = async (...args) =>
-  diff$(...args)
+  diffStream(...args)
     .pipe(toArray())
     .toPromise();

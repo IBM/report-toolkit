@@ -17,9 +17,9 @@ export const outputHeader = headerText =>
 
 const COL_WIDTH_PCTS = [3, 25, 36, 36];
 
-const getColWidths = () => {
+const getColWidths = (colWidths = COL_WIDTH_PCTS) => {
   const {columns} = termsize();
-  return COL_WIDTH_PCTS.map(w => Math.floor((w / 100) * columns));
+  return colWidths.map(w => Math.floor((w / 100) * columns));
 };
 
 const TABLE_DEFAULT_OPTIONS = Object.freeze({
@@ -47,12 +47,12 @@ const TABLE_DEFAULT_OPTIONS = Object.freeze({
 export const createTable = (headers, opts = {}) => {
   opts = _.defaultsDeep(TABLE_DEFAULT_OPTIONS, opts);
   if (opts.stretch) {
-    opts.colWidths = getColWidths();
+    opts.colWidths = getColWidths(opts.colWidthsPct);
   }
   return new Table(_.assign(opts, {head: headers.map(color.underline)}));
 };
 
-export const table$ = (iteratee, headers, opts = {}) => observable =>
+export const toTable = (iteratee, headers, opts = {}) => observable =>
   observable.pipe(
     reduce((t, val) => {
       t.push(iteratee(val));
@@ -60,7 +60,7 @@ export const table$ = (iteratee, headers, opts = {}) => observable =>
     }, createTable(headers, opts))
   );
 
-export const renderTable$ = (header = '', footer = '') => observable =>
+export const toString = (header = '', footer = '') => observable =>
   observable.pipe(
     map(String),
     startWith(outputHeader(header))

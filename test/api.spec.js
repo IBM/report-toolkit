@@ -110,20 +110,18 @@ describe('module:api', function() {
             inspect([REPORT_1_FILEPATH, REPORT_2_FILEPATH], {
               config: {rules: {foo: true, bar: true}}
             }),
-            'to be fulfilled with',
-            [
-              {
-                message: 'foo',
-                filepath: REPORT_1_FILEPATH,
-                id: 'foo'
-              },
-              {
-                message: 'bar',
-                filepath: REPORT_2_FILEPATH,
-                id: 'bar'
-              }
-            ]
-          );
+            'when fulfilled',
+            'to have an item satisfying',
+            {
+              message: 'foo',
+              filepath: REPORT_1_FILEPATH,
+              id: 'foo'
+            }
+          ).and('when fulfilled', 'to have an item satisfying', {
+            message: 'bar',
+            filepath: REPORT_2_FILEPATH,
+            id: 'bar'
+          });
         });
       });
     });

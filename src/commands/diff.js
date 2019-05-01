@@ -1,8 +1,8 @@
-import {renderTable$, table$} from '../console';
+import {toString, toTable} from '../console';
 
 import {DIFF_DEFAULT_PROPERTIES} from '../diff-report';
 import color from 'ansi-colors';
-import {diff$} from '../api';
+import {diffStream} from '../api';
 
 export const command = 'diff <file1> <file2>';
 
@@ -32,9 +32,9 @@ const OP_CODE = {
 };
 
 export const handler = ({file1, file2, prop: properties} = {}) => {
-  diff$(file1, file2, {properties})
+  diffStream(file1, file2, {properties})
     .pipe(
-      table$(
+      toTable(
         ({path, value, oldValue, op}) => [
           color[OP_COLORS[op]](OP_CODE[op]),
           color[OP_COLORS[op]](path),
@@ -44,7 +44,7 @@ export const handler = ({file1, file2, prop: properties} = {}) => {
         ['Op', `Path`, `Value [${file1}]`, `Value [${file2}]`],
         {stretch: true}
       ),
-      renderTable$(`Diff: ${file1} <=> ${file2}`)
+      toString(`Diff: ${file1} <=> ${file2}`)
     )
     .subscribe(console.log);
 };

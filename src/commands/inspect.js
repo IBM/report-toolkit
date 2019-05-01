@@ -1,10 +1,10 @@
-import {EMPTY, concat, iif, of} from 'rxjs';
+import {EMPTY, iif, of} from 'rxjs';
 import {concatMap, map, toArray} from 'rxjs/operators';
 import {createTable, fail, outputHeader} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
-import {inspect$} from '../api';
+import {inspectStream} from '../api';
 import stringify from 'fast-safe-stringify';
 
 export const command = 'inspect <file..>';
@@ -18,14 +18,17 @@ export const builder = yargs =>
   });
 
 export const handler = ({file: files, config}) => {
-  concat(
-    inspect$(files, {config, autoload: false}).pipe(
+  inspectStream(files, {config, autoload: false})
+    .pipe(
       // note that we have to flatten the observable here,
       // because we need the count for each filepath to compute
       // the row span in the table.
       toArray(),
       map(results => {
-        const t = createTable(['File', 'Rule', 'Message', 'Data']);
+        const t = createTable(['File', 'Rule', 'Message', 'Data'], {
+          stretch: true,
+          colWidthsPct: [32, 12, 36, 20]
+        });
         t.push(
           ..._.reduce(
             (acc, group) => {
@@ -69,5 +72,5 @@ export const handler = ({file: files, config}) => {
         )
       )
     )
-  ).subscribe(console.log);
+    .subscribe(console.log);
 };
