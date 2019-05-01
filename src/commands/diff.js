@@ -1,5 +1,4 @@
-import {createTable, outputHeader} from '../console';
-import {map, reduce, startWith} from 'rxjs/operators';
+import {renderTable$, table$} from '../console';
 
 import {DIFF_DEFAULT_PROPERTIES} from '../diff-report';
 import color from 'ansi-colors';
@@ -35,17 +34,17 @@ const OP_CODE = {
 export const handler = ({file1, file2, prop: properties} = {}) => {
   diff$(file1, file2, {properties})
     .pipe(
-      reduce((t, {path, value, oldValue, op}) => {
-        t.push([
+      table$(
+        ({path, value, oldValue, op}) => [
           color[OP_COLORS[op]](OP_CODE[op]),
           color[OP_COLORS[op]](path),
           value,
           oldValue
-        ]);
-        return t;
-      }, createTable(['Op', `Path`, `Value [${file1}]`, `Value [${file2}]`], {stretch: true})),
-      map(String),
-      startWith(outputHeader(`Diff: ${file1} <=> ${file2}`))
+        ],
+        ['Op', `Path`, `Value [${file1}]`, `Value [${file2}]`],
+        {stretch: true}
+      ),
+      renderTable$(`Diff: ${file1} <=> ${file2}`)
     )
     .subscribe(console.log);
 };
