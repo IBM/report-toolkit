@@ -34,6 +34,7 @@
     "rxjs": "^6.4.0",
     "term-size": "^2.0.0",
     "traverse": "^0.6.6",
+    "wrap-ansi": "^5.1.0",
     "yargs": "^13.2.2"
   },
   "devDependencies": {

@@ -16,6 +16,24 @@ export const builder = yargs =>
       description: 'Filter by root prop name',
       default: DIFF_DEFAULT_PROPERTIES,
       group: 'Filter:'
+    },
+    'show-secrets-unsafe': {
+      type: 'boolean',
+      description: 'Live dangerously & do not automatically redact secrets',
+      group: 'Output:'
+    },
+    truncate: {
+      type: 'boolean',
+      description: 'Truncate values',
+      group: 'Output:',
+      default: true,
+      conflicts: 'wrap'
+    },
+    wrap: {
+      type: 'boolean',
+      description: 'Hard-wrap values (implies --no-truncate)',
+      group: 'Output:',
+      conflicts: 'truncate'
     }
   });
 
@@ -31,8 +49,16 @@ const OP_CODE = {
   replace: 'M'
 };
 
-export const handler = ({file1, file2, prop: properties} = {}) => {
-  diffStream(file1, file2, {properties})
+export const handler = argv => {
+  const {
+    file1,
+    file2,
+    prop: properties,
+    truncate: truncateValues = true,
+    wrap: wrapValues = false
+  } = argv;
+  const redactSecrets = !argv['show-secrets-unsafe'];
+  diffStream(file1, file2, {properties, redactSecrets})
     .pipe(
       toTable(
         ({path, value, oldValue, op}) => [
@@ -41,8 +67,8 @@ export const handler = ({file1, file2, prop: properties} = {}) => {
           value,
           oldValue
         ],
-        ['Op', `Path`, `Value [${file1}]`, `Value [${file2}]`],
-        {stretch: true}
+        ['Op', 'Path', file1, file2],
+        {stretch: true, truncateValues, wrapValues}
       ),
       toString(`Diff: ${file1} <=> ${file2}`)
     )

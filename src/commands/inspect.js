@@ -12,13 +12,23 @@ export const command = 'inspect <file..>';
 export const desc = 'Inspect diagnostic report JSON against rules';
 
 export const builder = yargs =>
-  yargs.positional('file', {
-    type: 'array',
-    coerce: v => (_.isArray(v) ? v : [v])
-  });
+  yargs
+    .positional('file', {
+      type: 'array',
+      coerce: v => (_.isArray(v) ? v : [v])
+    })
+    .options({
+      'show-secrets-unsafe': {
+        type: 'boolean',
+        description: 'Live dangerously & do not automatically redact secrets',
+        group: 'Output:'
+      }
+    });
 
-export const handler = ({file: files, config}) => {
-  inspectStream(files, {config, autoload: false})
+export const handler = argv => {
+  const {file: files, config} = argv;
+  const redactSecrets = argv['show-secrets-unsafe'];
+  inspectStream(files, {config, autoload: false, redactSecrets})
     .pipe(
       // note that we have to flatten the observable here,
       // because we need the count for each filepath to compute

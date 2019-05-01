@@ -5,6 +5,7 @@ import _ from 'lodash/fp';
 import color from 'ansi-colors';
 import termsize from 'term-size';
 import {version} from '../package.json';
+import wrapAnsi from 'wrap-ansi';
 
 export const outputHeader = headerText =>
   color.grey('[') +
@@ -46,19 +47,37 @@ const TABLE_DEFAULT_OPTIONS = Object.freeze({
 
 export const createTable = (headers, opts = {}) => {
   opts = _.defaultsDeep(TABLE_DEFAULT_OPTIONS, opts);
-  if (opts.stretch) {
+  if (opts.stretch && (opts.truncateValues || opts.wrapValues)) {
     opts.colWidths = getColWidths(opts.colWidthsPct);
   }
   return new Table(_.assign(opts, {head: headers.map(color.underline)}));
 };
 
-export const toTable = (iteratee, headers, opts = {}) => observable =>
-  observable.pipe(
-    reduce((t, val) => {
-      t.push(iteratee(val));
-      return t;
-    }, createTable(headers, opts))
-  );
+export const toTable = (iteratee, headers, opts = {}) => {
+  const table = createTable(headers, opts);
+  return observable =>
+    observable.pipe(
+      reduce((t, val) => {
+        let cols = iteratee(val);
+        if (opts.stretch && opts.wrapValues) {
+          cols = cols.map((col, idx) =>
+            wrapAnsi(
+              col,
+              table.options.colWidths[idx] -
+                table.options.style['padding-left'] -
+                table.options.style['padding-right'],
+              {
+                hard: true,
+                wordWrap: false
+              }
+            )
+          );
+        }
+        t.push(cols);
+        return t;
+      }, table)
+    );
+};
 
 export const toString = (header = '', footer = '') => observable =>
   observable.pipe(

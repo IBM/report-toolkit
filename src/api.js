@@ -17,7 +17,7 @@ const debug = createDebugger(module);
 
 export const inspectStream = (
   reports = [],
-  {config, search = true, searchPath = process.cwd()} = {}
+  {config, search = true, searchPath = process.cwd(), redactSecrets} = {}
 ) => {
   if (_.isEmpty(reports)) {
     return throwError(
@@ -28,7 +28,7 @@ export const inspectStream = (
   const reportObjects = (_.isArray(reports)
     ? of(...reports)
     : of(reports)
-  ).pipe(mergeMap(readReport));
+  ).pipe(mergeMap(report => readReport(report, {redactSecrets})));
 
   return loadConfigStream(config, {searchPath, search}).pipe(
     mergeMap(config =>
@@ -76,9 +76,12 @@ export const queryRules = async (...args) =>
 export const diffStream = (
   reportA,
   reportB,
-  {properties = DIFF_DEFAULT_PROPERTIES} = {}
+  {properties = DIFF_DEFAULT_PROPERTIES, redactSecrets = true} = {}
 ) =>
-  zip(readReport(reportA), readReport(reportB)).pipe(
+  zip(
+    readReport(reportA, {redactSecrets}),
+    readReport(reportB, {redactSecrets})
+  ).pipe(
     mergeMap(([reportObjA, reportObjB]) => diffReports(reportObjA, reportObjB)),
     filter(({path}) => properties.includes(pathToProperty(path)))
   );
@@ -87,3 +90,7 @@ export const diff = async (...args) =>
   diffStream(...args)
     .pipe(toArray())
     .toPromise();
+
+export const loadReport = async (...args) => readReport(...args).toPromise();
+
+export {readReport as loadReportStream};
