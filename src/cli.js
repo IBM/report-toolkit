@@ -1,12 +1,15 @@
-import {enableDebugger} from './debug.js';
-import {fromDir} from './config';
+import {createDebugger, enableDebugger} from './debug.js';
+
+import {findConfig} from './config';
 import pkg from '../package.json';
 import yargs from 'yargs/yargs';
 
 const GROUP_OUTPUT = 'Output:';
 
+const debug = createDebugger(module);
+
 export const main = () => {
-  fromDir().subscribe(configResult => {
+  findConfig().subscribe(configResult => {
     yargs()
       .parserConfiguration({'camel-case-expansion': false})
       .scriptName(pkg.name)
@@ -21,7 +24,7 @@ export const main = () => {
           type: 'boolean'
         }
       })
-      .config(configResult)
+      .config({config: configResult})
       .env(pkg.name)
       .help()
       .fail((msg, err, yargs) => {
@@ -38,9 +41,10 @@ export const main = () => {
       .middleware(argv => {
         // "verbose" enables debug statements
         if (argv.verbose) {
-          enableDebugger(module, '*');
+          enableDebugger('gnostic', '*');
         }
 
+        debug(argv);
         return argv;
       })
       .parse(process.argv.slice(2));

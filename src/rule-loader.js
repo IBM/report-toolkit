@@ -4,7 +4,10 @@ import {filter, map, mergeAll, mergeMap} from 'rxjs/operators';
 import {Rule} from './rule';
 import _ from 'lodash/fp';
 import {bindNodeCallback} from 'rxjs';
+import {createDebugger} from './debug';
 import fs from 'fs';
+
+const debug = createDebugger(module);
 
 const readdir = bindNodeCallback(fs.readdir);
 
@@ -25,6 +28,7 @@ export const loadRuleFromRuleDef = _.memoize(async ({filepath, id}) =>
   Rule.create(
     _.assign(_.pick(['inspect', 'meta'], await import(filepath)), {
       id,
+
       filepath
     })
   )
@@ -52,7 +56,13 @@ export const findRuleDefs = ({
   const ruleDefs = readDirpath(dirpath).pipe(
     map(createRuleDefFromDirpath(dirpath))
   );
-  return _.size(ruleIds)
+  const ruleIdsCount = _.size(ruleIds);
+  if (!ruleIdsCount) {
+    debug(
+      'no enabled rules found; enabling ALL rules in an attempt to be useful'
+    );
+  }
+  return ruleIdsCount
     ? ruleDefs.pipe(filter(({id}) => ruleIds.has(id)))
     : ruleDefs;
 };

@@ -27,8 +27,8 @@ export const builder = yargs =>
 
 export const handler = argv => {
   const {file: files, config} = argv;
-  const redactSecrets = argv['show-secrets-unsafe'];
-  inspectStream(files, {config, autoload: false, redactSecrets})
+  const redactSecrets = !argv['show-secrets-unsafe'];
+  inspectStream(files, {config, redactSecrets})
     .pipe(
       // note that we have to flatten the observable here,
       // because we need the count for each filepath to compute
@@ -37,7 +37,8 @@ export const handler = argv => {
       map(results => {
         const t = createTable(['File', 'Rule', 'Message', 'Data'], {
           stretch: true,
-          colWidthsPct: [32, 12, 36, 20]
+          colWidthsPct: [32, 12, 40, 16],
+          wrapValues: true
         });
         t.push(
           ..._.reduce(

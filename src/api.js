@@ -3,9 +3,9 @@ import {
   diffReports,
   pathToProperty
 } from './diff-report';
-import {EMPTY, of, throwError, zip} from 'rxjs';
-import {filter, map, mergeMap, toArray} from 'rxjs/operators';
-import {filterEnabledRules, fromDir, fromFile, fromObject} from './config';
+import {filter, map, mergeMap, share, toArray} from 'rxjs/operators';
+import {filterEnabledRules, findConfig} from './config';
+import {of, throwError, zip} from 'rxjs';
 
 import {Inspector} from './inspect-report';
 import _ from 'lodash/fp';
@@ -25,17 +25,20 @@ export const inspectStream = (
     );
   }
 
-  return loadConfigStream(config, {searchPath, search}).pipe(
-    mergeMap(config =>
-      loadRules({ruleIds: filterEnabledRules(config)}).pipe(
+  debug(`inspecting ${reports.length} report(s)`);
+  const reportObjs = (_.isArray(reports) ? of(...reports) : of(reports)).pipe(
+    mergeMap(report => readReport(report, {redactSecrets})),
+    share()
+  );
+  return findConfig({config, searchPath, search}).pipe(
+    mergeMap(config => {
+      const ruleIds = filterEnabledRules(config);
+      return loadRules({ruleIds}).pipe(
         map(rule => Inspector.create(rule, config[rule.id]))
-      )
-    ),
+      );
+    }),
     mergeMap(inspector =>
-      (_.isArray(reports) ? of(...reports) : of(reports)).pipe(
-        mergeMap(report => readReport(report, {redactSecrets})),
-        mergeMap(report => inspector.inspect(report))
-      )
+      reportObjs.pipe(mergeMap(report => inspector.inspect(report)))
     )
   );
 };
@@ -45,27 +48,9 @@ export const inspect = async (...args) =>
     .pipe(toArray())
     .toPromise();
 
-export const loadConfigStream = (
-  config,
-  {search = true, searchPath = process.cwd()} = {}
-) =>
-  of(config).pipe(
-    map(config => {
-      if (_.isString(config)) {
-        debug(`trying to load config at path ${config}`);
-        return fromFile(config);
-      } else if (_.isPlainObject(config) || _.isArray(config)) {
-        return fromObject(config);
-      } else if (search) {
-        debug(`searching for config from ${searchPath}`);
-        return fromDir(searchPath);
-      }
-      return EMPTY;
-    })
-  );
+export {findConfig as loadConfigStream} from './config';
 
-export const loadConfig = async (...args) =>
-  loadConfigStream(...args).toPromise();
+export const loadConfig = async (...args) => findConfig(...args).toPromise();
 
 export const queryRulesStream = (...args) => loadRules(...args);
 

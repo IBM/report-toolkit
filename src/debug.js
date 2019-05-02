@@ -8,12 +8,12 @@ const NAMESPACE_SEPARATOR = ':';
 const getModuleId = module =>
   basename(relative(join(__dirname, '..'), module.id), '.js');
 
-export const createDebugger = module => {
+export const createDebugger = (module, ...extra) => {
   const moduleId = getModuleId(module);
-  return debug([pkg.name, moduleId].join(NAMESPACE_SEPARATOR));
+  const id = [pkg.name, moduleId, ...extra].join(NAMESPACE_SEPARATOR);
+  return debug(id);
 };
 
-export const enableDebugger = (module, extra = '') => {
-  const moduleId = getModuleId(module);
-  debug.enable(`${[pkg.name, moduleId].join(NAMESPACE_SEPARATOR)}${extra}`);
+export const enableDebugger = () => {
+  debug.enable(`${pkg.name}*`);
 };

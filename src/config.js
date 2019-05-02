@@ -1,10 +1,10 @@
-import {from, of} from 'rxjs';
+import {EMPTY, from, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 
 import {BUILTIN_CONFIGS} from './configs';
 import _ from 'lodash/fp';
 import cosmiconfig from 'cosmiconfig';
 import {createDebugger} from './debug';
-import {map} from 'rxjs/operators';
 import pkg from '../package.json';
 import traverse from 'traverse';
 
@@ -13,7 +13,7 @@ const debug = createDebugger(module);
 const TRUE_VALUES = new Set(['on', 'yes']);
 const FALSE_VALUES = new Set(['off', 'no']);
 
-const kFlattenedConfig = Symbol('flattenedConfig');
+export const kFlattenedConfig = Symbol('flattenedConfig');
 
 const getExplorer = _.memoize(opts =>
   cosmiconfig(
@@ -35,10 +35,8 @@ const load = (filepath, opts = {}) => from(getExplorer(opts).load(filepath));
 const process = configResult => {
   let config = {};
   if (configResult) {
-    debug(`found file at ${configResult.filepath}`);
-    config = {
-      config: flattenConfig(_.getOr({}, 'config.config', configResult))
-    };
+    debug(`found config file in ${configResult.filepath}`);
+    config = flattenConfig(_.getOr({}, 'config.config', configResult));
   }
   return config;
 };
@@ -69,31 +67,37 @@ const flattenConfig = (config, configObjects = []) => {
   const flatten = (value, idx = 0) => {
     if (_.isString(value)) {
       if (BUILTIN_CONFIGS.has(value)) {
-        push(BUILTIN_CONFIGS.get(normalizeBooleans(value)));
+        push(BUILTIN_CONFIGS.get(value));
       } else {
         throw new Error(
           `unknown builtin config at position ${idx}: "${value}"`
         );
       }
     } else if (_.isObject(value)) {
-      push(_.has('config', value) ? flatten(value, configObjects) : value);
+      push(
+        _.has('config', value)
+          ? flattenConfig(value.config, configObjects)
+          : value
+      );
     } else {
       throw new Error(`invalid config value: "${value}"`);
     }
   };
 
   if (config[kFlattenedConfig]) {
+    debug('config already flattened');
     return config;
   }
 
   if (_.isArray(config)) {
     config.forEach(flatten);
-    return _.defaultsDeepAll(
-      configObjects.reverse().concat({[kFlattenedConfig]: true})
-    );
+  } else {
+    flatten(config);
   }
 
-  return _.assign({[kFlattenedConfig]: true}, flatten(config));
+  const retval = _.defaultsDeepAll(_.reverse(configObjects));
+  retval[kFlattenedConfig] = true;
+  return retval;
 };
 
 export const filterEnabledRules = _.pipe(
@@ -103,13 +107,39 @@ export const filterEnabledRules = _.pipe(
     (acc, [key, value]) =>
       (_.isArray(value) && value[0]) || value ? _.concat(acc, key) : acc,
     []
-  )
+  ),
+  _.tap(ruleIds => {
+    debug(`found ${ruleIds.length} enabled rule(s)`);
+  })
 );
 
-export const fromDir = (dirpath, opts = {}) =>
+const fromDir = (dirpath, opts = {}) =>
   search(dirpath, opts).pipe(map(process));
 
-export const fromFile = (filepath, opts = {}) =>
-  load(filepath, opts).pipe(map(process));
-
-export const fromObject = obj => of(flattenConfig(obj));
+export const findConfig = ({config, searchPath, search = true} = {}) => {
+  let retval;
+  if (_.isString(config)) {
+    debug(`attempting to load config at path ${config}`);
+    retval = load(config).pipe(
+      catchError(err => {
+        if (err.code === 'ENOENT') {
+          debug(
+            `failed to load config at path ${config}; re-trying as directory`
+          );
+          return search(config);
+        }
+      }),
+      map(process)
+    );
+  } else if (_.isPlainObject(config) || _.isArray(config)) {
+    debug('loading config from object: %j', {config});
+    retval = of(flattenConfig({config}));
+  } else if (search) {
+    debug(`searching for config within ${searchPath || 'default location'}`);
+    retval = fromDir(searchPath);
+  } else {
+    debug(`no config found (searching was ${search ? 'enabled' : 'disabled'})`);
+    return EMPTY;
+  }
+  return retval;
+};
