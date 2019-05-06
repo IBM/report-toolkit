@@ -4,7 +4,7 @@ import {createTable, fail, outputHeader} from '../console';
 
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
-import {inspectStream} from '../api';
+import {inspect} from '../api/observable';
 import stringify from 'fast-safe-stringify';
 
 export const command = 'inspect <file..>';
@@ -28,7 +28,7 @@ export const builder = yargs =>
 export const handler = argv => {
   const {file: files, config} = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
-  inspectStream(files, {config, redactSecrets})
+  inspect(files, {config, redactSecrets})
     .pipe(
       // note that we have to flatten the observable here,
       // because we need the count for each filepath to compute

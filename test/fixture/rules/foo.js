@@ -1,0 +1,2 @@
+exports.inspect = () => {};
+exports.meta = {};

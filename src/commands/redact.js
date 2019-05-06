@@ -1,5 +1,5 @@
 import {map} from 'rxjs/operators';
-import {readReport} from '../read-report';
+import {readReport} from '../api/observable';
 import {writeFileSync} from 'fs';
 
 export const command = 'redact <file>';

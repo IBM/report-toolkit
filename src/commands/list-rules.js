@@ -1,6 +1,6 @@
 import _ from 'lodash/fp';
 import color from 'ansi-colors';
-import {queryRulesStream} from '../api';
+import {queryRules} from '../api/observable';
 import {toTable} from '../console';
 
 export const command = 'list-rules';
@@ -8,7 +8,7 @@ export const command = 'list-rules';
 export const desc = 'Lists built-in rules';
 
 export const handler = () => {
-  queryRulesStream()
+  queryRules()
     .pipe(
       toTable(
         rule => [

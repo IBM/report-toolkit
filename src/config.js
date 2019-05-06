@@ -116,7 +116,7 @@ export const filterEnabledRules = _.pipe(
 const fromDir = (dirpath, opts = {}) =>
   search(dirpath, opts).pipe(map(process));
 
-export const findConfig = ({config, searchPath, search = true} = {}) => {
+export const loadConfig = ({config, searchPath, search = true} = {}) => {
   let retval;
   if (_.isString(config)) {
     debug(`attempting to load config at path ${config}`);

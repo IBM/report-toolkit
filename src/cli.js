@@ -1,6 +1,6 @@
 import {createDebugger, enableDebugger} from './debug.js';
 
-import {findConfig} from './config';
+import {loadConfig} from './config';
 import pkg from '../package.json';
 import yargs from 'yargs/yargs';
 
@@ -9,7 +9,7 @@ const GROUP_OUTPUT = 'Output:';
 const debug = createDebugger(module);
 
 export const main = () => {
-  findConfig().subscribe(configResult => {
+  loadConfig().subscribe(configResult => {
     yargs()
       .parserConfiguration({'camel-case-expansion': false})
       .scriptName(pkg.name)

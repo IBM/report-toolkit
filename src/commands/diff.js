@@ -2,7 +2,7 @@ import {toString, toTable} from '../console';
 
 import {DIFF_DEFAULT_PROPERTIES} from '../diff-report';
 import color from 'ansi-colors';
-import {diffStream} from '../api';
+import {diff} from '../api/observable';
 
 export const command = 'diff <file1> <file2>';
 
@@ -58,7 +58,7 @@ export const handler = argv => {
     wrap: wrapValues = false
   } = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
-  diffStream(file1, file2, {properties, redactSecrets})
+  diff(file1, file2, {properties, redactSecrets})
     .pipe(
       toTable(
         ({path, value, oldValue, op}) => [

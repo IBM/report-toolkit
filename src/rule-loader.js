@@ -49,12 +49,12 @@ export const loadRules = (...args) =>
   findRuleDefs(...args).pipe(mergeMap(loadRuleFromRuleDef));
 
 export const findRuleDefs = ({
-  dirpath = join(__dirname, 'rules'),
+  searchPath = join(__dirname, 'rules'),
   ruleIds = []
 } = {}) => {
   ruleIds = new Set(ruleIds);
-  const ruleDefs = readDirpath(dirpath).pipe(
-    map(createRuleDefFromDirpath(dirpath))
+  const ruleDefs = readDirpath(searchPath).pipe(
+    map(createRuleDefFromDirpath(searchPath))
   );
   const ruleIdsCount = _.size(ruleIds);
   if (!ruleIdsCount) {

@@ -1,5 +1,5 @@
-const {isObservable, of} = require('rxjs');
-const {ignoreElements, catchError, toArray, first} = require('rxjs/operators');
+const {isObservable} = require('rxjs');
+const {toArray, first} = require('rxjs/operators');
 
 const pify = observable => observable.pipe(toArray()).toPromise();
 
@@ -65,37 +65,24 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to emit error <any?>',
+    '<Observable> to emit error <any?>',
     (expect, observable, any) => {
       expect.errorMode = 'bubble';
-      const promise = observable
-        .pipe(
-          ignoreElements(),
-          catchError(of),
-          toArray()
-        )
-        .toPromise();
+      const promise = observable.toPromise();
       if (any) {
-        return expect(promise, 'when fulfilled', '[not] to contain', any);
+        return expect(promise, 'to be rejected with', any);
       }
-      return expect(promise, 'when fulfilled', '[not] to be empty');
+      return expect(promise, 'to be rejected');
     }
   );
 
   expect.addAssertion(
-    '<Observable> [not] to emit error [exhaustively] satisfying <any>',
+    '<Observable> to emit error [exhaustively] satisfying <any>',
     (expect, observable, any) => {
       expect.errorMode = 'bubble';
       return expect(
-        observable
-          .pipe(
-            ignoreElements(),
-            catchError(of),
-            toArray()
-          )
-          .toPromise(),
-        'when fulfilled',
-        '[not] to have an item [exhaustively] satisfying',
+        observable.toPromise(),
+        'to be rejected with error [exhaustively] satisfying',
         any
       );
     }
@@ -124,24 +111,19 @@ exports.installInto = expect => {
 
   expect.addAssertion(
     '<Observable> [not] to complete with (value|values) [exhaustively] satisfying <any+>',
-    (expect, observable, ...any) => {
+    async (expect, observable, ...any) => {
       expect.errorMode = 'bubble';
       const promise = pify(observable);
-      return expect.promise.all(
-        any.map(item =>
-          expect(
-            promise,
-            'when fulfilled',
-            expect.it(subject => {
-              expect(
-                subject,
-                '[not] to have an item [exhaustively] satisfying',
-                item
-              );
-            })
-          )
-        )
+      const resolved = await expect.promise.all(
+        any.map(async expected => ({actual: await promise, expected}))
       );
+      return resolved.forEach(({actual, expected}) => {
+        expect(
+          actual,
+          '[not] to have an item [exhaustively] satisfying',
+          expected
+        );
+      });
     }
   );
 };

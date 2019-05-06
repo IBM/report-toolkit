@@ -16,7 +16,8 @@ describe('module:diff', function() {
 
       it('should not include omitted paths', function() {
         // XXX: yes, this is incredibly slow
-        this.timeout(10000);
+        this.timeout(6000);
+        this.slow(2250);
         return expect(
           diffReports(REPORT_1, REPORT_2),
           'not to complete with values satisfying',
