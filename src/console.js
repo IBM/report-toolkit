@@ -7,16 +7,18 @@ import termsize from 'term-size';
 import {version} from '../package.json';
 import wrapAnsi from 'wrap-ansi';
 
-export const outputHeader = headerText =>
-  color.grey('[') +
-  color.cyanBright('gnostic') +
-  ' ' +
-  color.cyan(`v${version}`) +
-  color.grey('] ') +
-  color.magenta(headerText) +
-  '\n';
+export const outputHeader = (headerText, {color} = {}) =>
+  color
+    ? color.grey('[') +
+      color.cyanBright('gnostic') +
+      ' ' +
+      color.cyan(`v${version}`) +
+      color.grey('] ') +
+      color.magenta(headerText) +
+      '\n'
+    : `[gnostic v${version}] ${headerText}\n`;
 
-const COL_WIDTH_PCTS = [3, 25, 36, 36];
+const COL_WIDTH_PCTS = [4, 24, 36, 36];
 
 const getColWidths = (colWidths = COL_WIDTH_PCTS) => {
   const {columns} = termsize();
@@ -50,7 +52,11 @@ export const createTable = (headers, opts = {}) => {
   if (opts.stretch && (opts.truncateValues || opts.wrapValues)) {
     opts.colWidths = getColWidths(opts.colWidthsPct);
   }
-  return new Table(_.assign(opts, {head: headers.map(color.underline)}));
+  return new Table(
+    _.assign(opts, {
+      head: opts.color === false ? headers : headers.map(color.underline)
+    })
+  );
 };
 
 export const toTable = (iteratee, headers, opts = {}) => {
@@ -79,10 +85,10 @@ export const toTable = (iteratee, headers, opts = {}) => {
     );
 };
 
-export const toString = (header = '', footer = '') => observable =>
+export const toString = (header = '', footer = '', opts = {}) => observable =>
   observable.pipe(
     map(String),
-    startWith(outputHeader(header))
+    startWith(outputHeader(header, opts))
   );
 
 export const ok = text => color.green('✓') + ' ' + color.greenBright(text);
