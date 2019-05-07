@@ -1,4 +1,5 @@
-import {map, reduce, startWith} from 'rxjs/operators';
+import {EMPTY, of} from 'rxjs';
+import {concatMap, map, reduce} from 'rxjs/operators';
 
 import CLITable3 from 'cli-table3';
 import _ from 'lodash/fp';
@@ -39,14 +40,27 @@ const fieldWidthPcts = _.pipe(
   _.map(Number)
 );
 
-const prependTitle = headerText =>
-  colors.grey('[') +
-  colors.cyanBright('gnostic') +
-  ' ' +
-  colors.cyan(`v${version}`) +
-  colors.grey('] ') +
-  colors.magenta(headerText) +
-  '\n';
+const constantValue = v => (_.isFunction(v) ? v : _.constant(v));
+
+const withHeader = _.curry((header, value) => {
+  header = constantValue(header);
+  return (
+    colors.grey('[') +
+    colors.cyanBright('gnostic') +
+    ' ' +
+    colors.cyan(`v${version}`) +
+    colors.grey('] ') +
+    colors.magenta(header(value)) +
+    `
+`
+  );
+});
+
+const withFooter = _.curry((footer, value) => {
+  footer = constantValue(footer);
+  return `
+${footer(value)}`;
+});
 
 /**
  * This little nasty accepts a list of field objects with `widthPct`
@@ -78,7 +92,7 @@ const formatTableHeaders = _.pipe(
   _.map(colors.underline)
 );
 
-export const createTable = (opts = {}) => {
+const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
   const {fields, truncateValues, wrapValues} = opts;
   if (_.some('widthPct', fields) && (truncateValues || wrapValues)) {
@@ -96,14 +110,15 @@ const colValuesByFields = _.curry((fields, row) =>
 
 export const toTable = (opts = {}) => {
   const table = createTable(opts);
-  const colValues = colValuesByFields(opts.fields);
+  const {fields, wrapValues, outputHeader, outputFooter} = opts;
+  const colValues = colValuesByFields(fields);
   const padding =
     table.options.style['padding-left'] - table.options.style['padding-right'];
   return observable =>
     observable.pipe(
       map(colValues),
       pipeIf(
-        opts.wrapValues,
+        wrapValues,
         map(
           // this force-wraps the column text
           _.map((col, idx) =>
@@ -114,12 +129,18 @@ export const toTable = (opts = {}) => {
           )
         )
       ),
-      reduce((t, row) => {
+      reduce((table, row) => {
         // `push` must be used because Table subclasses Array, but
         // doesn't implement concat, so we'd just get a plain Array back...
-        t.push(row);
-        return t;
+        table.push(row);
+        return table;
       }, table),
-      pipeIf(opts.title, startWith(prependTitle(opts.title)))
+      concatMap(table =>
+        of(
+          outputHeader ? withHeader(outputHeader, table) : EMPTY,
+          table,
+          outputFooter ? withFooter(outputFooter, table) : EMPTY
+        )
+      )
     );
 };

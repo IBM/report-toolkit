@@ -1,12 +1,9 @@
-import {EMPTY, iif, of} from 'rxjs';
 import {GROUPS, OPTIONS} from './common';
-import {concatMap, map, toArray} from 'rxjs/operators';
-import {createTable, fail, outputHeader} from '../console';
+import {asFormat, asString, fail} from '../console';
 
 import _ from 'lodash/fp';
-import color from 'ansi-colors';
+import colors from 'ansi-colors';
 import {inspect} from '../api/observable';
-import stringify from 'fast-safe-stringify';
 
 export const command = 'inspect <file..>';
 
@@ -28,62 +25,51 @@ export const builder = yargs =>
     });
 
 export const handler = argv => {
-  const {file: files, config} = argv;
+  const {
+    file: files,
+    config,
+    truncate: truncateValues = true,
+    wrap: wrapValues = false,
+    format = 'table',
+    pretty = false,
+    color
+  } = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
   inspect(files, {config, redactSecrets})
     .pipe(
-      // note that we have to flatten the observable here,
-      // because we need the count for each filepath to compute
-      // the row span in the table.
-      toArray(),
-      map(results => {
-        const t = createTable(['File', 'Rule', 'Message', 'Data'], {
-          stretch: true,
-          colWidthsPct: [32, 12, 40, 16],
-          wrapValues: true
-        });
-        t.push(
-          ..._.reduce(
-            (acc, group) => {
-              const rowSpan = group.length;
-              const firstRow = group[0];
-              return acc.concat([
-                [
-                  {
-                    content: color.cyan(firstRow.filepath),
-                    rowSpan
-                  },
-                  color.magenta(firstRow.id),
-                  firstRow.message,
-                  firstRow.data ? stringify(firstRow.data) : ''
-                ],
-                ..._.map(
-                  row => [
-                    color.magenta(row.id),
-                    row.message,
-                    row.data ? stringify(row.data) : ''
-                  ],
-                  group.slice(1)
-                )
-              ]);
-            },
-            [],
-            _.groupBy('filepath', results)
-          )
-        );
-        return t;
+      asFormat(format, {
+        color,
+        fields: [
+          {
+            label: 'File',
+            value: _.pipe(
+              _.get('filepath'),
+              v => colors.cyan(v)
+            ),
+            widthPct: 30
+          },
+          {
+            label: 'Rule',
+            value: _.pipe(
+              _.get('id'),
+              v => colors.magenta(v)
+            ),
+            widthPct: 20
+          },
+          {
+            label: 'Message',
+            value: _.get('message'),
+            widthPct: 50
+          }
+        ],
+        pretty,
+        truncateValues,
+        wrapValues,
+        outputHeader: 'Diagnostic Report Inspection',
+        outputFooter: t =>
+          fail(`Found ${t.length} issue(s) in ${files.length} file(s)`)
       }),
-      concatMap(results =>
-        iif(
-          () => results.length,
-          of(
-            outputHeader('Diagnostic Report Inspection'),
-            String(results),
-            fail(`Found ${results.length} issues in ${files.length} files`)
-          ),
-          EMPTY
-        )
-      )
+      asString({color})
     )
     .subscribe(console.log);
 };

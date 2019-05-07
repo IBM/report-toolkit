@@ -1,6 +1,7 @@
+import {asFormat, asString} from '../console';
+
 import {OPTIONS} from './common';
 import _ from 'lodash/fp';
-import {asFormat} from '../console';
 import colors from 'ansi-colors';
 import {loadRules} from '../api/observable';
 
@@ -39,7 +40,8 @@ export const handler = argv => {
         title: 'Available Rules',
         truncateValues,
         wrapValues
-      })
+      }),
+      asString({color})
     )
     .subscribe(console.log);
 };

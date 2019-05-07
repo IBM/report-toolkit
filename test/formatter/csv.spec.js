@@ -1,4 +1,4 @@
-import {from} from 'rxjs';
+import {of} from 'rxjs';
 import {toCsv} from '../../src/formatter/csv';
 
 describe('module:formatter/csv', function() {
@@ -6,7 +6,7 @@ describe('module:formatter/csv', function() {
     describe('toCsv()', function() {
       it('should parse a JS object into CSV', function() {
         return expect(
-          from([{foo: 1, bar: 2, baz: 3}, {foo: 4, bar: 5, baz: 6}]).pipe(
+          of({foo: 1, bar: 2, baz: 3}, {foo: 4, bar: 5, baz: 6}).pipe(
             toCsv({
               fields: [
                 {label: 'Foo', value: 'foo'},

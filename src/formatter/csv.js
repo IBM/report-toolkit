@@ -13,10 +13,7 @@ export const toCsv = (parserOpts = {}, streamOpts = {}) => {
       tap(row => {
         parser.input.push(row);
       }),
-      concatMapTo(
-        fromEvent(parser.processor, 'data').pipe(
-          takeUntil(fromEvent(parser.processor, 'end'))
-        )
-      )
+      concatMapTo(fromEvent(parser.processor, 'data')),
+      takeUntil(fromEvent(parser.processor, 'end'))
     );
 };

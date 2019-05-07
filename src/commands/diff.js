@@ -1,8 +1,8 @@
 import {GROUPS, OPTIONS} from './common';
+import {asFormat, asString} from '../console';
 
 import {DIFF_DEFAULT_PROPERTIES} from '../diff-report';
 import _ from 'lodash/fp';
-import {asFormat} from '../console';
 import colors from 'ansi-colors';
 import {diff} from '../api/observable';
 
@@ -85,7 +85,8 @@ export const handler = argv => {
         title: `Diff: ${file1} <=> ${file2}`,
         truncateValues,
         wrapValues
-      })
+      }),
+      asString({color})
     )
     .subscribe(console.log);
 };

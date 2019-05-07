@@ -1,3 +1,5 @@
+import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../formatter';
+
 export const GROUPS = {
   OUTPUT: 'Output:',
   FILTER: 'Filter:'
@@ -19,7 +21,7 @@ export const OPTIONS = {
       conflicts: 'truncate'
     },
     format: {
-      choices: ['table', 'csv', 'json'],
+      choices: [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE],
       description: 'Output format',
       group: GROUPS.OUTPUT,
       default: 'table'
@@ -32,7 +34,7 @@ export const OPTIONS = {
     color: {
       type: 'boolean',
       group: GROUPS.OUTPUT,
-      description: 'Use colors in table format',
+      description: 'Use colors w/ "table" format',
       default: true
     },
     output: {
