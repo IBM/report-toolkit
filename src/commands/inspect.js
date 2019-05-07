@@ -1,4 +1,5 @@
 import {EMPTY, iif, of} from 'rxjs';
+import {GROUPS, OPTIONS} from './common';
 import {concatMap, map, toArray} from 'rxjs/operators';
 import {createTable, fail, outputHeader} from '../console';
 
@@ -21,8 +22,9 @@ export const builder = yargs =>
       'show-secrets-unsafe': {
         type: 'boolean',
         description: 'Live dangerously & do not automatically redact secrets',
-        group: 'Output:'
-      }
+        group: GROUPS.OUTPUT
+      },
+      ...OPTIONS.OUTPUT
     });
 
 export const handler = argv => {

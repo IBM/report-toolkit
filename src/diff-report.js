@@ -49,14 +49,14 @@ export const diffReports = (reportA, reportB) =>
           const nextPath = nextPathParts.concat(nextPathIdx).join('/');
           oldValue = ptr.get(reportA, nextPath);
           offset++;
-          nextValue = _.assignAll([patchObj, {oldValue, path: nextPath}]);
+          nextValue = {...patchObj, oldValue, path: nextPath};
         } else {
           // there's no old value to look up for 'add' operations.
           if (patchObj.op === 'add') {
             nextValue = patchObj;
           } else {
             oldValue = ptr.get(reportA, patchObj.path);
-            nextValue = _.assign(patchObj, {oldValue});
+            nextValue = {...patchObj, oldValue};
           }
           offset = 1;
         }

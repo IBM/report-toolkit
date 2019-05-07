@@ -1,5 +1,4 @@
 import {Rule} from '../src/rule';
-import _ from 'lodash';
 import {createSandbox} from 'sinon';
 import {join} from 'path';
 import rewiremock from './mock-helper';
@@ -52,24 +51,16 @@ describe('module:rule-loader', function() {
         return expect(
           loadRules(),
           'to complete with values',
-          Rule.create(
-            _.assign(
-              {
-                id: 'library-mismatch',
-                filepath: require.resolve('../src/rules/library-mismatch')
-              },
-              rules['library-mismatch']
-            )
-          ),
-          Rule.create(
-            _.assign(
-              {
-                id: 'long-timeout',
-                filepath: require.resolve('../src/rules/long-timeout')
-              },
-              rules['long-timeout']
-            )
-          )
+          Rule.create({
+            id: 'library-mismatch',
+            filepath: require.resolve('../src/rules/library-mismatch'),
+            ...rules['library-mismatch']
+          }),
+          Rule.create({
+            id: 'long-timeout',
+            filepath: require.resolve('../src/rules/long-timeout'),
+            ...rules['long-timeout']
+          })
         );
       });
     });

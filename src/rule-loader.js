@@ -25,13 +25,11 @@ export const readDirpath = _.memoize((dirpath = join(__dirname, 'rules')) =>
 );
 
 export const loadRuleFromRuleDef = _.memoize(async ({filepath, id}) =>
-  Rule.create(
-    _.assign(_.pick(['inspect', 'meta'], await import(filepath)), {
-      id,
-
-      filepath
-    })
-  )
+  Rule.create({
+    ..._.pick(['inspect', 'meta'], await import(filepath)),
+    id,
+    filepath
+  })
 );
 
 export const loadRuleFromFilepath = _.pipe(

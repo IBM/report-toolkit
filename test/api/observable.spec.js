@@ -2,7 +2,6 @@ import {from, of} from 'rxjs';
 
 import {Report} from '../../src/report';
 import {Rule} from '../../src/rule';
-import _ from 'lodash/fp';
 import {createSandbox} from 'sinon';
 import {mergeMap} from 'rxjs/operators';
 import rewiremock from '../mock-helper';
@@ -59,9 +58,7 @@ describe('module:api/observable', function() {
           loadRules: sandbox.spy(() =>
             from(ruleDefs).pipe(
               mergeMap(({id, filepath}) =>
-                of(
-                  Rule.create(_.assign({id: id, filepath: filepath}, rules[id]))
-                )
+                of(Rule.create({id: id, filepath: filepath, ...rules[id]}))
               )
             )
           )

@@ -36,14 +36,11 @@ export class Inspector {
       mergeMap(
         report =>
           new Observable(async observer => {
-            const formatResult = (message, data) =>
-              _.assign(
-                {
-                  message: String(message).trim(),
-                  data
-                },
-                basicInfo
-              );
+            const formatResult = (message, data) => ({
+              message: String(message).trim(),
+              data,
+              ...basicInfo
+            });
             const {ruleConfig} = this;
             const {id} = ruleConfig;
             const basicInfo = {filepath: report.filepath, id};

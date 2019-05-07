@@ -1,18 +1,14 @@
-import {map, toArray} from 'rxjs/operators';
-import {toString, toTable} from '../console';
+import {GROUPS, OPTIONS} from './common';
 
 import {DIFF_DEFAULT_PROPERTIES} from '../diff-report';
-import {Parser} from 'json2csv';
+import _ from 'lodash/fp';
+import {asFormat} from '../console';
 import colors from 'ansi-colors';
 import {diff} from '../api/observable';
-import stringify from 'fast-safe-stringify';
 
 export const command = 'diff <file1> <file2>';
 
 export const desc = 'Diff two reports';
-
-const GROUP_OUTPUT = 'Output:';
-const GROUP_FILTER = 'Filter:';
 
 export const builder = yargs =>
   yargs.options({
@@ -21,43 +17,14 @@ export const builder = yargs =>
       nargs: 1,
       description: 'Filter by root prop name',
       default: DIFF_DEFAULT_PROPERTIES,
-      group: GROUP_FILTER
+      group: GROUPS.FILTER
     },
     'show-secrets-unsafe': {
       type: 'boolean',
       description: 'Live dangerously & do not automatically redact secrets',
-      group: GROUP_OUTPUT
+      group: GROUPS.OUTPUT
     },
-    truncate: {
-      type: 'boolean',
-      description: 'Truncate values (table format)',
-      group: GROUP_OUTPUT,
-      default: true,
-      conflicts: 'wrap'
-    },
-    wrap: {
-      type: 'boolean',
-      description: 'Hard-wrap values (table format; implies --no-truncate)',
-      group: GROUP_OUTPUT,
-      conflicts: 'truncate'
-    },
-    format: {
-      choices: ['table', 'csv', 'json'],
-      description: 'Output format',
-      group: GROUP_OUTPUT,
-      default: 'table'
-    },
-    pretty: {
-      type: 'boolean',
-      group: GROUP_OUTPUT,
-      description: 'Pretty-print JSON output'
-    },
-    color: {
-      type: 'boolean',
-      group: GROUP_OUTPUT,
-      description: 'Use colors in table format',
-      default: true
-    }
+    ...OPTIONS.OUTPUT
   });
 
 const OP_COLORS = {
@@ -72,6 +39,10 @@ const OP_CODE = {
   replace: 'M'
 };
 
+/**
+ * @todo handle same-file issue
+ * @param {*} argv
+ */
 export const handler = argv => {
   const {
     file1,
@@ -84,65 +55,37 @@ export const handler = argv => {
     color
   } = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
-
-  let output;
-  switch (format) {
-    case 'json':
-      output = observable =>
-        observable.pipe(
-          toArray(),
-          map(result =>
-            pretty ? stringify(result, null, 2) : stringify(result)
-          )
-        );
-      break;
-    case 'csv':
-      output = observable =>
-        observable.pipe(
-          toArray(),
-          map(result => {
-            const parser = new Parser({
-              fields: [
-                {label: 'Op', value: 'op'},
-                {label: 'Path', value: 'path'},
-                {label: file1, value: 'value'},
-                {label: file2, value: 'oldValue'}
-              ]
-            });
-            return parser.parse(result);
-          })
-        );
-      break;
-    default:
-      output = observable =>
-        observable.pipe(
-          toTable(
-            color
-              ? ({path, value, oldValue, op}) => [
-                  colors[OP_COLORS[op]](OP_CODE[op]),
-                  colors[OP_COLORS[op]](path),
-                  value,
-                  oldValue
-                ]
-              : ({path, value, oldValue, op}) => [
-                  OP_CODE[op],
-                  path,
-                  value,
-                  oldValue
-                ],
-            ['Op', 'Path', file1, file2],
-            {
-              stretch: true,
-              truncateValues,
-              wrapValues,
-              color
-            }
-          ),
-          toString(`Diff: ${file1} <=> ${file2}`, {color})
-        );
-  }
-
   diff(file1, file2, {properties, redactSecrets})
-    .pipe(output)
+    .pipe(
+      asFormat(format, {
+        color,
+        fields: [
+          {
+            label: 'Op',
+            value: row => colors[OP_COLORS[row.op]](OP_CODE[row.op]),
+            widthPct: 4
+          },
+          {
+            label: 'Path',
+            value: row => colors[OP_COLORS[row.op]](row.path),
+            widthPct: 24
+          },
+          {
+            label: file1,
+            value: _.get('value'),
+            widthPct: 36
+          },
+          {
+            label: file2,
+            value: _.get('oldValue'),
+            widthPct: 36
+          }
+        ],
+        pretty,
+        title: `Diff: ${file1} <=> ${file2}`,
+        truncateValues,
+        wrapValues
+      })
+    )
     .subscribe(console.log);
 };

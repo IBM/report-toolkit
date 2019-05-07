@@ -1,10 +1,11 @@
 import {map} from 'rxjs/operators';
 import {readReport} from '../api/observable';
+import stringify from 'fast-safe-stringify';
 import {writeFileSync} from 'fs';
 
 export const command = 'redact <file>';
 
-export const desc = 'Print redacted report file to STDOUT';
+export const desc = 'Print redacted report file in JSON format to STDOUT';
 
 export const builder = yargs =>
   yargs.options({
@@ -20,7 +21,7 @@ export const builder = yargs =>
 
 export const handler = ({file, output} = {}) => {
   readReport(file)
-    .pipe(map(report => JSON.stringify(report, null, 2)))
+    .pipe(map(report => stringify(report, null, 2)))
     .subscribe(json => {
       if (output) {
         return writeFileSync(output, json);

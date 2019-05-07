@@ -34,6 +34,7 @@
     "rewiremock": "^3.13.6",
     "rfc6902": "^3.0.2",
     "rxjs": "^6.5.1",
+    "strip-ansi": "^5.2.0",
     "term-size": "^2.0.0",
     "traverse": "^0.6.6",
     "wrap-ansi": "^5.1.0",
