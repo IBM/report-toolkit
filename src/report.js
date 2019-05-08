@@ -1,3 +1,5 @@
+import _ from 'lodash/fp';
+
 export const kReportFilepath = Symbol('reportFilepath');
 
 const KNOWN_PROPS = [
@@ -24,8 +26,8 @@ export class Report {
   get filepath() {
     return this[kReportFilepath];
   }
-
-  static create(report, filepath) {
-    return Object.freeze(new Report(report, filepath));
-  }
 }
+
+Report.create = _.curry((filepath, report) =>
+  Object.freeze(new Report(report, filepath))
+);

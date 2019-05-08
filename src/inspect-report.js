@@ -82,40 +82,25 @@ export class Inspector {
     );
   }
 
-  /**
-   * Creates a configured Inspector
-   * @param {Rule|RuleConfig} ruleConfig - Rule or RuleConfig
-   * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration; unused if `rule` is a `RuleConfig`
-   * @returns {Inspector}
-   */
-  static create(ruleConfig, rawConfig = {}) {
-    if (ruleConfig instanceof Rule) {
-      // XXX this is not right.
-      if (Array.isArray(rawConfig)) {
-        rawConfig = _.find(_.isObject, rawConfig) || {};
-      }
-      ruleConfig = RuleConfig.create(ruleConfig, rawConfig);
-    }
-
-    return Reflect.construct(Inspector, [ruleConfig]);
-  }
-
   get ruleConfig() {
     return configMap.get(this);
   }
-
-  /**
-   * Inspect a report, given a list of loaded `Rule`s and
-   * rule-specific configurations.  Associates the configurations with
-   * rules by ID.
-   * @param {Report} report - Parsed JSON report
-   * @param {Rule|RuleConfig} ruleConfig - Rule or RuleConfig
-   * @param {Object|any[]|string} [rawConfig] - Rule-specific configuration; unused if `rule` is a `RuleConfig`
-   * @todo accept multiple reports
-   * @returns {Observable<RuleResult>} Observable of `{message, data}`
-   * reports, generated from rule implementations. Could be empty.
-   */
-  static inspectReport(report, ...args) {
-    return Inspector.create(...args).inspect(report);
-  }
 }
+
+/**
+ * Creates a configured Inspector
+ * @param {Object|any[]|string} rawConfig - Rule-specific configuration; unused if `rule` is a `RuleConfig`
+ * @param {Rule|RuleConfig} ruleConfig - Rule or RuleConfig
+ * @returns {Inspector}
+ */
+Inspector.create = _.curry((rawConfig, ruleConfig) => {
+  if (ruleConfig instanceof Rule) {
+    // XXX this is not right.
+    if (_.isArray(rawConfig)) {
+      rawConfig = _.find(_.isObject, rawConfig) || {};
+    }
+    ruleConfig = RuleConfig.create(ruleConfig, rawConfig);
+  }
+
+  return Reflect.construct(Inspector, [ruleConfig]);
+});

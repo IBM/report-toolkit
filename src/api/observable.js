@@ -3,15 +3,15 @@ import {
   diffReports,
   pathToProperty
 } from '../diff-report';
-import {filter, map, mergeMap, share} from 'rxjs/operators';
+import {count, filter, map, mergeMap, share} from 'rxjs/operators';
 import {filterEnabledRules, loadConfig} from '../config';
-import {of, throwError, zip} from 'rxjs';
+import {loadReport, readReports} from '../read-report';
+import {throwError, zip} from 'rxjs';
 
 import {Inspector} from '../inspect-report';
 import _ from 'lodash/fp';
 import {debug} from './index';
 import {loadRules} from '../rule-loader';
-import {readReport} from '../read-report';
 
 export const diff = (
   reportA,
@@ -19,42 +19,44 @@ export const diff = (
   {properties = DIFF_DEFAULT_PROPERTIES, redactSecrets = true} = {}
 ) =>
   zip(
-    readReport(reportA, {redactSecrets}),
-    readReport(reportB, {redactSecrets})
+    loadReport(reportA, {redactSecrets}),
+    loadReport(reportB, {redactSecrets})
   ).pipe(
     mergeMap(([reportObjA, reportObjB]) => diffReports(reportObjA, reportObjB)),
     filter(({path}) => properties.includes(pathToProperty(path)))
   );
 
-export {readReport};
+export {readReports};
 
 export {loadConfig} from '../config';
 
 export {loadRules};
 
 export const inspect = (
-  reports = [],
+  filepaths = [],
   {config, search = true, searchPath = process.cwd(), redactSecrets} = {}
 ) => {
-  if (_.isEmpty(reports)) {
+  if (_.isEmpty(filepaths)) {
     return throwError(
-      new Error('Invalid parameters: one or more reports is required')
+      new Error('Invalid parameters: one or more filepaths are required')
     );
   }
-  debug(`inspecting ${reports.length} report(s)`);
-  const reportObjs = (_.isArray(reports) ? of(...reports) : of(reports)).pipe(
-    mergeMap(report => readReport(report, {redactSecrets})),
-    share()
-  );
+
+  const reports = readReports(filepaths, {redactSecrets}).pipe(share());
+
+  reports.pipe(count()).subscribe(count => {
+    debug(`inspecting ${count} reports`);
+  });
+
   return loadConfig({config, searchPath, search}).pipe(
     mergeMap(config => {
       const ruleIds = filterEnabledRules(config);
       return loadRules({ruleIds}).pipe(
-        map(rule => Inspector.create(rule, config[rule.id]))
+        map(rule => Inspector.create(config[rule.id], rule))
       );
     }),
     mergeMap(inspector =>
-      reportObjs.pipe(mergeMap(report => inspector.inspect(report)))
+      reports.pipe(mergeMap(report => inspector.inspect(report)))
     )
   );
 };

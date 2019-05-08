@@ -26,7 +26,7 @@ export const diff = async (...args) =>
     .pipe(toArray())
     .toPromise();
 
-export const readReport = async (...args) =>
-  observable.readReport(...args).toPromise();
+export const readReports = async (...args) =>
+  observable.readReports(...args).toPromise();
 
 export {observable};

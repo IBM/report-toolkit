@@ -2,6 +2,7 @@ import {from, of} from 'rxjs';
 
 import {Report} from '../../src/report';
 import {Rule} from '../../src/rule';
+import _ from 'lodash/fp';
 import {createSandbox} from 'sinon';
 import {mergeMap} from 'rxjs/operators';
 import rewiremock from '../mock-helper';
@@ -64,8 +65,14 @@ describe('module:api/observable', function() {
           )
         };
         const reportReaderStubs = {
-          readReport: sandbox.spy(filepath =>
-            of(Report.create(require(filepath), filepath))
+          readReports: sandbox.spy(filepaths =>
+            _.isArray(filepaths)
+              ? of(
+                  ...filepaths.map(filepath =>
+                    Report.create(filepath, require(filepath))
+                  )
+                )
+              : of(Report.create(filepaths, require(filepaths)))
           )
         };
         inspect = (await rewiremock.module(
@@ -100,8 +107,8 @@ describe('module:api/observable', function() {
         });
       });
 
-      describe('when called with a two report files', function() {
-        it('should emit two messages', function() {
+      describe('when called with two (2) report files', function() {
+        it('should emit two (2) messages', function() {
           return expect(
             inspect([REPORT_1_FILEPATH, REPORT_2_FILEPATH], {
               config: {rules: {foo: true, bar: true}}
@@ -127,8 +134,8 @@ describe('module:api/observable', function() {
 
       beforeEach(async function() {
         const reportReaderStubs = {
-          readReport: sandbox.spy(filepath =>
-            of(Report.create(require(filepath), filepath))
+          readReports: sandbox.spy(filepath =>
+            of(Report.create(filepath, require(filepath)))
           )
         };
 

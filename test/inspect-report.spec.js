@@ -31,8 +31,9 @@ describe('module:inspect-report', function() {
       describe('create()', function() {
         it('should delegate to the constructor', function() {
           const ruleConfig = {};
+          const rawConfig = {};
           sandbox.spy(Reflect, 'construct');
-          Inspector.create(ruleConfig);
+          Inspector.create(rawConfig, ruleConfig);
           expect(Reflect.construct, 'to have a call satisfying', [
             Inspector,
             [ruleConfig]
