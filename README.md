@@ -30,7 +30,7 @@
 
 ## Installation & Usage
 
-## For CLI Usage
+### For CLI Usage
 
 ```shell
 $ npx gnostic --help
@@ -43,7 +43,7 @@ $ npm install -g gnostic
 $ gnostic --help
 ```
 
-## For Usage as a Library
+### For Usage as a Library
 
 ```shell
 $ npm install gnostic
