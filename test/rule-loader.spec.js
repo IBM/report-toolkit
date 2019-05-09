@@ -1,7 +1,14 @@
+import {
+  findRuleDefs,
+  loadRuleFromRuleDef,
+  loadRules,
+  readDirpath
+} from '../src/rule-loader';
+
 import {Rule} from '../src/rule';
 import {createSandbox} from 'sinon';
+import fs from 'fs';
 import {join} from 'path';
-import rewiremock from './mock-helper';
 
 describe('module:rule-loader', function() {
   let sandbox;
@@ -16,17 +23,15 @@ describe('module:rule-loader', function() {
   });
 
   describe('loadRules()', function() {
-    let loadRules;
-
     describe('when called without searchPath', function() {
       let rules;
 
-      beforeEach(async function() {
+      beforeEach(function() {
         rules = {
-          'library-mismatch': await import('../src/rules/library-mismatch'),
-          'long-timeout': await import('../src/rules/long-timeout')
+          'library-mismatch': require('../src/rules/library-mismatch'),
+          'long-timeout': require('../src/rules/long-timeout')
         };
-        readdir = sandbox.stub();
+        readdir = sandbox.stub(fs, 'readdir');
         readdir
           .onFirstCall()
           .callsArgWithAsync(1, null, [
@@ -35,16 +40,9 @@ describe('module:rule-loader', function() {
           ]);
         readdir.onSecondCall().callsArgWithAsync(1, null, ['oops.js']);
 
-        const ruleLoader = await rewiremock.module(
-          () => import('../src/rule-loader'),
-          {
-            fs: {readdir}
-          }
-        );
-        loadRules = ruleLoader.loadRules;
         // memoized; clear it before each test run
-        ruleLoader.loadRuleFromRuleDef.cache.clear();
-        ruleLoader.readDirpath.cache.clear();
+        loadRuleFromRuleDef.cache.clear();
+        readDirpath.cache.clear();
       });
 
       it('should return a list of rules from ../src/rules/', function() {
@@ -69,24 +67,17 @@ describe('module:rule-loader', function() {
       let searchPath;
       let rules;
 
-      beforeEach(async function() {
+      beforeEach(function() {
         searchPath = join(__dirname, 'fixture', 'rules');
         rules = {
-          foo: await import('./fixture/rules/foo'),
-          bar: await import('./fixture/rules/bar')
+          foo: require('./fixture/rules/foo'),
+          bar: require('./fixture/rules/bar')
         };
-        readdir = sandbox.stub();
+        readdir = sandbox.stub(fs, 'readdir');
         readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
 
-        const ruleLoader = await rewiremock.module(
-          () => import('../src/rule-loader'),
-          {
-            fs: {readdir}
-          }
-        );
-        loadRules = ruleLoader.loadRules;
-        ruleLoader.readDirpath.cache.clear();
-        ruleLoader.loadRuleFromRuleDef.cache.clear();
+        readDirpath.cache.clear();
+        loadRuleFromRuleDef.cache.clear();
       });
 
       it('should return a list of rules from dir searchPath', function() {
@@ -125,23 +116,15 @@ describe('module:rule-loader', function() {
   });
 
   describe('findRuleDefs()', function() {
-    let findRuleDefs;
     let searchPath;
 
-    beforeEach(async function() {
-      readdir = sandbox.stub();
+    beforeEach(function() {
+      readdir = sandbox.stub(fs, 'readdir');
       readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
 
-      const ruleLoader = await rewiremock.module(
-        () => import('../src/rule-loader'),
-        {
-          fs: {readdir}
-        }
-      );
       searchPath = join(__dirname, 'fixture', 'rules');
-      findRuleDefs = ruleLoader.findRuleDefs;
       // memoized; clear it before each test rulon
-      ruleLoader.readDirpath.cache.clear();
+      readDirpath.cache.clear();
     });
 
     describe('when called with an list of rule IDs', function() {

@@ -26,7 +26,7 @@ describe('module:api/observable', function() {
 
   describe('function', function() {
     describe('inspect()', function() {
-      beforeEach(async function() {
+      beforeEach(function() {
         const ruleDefs = [
           {id: 'foo', filepath: '/some/path/foo.js'},
           {id: 'bar', filepath: '/some/path/bar.js'}
@@ -64,7 +64,7 @@ describe('module:api/observable', function() {
             )
           )
         };
-        const reportReaderStubs = {
+        const readReportStubs = {
           readReports: sandbox.spy(filepaths =>
             _.isArray(filepaths)
               ? of(
@@ -75,14 +75,18 @@ describe('module:api/observable', function() {
               : of(Report.create(filepaths, require(filepaths)))
           )
         };
-        inspect = (await rewiremock.module(
-          () => import('../../src/api/observable'),
-          {
-            '../config': configStubs,
-            '../rule-loader': ruleLoaderStubs,
-            '../read-report': reportReaderStubs
+        inspect = rewiremock.proxy(
+          () => require('../../src/api/observable'),
+          () => {
+            rewiremock(() => require('../../src/config')).with(configStubs);
+            rewiremock(() => require('../../src/rule-loader')).with(
+              ruleLoaderStubs
+            );
+            rewiremock(() => require('../../src/read-report')).with(
+              readReportStubs
+            );
           }
-        )).inspect;
+        ).inspect;
       });
 
       describe('when called without parameters', function() {
@@ -132,19 +136,21 @@ describe('module:api/observable', function() {
     describe('diff()', function() {
       let diff;
 
-      beforeEach(async function() {
-        const reportReaderStubs = {
-          readReports: sandbox.spy(filepath =>
+      beforeEach(function() {
+        const readReportStubs = {
+          loadReport: sandbox.spy(filepath =>
             of(Report.create(filepath, require(filepath)))
           )
         };
 
-        diff = (await rewiremock.module(
-          () => import('../../src/api/observable'),
-          {
-            '../../src/read-report': reportReaderStubs
+        diff = rewiremock.proxy(
+          () => require('../../src/api/observable'),
+          () => {
+            rewiremock(() => require('../../src/read-report')).with(
+              readReportStubs
+            );
           }
-        )).diff;
+        ).diff;
       });
 
       it('should diff two reports by default properties', function() {

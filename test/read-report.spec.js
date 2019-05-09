@@ -7,13 +7,16 @@ describe('module:read-report', function() {
   let readReports;
   const filepath = require.resolve('./fixture/report-001.json');
 
-  beforeEach(async function() {
+  beforeEach(function() {
     sandbox = createSandbox();
 
     redact = sandbox.stub().returnsArg(0);
-    readReports = (await rewiremock.module(() => import('../src/read-report'), {
-      './redact': {redact}
-    })).readReports;
+    readReports = rewiremock.proxy(
+      () => require('../src/read-report'),
+      () => {
+        rewiremock(() => require('../src/redact')).with({redact});
+      }
+    ).readReports;
   });
 
   afterEach(function() {
