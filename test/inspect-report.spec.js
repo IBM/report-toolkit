@@ -1,11 +1,9 @@
 import {Inspector} from '../src/inspect-report';
-import {createSandbox} from 'sinon';
-
 describe('module:inspect-report', function() {
   let sandbox;
 
   beforeEach(function() {
-    sandbox = createSandbox();
+    sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {

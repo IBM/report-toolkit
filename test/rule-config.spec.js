@@ -1,11 +1,9 @@
 import {RuleConfig} from '../src/rule-config';
-import {createSandbox} from 'sinon';
-
 describe('module:rule-config', function() {
   let sandbox;
 
   beforeEach(function() {
-    sandbox = createSandbox();
+    sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {

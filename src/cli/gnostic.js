@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 
-'use strict';
-
 const esmRequire = require('esm')(module);
-const cli = esmRequire('../src/cli');
+const {main} = esmRequire('./main');
 
 if (require.main === module) {
-  cli.main();
+  main();
 }
-
-module.exports = cli;

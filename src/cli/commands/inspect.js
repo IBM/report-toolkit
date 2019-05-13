@@ -1,9 +1,9 @@
 import {GROUPS, OPTIONS} from './common';
-import {asFormat, asString, fail} from '../console';
+import {fail, toFormattedString} from '../console';
 
 import _ from 'lodash/fp';
 import colors from 'ansi-colors';
-import {inspect} from '../api/observable';
+import {inspect} from '../../api/observable';
 
 export const command = 'inspect <file..>';
 
@@ -37,7 +37,7 @@ export const handler = argv => {
   const redactSecrets = !argv['show-secrets-unsafe'];
   inspect(files, {config, redactSecrets})
     .pipe(
-      asFormat(format, {
+      toFormattedString(format, {
         color,
         fields: [
           {
@@ -68,8 +68,7 @@ export const handler = argv => {
         outputHeader: 'Diagnostic Report Inspection',
         outputFooter: t =>
           fail(`Found ${t.length} issue(s) in ${files.length} file(s)`)
-      }),
-      asString({color})
+      })
     )
     .subscribe(console.log);
 };

@@ -1,23 +1,88 @@
+import {filter, map, tap} from 'rxjs/operators';
 import {from, of} from 'rxjs';
 
 import {Report} from '../../src/report';
 import {Rule} from '../../src/rule';
 import _ from 'lodash/fp';
-import {createSandbox} from 'sinon';
-import {mergeMap} from 'rxjs/operators';
-import rewiremock from '../mock-helper';
+import {createDebugger} from '../../src/debug';
+import {pipeIf} from '../../src/operators';
 
-const REPORT_1_FILEPATH = require.resolve('../fixture/report-001.json');
-const REPORT_2_FILEPATH = require.resolve(
-  '../fixture/report-002-library-mismatch.json'
+const debug = createDebugger(module);
+
+const REPORT_001_FILEPATH = require.resolve(
+  '../fixture/reports/report-001.json'
+);
+const REPORT_002_FILEPATH = require.resolve(
+  '../fixture/reports/report-002-library-mismatch.json'
 );
 
 describe('module:api/observable', function() {
   let sandbox;
-  let inspect;
+  let subject;
 
   beforeEach(function() {
-    sandbox = createSandbox();
+    sandbox = sinon.createSandbox();
+
+    const rules = {
+      foo: require('../fixture/rules/foo'),
+      bar: require('../fixture/rules/bar')
+    };
+
+    const ruleDefs = [
+      {id: 'foo', filepath: require.resolve('../fixture/rules/foo')},
+      {id: 'bar', filepath: require.resolve('../fixture/rules/bar')}
+    ];
+
+    subject = rewiremock.proxy(
+      () => require('../../src/api/observable'),
+      () => {
+        rewiremock(() => require('../../src/config'))
+          .with({
+            loadConfig: sandbox
+              .stub()
+              .callsFake(({config}) =>
+                of(config).pipe(
+                  tap(config => debug(`loaded mock config`, config))
+                )
+              )
+          })
+          .callThrough();
+        rewiremock(() => require('../../src/rule-loader')).with({
+          readDirpath: sandbox.stub().callsFake(() =>
+            from(['foo.js', 'bar.js']).pipe(
+              tap(filename => {
+                debug(`readDirpath returning mock filename ${filename}`);
+              })
+            )
+          ),
+          loadRules: sandbox.stub().callsFake(({ruleIds}) => {
+            ruleIds = new Set(ruleIds);
+            return from(ruleDefs).pipe(
+              pipeIf(ruleIds.size, filter(({id}) => ruleIds.has(id))),
+              map(({id, filepath}) => Rule.create({...rules[id], id, filepath}))
+            );
+          })
+        });
+        rewiremock(() => require('../../src/load-report')).with({
+          loadReports: sandbox
+            .stub()
+            .callsFake(filepaths =>
+              _.isArray(filepaths)
+                ? of(
+                    ...filepaths.map(filepath =>
+                      Report.create(filepath, require(filepath))
+                    )
+                  )
+                : of(Report.create(filepaths, require(filepaths)))
+            ),
+          loadReport: sandbox
+            .stub()
+            .callsFake(filepath =>
+              of(Report.create(filepath, require(filepath)))
+            )
+        });
+      }
+    );
   });
 
   afterEach(function() {
@@ -26,67 +91,10 @@ describe('module:api/observable', function() {
 
   describe('function', function() {
     describe('inspect()', function() {
+      let inspect;
+
       beforeEach(function() {
-        const ruleDefs = [
-          {id: 'foo', filepath: '/some/path/foo.js'},
-          {id: 'bar', filepath: '/some/path/bar.js'}
-        ];
-        const rules = {
-          foo: {
-            inspect: context => {
-              if (context.filepath === REPORT_1_FILEPATH) {
-                context.report('foo');
-              }
-            },
-            meta: {}
-          },
-          bar: {
-            inspect: context => {
-              if (context.filepath !== REPORT_1_FILEPATH) {
-                context.report('bar');
-              }
-            },
-            meta: {}
-          }
-        };
-        const configStubs = {
-          filterEnabledRules: sandbox.stub().returnsArg(0),
-          loadConfig: sandbox
-            .stub()
-            .returns(of({rules: {foo: true, bar: true}}))
-        };
-        const ruleLoaderStubs = {
-          loadRules: sandbox.spy(() =>
-            from(ruleDefs).pipe(
-              mergeMap(({id, filepath}) =>
-                of(Rule.create({id: id, filepath: filepath, ...rules[id]}))
-              )
-            )
-          )
-        };
-        const readReportStubs = {
-          readReports: sandbox.spy(filepaths =>
-            _.isArray(filepaths)
-              ? of(
-                  ...filepaths.map(filepath =>
-                    Report.create(filepath, require(filepath))
-                  )
-                )
-              : of(Report.create(filepaths, require(filepaths)))
-          )
-        };
-        inspect = rewiremock.proxy(
-          () => require('../../src/api/observable'),
-          () => {
-            rewiremock(() => require('../../src/config')).with(configStubs);
-            rewiremock(() => require('../../src/rule-loader')).with(
-              ruleLoaderStubs
-            );
-            rewiremock(() => require('../../src/read-report')).with(
-              readReportStubs
-            );
-          }
-        ).inspect;
+        inspect = subject.inspect;
       });
 
       describe('when called without parameters', function() {
@@ -95,16 +103,16 @@ describe('module:api/observable', function() {
         });
       });
 
-      describe('when called with a single report file', function() {
-        it('should only emit a single message', function() {
+      describe('when provided a configuration', function() {
+        it('should emit a message for each enabled rule', function() {
           return expect(
-            inspect(REPORT_1_FILEPATH, {
-              config: {rules: {foo: true, bar: true}}
+            inspect(REPORT_001_FILEPATH, {
+              config: {rules: {foo: true, bar: false}}
             }),
             'to complete with value',
             {
               message: 'foo',
-              filepath: REPORT_1_FILEPATH,
+              filepath: REPORT_001_FILEPATH,
               id: 'foo'
             }
           ).and('to emit once');
@@ -112,20 +120,20 @@ describe('module:api/observable', function() {
       });
 
       describe('when called with two (2) report files', function() {
-        it('should emit two (2) messages', function() {
+        it('should emit a message for each enabled rule', function() {
           return expect(
-            inspect([REPORT_1_FILEPATH, REPORT_2_FILEPATH], {
+            inspect([REPORT_001_FILEPATH, REPORT_002_FILEPATH], {
               config: {rules: {foo: true, bar: true}}
             }),
             'to complete with values satisfying',
             {
               message: 'foo',
-              filepath: REPORT_1_FILEPATH,
+              filepath: REPORT_001_FILEPATH,
               id: 'foo'
             },
             {
               message: 'bar',
-              filepath: REPORT_2_FILEPATH,
+              filepath: REPORT_002_FILEPATH,
               id: 'bar'
             }
           );
@@ -137,25 +145,12 @@ describe('module:api/observable', function() {
       let diff;
 
       beforeEach(function() {
-        const readReportStubs = {
-          loadReport: sandbox.spy(filepath =>
-            of(Report.create(filepath, require(filepath)))
-          )
-        };
-
-        diff = rewiremock.proxy(
-          () => require('../../src/api/observable'),
-          () => {
-            rewiremock(() => require('../../src/read-report')).with(
-              readReportStubs
-            );
-          }
-        ).diff;
+        diff = subject.diff;
       });
 
       it('should diff two reports by default properties', function() {
         return expect(
-          diff(REPORT_1_FILEPATH, REPORT_2_FILEPATH),
+          diff(REPORT_001_FILEPATH, REPORT_002_FILEPATH),
           'to complete with values',
 
           {

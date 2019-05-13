@@ -1,21 +1,33 @@
-import {
-  findRuleDefs,
-  loadRuleFromRuleDef,
-  loadRules,
-  readDirpath
-} from '../src/rule-loader';
-
 import {Rule} from '../src/rule';
-import {createSandbox} from 'sinon';
 import fs from 'fs';
 import {join} from 'path';
 
 describe('module:rule-loader', function() {
+  const FILES = ['foo.js', 'bar.js'];
   let sandbox;
+  let subject;
   let readdir;
 
   beforeEach(function() {
-    sandbox = createSandbox();
+    sandbox = sinon.createSandbox();
+
+    subject = rewiremock.proxy(
+      () => require('../src/rule-loader'),
+      () => {
+        rewiremock(() => require('fs'))
+          .with({
+            readdir: sandbox.stub().callsFake((ignored, callback) => {
+              process.nextTick(() => callback(null, FILES));
+            })
+          })
+          .callThrough();
+        rewiremock(() => require('path'))
+          .with({
+            resolve: (from, to) => join(__dirname, 'fixture', 'rules', to)
+          })
+          .callThrough();
+      }
+    );
   });
 
   afterEach(function() {
@@ -23,41 +35,26 @@ describe('module:rule-loader', function() {
   });
 
   describe('loadRules()', function() {
+    let loadRules;
+
+    beforeEach(function() {
+      loadRules = subject.loadRules;
+    });
+
     describe('when called without searchPath', function() {
-      let rules;
-
-      beforeEach(function() {
-        rules = {
-          'library-mismatch': require('../src/rules/library-mismatch'),
-          'long-timeout': require('../src/rules/long-timeout')
-        };
-        readdir = sandbox.stub(fs, 'readdir');
-        readdir
-          .onFirstCall()
-          .callsArgWithAsync(1, null, [
-            'library-mismatch.js',
-            'long-timeout.js'
-          ]);
-        readdir.onSecondCall().callsArgWithAsync(1, null, ['oops.js']);
-
-        // memoized; clear it before each test run
-        loadRuleFromRuleDef.cache.clear();
-        readDirpath.cache.clear();
-      });
-
       it('should return a list of rules from ../src/rules/', function() {
         return expect(
           loadRules(),
           'to complete with values',
           Rule.create({
-            id: 'library-mismatch',
-            filepath: require.resolve('../src/rules/library-mismatch'),
-            ...rules['library-mismatch']
+            id: 'foo',
+            filepath: require.resolve('./fixture/rules/foo'),
+            ...require('./fixture/rules/foo')
           }),
           Rule.create({
-            id: 'long-timeout',
-            filepath: require.resolve('../src/rules/long-timeout'),
-            ...rules['long-timeout']
+            id: 'bar',
+            filepath: require.resolve('./fixture/rules/bar'),
+            ...require('./fixture/rules/bar')
           })
         );
       });
@@ -75,9 +72,6 @@ describe('module:rule-loader', function() {
         };
         readdir = sandbox.stub(fs, 'readdir');
         readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
-
-        readDirpath.cache.clear();
-        loadRuleFromRuleDef.cache.clear();
       });
 
       it('should return a list of rules from dir searchPath', function() {
@@ -119,18 +113,30 @@ describe('module:rule-loader', function() {
     let searchPath;
 
     beforeEach(function() {
-      readdir = sandbox.stub(fs, 'readdir');
-      readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
-
+      subject = rewiremock.proxy(
+        () => require('../src/rule-loader'),
+        () => {
+          rewiremock(() => require('fs'))
+            .with({
+              readdir: sandbox.stub().callsFake((ignored, callback) => {
+                process.nextTick(() => callback(null, FILES));
+              })
+            })
+            .callThrough();
+          rewiremock(() => require('path'))
+            .with({
+              resolve: (from, to) => join(__dirname, 'fixture', 'rules', to)
+            })
+            .callThrough();
+        }
+      );
       searchPath = join(__dirname, 'fixture', 'rules');
-      // memoized; clear it before each test rulon
-      readDirpath.cache.clear();
     });
 
     describe('when called with an list of rule IDs', function() {
       it('should only emit rule defs having IDs included in the list', function() {
         return expect(
-          findRuleDefs({searchPath, ruleIds: ['foo']}),
+          subject.findRuleDefs({searchPath, ruleIds: ['foo']}),
           'to complete with values',
           {filepath: join(searchPath, 'foo.js'), id: 'foo'}
         ).and('to emit once');
@@ -140,7 +146,7 @@ describe('module:rule-loader', function() {
     describe('when called without a list of rule IDs', function() {
       it('should emit all rule defs within default dirpath', function() {
         return expect(
-          findRuleDefs({searchPath}),
+          subject.findRuleDefs({searchPath}),
           'to complete with values',
           {
             filepath: join(searchPath, 'foo.js'),

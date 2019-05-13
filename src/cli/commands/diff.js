@@ -1,10 +1,10 @@
 import {GROUPS, OPTIONS} from './common';
-import {asFormat, asString} from '../console';
 
-import {DIFF_DEFAULT_PROPERTIES} from '../diff-report';
+import {DIFF_DEFAULT_PROPERTIES} from '../../diff-report';
 import _ from 'lodash/fp';
 import colors from 'ansi-colors';
-import {diff} from '../api/observable';
+import {diff} from '../../api/observable';
+import {toFormattedString} from '../console';
 
 export const command = 'diff <file1> <file2>';
 
@@ -57,7 +57,7 @@ export const handler = argv => {
   const redactSecrets = !argv['show-secrets-unsafe'];
   diff(file1, file2, {properties, redactSecrets})
     .pipe(
-      asFormat(format, {
+      toFormattedString(format, {
         color,
         fields: [
           {
@@ -85,8 +85,7 @@ export const handler = argv => {
         title: `Diff: ${file1} <=> ${file2}`,
         truncateValues,
         wrapValues
-      }),
-      asString({color})
+      })
     )
     .subscribe(console.log);
 };

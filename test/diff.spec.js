@@ -1,7 +1,7 @@
 import {DIFF_OMIT_PATHS, diffReports} from '../src/diff-report';
 
-const REPORT_1 = require('./fixture/report-001.json');
-const REPORT_2 = require('./fixture/report-002-library-mismatch.json');
+const REPORT_1 = require('./fixture/reports/report-001.json');
+const REPORT_2 = require('./fixture/reports/report-002-library-mismatch.json');
 
 describe('module:diff', function() {
   describe('function', function() {

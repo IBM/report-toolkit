@@ -1,12 +1,19 @@
-import {basename, join, relative} from 'path';
+import {basename, dirname, relative, resolve, sep} from 'path';
 
 import debug from 'debug';
 import pkg from '../package.json';
 
 const NAMESPACE_SEPARATOR = ':';
 
-const getModuleId = module =>
-  basename(relative(join(__dirname, '..'), module.id), '.js');
+const getModuleId = module => {
+  const relpath = relative(resolve(__dirname, '..'), module.id);
+  const moduleName = basename(relpath, '.js');
+  const dirName = dirname(relpath)
+    .split(sep)
+    .slice(1)
+    .join(sep);
+  return dirName ? `${dirName}/${moduleName}` : moduleName;
+};
 
 export const createDebugger = (module, ...extra) => {
   const moduleId = getModuleId(module);

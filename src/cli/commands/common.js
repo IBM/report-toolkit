@@ -1,4 +1,4 @@
-import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../formatter';
+import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../../formatter';
 
 export const GROUPS = {
   OUTPUT: 'Output:',

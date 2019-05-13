@@ -5,13 +5,15 @@ import {
 } from '../diff-report';
 import {count, filter, map, mergeMap, share} from 'rxjs/operators';
 import {filterEnabledRules, loadConfig} from '../config';
-import {loadReport, readReports} from '../read-report';
+import {loadReport, loadReports} from '../load-report';
 import {throwError, zip} from 'rxjs';
 
 import {Inspector} from '../inspect-report';
 import _ from 'lodash/fp';
-import {debug} from './index';
+import {createDebugger} from '../debug';
 import {loadRules} from '../rule-loader';
+
+const debug = createDebugger(module);
 
 export const diff = (
   reportA,
@@ -26,7 +28,7 @@ export const diff = (
     filter(({path}) => properties.includes(pathToProperty(path)))
   );
 
-export {readReports};
+export {loadReports};
 
 export {loadConfig} from '../config';
 
@@ -42,19 +44,23 @@ export const inspect = (
     );
   }
 
-  const reports = readReports(filepaths, {redactSecrets}).pipe(share());
+  const reports = loadReports(filepaths, {redactSecrets}).pipe(share());
 
-  reports.pipe(count()).subscribe(count => {
-    debug(`inspecting ${count} reports`);
+  reports.pipe(count()).subscribe({
+    next(count) {
+      debug(`loading ${count} report(s)...`);
+    },
+    complete() {
+      debug(`all report(s) loaded`);
+    }
   });
 
   return loadConfig({config, searchPath, search}).pipe(
-    mergeMap(config => {
-      const ruleIds = filterEnabledRules(config);
-      return loadRules({ruleIds}).pipe(
+    mergeMap(config =>
+      loadRules({ruleIds: filterEnabledRules(config)}).pipe(
         map(rule => Inspector.create(config[rule.id], rule))
-      );
-    }),
+      )
+    ),
     mergeMap(inspector =>
       reports.pipe(mergeMap(report => inspector.inspect(report)))
     )

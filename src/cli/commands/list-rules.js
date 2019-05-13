@@ -1,9 +1,8 @@
-import {asFormat, asString} from '../console';
-
 import {OPTIONS} from './common';
 import _ from 'lodash/fp';
 import colors from 'ansi-colors';
-import {loadRules} from '../api/observable';
+import {loadRules} from '../../api/observable';
+import {toFormattedString} from '../console';
 
 export const command = 'list-rules';
 
@@ -21,7 +20,7 @@ export const handler = argv => {
   } = argv;
   loadRules()
     .pipe(
-      asFormat(format, {
+      toFormattedString(format, {
         color,
         fields: [
           {
@@ -40,8 +39,7 @@ export const handler = argv => {
         title: 'Available Rules',
         truncateValues,
         wrapValues
-      }),
-      asString({color})
+      })
     )
     .subscribe(console.log);
 };

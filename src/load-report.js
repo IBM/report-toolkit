@@ -35,7 +35,7 @@ export const sortReports = ({sortField, sortDirection}) => observable =>
     mergeMap(_.orderBy(_.get(sortField), sortDirection))
   );
 
-export const readReports = (
+export const loadReports = (
   filepaths = [],
   {
     redactSecrets = true,

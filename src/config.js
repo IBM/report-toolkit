@@ -1,10 +1,11 @@
-import {EMPTY, from, of} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {map, mapTo, mergeMap, switchMapTo, tap} from 'rxjs/operators';
+import {of, throwError} from 'rxjs';
 
 import {BUILTIN_CONFIGS} from './configs';
 import _ from 'lodash/fp';
 import cosmiconfig from 'cosmiconfig';
 import {createDebugger} from './debug';
+import {pipeIf} from './operators';
 import pkg from '../package.json';
 import traverse from 'traverse';
 
@@ -27,18 +28,22 @@ const getExplorer = _.memoize(opts =>
   )
 );
 
-const search = (fromDirpath, opts = {}) =>
-  from(getExplorer(opts).search(fromDirpath));
+const fromSearchPath = (opts = {}) => {
+  const explorer = getExplorer(opts);
+  return observable =>
+    observable.pipe(
+      mergeMap(dirpath => explorer.search(dirpath)),
+      map(_.get('config.config'))
+    );
+};
 
-const load = (filepath, opts = {}) => from(getExplorer(opts).load(filepath));
-
-const process = configResult => {
-  let config = {};
-  if (configResult) {
-    debug(`found config file in ${configResult.filepath}`);
-    config = flattenConfig(_.getOr({}, 'config.config', configResult));
-  }
-  return config;
+const fromFile = (opts = {}) => {
+  const explorer = getExplorer(opts);
+  return observable =>
+    observable.pipe(
+      mergeMap(filepath => explorer.load(filepath)),
+      map(_.get('config.config'))
+    );
 };
 
 const normalizeBooleans = obj =>
@@ -113,33 +118,37 @@ export const filterEnabledRules = _.pipe(
   })
 );
 
-const fromDir = (dirpath, opts = {}) =>
-  search(dirpath, opts).pipe(map(process));
-
-export const loadConfig = ({config, searchPath, search = true} = {}) => {
-  let retval;
-  if (_.isString(config)) {
-    debug(`attempting to load config at path ${config}`);
-    retval = load(config).pipe(
-      catchError(err => {
-        if (err.code === 'ENOENT') {
-          debug(
-            `failed to load config at path ${config}; re-trying as directory`
-          );
-          return search(config);
-        }
+export const loadConfig = ({
+  config: rawConfig,
+  searchPath,
+  search = true
+} = {}) =>
+  of(rawConfig).pipe(
+    pipeIf(_.isString, fromFile()),
+    pipeIf(
+      rawConfig => _.isEmpty(rawConfig) && search,
+      tap(() => {
+        debug(`searching in ${searchPath || process.cwd()} for config`);
       }),
-      map(process)
-    );
-  } else if (_.isPlainObject(config) || _.isArray(config)) {
-    debug('loading config from object: %j', {config});
-    retval = of(flattenConfig({config}));
-  } else if (search) {
-    debug(`searching for config within ${searchPath || 'default location'}`);
-    retval = fromDir(searchPath);
-  } else {
-    debug(`no config found (searching was ${search ? 'enabled' : 'disabled'})`);
-    return EMPTY;
-  }
-  return retval;
-};
+      mapTo(searchPath),
+      fromSearchPath()
+    ),
+    pipeIf(
+      _.overSome([_.isPlainObject, _.isArray]),
+      tap(rawConfig => {
+        debug('loading from raw object: %j', rawConfig);
+      }),
+      map(rawConfig => flattenConfig({config: rawConfig}))
+    ),
+    pipeIf(
+      _.isEmpty,
+      switchMapTo(
+        throwError(
+          new Error(
+            `no config found within ${searchPath ||
+              'current working directory'}`
+          )
+        )
+      )
+    )
+  );

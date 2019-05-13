@@ -1,12 +1,10 @@
 import {Rule, SimpleRule, TemporalRule, kRuleInspect} from '../src/rule';
 
-import {createSandbox} from 'sinon';
-
 describe('module:rule', function() {
   let sandbox;
 
   beforeEach(function() {
-    sandbox = createSandbox();
+    sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {

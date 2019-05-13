@@ -1,7 +1,7 @@
-import {createDebugger, enableDebugger} from './debug.js';
+import {createDebugger, enableDebugger} from '../debug.js';
 
-import {loadConfig} from './config';
-import pkg from '../package.json';
+import {loadConfig} from '../config';
+import pkg from '../../package.json';
 import yargs from 'yargs/yargs';
 
 const GROUP_OUTPUT = 'Output:';
@@ -41,7 +41,7 @@ export const main = () => {
       .middleware(argv => {
         // "verbose" enables debug statements
         if (argv.verbose) {
-          enableDebugger('gnostic', '*');
+          enableDebugger();
         }
 
         debug(argv);

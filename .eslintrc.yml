@@ -11,8 +11,7 @@ rules:
 overrides:
   - files:
       - src/index.js
-      - bin/gnostic.js
-      - test/setup.js
+      - src/gnostic.js
       - .mocharc.js
     parserOptions:
       sourceType: script
@@ -22,3 +21,5 @@ overrides:
       mocha: true
     globals:
       expect: false
+      sinon: false
+      rewiremock: false

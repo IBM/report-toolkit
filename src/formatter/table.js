@@ -5,7 +5,6 @@ import CLITable3 from 'cli-table3';
 import _ from 'lodash/fp';
 import colors from 'ansi-colors';
 import {pipeIf} from '../operators';
-import termsize from 'term-size';
 import {version} from '../../package.json';
 import wrapAnsi from 'wrap-ansi';
 
@@ -79,13 +78,11 @@ const normalizeColWidthPcts = _.pipe(
   _.map(_.clamp(0, 100))
 );
 
-const calculateColumnWidths = (fields = [], colWidthPcts = []) => {
-  const {columns: terminalWidth} = termsize();
-  return _.map(
-    pct => Math.floor((pct / 100) * terminalWidth),
-    normalizeColWidthPcts(fields, colWidthPcts)
+const calculateColumnWidths = (maxWidth = 80, fields = []) =>
+  _.map(
+    pct => Math.floor((pct / 100) * maxWidth),
+    normalizeColWidthPcts(fields)
   );
-};
 
 const formatTableHeaders = _.pipe(
   _.map('label'),
@@ -94,9 +91,9 @@ const formatTableHeaders = _.pipe(
 
 const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
-  const {fields, truncateValues, wrapValues} = opts;
+  const {fields, truncateValues, wrapValues, maxWidth} = opts;
   if (_.some('widthPct', fields) && (truncateValues || wrapValues)) {
-    opts.colWidths = calculateColumnWidths(fields);
+    opts.colWidths = calculateColumnWidths(maxWidth, fields);
   }
   return new CLITable3({
     ...opts,

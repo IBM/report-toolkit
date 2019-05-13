@@ -1,7 +1,7 @@
 import {filterEnabledRules, kFlattenedConfig, loadConfig} from '../src/config';
 
+import customConfig from './fixture/config/custom.config';
 import {join} from 'path';
-import rootConfig from '../.gnosticrc';
 
 describe('module:config', function() {
   describe('function', function() {
@@ -22,11 +22,11 @@ describe('module:config', function() {
         describe('when passed an explicit search path', function() {
           it('should load a config from the search path', function() {
             return expect(
-              loadConfig({searchPath: join(__dirname, 'fixture')}),
+              loadConfig({searchPath: join(__dirname, 'fixture', 'config')}),
               'to complete with value',
               {
                 rules: {
-                  'long-timeout': [true, {timeout: 3000}],
+                  'long-timeout': [true, {timeout: 4000}],
                   'library-mismatch': false
                 },
                 [kFlattenedConfig]: true
@@ -38,12 +38,12 @@ describe('module:config', function() {
         describe('when passed an object', function() {
           it('should flatten the object', function() {
             return expect(
-              loadConfig({config: rootConfig}),
+              loadConfig({config: customConfig}),
               'to complete with value',
               {
                 rules: {
-                  'long-timeout': [true, {timeout: 5000}],
-                  'library-mismatch': true
+                  'long-timeout': [true, {timeout: 3000}],
+                  'library-mismatch': false
                 },
                 [kFlattenedConfig]: true
               }

@@ -1,8 +1,20 @@
-'use strict';
+import rewiremock, {addPlugin, overrideEntryPoint, plugins} from 'rewiremock';
 
-const unexpected = require('unexpected');
+import expect from 'unexpected';
+import sinon from 'sinon';
+import unexpectedRxJS from './unexpected-rxjs';
+import unexpectedSinon from 'unexpected-sinon';
 
-global.expect = unexpected
+global.sinon = sinon;
+
+global.expect = expect
   .clone()
-  .use(require('unexpected-sinon'))
-  .use(require('./unexpected-rxjs'));
+  .use(unexpectedSinon)
+  .use(unexpectedRxJS);
+
+overrideEntryPoint(module);
+
+addPlugin(plugins.usedByDefault);
+
+rewiremock.forceCacheClear(true);
+global.rewiremock = rewiremock;

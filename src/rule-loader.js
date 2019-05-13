@@ -6,6 +6,7 @@ import _ from 'lodash/fp';
 import {bindNodeCallback} from 'rxjs';
 import {createDebugger} from './debug';
 import fs from 'fs';
+import {pipeIf} from './operators';
 
 const debug = createDebugger(module);
 
@@ -20,9 +21,8 @@ const createRuleDefFromFilepath = filepath => ({
   id: basename(filepath, '.js')
 });
 
-export const readDirpath = _.memoize((dirpath = join(__dirname, 'rules')) =>
-  readdir(dirpath).pipe(mergeAll())
-);
+export const readDirpath = (dirpath = join(__dirname, 'rules')) =>
+  readdir(dirpath).pipe(mergeAll());
 
 export const loadRuleFromRuleDef = _.memoize(async ({filepath, id}) =>
   Rule.create({
@@ -51,16 +51,13 @@ export const findRuleDefs = ({
   ruleIds = []
 } = {}) => {
   ruleIds = new Set(ruleIds);
-  const ruleDefs = readDirpath(searchPath).pipe(
-    map(createRuleDefFromDirpath(searchPath))
-  );
   const ruleIdsCount = _.size(ruleIds);
   if (!ruleIdsCount) {
     debug(
       'no enabled rules found; enabling ALL rules in an attempt to be useful'
     );
   }
-  return ruleIdsCount
-    ? ruleDefs.pipe(filter(({id}) => ruleIds.has(id)))
-    : ruleDefs;
+  return readDirpath(searchPath)
+    .pipe(map(createRuleDefFromDirpath(searchPath)))
+    .pipe(pipeIf(ruleIdsCount, filter(({id}) => ruleIds.has(id))));
 };
