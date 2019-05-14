@@ -102,5 +102,5 @@ Inspector.create = _.curry((rawConfig, ruleConfig) => {
     ruleConfig = RuleConfig.create(ruleConfig, rawConfig);
   }
 
-  return Reflect.construct(Inspector, [ruleConfig]);
+  return new Inspector(ruleConfig);
 });
