@@ -1,9 +1,9 @@
-import {EMPTY, of} from 'rxjs';
 import {concatMap, map, reduce} from 'rxjs/operators';
 
 import CLITable3 from 'cli-table3';
 import _ from 'lodash/fp';
 import colors from 'ansi-colors';
+import {from} from 'rxjs';
 import {pipeIf} from '../operators';
 import {version} from '../../package.json';
 import wrapAnsi from 'wrap-ansi';
@@ -132,12 +132,15 @@ export const toTable = (opts = {}) => {
         table.push(row);
         return table;
       }, table),
-      concatMap(table =>
-        of(
-          outputHeader ? withHeader(outputHeader, table) : EMPTY,
-          table,
-          outputFooter ? withFooter(outputFooter, table) : EMPTY
-        )
-      )
+      concatMap(table => {
+        let output = [table];
+        if (outputHeader) {
+          output = [withHeader(outputHeader, table), ...output];
+        }
+        if (outputFooter) {
+          output = [...output, withFooter(outputFooter, table)];
+        }
+        return from(output);
+      })
     );
 };

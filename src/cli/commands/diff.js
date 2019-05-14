@@ -82,7 +82,7 @@ export const handler = argv => {
           }
         ],
         pretty,
-        title: `Diff: ${file1} <=> ${file2}`,
+        outputHeader: `Diff: ${file1} <=> ${file2}`,
         truncateValues,
         wrapValues
       })
