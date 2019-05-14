@@ -4,6 +4,7 @@ import debug from 'debug';
 import pkg from '../package.json';
 
 const NAMESPACE_SEPARATOR = ':';
+const APP_NAMESPACE = `${pkg.name}*`;
 
 const getModuleId = module => {
   const relpath = relative(resolve(__dirname, '..'), module.id);
@@ -22,5 +23,7 @@ export const createDebugger = (module, ...extra) => {
 };
 
 export const enableDebugger = () => {
-  debug.enable(`${pkg.name}*`);
+  debug.enable(APP_NAMESPACE);
 };
+
+export const isDebugEnabled = module => debug.enabled(getModuleId(module));
