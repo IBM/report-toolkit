@@ -39,16 +39,16 @@ describe('module:load-report', function() {
 
   describe('function', function() {
     describe('loadReports()', function() {
-      let loadReports;
+      let loadReport;
 
       beforeEach(function() {
-        loadReports = subject.loadReports;
+        loadReport = subject.loadReport;
       });
 
       describe('when given valid filepath to report', function() {
         it('should parse the report JSON', function() {
           return expect(
-            loadReports(REPORT_005_FILEPATH),
+            loadReport(REPORT_005_FILEPATH),
             'to complete with value',
             Report.create(REPORT_005_FILEPATH, REDACTED_REPORT)
             // require(REPORT_005_FILEPATH)
@@ -58,7 +58,7 @@ describe('module:load-report', function() {
 
       describe('when not passed a filepath', function() {
         it('should emit an error', function() {
-          return expect(loadReports(), 'to emit error');
+          return expect(loadReport(), 'to emit error');
         });
       });
     });

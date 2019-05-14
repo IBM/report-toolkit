@@ -1,11 +1,10 @@
 import {filter, map, tap} from 'rxjs/operators';
 import {from, of} from 'rxjs';
+import {fromArray, pipeIf} from '../../src/operators';
 
 import {Report} from '../../src/report';
 import {Rule} from '../../src/rule';
-import _ from 'lodash/fp';
 import {createDebugger} from '../../src/debug';
-import {pipeIf} from '../../src/operators';
 
 const debug = createDebugger(module);
 
@@ -58,20 +57,13 @@ describe('module:api/observable', function() {
         })
       },
       '../load-report': {
-        loadReports: sandbox
-          .stub()
-          .callsFake(filepaths =>
-            _.isArray(filepaths)
-              ? of(
-                  ...filepaths.map(filepath =>
-                    Report.create(filepath, require(filepath))
-                  )
-                )
-              : of(Report.create(filepaths, require(filepaths)))
-          ),
         loadReport: sandbox
           .stub()
-          .callsFake(filepath => of(Report.create(filepath, require(filepath))))
+          .callsFake(filepaths =>
+            fromArray(filepaths).pipe(
+              map(filepath => Report.create(filepath, require(filepath)))
+            )
+          )
       }
     });
   });

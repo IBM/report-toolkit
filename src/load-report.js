@@ -1,55 +1,51 @@
 import {bindNodeCallback, iif, of, throwError} from 'rxjs';
-import {map, mergeMap, toArray} from 'rxjs/operators';
+import {fromArray, pipeIf, sort} from './operators';
+import {map, mergeMap} from 'rxjs/operators';
 
 import {Report} from './report';
 import _ from 'lodash/fp';
-import {createDebugger} from './debug';
 import fs from 'fs';
-import {pipeIf} from './operators';
 import {redact} from './redact';
 
 const DEFAULT_SORT_FIELD = 'header.dumpEventTimestamp';
 const DEFAULT_SORT_ORDER = 'asc';
 
-const debug = createDebugger(module);
 const readFile = bindNodeCallback(fs.readFile);
 
-export const loadReport = (filepath, {redactSecrets = true} = {}) => {
-  if (!redactSecrets) {
-    debug(
-      `REDACTION DISABLED for ${filepath}; you are bad and should feel bad`
-    );
-  }
-  return (_.isObject(filepath)
-    ? of(filepath)
-    : readFile(filepath, 'utf8').pipe(map(JSON.parse))
-  ).pipe(
-    pipeIf(redactSecrets, map(redact)),
-    map(Report.create(filepath))
-  );
-};
-
-export const sortReports = ({sortField, sortDirection}) => observable =>
+/**
+ * Pipes a path to a JSON report into a usually-redacted `Report` object
+ * @param {string} filepath - Path to JSON report
+ * @param {boolean} [opts.redactSecrets=true] - If `true`, redact secrets from loaded report
+ * @returns {Observable<Report>}
+ */
+const load = ({redactSecrets = true} = {}) => observable =>
   observable.pipe(
-    toArray(),
-    mergeMap(_.orderBy(_.get(sortField), sortDirection))
+    mergeMap(filepath =>
+      of(filepath).pipe(
+        mergeMap(filepath => readFile(filepath, 'utf8')),
+        map(JSON.parse),
+        pipeIf(redactSecrets, map(redact)),
+        map(Report.create(filepath))
+      )
+    )
   );
 
-export const loadReports = (
+export const loadReport = (
   filepaths = [],
   {
     redactSecrets = true,
     sortField = DEFAULT_SORT_FIELD,
-    sortDirection = DEFAULT_SORT_ORDER
+    sortDirection = DEFAULT_SORT_ORDER,
+    disableSort = false
   } = {}
-) => {
-  if (_.isEmpty(filepaths)) {
-    return throwError(
+) =>
+  iif(
+    () => _.isEmpty(filepaths),
+    throwError(
       new Error('Invalid parameters: one or more filepaths are required')
-    );
-  }
-  return iif(() => _.isArray(filepaths), of(...filepaths), of(filepaths)).pipe(
-    mergeMap(report => loadReport(report, {redactSecrets})),
-    sortReports({sortField, sortDirection})
+    ),
+    fromArray(filepaths).pipe(
+      load({redactSecrets}),
+      pipeIf(!disableSort, sort(sortField, sortDirection))
+    )
   );
-};

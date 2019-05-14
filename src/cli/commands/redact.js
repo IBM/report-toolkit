@@ -1,4 +1,4 @@
-import {loadReports} from '../../api/observable';
+import {loadReport} from '../../api/observable';
 import {map} from 'rxjs/operators';
 import stringify from 'fast-safe-stringify';
 import {writeFileSync} from 'fs';
@@ -20,7 +20,7 @@ export const builder = yargs =>
   });
 
 export const handler = ({file, output} = {}) => {
-  loadReports(file)
+  loadReport(file)
     .pipe(map(report => stringify(report, null, 2)))
     .subscribe(json => {
       if (output) {
