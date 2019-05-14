@@ -15,14 +15,14 @@ describe('rule:cpu-usage', function() {
     describe('when the avg CPU usage in the report is under threshold', function() {
       it('should report with usage ms, rounded down', function() {
         return expect(
-          inspect('../fixture/report-001.json'),
+          inspect('../fixture/reports/report-001.json'),
           'to complete with values',
           {
             id: 'cpu-usage',
             message:
               'Kernel+User Avg CPU (ms) is under the specified threshold',
             data: {threshold: 1000, usage: 30},
-            filepath: '../fixture/report-001.json'
+            filepath: '../fixture/reports/report-001.json'
           }
         );
       });
@@ -41,13 +41,13 @@ describe('rule:cpu-usage', function() {
     describe('when the avg CPU usage in the report is over threshold', function() {
       it('should report with usage ms, rounded up', function() {
         return expect(
-          inspect('../fixture/report-001.json'),
+          inspect('../fixture/reports/report-001.json'),
           'to complete with values',
           {
             id: 'cpu-usage',
             message: 'Kernel+User Avg CPU (ms) is over the specified threshold',
             data: {threshold: 30, usage: 31},
-            filepath: '../fixture/report-001.json'
+            filepath: '../fixture/reports/report-001.json'
           }
         );
       });

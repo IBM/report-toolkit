@@ -11,13 +11,13 @@ describe('rule:long-timeout', function() {
     describe('when the timer is referenced', function() {
       it('should report', function() {
         return expect(
-          inspect('../fixture/report-003-long-timeout.json'),
+          inspect('../fixture/reports/report-003-long-timeout.json'),
           'to complete with values',
           {
             id: 'long-timeout',
             message:
               'libuv handle at address 0x00007ffeefbfe2e8 is a timer with future expiry in 3h',
-            filepath: '../fixture/report-003-long-timeout.json'
+            filepath: '../fixture/reports/report-003-long-timeout.json'
           }
         );
       });
@@ -26,7 +26,7 @@ describe('rule:long-timeout', function() {
     describe('when the timer is unreferenced', function() {
       it('should not report', function() {
         return expect(
-          inspect('../fixture/report-004-long-timeout-unref.json'),
+          inspect('../fixture/reports/report-004-long-timeout-unref.json'),
           'not to emit values'
         );
       });

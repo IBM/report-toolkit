@@ -2,8 +2,8 @@ import {map, mergeMap} from 'rxjs/operators';
 
 import {Inspector} from '../../src/inspect-report';
 import {Report} from '../../src/report';
+import {loadReports} from '../../src/load-report';
 import {loadRuleFromFilepath} from '../../src/rule-loader';
-import {readReports} from '../../src/read-report';
 
 export const createInspect = async (ruleFilepath, config = {}) => {
   const inspector = Inspector.create(
@@ -11,7 +11,7 @@ export const createInspect = async (ruleFilepath, config = {}) => {
     await loadRuleFromFilepath(require.resolve(ruleFilepath))
   );
   return filepath =>
-    readReports(require.resolve(filepath)).pipe(
+    loadReports(require.resolve(filepath)).pipe(
       map(Report.create(filepath)),
       mergeMap(report => inspector.inspect(report))
     );
