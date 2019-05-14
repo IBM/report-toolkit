@@ -51,7 +51,6 @@ describe('module:load-report', function() {
             loadReport(REPORT_005_FILEPATH),
             'to complete with value',
             Report.create(REPORT_005_FILEPATH, REDACTED_REPORT)
-            // require(REPORT_005_FILEPATH)
           );
         });
       });
