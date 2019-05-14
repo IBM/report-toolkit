@@ -22,4 +22,4 @@ overrides:
     globals:
       expect: false
       sinon: false
-      rewiremock: false
+      proxyquire: false

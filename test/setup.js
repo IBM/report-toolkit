@@ -1,6 +1,5 @@
-import rewiremock, {addPlugin, overrideEntryPoint, plugins} from 'rewiremock';
-
 import expect from 'unexpected';
+import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import unexpectedRxJS from './unexpected-rxjs';
 import unexpectedSinon from 'unexpected-sinon';
@@ -12,9 +11,6 @@ global.expect = expect
   .use(unexpectedSinon)
   .use(unexpectedRxJS);
 
-overrideEntryPoint(module);
+proxyquire.noPreserveCache();
 
-addPlugin(plugins.usedByDefault);
-
-rewiremock.forceCacheClear(true);
-global.rewiremock = rewiremock;
+global.proxyquire = proxyquire;

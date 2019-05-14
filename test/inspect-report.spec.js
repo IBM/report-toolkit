@@ -27,22 +27,16 @@ describe('module:inspect-report', function() {
 
     describe('static method', function() {
       describe('create()', function() {
-        it('should delegate to the constructor', function() {
+        it('should construct an Inspector', function() {
           const ruleConfig = {};
           const rawConfig = {};
-          sandbox.spy(Reflect, 'construct');
-          Inspector.create(rawConfig, ruleConfig);
-          expect(Reflect.construct, 'to have a call satisfying', [
-            Inspector,
-            [ruleConfig]
-          ]);
-        });
-      });
 
-      describe('inspectReport()', function() {
-        it(
-          'should return an Observable which completes with results for a rule run against a report'
-        );
+          expect(
+            Inspector.create(rawConfig, ruleConfig),
+            'to be an',
+            Inspector
+          );
+        });
       });
     });
 

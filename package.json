@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "posttest": "markdownlint --ignore node_modules . && eslint .",
-    "test": "mocha \"test/*.spec.js\" && mocha \"test/api/**/*.spec.js\""
+    "test": "mocha"
   },
   "bin": {
     "gnostic": "src/cli/gnostic.js"
@@ -31,7 +31,6 @@
     "json2csv": "^4.5.1",
     "lodash": "^4.17.11",
     "ms": "^2.1.1",
-    "rewiremock": "^3.13.7",
     "rfc6902": "^3.0.2",
     "rxjs": "^6.5.2",
     "strip-ansi": "^5.2.0",
@@ -56,6 +55,7 @@
     "markdownlint-cli": "^0.14.1",
     "mocha": "^6.1.4",
     "prettier": "^1.17.1",
+    "proxyquire": "^2.1.0",
     "sinon": "^7.3.2",
     "unexpected": "^11.5.1",
     "unexpected-sinon": "^10.11.2"

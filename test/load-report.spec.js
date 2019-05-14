@@ -23,17 +23,14 @@ describe('module:load-report', function() {
   beforeEach(function() {
     sandbox = sinon.createSandbox();
 
-    subject = rewiremock.proxy(
-      () => require('../src/load-report'),
-      () => {
-        rewiremock(() => require('../src/redact')).with({
-          redact: sandbox.stub().callsFake(() => {
-            debug('returning mock redacted report');
-            return REDACTED_REPORT;
-          })
-        });
+    subject = proxyquire(require.resolve('../src/load-report'), {
+      './redact': {
+        redact: sandbox.stub().callsFake(() => {
+          debug('returning mock redacted report');
+          return REDACTED_REPORT;
+        })
       }
-    );
+    });
   });
 
   afterEach(function() {

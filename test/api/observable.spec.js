@@ -33,56 +33,47 @@ describe('module:api/observable', function() {
       {id: 'bar', filepath: require.resolve('../fixture/rules/bar')}
     ];
 
-    subject = rewiremock.proxy(
-      () => require('../../src/api/observable'),
-      () => {
-        rewiremock(() => require('../../src/config'))
-          .with({
-            loadConfig: sandbox
-              .stub()
-              .callsFake(({config}) =>
-                of(config).pipe(
-                  tap(config => debug(`loaded mock config`, config))
-                )
-              )
-          })
-          .callThrough();
-        rewiremock(() => require('../../src/rule-loader')).with({
-          readDirpath: sandbox.stub().callsFake(() =>
-            from(['foo.js', 'bar.js']).pipe(
-              tap(filename => {
-                debug(`readDirpath returning mock filename ${filename}`);
-              })
-            )
-          ),
-          loadRules: sandbox.stub().callsFake(({ruleIds}) => {
-            ruleIds = new Set(ruleIds);
-            return from(ruleDefs).pipe(
-              pipeIf(ruleIds.size, filter(({id}) => ruleIds.has(id))),
-              map(({id, filepath}) => Rule.create({...rules[id], id, filepath}))
-            );
-          })
-        });
-        rewiremock(() => require('../../src/load-report')).with({
-          loadReports: sandbox
-            .stub()
-            .callsFake(filepaths =>
-              _.isArray(filepaths)
-                ? of(
-                    ...filepaths.map(filepath =>
-                      Report.create(filepath, require(filepath))
-                    )
+    subject = proxyquire(require.resolve('../../src/api/observable'), {
+      '../config': {
+        loadConfig: sandbox
+          .stub()
+          .callsFake(({config}) =>
+            of(config).pipe(tap(config => debug(`loaded mock config`, config)))
+          )
+      },
+      '../rule-loader': {
+        readDirpath: sandbox.stub().callsFake(() =>
+          from(['foo.js', 'bar.js']).pipe(
+            tap(filename => {
+              debug(`readDirpath returning mock filename ${filename}`);
+            })
+          )
+        ),
+        loadRules: sandbox.stub().callsFake(({ruleIds}) => {
+          ruleIds = new Set(ruleIds);
+          return from(ruleDefs).pipe(
+            pipeIf(ruleIds.size, filter(({id}) => ruleIds.has(id))),
+            map(({id, filepath}) => Rule.create({...rules[id], id, filepath}))
+          );
+        })
+      },
+      '../load-report': {
+        loadReports: sandbox
+          .stub()
+          .callsFake(filepaths =>
+            _.isArray(filepaths)
+              ? of(
+                  ...filepaths.map(filepath =>
+                    Report.create(filepath, require(filepath))
                   )
-                : of(Report.create(filepaths, require(filepaths)))
-            ),
-          loadReport: sandbox
-            .stub()
-            .callsFake(filepath =>
-              of(Report.create(filepath, require(filepath)))
-            )
-        });
+                )
+              : of(Report.create(filepaths, require(filepaths)))
+          ),
+        loadReport: sandbox
+          .stub()
+          .callsFake(filepath => of(Report.create(filepath, require(filepath))))
       }
-    );
+    });
   });
 
   afterEach(function() {

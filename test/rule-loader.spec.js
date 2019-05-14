@@ -1,33 +1,40 @@
 import {Rule} from '../src/rule';
-import fs from 'fs';
-import {join} from 'path';
+import path from 'path';
+
+const SRC_DIR = path.resolve(__dirname, '..', 'src');
+const RULES_DIR = path.join(SRC_DIR, 'rules');
+const FIXTURE_RULES_DIR = path.join(__dirname, 'fixture', 'rules');
 
 describe('module:rule-loader', function() {
   const FILES = ['foo.js', 'bar.js'];
   let sandbox;
   let subject;
-  let readdir;
 
   beforeEach(function() {
     sandbox = sinon.createSandbox();
 
-    subject = rewiremock.proxy(
-      () => require('../src/rule-loader'),
-      () => {
-        rewiremock(() => require('fs'))
-          .with({
-            readdir: sandbox.stub().callsFake((ignored, callback) => {
-              process.nextTick(() => callback(null, FILES));
-            })
-          })
-          .callThrough();
-        rewiremock(() => require('path'))
-          .with({
-            resolve: (from, to) => join(__dirname, 'fixture', 'rules', to)
-          })
-          .callThrough();
+    const resolve = sandbox
+      .stub()
+      .callsFake((...args) => path.resolve(...args));
+    resolve
+      .withArgs(RULES_DIR, 'foo.js')
+      .returns(path.join(FIXTURE_RULES_DIR, 'foo.js'));
+    resolve
+      .withArgs(RULES_DIR, 'bar.js')
+      .returns(path.join(FIXTURE_RULES_DIR, 'bar.js'));
+
+    subject = proxyquire(require.resolve('../src/rule-loader'), {
+      fs: {
+        readdir: sandbox.stub().callsFake((ignored, callback) => {
+          process.nextTick(() => callback(null, FILES));
+        })
+      },
+      path: {
+        resolve,
+        join: sandbox.stub().returns(FIXTURE_RULES_DIR)
       }
-    );
+    });
+    subject.loadRuleFromRuleDef.cache.clear();
   });
 
   afterEach(function() {
@@ -61,34 +68,21 @@ describe('module:rule-loader', function() {
     });
 
     describe('when called with searchPath', function() {
-      let searchPath;
-      let rules;
-
-      beforeEach(function() {
-        searchPath = join(__dirname, 'fixture', 'rules');
-        rules = {
-          foo: require('./fixture/rules/foo'),
-          bar: require('./fixture/rules/bar')
-        };
-        readdir = sandbox.stub(fs, 'readdir');
-        readdir.onFirstCall().callsArgWithAsync(1, null, ['foo.js', 'bar.js']);
-      });
-
       it('should return a list of rules from dir searchPath', function() {
         return expect(
-          loadRules({searchPath}),
+          loadRules({searchPath: FIXTURE_RULES_DIR}),
           'to complete with values',
           Rule.create({
-            inspect: rules.foo.inspect,
+            inspect: require('./fixture/rules/foo').inspect,
             meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'foo',
-            filepath: join(searchPath, 'foo.js')
+            filepath: path.join(FIXTURE_RULES_DIR, 'foo.js')
           }),
           Rule.create({
-            inspect: rules.bar.inspect,
+            inspect: require('./fixture/rules/bar').inspect,
             meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'bar',
-            filepath: join(searchPath, 'bar.js')
+            filepath: path.join(FIXTURE_RULES_DIR, 'bar.js')
           })
         );
       });
@@ -96,8 +90,8 @@ describe('module:rule-loader', function() {
       describe('when called twice with the same dirpath parameter', function() {
         it('should not re-read the directory', async function() {
           const [obs1, obs2] = [
-            loadRules({searchPath}),
-            loadRules({searchPath})
+            loadRules({searchPath: FIXTURE_RULES_DIR}),
+            loadRules({searchPath: FIXTURE_RULES_DIR})
           ];
           return expect(
             obs2.toPromise(),
@@ -110,35 +104,14 @@ describe('module:rule-loader', function() {
   });
 
   describe('findRuleDefs()', function() {
-    let searchPath;
-
-    beforeEach(function() {
-      subject = rewiremock.proxy(
-        () => require('../src/rule-loader'),
-        () => {
-          rewiremock(() => require('fs'))
-            .with({
-              readdir: sandbox.stub().callsFake((ignored, callback) => {
-                process.nextTick(() => callback(null, FILES));
-              })
-            })
-            .callThrough();
-          rewiremock(() => require('path'))
-            .with({
-              resolve: (from, to) => join(__dirname, 'fixture', 'rules', to)
-            })
-            .callThrough();
-        }
-      );
-      searchPath = join(__dirname, 'fixture', 'rules');
-    });
+    const searchPath = FIXTURE_RULES_DIR;
 
     describe('when called with an list of rule IDs', function() {
       it('should only emit rule defs having IDs included in the list', function() {
         return expect(
           subject.findRuleDefs({searchPath, ruleIds: ['foo']}),
           'to complete with values',
-          {filepath: join(searchPath, 'foo.js'), id: 'foo'}
+          {filepath: path.join(searchPath, 'foo.js'), id: 'foo'}
         ).and('to emit once');
       });
     });
@@ -149,11 +122,11 @@ describe('module:rule-loader', function() {
           subject.findRuleDefs({searchPath}),
           'to complete with values',
           {
-            filepath: join(searchPath, 'foo.js'),
+            filepath: path.join(searchPath, 'foo.js'),
             id: 'foo'
           },
           {
-            filepath: join(searchPath, 'bar.js'),
+            filepath: path.join(searchPath, 'bar.js'),
             id: 'bar'
           }
         ).and('to emit twice');
