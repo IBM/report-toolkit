@@ -55,14 +55,19 @@ export const inspect = (
   }
 
   // decent chance there's a better way to do this--welcome to ideas
+  return prepareInspectors({config, searchPath, search}).pipe(
+    mergeMap(inspector =>
+      reports.pipe(mergeMap(report => inspector.inspect(report)))
+    )
+  );
+};
+
+export const prepareInspectors = ({config, searchPath, search} = {}) => {
   return loadConfig({config, searchPath, search}).pipe(
     mergeMap(config =>
       loadRules({ruleIds: filterEnabledRules(config)}).pipe(
         map(rule => Inspector.create(config[rule.id], rule))
       )
-    ),
-    mergeMap(inspector =>
-      reports.pipe(mergeMap(report => inspector.inspect(report)))
     )
   );
 };

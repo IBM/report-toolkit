@@ -14,7 +14,7 @@ const readFile = bindNodeCallback(fs.readFile);
 
 /**
  * Pipes a path to a JSON report into a usually-redacted `Report` object
- * @param {string} filepath - Path to JSON report
+ * @param {string|Object} filepath - Path to JSON report or raw (parsed) report itself
  * @param {boolean} [opts.redactSecrets=true] - If `true`, redact secrets from loaded report
  * @returns {Observable<Report>}
  */
@@ -22,10 +22,17 @@ const load = ({redactSecrets = true} = {}) => observable =>
   observable.pipe(
     mergeMap(filepath =>
       of(filepath).pipe(
-        mergeMap(filepath => readFile(filepath, 'utf8')),
-        map(JSON.parse),
+        pipeIf(
+          _.isString,
+          mergeMap(filepath => readFile(filepath, 'utf8')),
+          map(JSON.parse)
+        ),
         pipeIf(redactSecrets, map(redact)),
-        map(Report.create(filepath))
+        pipeIf(
+          _.isObject(filepath),
+          map(report => Report.create(null, report))
+        ),
+        pipeIf(_.isString(filepath), map(Report.create(filepath)))
       )
     )
   );
@@ -44,8 +51,8 @@ export const loadReport = (
     throwError(
       new Error('Invalid parameters: one or more filepaths are required')
     ),
-    fromArray(filepaths).pipe(
-      load({redactSecrets}),
-      pipeIf(!disableSort, sort(sortField, sortDirection))
-    )
+    fromArray(filepaths)
+  ).pipe(
+    load({redactSecrets}),
+    pipeIf(!disableSort, sort(sortField, sortDirection))
   );

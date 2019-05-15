@@ -1,4 +1,4 @@
-import {from, iif, of} from 'rxjs';
+import {defer, from, of} from 'rxjs';
 import {mergeMap, toArray} from 'rxjs/operators';
 
 import _ from 'lodash/fp';
@@ -37,4 +37,4 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
  * @returns {Observable<any>}
  */
 export const fromArray = value =>
-  iif(() => _.isArray(value), from(value), of(value));
+  defer(() => (_.isArray(value) ? from(value) : of(value)));
