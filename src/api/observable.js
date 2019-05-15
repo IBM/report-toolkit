@@ -62,15 +62,14 @@ export const inspect = (
   );
 };
 
-export const prepareInspectors = ({config, searchPath, search} = {}) => {
-  return loadConfig({config, searchPath, search}).pipe(
+export const prepareInspectors = ({config, searchPath, search} = {}) =>
+  loadConfig({config, searchPath, search}).pipe(
     mergeMap(config =>
       loadRules({ruleIds: filterEnabledRules(config)}).pipe(
         map(rule => Inspector.create(config[rule.id], rule))
       )
     )
   );
-};
 
 // usefulness of these being public APIs is dubious
 export {loadReport, loadConfig, loadRules};

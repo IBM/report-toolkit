@@ -1,11 +1,11 @@
 import {
+  concatMap,
   filter,
   first,
   map,
   mergeMap,
   pluck,
   share,
-  switchMap,
   takeUntil
 } from 'rxjs/operators';
 
@@ -16,6 +16,7 @@ import childProcess from 'child_process';
 import {fromEvent} from 'rxjs';
 import {loadReport} from '../../src/load-report';
 import {loadRuleFromFilepath} from '../../src/rule-loader';
+import {redact} from '../../src/redact';
 
 export const createInspect = async (ruleFilepath, config = {}) => {
   const inspector = Inspector.create(
@@ -41,7 +42,9 @@ export const sample = (interval = 500, count = 5) => {
     stdio: 'ignore'
   });
 
-  const reports = fromIPC(proc).pipe(
+  const ipc = fromIPC(proc);
+
+  const reports = ipc.pipe(
     filter(
       _.pipe(
         _.get('title'),
@@ -49,10 +52,11 @@ export const sample = (interval = 500, count = 5) => {
       )
     ),
     pluck('report'),
+    map(redact),
     share()
   );
 
-  return fromIPC(proc).pipe(
+  return ipc.pipe(
     filter(
       _.pipe(
         _.get('title'),
@@ -60,7 +64,7 @@ export const sample = (interval = 500, count = 5) => {
       )
     ),
     first(),
-    switchMap(() => {
+    concatMap(() => {
       proc.send({title: 'start', payload: {interval, count}});
       return reports;
     })
