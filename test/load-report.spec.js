@@ -50,7 +50,7 @@ describe('module:load-report', function() {
           return expect(
             loadReport(REPORT_005_FILEPATH),
             'to complete with value',
-            Report.create(REPORT_005_FILEPATH, REDACTED_REPORT)
+            Report.createFromFile(REPORT_005_FILEPATH, REDACTED_REPORT)
           );
         });
       });

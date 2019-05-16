@@ -61,7 +61,9 @@ describe('module:api/observable', function() {
           .stub()
           .callsFake(filepaths =>
             fromArray(filepaths).pipe(
-              map(filepath => Report.create(filepath, require(filepath)))
+              map(filepath =>
+                Report.createFromFile(filepath, require(filepath))
+              )
             )
           )
       }

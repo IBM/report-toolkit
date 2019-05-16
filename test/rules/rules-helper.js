@@ -25,7 +25,7 @@ export const createInspect = async (ruleFilepath, config = {}) => {
   );
   return filepath =>
     loadReport(require.resolve(filepath)).pipe(
-      map(Report.create(filepath)),
+      map(Report.createFromFile(filepath)),
       mergeMap(report => inspector.inspect(report))
     );
 };

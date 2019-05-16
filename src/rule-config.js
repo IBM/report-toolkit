@@ -6,16 +6,16 @@ export class RuleConfig {
   /**
    *
    * @param {Rule} rule
-   * @param {Object} [config]
+   * @param {Object} [rawConfig]
    */
-  constructor(rule, config = {}) {
+  constructor(rule, rawConfig = {}) {
     ruleMap.set(this, rule);
     try {
-      RuleConfig.validate(config);
+      RuleConfig.validate(rawConfig);
     } catch (err) {
       // do something
     }
-    this.config = Object.freeze(config);
+    this.config = Object.freeze(rawConfig);
   }
 
   get id() {
@@ -37,11 +37,11 @@ export class RuleConfig {
     return true;
   }
 
-  inspect(ctx) {
-    return ruleMap.get(this).inspect(ctx, this.config);
+  inspect(context, stream) {
+    return ruleMap.get(this).inspect({context, stream, config: this.config});
   }
 
-  static create(rule, config) {
-    return Reflect.construct(RuleConfig, [rule, config]);
+  static create(rule, rawConfig) {
+    return new RuleConfig(rule, rawConfig);
   }
 }

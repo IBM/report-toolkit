@@ -1,4 +1,7 @@
+import {from, throwError} from 'rxjs';
+
 import _ from 'lodash/fp';
+import {fromArray} from './operators';
 
 export const kRuleId = Symbol('ruleId');
 export const kRuleMeta = Symbol('ruleMeta');
@@ -49,13 +52,8 @@ export class Rule {
     return this[kRuleMeta];
   }
 
-  /**
-   *
-   * @param {Context} context - Context object
-   * @param {Object} [config] - Optional rule-specific config
-   */
-  async inspect(context, config = {}) {
-    return this[kRuleInspect].call(null, context, config);
+  inspect(context, config = {}) {
+    return throwError(new Error('Not implemented'));
   }
 
   static applyDefaults(ruleDef) {
@@ -85,9 +83,29 @@ Rule.create = _.memoize(ruleDef => {
   return Reflect.construct(ctor, [ruleDef]);
 });
 
-export class SimpleRule extends Rule {}
+export class SimpleRule extends Rule {
+  /**
+   *
+   * @param {Context} context - Context object
+   * @param {Object} [config] - Optional rule-specific config
+   * @returns {Observable}
+   */
+  inspect({context, config = {}} = {}) {
+    return fromArray(this[kRuleInspect].call(null, context, config) || []);
+  }
+}
 
-export class TemporalRule extends Rule {}
+export class TemporalRule extends Rule {
+  /**
+   *
+   * @param {Context} context - Context object
+   * @param {Object} [config] - Optional rule-specific config
+   * @returns {Observable}
+   */
+  inspect({stream, config = {}} = {}) {
+    return from(this[kRuleInspect].call(null, stream, config) || []);
+  }
+}
 
 const RULE_MODE_MAP = new Map([
   ['simple', SimpleRule],

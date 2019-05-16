@@ -1,11 +1,12 @@
-import {Observable, from} from 'rxjs';
+import {concat, from} from 'rxjs';
+import {map, mergeMap} from 'rxjs/operators';
 
 import {Rule} from './rule';
 import {RuleConfig} from './rule-config';
 import _ from 'lodash/fp';
-import {mergeMap} from 'rxjs/operators';
+import {pipeIf} from '../.history/src/operators_20190514142208';
 
-const configMap = new WeakMap();
+const ruleConfigMap = new WeakMap();
 
 /**
  * Object output by inspection
@@ -23,7 +24,7 @@ export class Inspector {
    * @param {RuleConfig} config
    */
   constructor(config) {
-    configMap.set(this, config);
+    ruleConfigMap.set(this, config);
   }
 
   /**
@@ -32,58 +33,41 @@ export class Inspector {
    * @returns {Observable<RuleReport>}
    */
   inspect(...reports) {
-    return from(reports).pipe(
-      mergeMap(
-        report =>
-          new Observable(async observer => {
-            const formatResult = (message, data) => ({
-              message: String(message).trim(),
-              data,
-              ...basicInfo
-            });
-            const {ruleConfig} = this;
-            const {id} = ruleConfig;
-            const basicInfo = {filepath: report.filepath, id};
-            const reporter = function() {
-              observer.next(formatResult(...arguments));
-              return this;
-            };
-            const ctx = Proxy.revocable(report, {
-              get(target, prop) {
-                if (prop === 'report') {
-                  return reporter;
-                } else if (prop === 'filepath') {
-                  return report.filepath;
-                }
-                return Reflect.get(...arguments);
-              }
-            });
+    const contexts = _.map(report => report.createContext(), reports);
+    return from(contexts).pipe(
+      mergeMap(context => {
+        const basicInfo = {
+          filepath: context.filepath,
+          id: this.ruleConfig.id
+        };
+        const formatResult = (message, data) => ({
+          message: String(message).trim(),
+          data,
+          ...basicInfo
+        });
 
-            from(ruleConfig.inspect(ctx.proxy)).subscribe({
-              next: result => {
-                if (_.isString(result)) {
-                  observer.next(formatResult(result));
-                } else if (_.isObject(result)) {
-                  observer.next(formatResult(result.message, result.data));
-                } else if (!_.isUndefined(result)) {
-                  observer.error(new Error(`Invalid result: ${result}`));
-                }
-              },
-              error: err => {
-                observer.error(err);
-              },
-              complete: () => {
-                ctx.revoke();
-                observer.complete();
-              }
-            });
-          })
-      )
+        return concat(
+          this.ruleConfig.inspect(context, from(contexts)),
+          context.readQueue()
+        ).pipe(
+          pipeIf(
+            _.has('message'),
+            map(({message, data}) => formatResult(message, data))
+          ),
+          pipeIf(_.isString, map(_.unary(formatResult))),
+          pipeIf(
+            _.negate(_.isObject),
+            map(result => {
+              throw new Error(`Invalid result: ${result}`);
+            })
+          )
+        );
+      })
     );
   }
 
   get ruleConfig() {
-    return configMap.get(this);
+    return ruleConfigMap.get(this);
   }
 }
 

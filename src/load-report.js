@@ -30,9 +30,9 @@ const load = ({redactSecrets = true} = {}) => observable =>
         pipeIf(redactSecrets, map(redact)),
         pipeIf(
           _.isObject(filepath),
-          map(report => Report.create(null, report))
+          map(report => Report.createFromFile(null, report))
         ),
-        pipeIf(_.isString(filepath), map(Report.create(filepath)))
+        pipeIf(_.isString(filepath), map(Report.createFromFile(filepath)))
       )
     )
   );

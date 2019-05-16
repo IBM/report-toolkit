@@ -16,19 +16,19 @@ const VERSION_REGEXP = /(\d+(?:\.\d+)+[a-z]?)/;
 exports.inspect = (context, {ignore = []} = {}) => {
   const ignoredComponents = new Set(ignore);
   const {sharedObjects, header} = context;
-  Object.keys(header.componentVersions)
+  return Object.keys(header.componentVersions)
     .filter(component => !ignoredComponents.has(component))
-    .forEach(component => {
+    .flatMap(component => {
       const version = header.componentVersions[component];
-      sharedObjects
+      return sharedObjects
         .filter(filepath => filepath.includes(component))
-        .forEach(filepath => {
+        .filter(filepath => {
           const sharedVersion = VERSION_REGEXP.exec(filepath);
-          if (sharedVersion && sharedVersion[1] !== version) {
-            context.report(
-              `Custom shared library at ${filepath} in use conflicting with ${component}@${version}`
-            );
-          }
-        });
+          return sharedVersion && sharedVersion[1] !== version;
+        })
+        .map(
+          filepath =>
+            `Custom shared library at ${filepath} in use conflicting with ${component}@${version}`
+        );
     });
 };

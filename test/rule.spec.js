@@ -137,7 +137,7 @@ describe('module:rule', function() {
 
       it('should call the `inspect` method of the rule definition', async function() {
         const context = {};
-        await rule.inspect(context);
+        await rule.inspect({context});
         return expect(inspect, 'to have a call satisfying', {
           args: [context, {}],
           thisValue: null
