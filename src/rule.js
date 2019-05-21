@@ -1,12 +1,23 @@
-import {from, throwError} from 'rxjs';
+import * as gnosticOperators from './operators';
+import * as operators from 'rxjs/operators';
+import * as rxjs from 'rxjs';
 
 import _ from 'lodash/fp';
-import {fromArray} from './operators';
 
 export const kRuleId = Symbol('ruleId');
 export const kRuleMeta = Symbol('ruleMeta');
 export const kRuleInspect = Symbol('ruleInspect');
 export const kRuleFilepath = Symbol('ruleFilepath');
+
+const {iif, isObservable, throwError} = rxjs;
+const {fromArray} = gnosticOperators;
+const {mergeMap, map, filter} = operators;
+
+const util = Object.freeze({
+  ...operators,
+  ...rxjs,
+  ...gnosticOperators
+});
 
 /**
  * @typedef {Object} RuleDefinition
@@ -56,6 +67,10 @@ export class Rule {
     return throwError(new Error('Not implemented'));
   }
 
+  static formatMessage(message) {
+    return String(message).trim();
+  }
+
   static applyDefaults(ruleDef) {
     return _.defaultsDeep(
       {
@@ -86,24 +101,83 @@ Rule.create = _.memoize(ruleDef => {
 export class SimpleRule extends Rule {
   /**
    *
-   * @param {Context} context - Context object
+   * @param {Observable<Context>} contexts - Context objects
    * @param {Object} [config] - Optional rule-specific config
    * @returns {Observable}
    */
-  inspect({context, config = {}} = {}) {
-    return fromArray(this[kRuleInspect].call(null, context, config) || []);
+  inspect({contexts, config = {}}) {
+    return contexts.pipe(
+      mergeMap(context => {
+        return fromArray(
+          this[kRuleInspect].call(null, {context, config, util}) || []
+        ).pipe(
+          map(
+            message =>
+              this.formatResult({
+                filepath: context.filepath,
+                message
+              }),
+            filter(Boolean)
+          )
+        );
+      })
+    );
+  }
+
+  formatResult({filepath, message, data} = {}) {
+    if (_.isUndefined(message)) {
+      return;
+    }
+    const info = {
+      filepath,
+      id: this.id
+    };
+
+    if (_.has('message', message)) {
+      data = message.data;
+      message = message.message;
+    }
+
+    return {message: Rule.formatMessage(message), data, ...info};
   }
 }
 
 export class TemporalRule extends Rule {
   /**
    *
-   * @param {Context} context - Context object
+   * @param {Observable<Context>} contexts - Context object
    * @param {Object} [config] - Optional rule-specific config
    * @returns {Observable}
    */
-  inspect({stream, config = {}} = {}) {
-    return from(this[kRuleInspect].call(null, stream, config) || []);
+  inspect({contexts: stream, config = {}}) {
+    const result = this[kRuleInspect].call(null, {
+      stream,
+      util,
+      config
+    });
+
+    return iif(() => isObservable(result), result, fromArray(result)).pipe(
+      map(message => this.formatResult({message}))
+    );
+  }
+
+  formatResult({message, data} = {}) {
+    if (_.isUndefined(message)) {
+      return;
+    }
+    const info = {
+      id: this.id,
+      filepath: '(multiple files)'
+    };
+    if (_.has('message', message)) {
+      return {
+        message: String(message.message).trim(),
+        data: message.data,
+        ...info
+      };
+    }
+
+    return {message: String(message).trim(), data, ...info};
   }
 }
 

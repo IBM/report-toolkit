@@ -7,8 +7,9 @@ import {count, filter, map, mergeMap, share, toArray} from 'rxjs/operators';
 import {createDebugger, isDebugEnabled} from '../debug';
 import {filterEnabledRules, loadConfig} from '../config';
 
-import {Inspector} from '../inspect-report';
+import {RuleConfig} from '../rule-config';
 import _ from 'lodash/fp';
+import {inspectReports} from '../inspect-report';
 import {loadReport} from '../load-report';
 import {loadRules} from '../rule-loader';
 import {throwError} from 'rxjs';
@@ -38,8 +39,8 @@ export const inspect = (
   }
 
   // share() creates a "multicast" observable which ensures we don't create a new
-  // subscription for every item in the outer observable (created by `loadConfig()`
-  // below).
+  // subscription for every item in the outer observable (created by
+  // `loadRuleConfigs()` below).
   const reports = loadReport(filepaths, {redactSecrets}).pipe(share());
 
   // premature optimization.  DEAL WITH IT
@@ -49,24 +50,21 @@ export const inspect = (
         debug(`loading ${count} report(s)...`);
       },
       complete() {
-        debug(`all report(s) loaded`);
+        debug('all report(s) loaded');
       }
     });
   }
 
-  // decent chance there's a better way to do this--welcome to ideas
-  return prepareInspectors({config, searchPath, search}).pipe(
-    mergeMap(inspector =>
-      reports.pipe(mergeMap(report => inspector.inspect(report)))
-    )
+  return loadRuleConfigs({config, searchPath, search}).pipe(
+    inspectReports(reports)
   );
 };
 
-export const prepareInspectors = ({config, searchPath, search} = {}) =>
+export const loadRuleConfigs = ({config, searchPath, search} = {}) =>
   loadConfig({config, searchPath, search}).pipe(
     mergeMap(config =>
       loadRules({ruleIds: filterEnabledRules(config)}).pipe(
-        map(rule => Inspector.create(config[rule.id], rule))
+        map(rule => RuleConfig.create(rule, config[rule.id]))
       )
     )
   );

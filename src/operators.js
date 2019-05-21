@@ -1,5 +1,5 @@
 import {defer, from, of} from 'rxjs';
-import {mergeMap, toArray} from 'rxjs/operators';
+import {map, mergeMap, toArray} from 'rxjs/operators';
 
 import _ from 'lodash/fp';
 
@@ -38,3 +38,16 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
  */
 export const fromArray = value =>
   defer(() => (_.isArray(value) ? from(value) : of(value)));
+
+export const pluckProp = (prop, orValue) => observable =>
+  observable.pipe(
+    map(_.isUndefined(orValue) ? _.get(prop) : _.getOr(orValue, prop))
+  );
+
+export const sum = () => observable =>
+  observable.pipe(map(values => values.reduce((sum, value) => (value += sum))));
+
+export const mean = () => observable =>
+  observable.pipe(
+    map(values => values.reduce((sum, value) => (value += sum)) / values.length)
+  );

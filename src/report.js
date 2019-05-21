@@ -1,13 +1,7 @@
-import * as gnosticOperators from './operators';
-import * as operators from 'rxjs/operators';
-import * as rxjs from 'rxjs';
-
+import {Context} from './context';
 import _ from 'lodash/fp';
-
 export const kReportFilepath = Symbol('reportFilepath');
 export const kReportQueue = Symbol('reportQueue');
-
-const issueQueueMap = new WeakMap();
 
 const KNOWN_PROPS = [
   'header',
@@ -27,30 +21,6 @@ const assignKnownProps = _.curry((source, dest) => {
   }, KNOWN_PROPS);
 });
 
-const Util = Object.freeze({
-  ...operators,
-  ...rxjs,
-  ...gnosticOperators
-});
-
-class ReportContext {
-  report(message, data) {
-    const queue = issueQueueMap.get(this);
-    issueQueueMap.set(this, [...queue, {message, data}]);
-    return this;
-  }
-
-  get util() {
-    return Util;
-  }
-
-  flush() {
-    const queue = [...issueQueueMap.get(this)];
-    issueQueueMap.set(this, []);
-    return this.util.from(queue);
-  }
-}
-
 export class Report {
   constructor(report, filepath) {
     assignKnownProps(report, this);
@@ -62,18 +32,8 @@ export class Report {
     return this[kReportFilepath];
   }
 
-  createContext() {
-    const context = new ReportContext(this);
-    const proxy = new Proxy(context, {
-      get: (target, prop) => {
-        if (_.hasIn(prop, target)) {
-          return Reflect.get(target, prop);
-        }
-        return Reflect.get(this, prop);
-      }
-    });
-    issueQueueMap.set(proxy, []);
-    return proxy;
+  createContext(ruleConfig) {
+    return Context.create(this, ruleConfig);
   }
 
   static create(report, filepath) {

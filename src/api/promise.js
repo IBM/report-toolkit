@@ -30,4 +30,4 @@ export const loadReport = async (...args) =>
   observable.loadReport(...args).toPromise();
 
 export const prepareInspectors = async (...args) =>
-  observable.prepareInspectors(...args).toPromise();
+  observable.loadRuleConfigs(...args).toPromise();

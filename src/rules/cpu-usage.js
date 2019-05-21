@@ -28,10 +28,11 @@ const modeMap = {
   under: (v, t) => v <= t
 };
 
-exports.inspect = (
-  context,
-  {threshold = 1000, cpu = 'all', mode = 'over'} = {}
-) => {
+exports.inspect = ({context, config} = {}) => {
+  let {threshold, cpu, mode} = config;
+  threshold = threshold || 1000;
+  cpu = cpu || 'all';
+  mode = mode || 'over';
   const usage =
     fieldMap[cpu].reduce(
       (acc, field, i, arr) =>

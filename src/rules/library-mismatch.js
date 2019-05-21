@@ -13,8 +13,8 @@ exports.meta = {
 
 const VERSION_REGEXP = /(\d+(?:\.\d+)+[a-z]?)/;
 
-exports.inspect = (context, {ignore = []} = {}) => {
-  const ignoredComponents = new Set(ignore);
+exports.inspect = ({context, config}) => {
+  const ignoredComponents = new Set(config.ignore || []);
   const {sharedObjects, header} = context;
   return Object.keys(header.componentVersions)
     .filter(component => !ignoredComponents.has(component))

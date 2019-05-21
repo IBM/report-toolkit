@@ -18,8 +18,12 @@ export class RuleConfig {
     this.config = Object.freeze(rawConfig);
   }
 
+  get rule() {
+    return ruleMap.get(this);
+  }
+
   get id() {
-    return ruleMap.get(this).id;
+    return this.rule.id;
   }
 
   get severity() {
@@ -37,8 +41,8 @@ export class RuleConfig {
     return true;
   }
 
-  inspect(context, stream) {
-    return ruleMap.get(this).inspect({context, stream, config: this.config});
+  inspect(contexts) {
+    return this.rule.inspect({contexts, config: this.config});
   }
 
   static create(rule, rawConfig) {

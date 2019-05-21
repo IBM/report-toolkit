@@ -11,7 +11,8 @@ exports.meta = {
   messages: {}
 };
 
-exports.inspect = (context, {threshold = 10000} = {}) => {
+exports.inspect = ({context, config}) => {
+  const threshold = config.threshold || 10000;
   const {libuv} = context;
   libuv
     .filter(
