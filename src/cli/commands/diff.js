@@ -2,7 +2,7 @@ import {GROUPS, OPTIONS} from './common';
 
 import {DIFF_DEFAULT_PROPERTIES} from '../../diff-report';
 import _ from 'lodash/fp';
-import colors from 'ansi-colors';
+import colors from '../colors';
 import {diff} from '../../api/observable';
 import {toFormattedString} from '../console';
 

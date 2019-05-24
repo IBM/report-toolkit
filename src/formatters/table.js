@@ -2,7 +2,7 @@ import {concatMap, map, reduce} from 'rxjs/operators';
 
 import CLITable3 from 'cli-table3';
 import _ from 'lodash/fp';
-import colors from 'ansi-colors';
+import colors from '../cli/colors';
 import {from} from 'rxjs';
 import {pipeIf} from '../operators';
 import {version} from '../../package.json';
@@ -45,7 +45,7 @@ const withHeader = _.curry((header, value) => {
   header = constantValue(header);
   return (
     colors.grey('[') +
-    colors.cyanBright('gnostic') +
+    colors.cyan().bold('gnostic') +
     ' ' +
     colors.cyan(`v${version}`) +
     colors.grey('] ') +

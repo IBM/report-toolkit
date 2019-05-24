@@ -2,7 +2,7 @@ import {GROUPS, OPTIONS} from './common';
 import {fail, toFormattedString} from '../console';
 
 import _ from 'lodash/fp';
-import colors from 'ansi-colors';
+import colors from '../colors';
 import {inspect} from '../../api/observable';
 
 export const command = 'inspect <file..>';
@@ -26,7 +26,7 @@ export const builder = yargs =>
 
 export const handler = argv => {
   const {
-    file: files,
+    file: filepaths,
     config,
     truncate: truncateValues = true,
     wrap: wrapValues = false,
@@ -35,7 +35,7 @@ export const handler = argv => {
     color
   } = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
-  inspect(files, {config, redactSecrets})
+  inspect(filepaths, {config, redactSecrets})
     .pipe(
       toFormattedString(format, {
         color,
@@ -44,7 +44,7 @@ export const handler = argv => {
             label: 'File',
             value: _.pipe(
               _.get('filepath'),
-              v => colors.cyan(v)
+              colors.cyan
             ),
             widthPct: 30
           },
@@ -52,7 +52,7 @@ export const handler = argv => {
             label: 'Rule',
             value: _.pipe(
               _.get('id'),
-              v => colors.magenta(v)
+              colors.magenta
             ),
             widthPct: 20
           },
@@ -67,7 +67,7 @@ export const handler = argv => {
         wrapValues,
         outputHeader: 'Diagnostic Report Inspection',
         outputFooter: t =>
-          fail(`Found ${t.length} issue(s) in ${files.length} file(s)`)
+          fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`)
       })
     )
     .subscribe(console.log);

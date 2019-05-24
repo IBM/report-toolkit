@@ -1,3 +1,4 @@
+import {OPTIONS} from './common';
 import {loadReport} from '../../api/observable';
 import {map} from 'rxjs/operators';
 import stringify from 'fast-safe-stringify';
@@ -9,14 +10,7 @@ export const desc = 'Print redacted report file in JSON format to STDOUT';
 
 export const builder = yargs =>
   yargs.options({
-    output: {
-      type: 'string',
-      normalize: true,
-      requiresArg: true,
-      description: 'Output to file instead of STDOUT',
-      group: 'Output:',
-      alias: 'o'
-    }
+    output: OPTIONS.OUTPUT.output
   });
 
 export const handler = ({file, output} = {}) => {

@@ -1,6 +1,6 @@
 import {OPTIONS} from './common';
 import _ from 'lodash/fp';
-import colors from 'ansi-colors';
+import colors from '../colors';
 import {loadRules} from '../../api/observable';
 import {toFormattedString} from '../console';
 
@@ -27,7 +27,7 @@ export const handler = argv => {
             label: 'Rule',
             value: _.pipe(
               _.get('id'),
-              v => colors.cyan(v)
+              colors.cyan
             )
           },
           {
@@ -36,7 +36,7 @@ export const handler = argv => {
           }
         ],
         pretty,
-        title: 'Available Rules',
+        outputHeader: 'Available Rules',
         truncateValues,
         wrapValues
       })

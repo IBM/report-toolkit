@@ -1,4 +1,9 @@
-import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../../formatter';
+import {
+  FORMAT_CSV,
+  FORMAT_JSON,
+  FORMAT_PIPE,
+  FORMAT_TABLE
+} from '../../formatters';
 
 export const GROUPS = {
   OUTPUT: 'Output:',
@@ -21,10 +26,10 @@ export const OPTIONS = {
       conflicts: 'truncate'
     },
     format: {
-      choices: [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE],
+      choices: [FORMAT_CSV, FORMAT_JSON, FORMAT_PIPE, FORMAT_TABLE],
       description: 'Output format',
       group: GROUPS.OUTPUT,
-      default: 'table'
+      default: FORMAT_TABLE
     },
     pretty: {
       type: 'boolean',
