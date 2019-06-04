@@ -1,4 +1,5 @@
 import _ from 'lodash/fp';
+import {map} from 'rxjs/operators';
 
 const ruleMap = new WeakMap();
 
@@ -49,3 +50,6 @@ export class RuleConfig {
     return new RuleConfig(rule, rawConfig);
   }
 }
+
+export const loadRuleConfig = config => rules =>
+  rules.pipe(map(rule => RuleConfig.create(rule, config[rule.id])));

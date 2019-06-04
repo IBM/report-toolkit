@@ -127,22 +127,7 @@ describe('module:rule', function() {
 
   describe('instance method', function() {
     describe('inspect()', function() {
-      let rule;
-      let inspect;
-
-      beforeEach(function() {
-        inspect = sandbox.spy();
-        rule = Rule.create({inspect});
-      });
-
-      it('should call the `inspect` method of the rule definition', async function() {
-        const context = {};
-        await rule.inspect({context});
-        return expect(inspect, 'to have a call satisfying', {
-          args: [context, {}],
-          thisValue: null
-        });
-      });
+      it('should call the `inspect` method of the rule definition');
     });
   });
 });

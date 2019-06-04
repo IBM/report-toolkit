@@ -1,5 +1,13 @@
-import {Inspector} from '../src/inspect-report';
-describe('module:inspect-report', function() {
+import {Report} from '../src/report';
+import {inspectReports} from '../src/inspect-report';
+import {loadRuleConfigs} from '../src/api/observable';
+import {of} from 'rxjs';
+
+const REPORT_002_FILEPATH = require.resolve(
+  './fixture/reports/report-002-library-mismatch.json'
+);
+
+describe('module:inspect-reports', function() {
   let sandbox;
 
   beforeEach(function() {
@@ -10,40 +18,44 @@ describe('module:inspect-report', function() {
     sandbox.restore();
   });
 
-  describe('Inspector', function() {
-    describe('property', function() {
-      describe('ruleConfig', function() {
-        it('should be the associated ruleConfig', function() {
-          const ruleConfig = {};
-          expect(
-            new Inspector(ruleConfig),
-            'to have property',
-            'ruleConfig',
-            ruleConfig
-          );
-        });
-      });
-    });
-
-    describe('static method', function() {
-      describe('create()', function() {
-        it('should construct an Inspector', function() {
-          const ruleConfig = {};
-          const rawConfig = {};
-
-          expect(
-            Inspector.create(rawConfig, ruleConfig),
-            'to be an',
-            Inspector
-          );
-        });
-      });
-    });
-
-    describe('instance method', function() {
-      describe('inspect()', function() {
-        it(
-          'should return an Observable which completes with results for one or more reports'
+  describe('function', function() {
+    describe('inspectReports()', function() {
+      it('should return an Observable which completes with results for one or more reports', function() {
+        return expect(
+          loadRuleConfigs({
+            config: {
+              rules: {
+                'long-timeout': [
+                  true,
+                  {
+                    timeout: 3000
+                  }
+                ],
+                'library-mismatch': true
+              }
+            }
+          }).pipe(
+            inspectReports(
+              of(
+                Report.create(require(REPORT_002_FILEPATH), REPORT_002_FILEPATH)
+              )
+            )
+          ),
+          'to complete with values satisfying',
+          {
+            message:
+              'Custom shared library at /usr/local/opt/openssl@1.1/lib/libcrypto.1.1.dylib in use conflicting with openssl@1.1.1b',
+            data: undefined,
+            filepath: /test\/fixture\/reports\/report-002-library-mismatch\.json/,
+            id: 'library-mismatch'
+          },
+          {
+            message:
+              'Custom shared library at /usr/local/opt/openssl@1.1/lib/libssl.1.1.dylib in use conflicting with openssl@1.1.1b',
+            data: undefined,
+            filepath: /test\/fixture\/reports\/report-002-library-mismatch\.json/,
+            id: 'library-mismatch'
+          }
         );
       });
     });

@@ -41,18 +41,14 @@ describe('module:api/observable', function() {
           )
       },
       '../rule-loader': {
-        readDirpath: sandbox.stub().callsFake(() =>
-          from(['foo.js', 'bar.js']).pipe(
-            tap(filename => {
-              debug(`readDirpath returning mock filename ${filename}`);
-            })
-          )
-        ),
         loadRules: sandbox.stub().callsFake(({ruleIds}) => {
           ruleIds = new Set(ruleIds);
           return from(ruleDefs).pipe(
             pipeIf(ruleIds.size, filter(({id}) => ruleIds.has(id))),
-            map(({id, filepath}) => Rule.create({...rules[id], id, filepath}))
+            map(({id, filepath}) => Rule.create({...rules[id], id, filepath})),
+            tap(rule => {
+              debug(`created rule with id ${rule.id}`);
+            })
           );
         })
       },
@@ -91,7 +87,7 @@ describe('module:api/observable', function() {
       describe('when provided a configuration', function() {
         it('should emit a message for each enabled rule', function() {
           return expect(
-            inspect(REPORT_001_FILEPATH, {
+            inspect([REPORT_001_FILEPATH], {
               config: {rules: {foo: true, bar: false}}
             }),
             'to complete with value',
@@ -100,7 +96,7 @@ describe('module:api/observable', function() {
               filepath: REPORT_001_FILEPATH,
               id: 'foo'
             }
-          ).and('to emit once');
+          );
         });
       });
 

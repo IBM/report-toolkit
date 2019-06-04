@@ -6,12 +6,12 @@ const ruleConfigMap = new WeakMap();
 export class Context {
   report(message, data) {
     const queue = issueQueueMap.get(this);
-    issueQueueMap.set(this, [...queue, {message, data}]);
+    queue.push({message, data});
     return this;
   }
 
   flush() {
-    const queue = [...issueQueueMap.get(this)];
+    const queue = issueQueueMap.get(this);
     issueQueueMap.set(this, []);
     return from(queue);
   }

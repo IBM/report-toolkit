@@ -12,7 +12,8 @@ describe('module:config', function() {
             return expect(loadConfig(), 'to complete with value', {
               rules: {
                 'long-timeout': [true, {timeout: 5000}],
-                'library-mismatch': true
+                'library-mismatch': true,
+                mean: true
               },
               [kFlattenedConfig]: true
             }).and('to emit once');
@@ -27,7 +28,8 @@ describe('module:config', function() {
               {
                 rules: {
                   'long-timeout': [true, {timeout: 4000}],
-                  'library-mismatch': false
+                  'library-mismatch': false,
+                  mean: true
                 },
                 [kFlattenedConfig]: true
               }
@@ -43,7 +45,8 @@ describe('module:config', function() {
               {
                 rules: {
                   'long-timeout': [true, {timeout: 3000}],
-                  'library-mismatch': false
+                  'library-mismatch': false,
+                  mean: true
                 },
                 [kFlattenedConfig]: true
               }

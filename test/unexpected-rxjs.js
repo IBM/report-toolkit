@@ -102,10 +102,10 @@ exports.installInto = expect => {
   );
 
   expect.addAssertion(
-    '<Observable> [not] to emit values',
+    '<Observable> not to emit values',
     (expect, observable) => {
       expect.errorMode = 'bubble';
-      return expect(pify(observable), 'when fulfilled', '[not] to be empty');
+      return expect(pify(observable), 'when fulfilled', 'to be empty');
     }
   );
 

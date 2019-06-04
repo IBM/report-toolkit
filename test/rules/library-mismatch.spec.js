@@ -3,8 +3,8 @@ import {createInspect} from './rules-helper';
 describe('rule:library-mismatch', function() {
   let inspect;
 
-  beforeEach(async function() {
-    inspect = await createInspect('../../src/rules/library-mismatch');
+  beforeEach(function() {
+    inspect = createInspect('../../src/rules/library-mismatch');
   });
 
   describe('when the report contains a shared lib with a mismatched version', function() {

@@ -3,8 +3,8 @@ import {createInspect} from './rules-helper';
 describe('rule:long-timeout', function() {
   let inspect;
 
-  beforeEach(async function() {
-    inspect = await createInspect('../../src/rules/long-timeout');
+  beforeEach(function() {
+    inspect = createInspect('../../src/rules/long-timeout');
   });
 
   describe('when the report contains an active libuv handle containing a timer beyond the default threshold', function() {

@@ -3,14 +3,14 @@ import {
   diffReports,
   pathToProperty
 } from '../diff-report';
-import {count, filter, map, mergeMap, share, toArray} from 'rxjs/operators';
+import {count, filter, mergeMap, share, toArray} from 'rxjs/operators';
 import {createDebugger, isDebugEnabled} from '../debug';
 import {filterEnabledRules, loadConfig} from '../config';
 
-import {RuleConfig} from '../rule-config';
 import _ from 'lodash/fp';
 import {inspectReports} from '../inspect-report';
 import {loadReport} from '../load-report';
+import {loadRuleConfig} from '../rule-config';
 import {loadRules} from '../rule-loader';
 import {throwError} from 'rxjs';
 
@@ -29,7 +29,13 @@ export const diff = (
 
 export const inspect = (
   filepaths = [],
-  {config, search = true, searchPath = process.cwd(), redactSecrets} = {}
+  {
+    config,
+    search = true,
+    configSearchPath = process.cwd(),
+    ruleSearchPath,
+    redactSecrets
+  } = {}
 ) => {
   // XXX: rewrite so that loadReport throws this
   if (_.isEmpty(filepaths)) {
@@ -55,17 +61,26 @@ export const inspect = (
     });
   }
 
-  return loadRuleConfigs({config, searchPath, search}).pipe(
-    inspectReports(reports)
-  );
+  return loadRuleConfigs({
+    config,
+    configSearchPath,
+    ruleSearchPath,
+    search
+  }).pipe(inspectReports(reports));
 };
 
-export const loadRuleConfigs = ({config, searchPath, search} = {}) =>
-  loadConfig({config, searchPath, search}).pipe(
+export const loadRuleConfigs = ({
+  config,
+  configSearchPath,
+  ruleSearchPath,
+  search
+} = {}) =>
+  loadConfig({config, searchPath: configSearchPath, search}).pipe(
     mergeMap(config =>
-      loadRules({ruleIds: filterEnabledRules(config)}).pipe(
-        map(rule => RuleConfig.create(rule, config[rule.id]))
-      )
+      loadRules({
+        ruleIds: filterEnabledRules(config),
+        searchPath: ruleSearchPath
+      }).pipe(loadRuleConfig(config))
     )
   );
 

@@ -10,14 +10,13 @@ export const desc = 'Lists built-in rules';
 
 export const builder = yargs => yargs.options(OPTIONS.OUTPUT);
 
-export const handler = argv => {
-  const {
-    color,
-    pretty = false,
-    truncate: truncateValues = true,
-    wrap: wrapValues = false,
-    format = 'table'
-  } = argv;
+export const handler = ({
+  color,
+  pretty = false,
+  truncate: truncateValues = true,
+  wrap: wrapValues = false,
+  format = 'table'
+}) => {
   loadRules()
     .pipe(
       toFormattedString(format, {

@@ -8,25 +8,26 @@ import {
   share,
   takeUntil
 } from 'rxjs/operators';
+import {fromEvent, of} from 'rxjs';
 
-import {Inspector} from '../../src/inspect-report';
 import {Report} from '../../src/report';
+import {RuleConfig} from '../../src/rule-config';
 import _ from 'lodash/fp';
 import childProcess from 'child_process';
-import {fromEvent} from 'rxjs';
+import {inspectReports} from '../../src/inspect-report';
 import {loadReport} from '../../src/load-report';
 import {loadRuleFromFilepath} from '../../src/rule-loader';
 import {redact} from '../../src/redact';
 
-export const createInspect = async (ruleFilepath, config = {}) => {
-  const inspector = Inspector.create(
-    config,
-    await loadRuleFromFilepath(require.resolve(ruleFilepath))
+export const createInspect = (ruleFilepath, config = {}) => {
+  const rule = loadRuleFromFilepath(require.resolve(ruleFilepath));
+  const ruleConfigs = of(rule).pipe(
+    map(rule => RuleConfig.create(rule, config))
   );
   return filepath =>
     loadReport(require.resolve(filepath)).pipe(
       map(Report.createFromFile(filepath)),
-      mergeMap(report => inspector.inspect(report))
+      mergeMap(report => ruleConfigs.pipe(inspectReports(of(report))))
     );
 };
 

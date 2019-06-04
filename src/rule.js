@@ -9,9 +9,9 @@ export const kRuleMeta = Symbol('ruleMeta');
 export const kRuleInspect = Symbol('ruleInspect');
 export const kRuleFilepath = Symbol('ruleFilepath');
 
-const {iif, isObservable, throwError} = rxjs;
+const {iif, concat, isObservable, throwError} = rxjs;
 const {fromArray} = gnosticOperators;
-const {mergeMap, map, filter} = operators;
+const {mergeMap, filter, map} = operators;
 
 const util = Object.freeze({
   ...operators,
@@ -107,20 +107,22 @@ export class SimpleRule extends Rule {
    */
   inspect({contexts, config = {}}) {
     return contexts.pipe(
-      mergeMap(context => {
-        return fromArray(
-          this[kRuleInspect].call(null, {context, config, util}) || []
+      mergeMap(context =>
+        concat(
+          fromArray(
+            this[kRuleInspect].call(null, {context, config, util}) || []
+          ),
+          context.flush()
         ).pipe(
-          map(
-            message =>
-              this.formatResult({
-                filepath: context.filepath,
-                message
-              }),
-            filter(Boolean)
+          filter(Boolean),
+          map(message =>
+            this.formatResult({
+              filepath: context.filepath,
+              message
+            })
           )
-        );
-      })
+        )
+      )
     );
   }
 

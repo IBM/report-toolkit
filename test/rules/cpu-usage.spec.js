@@ -4,8 +4,8 @@ describe('rule:cpu-usage', function() {
   let inspect;
 
   describe('when the configured mode is "under"', function() {
-    beforeEach(async function() {
-      inspect = await createInspect('../../src/rules/cpu-usage', {
+    beforeEach(function() {
+      inspect = createInspect('../../src/rules/cpu-usage.js', {
         mode: 'under',
         threshold: 1000,
         cpu: 'all'
@@ -30,8 +30,8 @@ describe('rule:cpu-usage', function() {
   });
 
   describe('when the configured mode is "over"', function() {
-    beforeEach(async function() {
-      inspect = await createInspect('../../src/rules/cpu-usage', {
+    beforeEach(function() {
+      inspect = createInspect('../../src/rules/cpu-usage', {
         mode: 'over',
         threshold: 30,
         cpu: 'all'

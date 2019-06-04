@@ -37,10 +37,10 @@ export class Report {
   }
 
   static create(report, filepath) {
-    return new Report(report, filepath);
+    return Object.freeze(new Report(report, filepath));
   }
 }
 
 Report.createFromFile = _.curry((filepath, report) =>
-  Object.freeze(Report.create(report, filepath))
+  Report.create(report, filepath)
 );

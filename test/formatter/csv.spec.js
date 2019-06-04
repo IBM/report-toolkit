@@ -1,5 +1,5 @@
 import {of} from 'rxjs';
-import {toCsv} from '../../src/formatter/csv';
+import {toCsv} from '../../src/formatters/csv';
 
 describe('module:formatter/csv', function() {
   describe('function', function() {

@@ -1,5 +1,5 @@
 import {of} from 'rxjs';
-import {toJson} from '../../src/formatter/json';
+import {toJson} from '../../src/formatters/json';
 
 describe('module:formatter/json', function() {
   describe('function', function() {
