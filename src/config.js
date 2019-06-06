@@ -33,6 +33,12 @@ const fromSearchPath = (opts = {}) => {
   return observable =>
     observable.pipe(
       mergeMap(dirpath => explorer.search(dirpath)),
+      pipeIf(
+        _.isObject,
+        tap(config => {
+          debug(`found config at ${config.filepath}`);
+        })
+      ),
       map(_.get('config.config'))
     );
 };
@@ -136,7 +142,7 @@ export const loadConfig = ({
     pipeIf(
       _.overSome([_.isPlainObject, _.isArray]),
       tap(rawConfig => {
-        debug('loading from raw object: %j', rawConfig);
+        debug('flattening config from object: %j', rawConfig);
       }),
       map(rawConfig => flattenConfig({config: rawConfig}))
     ),
