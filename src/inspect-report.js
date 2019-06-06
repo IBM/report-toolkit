@@ -1,4 +1,4 @@
-import {map, mergeMap} from 'rxjs/operators';
+import {map, mergeMap} from './observable';
 
 /**
  *

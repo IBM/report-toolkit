@@ -1,7 +1,6 @@
-import {concatMapTo, finalize, takeUntil, tap} from 'rxjs/operators';
+import {concatMapTo, finalize, fromEvent, takeUntil, tap} from '../observable';
 
 import {AsyncParser} from 'json2csv';
-import {fromEvent} from 'rxjs';
 
 export const toCsv = (parserOpts = {}, streamOpts = {}) => {
   const parser = new AsyncParser(parserOpts, {...streamOpts, objectMode: true});

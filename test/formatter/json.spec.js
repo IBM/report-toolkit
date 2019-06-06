@@ -1,4 +1,4 @@
-import {of} from 'rxjs';
+import {of} from '../../src/observable';
 import {toJson} from '../../src/formatters/json';
 
 describe('module:formatter/json', function() {

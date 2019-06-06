@@ -1,7 +1,7 @@
 import {Report} from '../src/report';
 import {inspectReports} from '../src/inspect-report';
-import {loadRuleConfigs} from '../src/api/observable';
-import {of} from 'rxjs';
+import {loadRuleConfigs} from '../src/api/stream';
+import {of} from '../src/observable';
 
 const REPORT_002_FILEPATH = require.resolve(
   './fixture/reports/report-002-library-mismatch.json'

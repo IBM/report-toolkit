@@ -1,9 +1,9 @@
 import * as formatters from '../formatters';
 
+import {map, pipeIf} from '../observable';
+
 import _ from 'lodash';
 import colors from './colors';
-import {map} from 'rxjs/operators';
-import {pipeIf} from '../operators';
 import stripAnsi from 'strip-ansi';
 import termsize from 'term-size';
 

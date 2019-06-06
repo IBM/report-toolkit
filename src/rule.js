@@ -1,4 +1,4 @@
-import * as gnosticOperators from './operators';
+import * as gnosticOperators from './observable';
 import * as operators from 'rxjs/operators';
 import * as rxjs from 'rxjs';
 

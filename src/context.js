@@ -1,5 +1,5 @@
 import _ from 'lodash/fp';
-import {from} from 'rxjs';
+import {from} from './observable';
 const issueQueueMap = new WeakMap();
 const ruleConfigMap = new WeakMap();
 

@@ -3,7 +3,7 @@ import {fail, toFormattedString} from '../console';
 
 import _ from 'lodash/fp';
 import colors from '../colors';
-import {inspect} from '../../api/observable';
+import {inspect} from '../../api/stream';
 
 export const command = 'inspect <file..>';
 

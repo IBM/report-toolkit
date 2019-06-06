@@ -1,11 +1,18 @@
-import {map, mapTo, mergeMap, switchMapTo, tap} from 'rxjs/operators';
-import {of, throwError} from 'rxjs';
+import {
+  map,
+  mapTo,
+  mergeMap,
+  of,
+  pipeIf,
+  switchMapTo,
+  tap,
+  throwError
+} from './observable';
 
 import {BUILTIN_CONFIGS} from './configs';
 import _ from 'lodash/fp';
 import cosmiconfig from 'cosmiconfig';
 import {createDebugger} from './debug';
-import {pipeIf} from './operators';
 import pkg from '../package.json';
 import traverse from 'traverse';
 

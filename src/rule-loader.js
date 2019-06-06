@@ -1,12 +1,10 @@
-import {filter, map, mergeAll} from 'rxjs/operators';
+import {bindNodeCallback, filter, map, mergeAll, pipeIf} from './observable';
 
 import {Rule} from './rule';
 import _ from 'lodash/fp';
-import {bindNodeCallback} from 'rxjs';
 import {createDebugger} from './debug';
 import fs from 'fs';
 import path from 'path';
-import {pipeIf} from './operators';
 
 const RULES_DIR = path.join(__dirname, 'rules');
 

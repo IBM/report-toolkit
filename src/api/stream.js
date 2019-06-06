@@ -3,7 +3,14 @@ import {
   diffReports,
   pathToProperty
 } from '../diff-report';
-import {count, filter, mergeMap, share, toArray} from 'rxjs/operators';
+import {
+  count,
+  filter,
+  mergeMap,
+  share,
+  throwError,
+  toArray
+} from '../observable';
 import {createDebugger, isDebugEnabled} from '../debug';
 import {filterEnabledRules, loadConfig} from '../config';
 
@@ -12,7 +19,6 @@ import {inspectReports} from '../inspect-report';
 import {loadReport} from '../load-report';
 import {loadRuleConfig} from '../rule-config';
 import {loadRules} from '../rule-loader';
-import {throwError} from 'rxjs';
 
 const debug = createDebugger(module);
 

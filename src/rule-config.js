@@ -1,5 +1,5 @@
 import _ from 'lodash/fp';
-import {map} from 'rxjs/operators';
+import {map} from './observable';
 
 const ruleMap = new WeakMap();
 

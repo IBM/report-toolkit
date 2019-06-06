@@ -1,6 +1,6 @@
 import {OPTIONS} from './common';
-import {loadReport} from '../../api/observable';
-import {map} from 'rxjs/operators';
+import {loadReport} from '../../api/stream';
+import {map} from '../../observable';
 import stringify from 'fast-safe-stringify';
 import {writeFileSync} from 'fs';
 

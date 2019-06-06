@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {Observable} from './observable';
 import _ from 'lodash/fp';
 import {createPatch} from 'rfc6902';
 import ptr from 'json-ptr';

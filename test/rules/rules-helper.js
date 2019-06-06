@@ -2,13 +2,14 @@ import {
   concatMap,
   filter,
   first,
+  fromEvent,
   map,
   mergeMap,
+  of,
   pluck,
   share,
   takeUntil
-} from 'rxjs/operators';
-import {fromEvent, of} from 'rxjs';
+} from '../../src/observable';
 
 import {Report} from '../../src/report';
 import {RuleConfig} from '../../src/rule-config';

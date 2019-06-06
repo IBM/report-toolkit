@@ -1,5 +1,13 @@
-import {concatMap, map, pluck, takeWhile} from 'rxjs/operators';
-import {fromEvent, iif, interval, of} from 'rxjs';
+import {
+  concatMap,
+  fromEvent,
+  iif,
+  interval,
+  map,
+  of,
+  pluck,
+  takeWhile
+} from '../../src/observable';
 
 const emitReport = () => {
   const report = process.report.getReport();

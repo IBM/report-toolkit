@@ -1,5 +1,34 @@
-import {defer, from, of} from 'rxjs';
-import {map, mergeMap, toArray} from 'rxjs/operators';
+import {
+  Observable,
+  bindNodeCallback,
+  defer,
+  from,
+  fromEvent,
+  iif,
+  interval,
+  of,
+  throwError
+} from 'rxjs';
+import {
+  concatMap,
+  concatMapTo,
+  count,
+  filter,
+  finalize,
+  first,
+  map,
+  mapTo,
+  mergeAll,
+  mergeMap,
+  pluck,
+  reduce,
+  share,
+  switchMapTo,
+  takeUntil,
+  takeWhile,
+  tap,
+  toArray
+} from 'rxjs/operators';
 
 import _ from 'lodash/fp';
 
@@ -51,3 +80,33 @@ export const mean = () => observable =>
   observable.pipe(
     map(values => values.reduce((sum, value) => (value += sum)) / values.length)
   );
+
+export {
+  bindNodeCallback,
+  concatMap,
+  concatMapTo,
+  count,
+  defer,
+  filter,
+  finalize,
+  first,
+  from,
+  fromEvent,
+  iif,
+  interval,
+  map,
+  mapTo,
+  mergeAll,
+  mergeMap,
+  Observable,
+  of,
+  pluck,
+  reduce,
+  share,
+  switchMapTo,
+  takeUntil,
+  takeWhile,
+  tap,
+  throwError,
+  toArray
+};

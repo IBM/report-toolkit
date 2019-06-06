@@ -1,4 +1,4 @@
-import {of} from 'rxjs';
+import {of} from '../../src/observable';
 import {toCsv} from '../../src/formatters/csv';
 
 describe('module:formatter/csv', function() {

@@ -1,6 +1,12 @@
-import {filter, map, tap} from 'rxjs/operators';
-import {from, of} from 'rxjs';
-import {fromArray, pipeIf} from '../../src/operators';
+import {
+  filter,
+  from,
+  fromArray,
+  map,
+  of,
+  pipeIf,
+  tap
+} from '../../src/observable';
 
 import {Report} from '../../src/report';
 import {Rule} from '../../src/rule';
@@ -15,7 +21,7 @@ const REPORT_002_FILEPATH = require.resolve(
   '../fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('module:api/observable', function() {
+describe('module:api/stream', function() {
   let sandbox;
   let subject;
 
@@ -32,7 +38,7 @@ describe('module:api/observable', function() {
       {id: 'bar', filepath: require.resolve('../fixture/rules/bar')}
     ];
 
-    subject = proxyquire(require.resolve('../../src/api/observable'), {
+    subject = proxyquire(require.resolve('../../src/api/stream'), {
       '../config': {
         loadConfig: sandbox
           .stub()

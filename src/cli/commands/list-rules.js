@@ -1,7 +1,7 @@
 import {OPTIONS} from './common';
 import _ from 'lodash/fp';
 import colors from '../colors';
-import {loadRules} from '../../api/observable';
+import {loadRules} from '../../api/stream';
 import {toFormattedString} from '../console';
 
 export const command = 'list-rules';

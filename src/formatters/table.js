@@ -1,10 +1,8 @@
-import {concatMap, map, reduce} from 'rxjs/operators';
+import {concatMap, from, map, pipeIf, reduce} from '../observable';
 
 import CLITable3 from 'cli-table3';
 import _ from 'lodash/fp';
 import colors from '../cli/colors';
-import {from} from 'rxjs';
-import {pipeIf} from '../operators';
 import {version} from '../../package.json';
 import wrapAnsi from 'wrap-ansi';
 

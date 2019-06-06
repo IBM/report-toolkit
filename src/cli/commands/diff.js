@@ -3,7 +3,7 @@ import {GROUPS, OPTIONS} from './common';
 import {DIFF_DEFAULT_PROPERTIES} from '../../diff-report';
 import _ from 'lodash/fp';
 import colors from '../colors';
-import {diff} from '../../api/observable';
+import {diff} from '../../api/stream';
 import {toFormattedString} from '../console';
 
 export const command = 'diff <file1> <file2>';

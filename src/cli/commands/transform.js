@@ -4,7 +4,7 @@ import {GROUPS, OPTIONS} from './common';
 
 import _ from 'lodash/fp';
 import colors from '../colors';
-import {loadReport} from '../../api/observable';
+import {loadReport} from '../../api/stream';
 import {toFormattedString} from '../console';
 import {writeFileSync} from 'fs';
 

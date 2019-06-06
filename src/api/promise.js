@@ -1,33 +1,33 @@
-import * as observable from './observable';
+import * as stream from './stream';
 
 import {createDebugger} from '../debug';
-import {toArray} from 'rxjs/operators';
+import {toArray} from '../observable';
 
 export const debug = createDebugger(module);
 
 export const inspect = async (...args) =>
-  observable
+  stream
     .inspect(...args)
     .pipe(toArray())
     .toPromise();
 
 export const loadConfig = async (...args) =>
-  observable.loadConfig(...args).toPromise();
+  stream.loadConfig(...args).toPromise();
 
 export const loadRules = async (...args) =>
-  observable
+  stream
     .loadRules(...args)
     .pipe(toArray())
     .toPromise();
 
 export const diff = async (...args) =>
-  observable
+  stream
     .diff(...args)
     .pipe(toArray())
     .toPromise();
 
 export const loadReport = async (...args) =>
-  observable.loadReport(...args).toPromise();
+  stream.loadReport(...args).toPromise();
 
 export const prepareInspectors = async (...args) =>
-  observable.loadRuleConfigs(...args).toPromise();
+  stream.loadRuleConfigs(...args).toPromise();

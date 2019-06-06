@@ -1,5 +1,5 @@
 import _ from 'lodash/fp';
-import {mergeMap} from 'rxjs/operators';
+import {mergeMap} from '../observable';
 
 const NUMERIC_FIELDS = [
   'javascriptHeap.totalMemory',

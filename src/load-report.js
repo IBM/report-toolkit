@@ -1,6 +1,14 @@
-import {bindNodeCallback, iif, of, throwError} from 'rxjs';
-import {fromArray, pipeIf, sort} from './operators';
-import {map, mergeMap} from 'rxjs/operators';
+import {
+  bindNodeCallback,
+  fromArray,
+  iif,
+  map,
+  mergeMap,
+  of,
+  pipeIf,
+  sort,
+  throwError
+} from './observable';
 
 import {Report} from './report';
 import _ from 'lodash/fp';

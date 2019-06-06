@@ -1,4 +1,4 @@
-import {map, toArray} from 'rxjs/operators';
+import {map, toArray} from '../observable';
 
 import stringify from 'fast-safe-stringify';
 
