@@ -1,9 +1,4 @@
-import {
-  FORMAT_CSV,
-  FORMAT_JSON,
-  FORMAT_PIPE,
-  FORMAT_TABLE
-} from '../../formatters';
+import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../../formatters';
 
 export const GROUPS = {
   OUTPUT: 'Output:',
@@ -21,12 +16,13 @@ export const OPTIONS = {
     },
     wrap: {
       type: 'boolean',
-      description: 'Hard-wrap values (table format; implies --no-truncate)',
+      description:
+        'Hard-wrap values (table format only; implies --no-truncate)',
       group: GROUPS.OUTPUT,
       conflicts: 'truncate'
     },
     format: {
-      choices: [FORMAT_CSV, FORMAT_JSON, FORMAT_PIPE, FORMAT_TABLE],
+      choices: [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE],
       description: 'Output format',
       group: GROUPS.OUTPUT,
       default: FORMAT_TABLE

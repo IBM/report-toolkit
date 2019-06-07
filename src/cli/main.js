@@ -27,16 +27,6 @@ export const main = () => {
       .config({config: configResult})
       .env(pkg.name)
       .help()
-      .fail((msg, err, yargs) => {
-        // if `msg` is present, this is a "handled" error.
-        if (msg) {
-          console.error(`${yargs.help()}\n`);
-        }
-
-        if (err) {
-          throw err;
-        }
-      })
       .version()
       .middleware(argv => {
         // "verbose" enables debug statements

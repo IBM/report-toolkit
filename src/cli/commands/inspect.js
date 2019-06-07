@@ -1,3 +1,4 @@
+import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../../formatters/index';
 import {GROUPS, OPTIONS} from './common';
 import {fail, toFormattedString} from '../console';
 
@@ -28,6 +29,12 @@ export const builder = yargs =>
         default: 'error'
       },
       ...OPTIONS.OUTPUT
+    })
+    .check(argv => {
+      if (![FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE].includes(argv.format)) {
+        throw new Error(`Invalid format "${argv.format}"`);
+      }
+      return true;
     });
 
 export const handler = argv => {

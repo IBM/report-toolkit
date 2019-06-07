@@ -1,5 +1,11 @@
 import * as transformers from '../../transformers';
 
+import {
+  FORMAT_CSV,
+  FORMAT_JSON,
+  FORMAT_PIPE,
+  FORMAT_TABLE
+} from '../../formatters';
 import {GROUPS, OPTIONS} from './common';
 
 import _ from 'lodash/fp';
@@ -8,22 +14,37 @@ import {loadReport} from '../../api/stream';
 import {toFormattedString} from '../console';
 import {writeFileSync} from 'fs';
 
+const ALLOWED_FORMATS = [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE, FORMAT_PIPE];
+
 export const command = 'transform <transformer> <file..>';
 
 export const desc = 'Transform a report';
 
 export const builder = yargs =>
-  yargs.options({
-    field: {
-      type: 'array',
-      requiresArg: true,
-      description:
-        'Filter on field by keypath (e.g., "javascriptHeap.totalMemory")',
-      defaultDescription: '(all numeric fields)',
-      group: GROUPS.FILTER
-    },
-    ...OPTIONS.OUTPUT
-  });
+  yargs
+    .options({
+      field: {
+        type: 'array',
+        requiresArg: true,
+        description:
+          'Filter on field by keypath (e.g., "javascriptHeap.totalMemory")',
+        defaultDescription: '(all numeric fields)',
+        group: GROUPS.FILTER
+      },
+      ...OPTIONS.OUTPUT,
+      format: {
+        choices: ALLOWED_FORMATS,
+        description: 'Output format',
+        group: GROUPS.OUTPUT,
+        default: FORMAT_TABLE
+      }
+    })
+    .check(argv => {
+      if (!ALLOWED_FORMATS.includes(argv.format)) {
+        throw new Error(`Invalid format "${argv.format}"`);
+      }
+      return true;
+    });
 
 export const handler = ({
   transformer,
