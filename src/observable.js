@@ -1,6 +1,9 @@
 import {
+  EMPTY,
   Observable,
   bindNodeCallback,
+  combineLatest,
+  concat,
   defer,
   from,
   fromEvent,
@@ -10,9 +13,11 @@ import {
   throwError
 } from 'rxjs';
 import {
+  catchError,
   concatMap,
   concatMapTo,
   count,
+  distinct,
   filter,
   finalize,
   first,
@@ -23,6 +28,7 @@ import {
   pluck,
   reduce,
   share,
+  single,
   switchMapTo,
   takeUntil,
   takeWhile,
@@ -66,7 +72,9 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
  * @returns {Observable<any>}
  */
 export const fromArray = value =>
-  defer(() => (_.isArray(value) ? from(value) : of(value)));
+  defer(() =>
+    _.isArray(value) ? from(value) : _.isUndefined(value) ? EMPTY : of(value)
+  );
 
 export const pluckProp = (prop, orValue) => observable =>
   observable.pipe(
@@ -83,10 +91,15 @@ export const mean = () => observable =>
 
 export {
   bindNodeCallback,
+  combineLatest,
+  catchError,
+  concat,
   concatMap,
   concatMapTo,
   count,
   defer,
+  distinct,
+  EMPTY,
   filter,
   finalize,
   first,
@@ -103,6 +116,7 @@ export {
   pluck,
   reduce,
   share,
+  single,
   switchMapTo,
   takeUntil,
   takeWhile,

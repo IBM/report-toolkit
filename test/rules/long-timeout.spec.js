@@ -17,7 +17,8 @@ describe('rule:long-timeout', function() {
             id: 'long-timeout',
             message:
               'libuv handle at address 0x00007ffeefbfe2e8 is a timer with future expiry in 3h',
-            filepath: '../fixture/reports/report-003-long-timeout.json'
+            filepath: '../fixture/reports/report-003-long-timeout.json',
+            level: 'error'
           }
         );
       });

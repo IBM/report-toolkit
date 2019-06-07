@@ -13,7 +13,7 @@ describe('module:config', function() {
               rules: {
                 'long-timeout': [true, {timeout: 5000}],
                 'library-mismatch': true,
-                mean: true
+                'cpu-usage': true
               },
               [kFlattenedConfig]: true
             }).and('to emit once');
@@ -29,7 +29,7 @@ describe('module:config', function() {
                 rules: {
                   'long-timeout': [true, {timeout: 4000}],
                   'library-mismatch': false,
-                  mean: true
+                  'cpu-usage': true
                 },
                 [kFlattenedConfig]: true
               }
@@ -46,7 +46,7 @@ describe('module:config', function() {
                 rules: {
                   'long-timeout': [true, {timeout: 3000}],
                   'library-mismatch': false,
-                  mean: true
+                  'cpu-usage': true
                 },
                 [kFlattenedConfig]: true
               }

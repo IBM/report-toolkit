@@ -7,26 +7,26 @@ exports.meta = {
     url: 'https://more-information-for-this-rule'
   },
   schema: {},
-  mode: 'simple',
   messages: {}
 };
 
-exports.inspect = ({context, config}) => {
+exports.inspect = (config = {}) => {
   const threshold = config.threshold || 10000;
-  const {libuv} = context;
-  libuv
-    .filter(
-      handle =>
-        handle.type === 'timer' &&
-        handle.is_active &&
-        handle.is_referenced &&
-        handle.firesInMsFromNow >= threshold
-    )
-    .forEach(handle => {
-      context.report(
-        `libuv handle at address ${handle.address} is ${
-          handle.repeat ? 'an interval' : 'a timer'
-        } with future expiry in ${ms(handle.firesInMsFromNow)}`
+  return context => {
+    const {libuv} = context;
+    return libuv
+      .filter(
+        handle =>
+          handle.type === 'timer' &&
+          handle.is_active &&
+          handle.is_referenced &&
+          handle.firesInMsFromNow >= threshold
+      )
+      .map(
+        handle =>
+          `libuv handle at address ${handle.address} is ${
+            handle.repeat ? 'an interval' : 'a timer'
+          } with future expiry in ${ms(handle.firesInMsFromNow)}`
       );
-    });
+  };
 };

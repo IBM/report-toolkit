@@ -1,4 +1,4 @@
-import {Rule, SimpleRule, TemporalRule, kRuleInspect} from '../src/rule';
+import {Rule, kRuleInspect} from '../src/rule';
 
 describe('module:rule', function() {
   let sandbox;
@@ -14,7 +14,7 @@ describe('module:rule', function() {
   describe('Rule', function() {
     describe('constructor', function() {
       it('should apply default "meta" property', function() {
-        expect(new Rule({}), 'to satisfy', {meta: {mode: 'simple'}});
+        expect(new Rule({}), 'to satisfy', {meta: {}});
       });
 
       describe('when called with rule def missing an "inspect" property', function() {
@@ -30,49 +30,12 @@ describe('module:rule', function() {
 
     describe('static method', function() {
       describe('create()', function() {
-        let rule;
-
         beforeEach(function() {
           Rule.create.cache.clear();
         });
 
-        describe('when no mode specified', function() {
-          beforeEach(function() {
-            rule = Rule.create({});
-          });
-
-          it('should create a SimpleRule', function() {
-            expect(rule, 'to be a', SimpleRule);
-          });
-        });
-
-        describe('when "simple" mode specified', function() {
-          beforeEach(function() {
-            rule = Rule.create({meta: {mode: 'simple'}});
-          });
-
-          it('should create a SimpleRule', function() {
-            expect(rule, 'to be a', SimpleRule);
-          });
-        });
-
-        describe('when "temporal" mode specified', function() {
-          beforeEach(function() {
-            rule = Rule.create({meta: {mode: 'temporal'}});
-          });
-
-          it('should create a TemporalRule', function() {
-            expect(rule, 'to be a', TemporalRule);
-          });
-        });
-
-        describe('when unknown mode specified', function() {
-          it('should throw', function() {
-            expect(
-              () => Rule.create({meta: {mode: 'sylvester-mcmonkey-mcbean'}}),
-              'to throw'
-            );
-          });
+        it('should create a Rule', function() {
+          expect(Rule.create(), 'to be a', Rule);
         });
       });
     });

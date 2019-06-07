@@ -5,49 +5,97 @@ exports.meta = {
     url: 'https://more-information-for-this-rule'
   },
   schema: {},
-  mode: 'simple',
   messages: {}
 };
 
 const fieldMap = {
-  all: ['userCpuSeconds', 'kernelCpuSeconds'],
-  kernel: ['kernelCpuSeconds'],
-  user: ['userCpuSeconds']
+  usage: ['cpuConsumptionPercent']
 };
+
+const COMPUTE_MEAN = 'mean';
+const COMPUTE_MIN = 'min';
+const COMPUTE_MAX = 'max';
+const COMPUTE_ALL = 'all';
 
 const hrMap = {
-  kernel: 'Kernel CPU (ms)',
-  user: 'User CPU (ms)',
-  all: 'Kernel+User Avg CPU (ms)',
-  over: 'over',
-  under: 'under'
+  [COMPUTE_MEAN]: 'Mean',
+  [COMPUTE_MIN]: 'Minimum',
+  [COMPUTE_MAX]: 'Maximum',
+  [COMPUTE_ALL]: 'Report',
+  usage: 'CPU Consumption'
 };
 
-const modeMap = {
-  over: (v, t) => v >= t,
-  under: (v, t) => v <= t
-};
-
-exports.inspect = ({context, config} = {}) => {
-  let {threshold, cpu, mode} = config;
-  threshold = threshold || 1000;
-  cpu = cpu || 'all';
-  mode = mode || 'over';
-  const usage =
-    fieldMap[cpu].reduce(
-      (acc, field, i, arr) =>
-        i === arr.length - 1
-          ? (acc + context.resourceUsage[field]) / arr.length
-          : acc + context.resourceUsage[field],
+const computations = {
+  [COMPUTE_MEAN]: usages =>
+    usages.reduce(
+      (acc, value, i, arr) =>
+        i === arr.length - 1 ? (acc + value) / arr.length : acc + value,
       0
-    ) * 1000;
-  if (modeMap[mode](usage, threshold)) {
-    return {
-      message: `${hrMap[cpu]} is ${hrMap[mode]} the specified threshold`,
-      data: {
-        threshold,
-        usage: mode === 'over' ? Math.ceil(usage) : Math.floor(usage)
+    ),
+  [COMPUTE_MIN]: usages =>
+    usages.reduce((acc, value) => Math.min(acc, value), Infinity),
+  [COMPUTE_MAX]: usages =>
+    usages.reduce((acc, value) => Math.max(acc, value), 0)
+};
+
+const withinRange = (start, end, usage) => usage >= start && usage < end;
+
+const ok = ({compute, mode, start, end}, usage) => {
+  return {
+    message: `${hrMap[compute]} ${
+      hrMap[mode]
+    } (${usage}%) is within the allowed range ${start}-${end}`,
+    data: {
+      compute,
+      usage,
+      start,
+      end
+    },
+    level: 'info'
+  };
+};
+
+const fail = ({compute, mode, start, end}, usage) => {
+  return {
+    message: `${hrMap[compute]} ${
+      hrMap[mode]
+    } (${usage}%) is outside the allowed range ${start}-${end}`,
+    data: {
+      compute,
+      usage,
+      start,
+      end
+    }
+  };
+};
+
+exports.inspect = (config = {}) => {
+  let {start, end, compute, mode} = config;
+  mode = mode || 'usage';
+  start = start || 0;
+  end = end || 50;
+  compute = compute || 'mean';
+  const usages = [];
+  return {
+    next(context) {
+      const usage = context.resourceUsage[fieldMap[mode]];
+      if (compute === COMPUTE_ALL) {
+        if (withinRange(start, end, usage)) {
+          return ok({start, end, compute, mode}, usage);
+        }
+        return fail({start, end, compute, mode}, usage);
+      } else {
+        usages.push(usage);
       }
-    };
-  }
+    },
+    complete() {
+      if (compute !== COMPUTE_ALL) {
+        const usage = computations[compute](usages);
+        if (withinRange(start, end, usage)) {
+          return ok({start, end, compute, mode}, usage);
+        }
+        return fail({start, end, compute, mode}, usage);
+      }
+    }
+  };
 };

@@ -1,6 +1,17 @@
-import * as gnosticOperators from './observable';
-import * as operators from 'rxjs/operators';
-import * as rxjs from 'rxjs';
+import {
+  EMPTY,
+  catchError,
+  concat,
+  defer,
+  distinct,
+  from,
+  fromArray,
+  map,
+  mergeMap,
+  of,
+  pluck,
+  single
+} from './observable';
 
 import _ from 'lodash/fp';
 
@@ -9,20 +20,19 @@ export const kRuleMeta = Symbol('ruleMeta');
 export const kRuleInspect = Symbol('ruleInspect');
 export const kRuleFilepath = Symbol('ruleFilepath');
 
-const {iif, concat, isObservable, throwError} = rxjs;
-const {fromArray} = gnosticOperators;
-const {mergeMap, filter, map} = operators;
-
-const util = Object.freeze({
-  ...operators,
-  ...rxjs,
-  ...gnosticOperators
-});
-
 /**
  * @typedef {Object} RuleDefinition
  * @property {Object} meta - (schema for `meta` prop)
  * @property {Function} inspect - Async function which receives `Context` object and optional configuration
+ */
+
+/**
+ * @typedef {Object} Message
+ * @property {string} message - Message text
+ * @property {?*} data - Optional extra data
+ * @property {string} level - Message errorlevel
+ * @property {?string} filepath - Filepath to report (if any)
+ * @property {string} id - Rule ID
  */
 
 /**
@@ -63,18 +73,10 @@ export class Rule {
     return this[kRuleMeta];
   }
 
-  inspect(context, config = {}) {
-    return throwError(new Error('Not implemented'));
-  }
-
-  static formatMessage(message) {
-    return String(message).trim();
-  }
-
   static applyDefaults(ruleDef) {
     return _.defaultsDeep(
       {
-        meta: {type: 'info', mode: 'simple', docs: {}},
+        meta: {docs: {}},
         inspect: () => {
           throw new Error(
             `Rule "${ruleDef.id}" has no "inspect" implementation`
@@ -84,6 +86,85 @@ export class Rule {
       ruleDef
     );
   }
+
+  static normalizeHandler() {
+    return observable =>
+      observable.pipe(
+        map(handler => (_.isFunction(handler) ? {next: handler} : handler))
+      );
+  }
+
+  /**
+   * Calls the `inspect()` function of a Rule impl, which will return one or more
+   * "handler" functions.
+   * @param {Object} [config] Optional rule-specific config
+   * @returns {Promise<Object|Function>}
+   */
+  async handlers(config = {}) {
+    return this[kRuleInspect].call(null, config);
+  }
+
+  /**
+   * Given a stream of Report objects and an optional configuration, execute
+   * the `inspect()` function of the rule, which should return a "next" function,
+   * or an object having function props `next` and `complete`.  Runs the "next"
+   * handlers against each Report, and finally the "complete" handler (if it exists).
+   * These will return one or more partial Message objects or just strings.
+   * Ensures Messages are unique, then adds some metadata and reformats for output.
+   * @param {Observable<Report>} contexts - Report objects
+   * @param {Object} [config] - Optional rule-specific config
+   * @returns {Observable<Message>}
+   */
+  inspect({contexts, config = {}}) {
+    return from(this.handlers(config)).pipe(
+      Rule.normalizeHandler(),
+      mergeMap(handler =>
+        concat(
+          contexts.pipe(
+            mergeMap(context =>
+              fromArray(handler.next(context)).pipe(
+                map(message => [message, context.filepath])
+              )
+            )
+          ),
+          _.isFunction(handler.complete)
+            ? defer(() =>
+                // if we only have a single context, use that filepath, otherwise
+                // emit "multiple files" for the `filepath`
+                contexts.pipe(
+                  pluck('filepath'),
+                  single(),
+                  catchError(() => of('(multiple files)')),
+                  mergeMap(filepath =>
+                    fromArray(handler.complete()).pipe(
+                      map(message => [message, filepath])
+                    )
+                  )
+                )
+              )
+            : EMPTY
+        )
+      ),
+      distinct(),
+      Rule.formatResult(this.id)
+    );
+  }
+
+  static formatResult(id) {
+    return observable =>
+      observable.pipe(
+        map(([message, filepath]) => {
+          let data, level;
+          if (_.has('message', message)) {
+            data = message.data;
+            level = message.level;
+            message = message.message;
+          }
+          message = String(message).trim();
+          return _.pickBy(Boolean, {message, filepath, id, level, data});
+        })
+      );
+  }
 }
 
 /**
@@ -91,99 +172,5 @@ export class Rule {
  * @param {RuleDefinition} ruleDef
  */
 Rule.create = _.memoize(ruleDef => {
-  const ctor = RULE_MODE_MAP.get(_.getOr('simple', 'meta.mode', ruleDef));
-  if (!ctor) {
-    throw new Error(`Unknown rule mode ${_.get('meta.mode', ruleDef)}`);
-  }
-  return Reflect.construct(ctor, [ruleDef]);
+  return new Rule(ruleDef);
 });
-
-export class SimpleRule extends Rule {
-  /**
-   *
-   * @param {Observable<Context>} contexts - Context objects
-   * @param {Object} [config] - Optional rule-specific config
-   * @returns {Observable}
-   */
-  inspect({contexts, config = {}}) {
-    return contexts.pipe(
-      mergeMap(context =>
-        concat(
-          fromArray(
-            this[kRuleInspect].call(null, {context, config, util}) || []
-          ),
-          context.flush()
-        ).pipe(
-          filter(Boolean),
-          map(message =>
-            this.formatResult({
-              filepath: context.filepath,
-              message
-            })
-          )
-        )
-      )
-    );
-  }
-
-  formatResult({filepath, message, data} = {}) {
-    if (_.isUndefined(message)) {
-      return;
-    }
-    const info = {
-      filepath,
-      id: this.id
-    };
-
-    if (_.has('message', message)) {
-      data = message.data;
-      message = message.message;
-    }
-
-    return {message: Rule.formatMessage(message), data, ...info};
-  }
-}
-
-export class TemporalRule extends Rule {
-  /**
-   *
-   * @param {Observable<Context>} contexts - Context object
-   * @param {Object} [config] - Optional rule-specific config
-   * @returns {Observable}
-   */
-  inspect({contexts: stream, config = {}}) {
-    const result = this[kRuleInspect].call(null, {
-      stream,
-      util,
-      config
-    });
-
-    return iif(() => isObservable(result), result, fromArray(result)).pipe(
-      map(message => this.formatResult({message}))
-    );
-  }
-
-  formatResult({message, data} = {}) {
-    if (_.isUndefined(message)) {
-      return;
-    }
-    const info = {
-      id: this.id,
-      filepath: '(multiple files)'
-    };
-    if (_.has('message', message)) {
-      return {
-        message: String(message.message).trim(),
-        data: message.data,
-        ...info
-      };
-    }
-
-    return {message: String(message).trim(), data, ...info};
-  }
-}
-
-const RULE_MODE_MAP = new Map([
-  ['simple', SimpleRule],
-  ['temporal', TemporalRule]
-]);

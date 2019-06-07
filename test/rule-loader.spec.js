@@ -74,13 +74,13 @@ describe('module:rule-loader', function() {
           'to complete with values',
           Rule.create({
             inspect: require('./fixture/rules/foo').inspect,
-            meta: {type: 'info', mode: 'simple', docs: {}},
             id: 'foo',
+            meta: {docs: {}},
             filepath: path.join(FIXTURE_RULES_DIR, 'foo.js')
           }),
           Rule.create({
             inspect: require('./fixture/rules/bar').inspect,
-            meta: {type: 'info', mode: 'simple', docs: {}},
+            meta: {docs: {}},
             id: 'bar',
             filepath: path.join(FIXTURE_RULES_DIR, 'bar.js')
           })

@@ -40,7 +40,8 @@ export const inspect = (
     search = true,
     configSearchPath = process.cwd(),
     ruleSearchPath,
-    redactSecrets
+    redactSecrets,
+    level = 'error'
   } = {}
 ) => {
   // XXX: rewrite so that loadReport throws this
@@ -72,7 +73,7 @@ export const inspect = (
     configSearchPath,
     ruleSearchPath,
     search
-  }).pipe(inspectReports(reports));
+  }).pipe(inspectReports(reports, {level}));
 };
 
 export const loadRuleConfigs = ({

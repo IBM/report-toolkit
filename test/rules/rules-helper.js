@@ -25,10 +25,10 @@ export const createInspect = (ruleFilepath, config = {}) => {
   const ruleConfigs = of(rule).pipe(
     map(rule => RuleConfig.create(rule, config))
   );
-  return filepath =>
+  return (filepath, opts = {}) =>
     loadReport(require.resolve(filepath)).pipe(
       map(Report.createFromFile(filepath)),
-      mergeMap(report => ruleConfigs.pipe(inspectReports(of(report))))
+      mergeMap(report => ruleConfigs.pipe(inspectReports(of(report), opts)))
     );
 };
 

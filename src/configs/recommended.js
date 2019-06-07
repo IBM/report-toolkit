@@ -3,6 +3,6 @@ exports.config = {
   rules: {
     'library-mismatch': 'on',
     'long-timeout': 'on',
-    mean: 'on'
+    'cpu-usage': 'on'
   }
 };

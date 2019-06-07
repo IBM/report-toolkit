@@ -100,7 +100,8 @@ describe('module:api/stream', function() {
             {
               message: 'foo',
               filepath: REPORT_001_FILEPATH,
-              id: 'foo'
+              id: 'foo',
+              level: 'error'
             }
           );
         });

@@ -1,4 +1,3 @@
-import {Context} from './context';
 import _ from 'lodash/fp';
 export const kReportFilepath = Symbol('reportFilepath');
 export const kReportQueue = Symbol('reportQueue');
@@ -30,10 +29,6 @@ export class Report {
 
   get filepath() {
     return this[kReportFilepath];
-  }
-
-  createContext(ruleConfig) {
-    return Context.create(this, ruleConfig);
   }
 
   static create(report, filepath) {

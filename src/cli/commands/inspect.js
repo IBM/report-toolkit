@@ -21,6 +21,12 @@ export const builder = yargs =>
         description: 'Live dangerously & do not automatically redact secrets',
         group: GROUPS.OUTPUT
       },
+      level: {
+        choices: ['info', 'warning', 'error'],
+        description: 'Errorlevel for messages',
+        group: GROUPS.FILTER,
+        default: 'error'
+      },
       ...OPTIONS.OUTPUT
     });
 
@@ -32,10 +38,11 @@ export const handler = argv => {
     wrap: wrapValues = false,
     format = 'table',
     pretty = false,
-    color
+    color,
+    level = 'error'
   } = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
-  inspect(filepaths, {config, redactSecrets})
+  inspect(filepaths, {config, redactSecrets, level})
     .pipe(
       toFormattedString(format, {
         color,
