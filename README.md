@@ -82,9 +82,7 @@ Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
 ## Roadmap
 
-- Time-based ("temporal") Rules, which track values over multiple reports
 - More built-in Rules
-- Output in a format suitable for graphing/plotting
 - Actual documentation:
   - API docs
   - Tutorials & examples

@@ -156,7 +156,7 @@
   "resourceUsage": {
     "userCpuSeconds": 0.047874,
     "kernelCpuSeconds": 0.013338,
-    "cpuConsumptionPercent": 70,
+    "cpuConsumptionPercent": 70.123456,
     "maxRss": 23035117568,
     "pageFaults": {
       "IORequired": 0,

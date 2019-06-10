@@ -1,5 +1,5 @@
-import * as observable from './observable';
+import * as stream from './stream';
 
 export * from './promise';
 
-export {observable};
+export {stream};

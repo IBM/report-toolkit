@@ -29,5 +29,5 @@ export const diff = async (...args) =>
 export const loadReport = async (...args) =>
   stream.loadReport(...args).toPromise();
 
-export const prepareInspectors = async (...args) =>
+export const loadRuleConfigs = async (...args) =>
   stream.loadRuleConfigs(...args).toPromise();

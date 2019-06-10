@@ -1,6 +1,6 @@
 exports.meta = {
   docs: {
-    description: 'Assert CPU usage % is within a range',
+    description: 'Assert memory usage % is within a range',
     category: 'resource',
     url: 'https://more-information-for-this-rule'
   },
@@ -43,9 +43,7 @@ const computations = {
   [COMPUTE_MEAN]: usages =>
     usages.reduce(
       (acc, value, i, arr) =>
-        i === arr.length - 1
-          ? parseFloat(((acc + value) / arr.length).toFixed(2))
-          : acc + value,
+        i === arr.length - 1 ? (acc + value) / arr.length : acc + value,
       0
     ),
   [COMPUTE_MIN]: usages =>
@@ -58,7 +56,7 @@ const withinRange = (min, max, usage) => usage >= min && usage <= max;
 
 const ok = ({compute, min, max}, usage) => {
   return {
-    message: `${hrMap[compute]} CPU consumption percent (${usage}%) is within the allowed range ${min}-${max}`,
+    message: `${hrMap[compute]} memory usage percent (${usage}%) is within the allowed range ${min}-${max}`,
     data: {
       compute,
       usage,
@@ -71,7 +69,7 @@ const ok = ({compute, min, max}, usage) => {
 
 const fail = ({compute, min, max}, usage) => {
   return {
-    message: `${hrMap[compute]} CPU consumption percent (${usage}%) is outside the allowed range ${min}-${max}`,
+    message: `${hrMap[compute]} memory usage percent (${usage}%) is outside the allowed range ${min}-${max}`,
     data: {
       compute,
       usage,
@@ -90,7 +88,11 @@ exports.inspect = (config = {}) => {
   return {
     next(context) {
       const usage = parseFloat(
-        context.resourceUsage.cpuConsumptionPercent.toFixed(2)
+        (
+          (context.javascriptHeap.totalMemory /
+            context.javascriptHeap.availableMemory) *
+          100
+        ).toFixed(2)
       );
       if (compute === COMPUTE_ALL) {
         if (withinRange(min, max, usage)) {
