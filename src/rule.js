@@ -14,11 +14,15 @@ import {
 } from './observable';
 
 import _ from 'lodash/fp';
+import {ajv} from './ajv';
+import {createDebugger} from './debug';
 
 export const kRuleId = Symbol('ruleId');
 export const kRuleMeta = Symbol('ruleMeta');
 export const kRuleInspect = Symbol('ruleInspect');
 export const kRuleFilepath = Symbol('ruleFilepath');
+
+const debug = createDebugger(module);
 
 /**
  * @typedef {Object} RuleDefinition
@@ -30,10 +34,12 @@ export const kRuleFilepath = Symbol('ruleFilepath');
  * @typedef {Object} Message
  * @property {string} message - Message text
  * @property {?*} data - Optional extra data
- * @property {string} level - Message errorlevel
+ * @property {string} severity - Message severity
  * @property {?string} filepath - Filepath to report (if any)
  * @property {string} id - Rule ID
  */
+
+const validatorMap = new WeakMap();
 
 /**
  * A Rule which can be matched against a Context
@@ -63,6 +69,45 @@ export class Rule {
 
   get url() {
     return _.get('docs.url', this[kRuleMeta]);
+  }
+
+  get schema() {
+    return _.get('schema', this[kRuleMeta]);
+  }
+
+  /**
+   * Ripped off much of this from ESLint
+   */
+  get validate() {
+    if (validatorMap.has(this)) {
+      debug(`returning cached validator for rule ${this.id}`);
+      return validatorMap.get(this);
+    }
+
+    const schema = this.schema;
+
+    if (!schema) {
+      return _.noop;
+    }
+
+    debug(`found schema for rule ${this.id}`, schema);
+    const validate = ajv.compile(schema);
+
+    if (ajv.errors) {
+      throw new Error(
+        `Schema for rule ${this.id} is invalid: ${ajv.errorsText()}`
+      );
+    }
+
+    validatorMap.set(this, config => {
+      debug(`validating ${this.id} with config`, config);
+      validate(config);
+      if (ajv.errors) {
+        throw new Error(`Invalid rule configuration: ${ajv.errorsText()}`);
+      }
+    });
+
+    return validatorMap.get(this);
   }
 
   get filepath() {
@@ -154,14 +199,14 @@ export class Rule {
     return observable =>
       observable.pipe(
         map(([message, filepath]) => {
-          let data, level;
+          let data, severity;
           if (_.has('message', message)) {
             data = message.data;
-            level = message.level;
+            severity = message.severity;
             message = message.message;
           }
           message = String(message).trim();
-          return _.pickBy(Boolean, {message, filepath, id, level, data});
+          return _.pickBy(Boolean, {message, filepath, id, severity, data});
         })
       );
   }

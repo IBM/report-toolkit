@@ -4,8 +4,34 @@ exports.meta = {
     category: 'resource',
     url: 'https://more-information-for-this-rule'
   },
-  schema: {},
-  messages: {}
+  schema: {
+    type: 'object',
+    properties: {
+      min: {
+        type: 'integer',
+        minimum: 0,
+        maximum: 100,
+        default: 0
+      },
+      max: {
+        type: 'integer',
+        minimum: 0,
+        maximum: 100,
+        default: 50
+      },
+      compute: {
+        type: 'string',
+        enum: ['mean', 'min', 'max', 'all'],
+        default: 'mean'
+      },
+      mode: {
+        type: 'string',
+        enum: ['usage'],
+        default: 'usage'
+      }
+    },
+    additionalProperties: false
+  }
 };
 
 const fieldMap = {
@@ -38,52 +64,52 @@ const computations = {
     usages.reduce((acc, value) => Math.max(acc, value), 0)
 };
 
-const withinRange = (start, end, usage) => usage >= start && usage < end;
+const withinRange = (min, max, usage) => usage >= min && usage <= max;
 
-const ok = ({compute, mode, start, end}, usage) => {
+const ok = ({compute, mode, min, max}, usage) => {
   return {
     message: `${hrMap[compute]} ${
       hrMap[mode]
-    } (${usage}%) is within the allowed range ${start}-${end}`,
+    } (${usage}%) is within the allowed range ${min}-${max}`,
     data: {
       compute,
       usage,
-      start,
-      end
+      min,
+      max
     },
-    level: 'info'
+    severity: 'info'
   };
 };
 
-const fail = ({compute, mode, start, end}, usage) => {
+const fail = ({compute, mode, min, max}, usage) => {
   return {
     message: `${hrMap[compute]} ${
       hrMap[mode]
-    } (${usage}%) is outside the allowed range ${start}-${end}`,
+    } (${usage}%) is outside the allowed range ${min}-${max}`,
     data: {
       compute,
       usage,
-      start,
-      end
+      min,
+      max
     }
   };
 };
 
 exports.inspect = (config = {}) => {
-  let {start, end, compute, mode} = config;
+  let {min, max, compute, mode} = config;
   mode = mode || 'usage';
-  start = start || 0;
-  end = end || 50;
+  min = min || 0;
+  max = max || 50;
   compute = compute || 'mean';
   const usages = [];
   return {
     next(context) {
       const usage = context.resourceUsage[fieldMap[mode]];
       if (compute === COMPUTE_ALL) {
-        if (withinRange(start, end, usage)) {
-          return ok({start, end, compute, mode}, usage);
+        if (withinRange(min, max, usage)) {
+          return ok({min, max, compute, mode}, usage);
         }
-        return fail({start, end, compute, mode}, usage);
+        return fail({min, max, compute, mode}, usage);
       } else {
         usages.push(usage);
       }
@@ -91,10 +117,10 @@ exports.inspect = (config = {}) => {
     complete() {
       if (compute !== COMPUTE_ALL) {
         const usage = computations[compute](usages);
-        if (withinRange(start, end, usage)) {
-          return ok({start, end, compute, mode}, usage);
+        if (withinRange(min, max, usage)) {
+          return ok({min, max, compute, mode}, usage);
         }
-        return fail({start, end, compute, mode}, usage);
+        return fail({min, max, compute, mode}, usage);
       }
     }
   };

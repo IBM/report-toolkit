@@ -22,9 +22,9 @@ export const builder = yargs =>
         description: 'Live dangerously & do not automatically redact secrets',
         group: GROUPS.OUTPUT
       },
-      level: {
+      severity: {
         choices: ['info', 'warning', 'error'],
-        description: 'Errorlevel for messages',
+        description: 'Minimum severity level for messages',
         group: GROUPS.FILTER,
         default: 'error'
       },
@@ -46,10 +46,10 @@ export const handler = argv => {
     format = 'table',
     pretty = false,
     color,
-    level = 'error'
+    severity = 'error'
   } = argv;
   const redactSecrets = !argv['show-secrets-unsafe'];
-  inspect(filepaths, {config, redactSecrets, level})
+  inspect(filepaths, {config, redactSecrets, severity})
     .pipe(
       toFormattedString(format, {
         color,

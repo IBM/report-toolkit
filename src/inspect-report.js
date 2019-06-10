@@ -2,24 +2,33 @@ import {filter, map, mergeMap} from './observable';
 
 import _ from 'lodash/fp';
 
-const ERRORLEVEL = {
-  error: 30,
-  warning: 20,
-  info: 10
+export const ERROR = 'error';
+export const WARNING = 'warning';
+export const INFO = 'info';
+
+const SEVERITIES = {
+  [ERROR]: 30,
+  [WARNING]: 20,
+  [INFO]: 10
 };
 
 /**
- *
- * @param {Observable<Report>} reports
+ * Pipes `Report` objects into each `RuleConfig`, then filters on severity level.
+ * @param {Observable<Report>} reports - Stream of Report objects
+ * @param {Object} [opts] - Optional opts
+ * @param {string} [severity=error] - Severity level to filter on; any message severity *lower* than this will be discarded
+ * @returns {Observable<Message>}
  */
 export const inspectReports = (
   reports,
-  {level = 'error'} = {}
+  {severity = ERROR} = {}
 ) => ruleConfigs =>
   ruleConfigs.pipe(
     mergeMap(ruleConfig => ruleConfig.inspect(reports)),
     map(message =>
-      _.has('level', message) ? message : {...message, level: 'error'}
+      _.has('severity', message) ? message : {...message, severity: ERROR}
     ),
-    filter(message => _.get(message.level, ERRORLEVEL) >= ERRORLEVEL[level])
+    filter(
+      message => _.get(message.severity, SEVERITIES) >= SEVERITIES[severity]
+    )
   );

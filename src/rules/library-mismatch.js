@@ -4,9 +4,18 @@ exports.meta = {
     category: 'runtime',
     url: 'https://more-information-for-this-rule'
   },
-  schema: {},
-  messages: {
-    mismatch: 'Potential library version mismatch'
+  schema: {
+    type: 'object',
+    properties: {
+      ignore: {
+        type: 'array',
+        items: {
+          type: 'string'
+        },
+        minItems: 1
+      }
+    },
+    additionalProperties: false
   }
 };
 

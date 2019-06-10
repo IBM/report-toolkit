@@ -1,6 +1,8 @@
 import _ from 'lodash/fp';
+import {createDebugger} from './debug';
 import {map} from './observable';
 
+const debug = createDebugger(module);
 const ruleMap = new WeakMap();
 
 export class RuleConfig {
@@ -11,12 +13,17 @@ export class RuleConfig {
    */
   constructor(rule, rawConfig = {}) {
     ruleMap.set(this, rule);
-    try {
-      RuleConfig.validate(rawConfig);
-    } catch (err) {
-      // do something
+
+    if (_.isArray(rawConfig)) {
+      rawConfig = rawConfig[1];
     }
-    this.config = Object.freeze(rawConfig);
+    if (_.isBoolean(rawConfig)) {
+      rawConfig = {};
+    }
+
+    Object.freeze(rawConfig);
+    this.config = rawConfig;
+    this.validate();
   }
 
   get rule() {
@@ -27,19 +34,15 @@ export class RuleConfig {
     return this.rule.id;
   }
 
-  get severity() {
-    return _.getOr('high', 'config.severity', this);
-  }
-
   /**
    * validate the config against meta.schema using ajv
    * @todo
    * @param {Object} config
    * @returns boolean
    */
-  static validate(config) {
-    // const rule = ruleMap.get(this);
-    return true;
+  validate() {
+    this.rule.validate(this.config);
+    debug(`config for rule ${this.id} OK:`, this.config);
   }
 
   inspect(contexts) {
@@ -52,4 +55,4 @@ export class RuleConfig {
 }
 
 export const loadRuleConfig = config => rules =>
-  rules.pipe(map(rule => RuleConfig.create(rule, config[rule.id])));
+  rules.pipe(map(rule => RuleConfig.create(rule, config.rules[rule.id])));

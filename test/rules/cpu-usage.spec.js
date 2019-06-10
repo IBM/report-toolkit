@@ -12,13 +12,13 @@ describe('rule:cpu-usage', function() {
       describe('when file cpu usage within allowed limits', function() {
         it('should report "info" message', function() {
           return expect(
-            inspect('../fixture/reports/report-001.json', {level: 'info'}),
+            inspect('../fixture/reports/report-001.json', {severity: 'info'}),
             'to complete with value satisfying',
             {
               message:
                 'Mean CPU Consumption (6.1212%) is within the allowed range 0-50',
-              data: {compute: 'mean', usage: 6.1212, start: 0, end: 50},
-              level: 'info',
+              data: {compute: 'mean', usage: 6.1212, min: 0, max: 50},
+              severity: 'info',
               filepath: /fixture\/reports\/report-001\.json/,
               id: 'cpu-usage'
             }
@@ -34,8 +34,8 @@ describe('rule:cpu-usage', function() {
             {
               message:
                 'Mean CPU Consumption (70%) is outside the allowed range 0-50',
-              data: {compute: 'mean', usage: 70, start: 0, end: 50},
-              level: 'error',
+              data: {compute: 'mean', usage: 70, min: 0, max: 50},
+              severity: 'error',
               filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
               id: 'cpu-usage'
             }

@@ -6,8 +6,16 @@ exports.meta = {
     category: 'event-queue',
     url: 'https://more-information-for-this-rule'
   },
-  schema: {},
-  messages: {}
+  schema: {
+    type: 'object',
+    properties: {
+      threshold: {
+        type: 'integer',
+        minimum: 0
+      }
+    },
+    additionalProperties: false
+  }
 };
 
 exports.inspect = (config = {}) => {

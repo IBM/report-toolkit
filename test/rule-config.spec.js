@@ -14,13 +14,21 @@ describe('module:rule-config', function() {
     describe('constructor', function() {
       it('should associate a Rule with a config', function() {
         const config = {};
-        const rule = {id: 'foo'};
+        const rule = {id: 'foo', validate() {}};
         expect(
           new RuleConfig(rule, config),
           'to have property',
           'config',
           config
         );
+      });
+
+      it('should validate the config against the Rule schema', function() {
+        const config = {};
+        const rule = {id: 'foo', validate: sandbox.spy()};
+        // eslint-disable-next-line no-new
+        new RuleConfig(rule, config);
+        expect(rule.validate, 'was called with', config);
       });
     });
 
