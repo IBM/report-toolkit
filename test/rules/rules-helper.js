@@ -2,13 +2,16 @@ import {
   concatMap,
   filter,
   first,
+  from,
+  fromArray,
   fromEvent,
   map,
   mergeMap,
   of,
   pluck,
   share,
-  takeUntil
+  takeUntil,
+  toArray
 } from '../../src/observable';
 
 import {Report} from '../../src/report';
@@ -25,10 +28,16 @@ export const createInspect = (ruleFilepath, config = {}) => {
   const ruleConfigs = of(rule).pipe(
     map(rule => RuleConfig.create(rule, config))
   );
-  return (filepath, opts = {}) =>
-    loadReport(require.resolve(filepath)).pipe(
-      map(Report.createFromFile(filepath)),
-      mergeMap(report => ruleConfigs.pipe(inspectReports(of(report), opts)))
+  return (filepaths, opts = {}) =>
+    fromArray(filepaths).pipe(
+      map(require.resolve),
+      mergeMap(filepath =>
+        loadReport(filepath).pipe(
+          map(report => Report.createFromFile(filepath, report))
+        )
+      ),
+      toArray(),
+      mergeMap(reports => ruleConfigs.pipe(inspectReports(from(reports), opts)))
     );
 };
 
