@@ -7,12 +7,16 @@ import {
   FORMAT_TABLE
 } from '../../formatters';
 import {GROUPS, OPTIONS} from './common';
+import {iif, tap, throwError} from '../../observable';
 
 import _ from 'lodash/fp';
 import colors from '../colors';
+import {createDebugger} from '../../debug';
 import {loadReport} from '../../api/stream';
 import {toFormattedString} from '../console';
 import {writeFileSync} from 'fs';
+
+const debug = createDebugger(module);
 
 const ALLOWED_FORMATS = [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE, FORMAT_PIPE];
 
@@ -58,9 +62,11 @@ export const handler = ({
   output
 } = {}) => {
   const operator = transformers[transformer];
-  loadReport(filepaths)
-    .pipe(operator({field}))
-    .pipe(
+  iif(
+    () => operator,
+    loadReport(filepaths).pipe(
+      tap(() => debug(`using transformer "${transformer}"`)),
+      operator({field}),
       toFormattedString(format, {
         color,
         fields: [
@@ -84,11 +90,12 @@ export const handler = ({
         truncateValues,
         wrapValues
       })
-    )
-    .subscribe(result => {
-      if (output) {
-        return writeFileSync(output, result);
-      }
-      console.log(result);
-    });
+    ),
+    throwError(new Error(`Unknown transform ${transformer}`))
+  ).subscribe(result => {
+    if (output) {
+      return writeFileSync(output, result);
+    }
+    console.log(result);
+  });
 };

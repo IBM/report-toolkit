@@ -1,5 +1,6 @@
 import {createDebugger, enableDebugger} from '../debug.js';
 
+import {FORMAT_TABLE} from '../formatters';
 import {loadConfig} from '../config';
 import pkg from '../../package.json';
 import yargs from 'yargs/yargs';
@@ -32,6 +33,10 @@ export const main = () => {
         // "verbose" enables debug statements
         if (argv.verbose) {
           enableDebugger();
+        }
+
+        if (argv.format !== FORMAT_TABLE) {
+          argv.color = false;
         }
 
         debug(argv);
