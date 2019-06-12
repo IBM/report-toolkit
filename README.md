@@ -8,8 +8,7 @@
 
 - Run heuristics ("Rules") against diagnostic reports to uncover issues needing attention
   - Comes with a set of built-in Rules and a "recommended" configuration
-  - Custom and reusable Rules
-  - Extendable and reusable Rule configurations
+  - Custom, extendable, and shareable Rules
 - Purpose-built, "smart" diagnostic report diffing
   - "What has changed from last report?"
   - Ignores fields that don't matter
