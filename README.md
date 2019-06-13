@@ -24,7 +24,7 @@
   - Tabular, human-readable output
   - JSON
   - CSV
-- Handles multiple report files
+- Handles one or more report files
 - Written using ES modules to faciliate bundling as library for the web
 
 ## Installation & Usage
@@ -35,7 +35,7 @@
 $ npx gnostic --help
 ```
 
-or just install globally:
+or install globally:
 
 ```shell
 $ npm install -g gnostic
