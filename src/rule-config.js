@@ -21,9 +21,10 @@ export class RuleConfig {
       rawConfig = {};
     }
 
-    Object.freeze(rawConfig);
     this.config = rawConfig;
     this.validate();
+    // IMPORTANT: validate() *mutates* the config, so we must freeze AFTER
+    Object.freeze(rawConfig);
   }
 
   get rule() {
