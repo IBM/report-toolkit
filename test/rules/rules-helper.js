@@ -14,6 +14,7 @@ import {
   toArray
 } from '../../src/observable';
 
+import {INFO} from '../../src/constants';
 import {Report} from '../../src/report';
 import {RuleConfig} from '../../src/rule-config';
 import _ from 'lodash/fp';
@@ -37,7 +38,11 @@ export const createInspect = (ruleFilepath, config = {}) => {
         )
       ),
       toArray(),
-      mergeMap(reports => ruleConfigs.pipe(inspectReports(from(reports), opts)))
+      mergeMap(reports =>
+        ruleConfigs.pipe(
+          inspectReports(from(reports), {severity: INFO, ...opts})
+        )
+      )
     );
 };
 
@@ -81,3 +86,6 @@ export const sample = (interval = 500, count = 5) => {
     })
   );
 };
+
+export const getDefaultConfigValue = (rulePath, configProp) =>
+  _.get(`meta.schema.properties.${configProp}.default`, require(rulePath));
