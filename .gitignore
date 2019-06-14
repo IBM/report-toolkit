@@ -67,3 +67,5 @@ gnostic*.yml
 
 # generated reports
 report.*.json
+
+*.disabled
