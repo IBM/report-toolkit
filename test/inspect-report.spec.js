@@ -1,3 +1,4 @@
+import {ERROR} from '../src/constants';
 import {Report} from '../src/report';
 import {inspectReports} from '../src/inspect-report';
 import {of} from '../src/observable';
@@ -24,7 +25,7 @@ describe('module:inspect-reports', function() {
           of({
             inspect: sandbox
               .stub()
-              .returns(of({message: 'foo', id: 'bar', severity: 'error'}))
+              .returns(of({message: 'foo', id: 'bar', severity: ERROR}))
           }).pipe(
             inspectReports(
               of(
@@ -36,7 +37,7 @@ describe('module:inspect-reports', function() {
           {
             message: 'foo',
             id: 'bar',
-            severity: 'error'
+            severity: ERROR
           }
         );
       });

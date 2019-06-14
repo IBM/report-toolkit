@@ -1,3 +1,4 @@
+import {ERROR, INFO, WARNING} from '../../constants';
 import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../../formatters/index';
 import {GROUPS, OPTIONS} from './common';
 import {fail, toFormattedString} from '../console';
@@ -23,10 +24,10 @@ export const builder = yargs =>
         group: GROUPS.OUTPUT
       },
       severity: {
-        choices: ['info', 'warning', 'error'],
+        choices: [INFO, WARNING, ERROR],
         description: 'Minimum severity level for messages',
         group: GROUPS.FILTER,
-        default: 'error'
+        default: ERROR
       },
       ...OPTIONS.OUTPUT
     })

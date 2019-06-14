@@ -14,6 +14,7 @@ import {
 import {createDebugger, isDebugEnabled} from '../debug';
 import {filterEnabledRules, loadConfig} from '../config';
 
+import {ERROR} from '../constants';
 import _ from 'lodash/fp';
 import {inspectReports} from '../inspect-report';
 import {loadReport} from '../load-report';
@@ -41,7 +42,7 @@ export const inspect = (
     configSearchPath = process.cwd(),
     ruleSearchPath,
     redactSecrets,
-    severity = 'error'
+    severity = ERROR
   } = {}
 ) => {
   // XXX: rewrite so that loadReport throws this

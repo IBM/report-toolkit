@@ -8,6 +8,7 @@ import {
   tap
 } from '../../src/observable';
 
+import {ERROR} from '../../src/constants';
 import {Report} from '../../src/report';
 import {Rule} from '../../src/rule';
 import {createDebugger} from '../../src/debug';
@@ -101,7 +102,7 @@ describe('module:api/stream', function() {
               message: 'foo',
               filepath: REPORT_001_FILEPATH,
               id: 'foo',
-              severity: 'error'
+              severity: ERROR
             }
           );
         });

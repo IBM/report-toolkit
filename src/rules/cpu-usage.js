@@ -1,3 +1,5 @@
+const {INFO} = require('../api');
+
 exports.meta = {
   docs: {
     description: 'Assert CPU usage % is within a range',
@@ -65,7 +67,7 @@ const ok = ({compute, min, max}, usage) => {
       min,
       max
     },
-    severity: 'info'
+    severity: INFO
   };
 };
 

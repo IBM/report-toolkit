@@ -1,10 +1,7 @@
+import {ERROR, INFO, WARNING} from './constants';
 import {filter, map, mergeMap} from './observable';
 
 import _ from 'lodash/fp';
-
-export const ERROR = 'error';
-export const WARNING = 'warning';
-export const INFO = 'info';
 
 const SEVERITIES = {
   [ERROR]: 30,
