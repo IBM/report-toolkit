@@ -1,3 +1,6 @@
+import * as promise from '../../src/api/promise';
+import * as stream from '../../src/api/stream';
+
 import {of} from '../../src/observable';
 
 const REPORT_001_FILEPATH = require.resolve(
@@ -6,24 +9,17 @@ const REPORT_001_FILEPATH = require.resolve(
 
 describe('module:api/promise', function() {
   let sandbox;
-  let subject;
-  let streamStubs;
 
   beforeEach(function() {
     sandbox = sinon.createSandbox();
-
-    streamStubs = {
-      inspect: sandbox.stub().returns(of({message: 'foo'})),
-      loadConfig: sandbox.stub().returns(of({})),
-      loadRules: sandbox.stub().returns(of({id: 'foo'}, {id: 'bar'})),
-      diff: sandbox.stub().returns(of({})),
-      loadReport: sandbox.stub().returns(of(require(REPORT_001_FILEPATH))),
-      loadRuleConfigs: sandbox.stub().returns(of({}))
-    };
-
-    subject = proxyquire(require.resolve('../../src/api/promise'), {
-      './stream': streamStubs
-    });
+    sandbox.stub(stream, 'inspect').returns(of({message: 'foo'}));
+    sandbox.stub(stream, 'loadConfig').returns(of({}));
+    sandbox.stub(stream, 'loadRules').returns(of({id: 'foo'}, {id: 'bar'}));
+    sandbox.stub(stream, 'diff').returns(of({}));
+    sandbox
+      .stub(stream, 'loadReport')
+      .returns(of(require(REPORT_001_FILEPATH)));
+    sandbox.stub(stream, 'loadRuleConfigs').returns(of({}));
   });
 
   afterEach(function() {
@@ -35,12 +31,12 @@ describe('module:api/promise', function() {
       let inspect;
 
       beforeEach(function() {
-        inspect = subject.inspect;
+        inspect = promise.inspect;
       });
 
       it('should delegate to stream.inspect()', async function() {
         await inspect();
-        expect(streamStubs.inspect, 'was called');
+        expect(stream.inspect, 'was called');
       });
     });
 
@@ -48,12 +44,12 @@ describe('module:api/promise', function() {
       let diff;
 
       beforeEach(function() {
-        diff = subject.diff;
+        diff = promise.diff;
       });
 
       it('should delegate to stream.inspect()', async function() {
         await diff();
-        expect(streamStubs.diff, 'was called');
+        expect(stream.diff, 'was called');
       });
     });
 
@@ -61,12 +57,12 @@ describe('module:api/promise', function() {
       let loadConfig;
 
       beforeEach(function() {
-        loadConfig = subject.loadConfig;
+        loadConfig = promise.loadConfig;
       });
 
       it('should delegate to stream.inspect()', async function() {
         await loadConfig();
-        expect(streamStubs.loadConfig, 'was called');
+        expect(stream.loadConfig, 'was called');
       });
     });
 
@@ -74,12 +70,12 @@ describe('module:api/promise', function() {
       let loadRules;
 
       beforeEach(function() {
-        loadRules = subject.loadRules;
+        loadRules = promise.loadRules;
       });
 
       it('should delegate to stream.inspect()', async function() {
         await loadRules();
-        expect(streamStubs.loadRules, 'was called');
+        expect(stream.loadRules, 'was called');
       });
     });
 
@@ -87,12 +83,12 @@ describe('module:api/promise', function() {
       let loadReport;
 
       beforeEach(function() {
-        loadReport = subject.loadReport;
+        loadReport = promise.loadReport;
       });
 
       it('should delegate to stream.inspect()', async function() {
         await loadReport();
-        expect(streamStubs.loadReport, 'was called');
+        expect(stream.loadReport, 'was called');
       });
     });
 
@@ -100,12 +96,12 @@ describe('module:api/promise', function() {
       let loadRuleConfigs;
 
       beforeEach(function() {
-        loadRuleConfigs = subject.loadRuleConfigs;
+        loadRuleConfigs = promise.loadRuleConfigs;
       });
 
       it('should delegate to stream.inspect()', async function() {
         await loadRuleConfigs();
-        expect(streamStubs.loadRuleConfigs, 'was called');
+        expect(stream.loadRuleConfigs, 'was called');
       });
     });
   });
