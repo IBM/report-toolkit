@@ -10,16 +10,17 @@ exports.meta = {
     type: 'object',
     properties: {
       threshold: {
-        type: 'integer',
-        minimum: 0
+        type: ['integer', 'string'],
+        minimum: 0,
+        default: 10000
       }
     },
     additionalProperties: false
   }
 };
 
-exports.inspect = (config = {}) => {
-  const threshold = config.threshold || 10000;
+exports.inspect = ({threshold} = {}) => {
+  threshold = typeof threshold === 'string' ? ms(threshold) : threshold;
   return context => {
     const {libuv} = context;
     return libuv
@@ -28,13 +29,14 @@ exports.inspect = (config = {}) => {
           handle.type === 'timer' &&
           handle.is_active &&
           handle.is_referenced &&
+          !handle.expired &&
           handle.firesInMsFromNow >= threshold
       )
       .map(
         handle =>
-          `libuv handle at address ${handle.address} is ${
-            handle.repeat ? 'an interval' : 'a timer'
-          } with future expiry in ${ms(handle.firesInMsFromNow)}`
+          `libuv handle at address ${
+            handle.address
+          } is a timer with future expiry in ${ms(handle.firesInMsFromNow)}`
       );
   };
 };
