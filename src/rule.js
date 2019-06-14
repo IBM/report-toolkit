@@ -24,6 +24,8 @@ export const kRuleFilepath = Symbol('ruleFilepath');
 
 const debug = createDebugger(module);
 
+const compactObject = _.omitBy(_.isEmpty);
+
 /**
  * @typedef {Object} RuleDefinition
  * @property {Object} meta - (schema for `meta` prop)
@@ -191,11 +193,11 @@ export class Rule {
         )
       ),
       distinct(),
-      Rule.formatResult(this.id)
+      Rule.normalizeResult(this.id, config)
     );
   }
 
-  static formatResult(id) {
+  static normalizeResult(id, config) {
     return observable =>
       observable.pipe(
         map(([message, filepath]) => {
@@ -206,7 +208,14 @@ export class Rule {
             message = message.message;
           }
           message = String(message).trim();
-          return _.pickBy(Boolean, {message, filepath, id, severity, data});
+          return compactObject({
+            message,
+            filepath,
+            id,
+            severity,
+            data,
+            config
+          });
         })
       );
   }
