@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "posttest": "markdownlint --ignore node_modules . && eslint .",
-    "test": "nyc mocha \"test/**/*.spec.js\""
+    "test": "mocha \"test/**/*.spec.js\""
   },
   "bin": {
     "gnostic": "src/cli/gnostic.js"
@@ -55,7 +55,6 @@
     "lint-staged": "^8.2.0",
     "markdownlint-cli": "^0.14.1",
     "mocha": "^6.1.4",
-    "nyc": "^14.1.1",
     "prettier": "^1.18.2",
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.2",
@@ -81,11 +80,5 @@
     "singleQuote": true,
     "bracketSpacing": false,
     "endOfLine": "auto"
-  },
-  "nyc": {
-    "all": true,
-    "include": [
-      "src"
-    ]
   }
 }
