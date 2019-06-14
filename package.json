@@ -81,5 +81,11 @@
     "singleQuote": true,
     "bracketSpacing": false,
     "endOfLine": "auto"
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "src"
+    ]
   }
 }
