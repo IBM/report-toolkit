@@ -126,4 +126,12 @@ exports.installInto = expect => {
       });
     }
   );
+
+  expect.addAssertion(
+    '<Observable> when complete <assertion>',
+    (expect, subject, nextAssertion) => {
+      expect.errorMode = 'bubble';
+      return expect(pify(subject), 'when fulfilled', nextAssertion);
+    }
+  );
 };
