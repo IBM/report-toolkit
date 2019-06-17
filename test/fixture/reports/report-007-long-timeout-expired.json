@@ -169,9 +169,9 @@
     {
       "repeat": 0,
       "firesInMsFromNow": 9992661,
-      "expired": false,
+      "expired": true,
       "type": "timer",
-      "is_active": false,
+      "is_active": true,
       "is_referenced": true,
       "address": "0x00007ffeefbfe2e8"
     },

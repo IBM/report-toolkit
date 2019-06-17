@@ -27,9 +27,8 @@ exports.inspect = ({threshold} = {}) => {
       .filter(
         handle =>
           handle.type === 'timer' &&
-          handle.is_active &&
-          handle.is_referenced &&
           !handle.expired &&
+          handle.is_referenced &&
           handle.firesInMsFromNow >= threshold
       )
       .map(

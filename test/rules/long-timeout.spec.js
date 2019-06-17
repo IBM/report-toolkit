@@ -12,7 +12,7 @@ describe('rule:long-timeout', function() {
   });
 
   describe('inspection', function() {
-    describe('when finding an active but unreferenced libuv handle w/timer scheduled beyond the default threshold', function() {
+    describe('when finding an unexpired but unreferenced libuv handle w/timer scheduled beyond the default threshold', function() {
       it('should not report', function() {
         return expect(
           inspect('../fixture/reports/report-004-long-timeout-unref.json'),
@@ -21,7 +21,7 @@ describe('rule:long-timeout', function() {
       });
     });
 
-    describe('when finding an active & referenced libuv handle w/timer scheduled beyond the default threshold', function() {
+    describe('when finding an unexpired & referenced libuv handle w/timer scheduled beyond the default threshold', function() {
       it('should report', function() {
         return expect(
           inspect('../fixture/reports/report-003-long-timeout.json'),
@@ -37,10 +37,10 @@ describe('rule:long-timeout', function() {
       });
     });
 
-    describe('when finding a referenced but inactive libuv handle w/timer scheduled beyond the default threshold', function() {
+    describe('when finding a referenced but expired libuv handle w/timer scheduled beyond the default threshold', function() {
       it('should not report', function() {
         return expect(
-          inspect('../fixture/reports/report-007-long-timeout-inactive.json'),
+          inspect('../fixture/reports/report-007-long-timeout-expired.json'),
           'not to emit values'
         );
       });
@@ -51,7 +51,7 @@ describe('rule:long-timeout', function() {
         inspect = createInspect(RULE_PATH, {threshold: 50000});
       });
 
-      describe('when finding an active & referenced libuv handle w/timer scheduled beyond the default threshold', function() {
+      describe('when finding an unexpired & referenced libuv handle w/timer scheduled beyond the default threshold', function() {
         it('should report', function() {
           return expect(
             inspect('../fixture/reports/report-003-long-timeout.json'),
