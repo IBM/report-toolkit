@@ -1,7 +1,7 @@
 import {
   filter,
   from,
-  fromArray,
+  fromAny,
   map,
   of,
   pipeIf,
@@ -63,7 +63,7 @@ describe('module:api/stream', function() {
         loadReport: sandbox
           .stub()
           .callsFake(filepaths =>
-            fromArray(filepaths).pipe(
+            fromAny(filepaths).pipe(
               map(filepath =>
                 Report.createFromFile(filepath, require(filepath))
               )

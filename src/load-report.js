@@ -1,6 +1,6 @@
 import {
   bindNodeCallback,
-  fromArray,
+  fromAny,
   iif,
   map,
   mergeMap,
@@ -59,7 +59,7 @@ export const loadReport = (
     throwError(
       new Error('Invalid parameters: one or more filepaths are required')
     ),
-    fromArray(filepaths)
+    fromAny(filepaths)
   ).pipe(
     load({redactSecrets}),
     pipeIf(!disableSort, sort(sortField, sortDirection))

@@ -17,6 +17,7 @@ import {
   concatMap,
   concatMapTo,
   count,
+  defaultIfEmpty,
   distinct,
   filter,
   finalize,
@@ -37,6 +38,7 @@ import {
 } from 'rxjs/operators';
 
 import _ from 'lodash/fp';
+import isPromise from 'p-is-promise';
 
 /**
  * Pipes source Observable to one or more Operators if the predicate is truthy.
@@ -67,27 +69,20 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
   );
 
 /**
- * NOT AN OPERATOR. If parameter is an Array, return an Observable created from the Array; otherwise return an Observable emitting only the parameter.
- * @param {any|any[]} value - Either a value or an Array of values.
- * @returns {Observable<any>}
+ * Recursively explodes any value, an Array, a Promise, a Promise of Arrays, a
+ * Promise of Arrays of Promises, etc., into a single Observable.
+ * Returns `EMPTY` if value is undefined.
+ * @param {*} value - Probably anything
+ * @returns {Observable<*|EMPTY>}
  */
-export const fromArray = value =>
-  defer(() =>
-    _.isArray(value) ? from(value) : _.isUndefined(value) ? EMPTY : of(value)
-  );
-
-export const pluckProp = (prop, orValue) => observable =>
-  observable.pipe(
-    map(_.isUndefined(orValue) ? _.get(prop) : _.getOr(orValue, prop))
-  );
-
-export const sum = () => observable =>
-  observable.pipe(map(values => values.reduce((sum, value) => (value += sum))));
-
-export const mean = () => observable =>
-  observable.pipe(
-    map(values => values.reduce((sum, value) => (value += sum)) / values.length)
-  );
+export const fromAny = value =>
+  defer(() => {
+    return _.overSome([isPromise, _.isArray])(value)
+      ? from(value).pipe(mergeMap(fromAny))
+      : _.isUndefined(value)
+      ? EMPTY
+      : of(value);
+  });
 
 export {
   bindNodeCallback,
@@ -98,6 +93,7 @@ export {
   concatMapTo,
   count,
   defer,
+  defaultIfEmpty,
   distinct,
   EMPTY,
   filter,

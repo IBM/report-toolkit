@@ -1,6 +1,6 @@
 import _ from 'lodash/fp';
-export const kReportFilepath = Symbol('reportFilepath');
-export const kReportQueue = Symbol('reportQueue');
+
+export const kReportFilepath = Symbol('gnosticReportFilepath');
 
 const KNOWN_PROPS = [
   'header',
@@ -21,7 +21,7 @@ const assignKnownProps = _.curry((source, dest) => {
 });
 
 export class Report {
-  constructor(report, filepath) {
+  constructor(report, filepath = '(no filepath)') {
     assignKnownProps(report, this);
 
     this[kReportFilepath] = filepath;

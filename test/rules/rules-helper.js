@@ -3,7 +3,7 @@ import {
   filter,
   first,
   from,
-  fromArray,
+  fromAny,
   fromEvent,
   map,
   mergeMap,
@@ -30,7 +30,7 @@ export const createInspect = (ruleFilepath, config = {}) => {
     map(rule => RuleConfig.create(rule, config))
   );
   return (filepaths, opts = {}) =>
-    fromArray(filepaths).pipe(
+    fromAny(filepaths).pipe(
       map(require.resolve),
       mergeMap(filepath =>
         loadReport(filepath).pipe(
