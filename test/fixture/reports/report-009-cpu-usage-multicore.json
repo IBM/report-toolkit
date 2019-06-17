@@ -53,6 +53,15 @@
         "sys": 80585050,
         "idle": 303826800,
         "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
       }
     ],
     "host": "yoyodyne"

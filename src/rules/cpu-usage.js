@@ -90,8 +90,16 @@ exports.inspect = (config = {}) => {
   const usages = [];
   return {
     next(context) {
+      if (!context.header.cpus) {
+        throw new Error(
+          `Property "header.cpus" missing in report at ${context.filepath}; cannot compute CPU usage.`
+        );
+      }
       const usage = parseFloat(
-        context.resourceUsage.cpuConsumptionPercent.toFixed(2)
+        (
+          context.resourceUsage.cpuConsumptionPercent /
+          context.header.cpus.length
+        ).toFixed(2)
       );
       if (mode === MODE_ALL) {
         return withinRange(min, max, usage)
@@ -102,7 +110,7 @@ exports.inspect = (config = {}) => {
       }
     },
     complete() {
-      if (mode !== MODE_ALL) {
+      if (mode !== MODE_ALL && usages.length) {
         const usage = computations[mode](usages);
         return withinRange(min, max, usage)
           ? ok({min, max, mode}, usage)

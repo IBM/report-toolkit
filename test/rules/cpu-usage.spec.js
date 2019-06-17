@@ -1,4 +1,4 @@
-import {ERROR, INFO} from '../../src/constants';
+import {ERROR, INFO, WARNING} from '../../src/constants';
 import {
   MODE_ALL,
   MODE_MAX,
@@ -11,16 +11,71 @@ import {createInspect} from './rules-helper';
 const REPORT_001_FILEPATH = require.resolve(
   '../fixture/reports/report-001.json'
 );
-
 const REPORT_002_FILEPATH = require.resolve(
   '../fixture/reports/report-002-library-mismatch.json'
 );
 const REPORT_006_FILEPATH = require.resolve(
   '../fixture/reports/report-006-cpu-usage.json'
 );
+const REPORT_008_FILEPATH = require.resolve(
+  '../fixture/reports/report-008-cpu-usage-no-cpus.json'
+);
+const REPORT_009_FILEPATH = require.resolve(
+  '../fixture/reports/report-009-cpu-usage-multicore.json'
+);
 
 describe('rule:cpu-usage', function() {
   let inspect;
+
+  describe('when "header.cpus" prop missing', function() {
+    beforeEach(function() {
+      inspect = createInspect('../../src/rules/cpu-usage.js');
+    });
+
+    describe('when run against a single file', function() {
+      it('should report "warning" message', function() {
+        return expect(
+          inspect(REPORT_008_FILEPATH),
+          'to complete with value satisfying',
+          {
+            message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./,
+            severity: WARNING,
+            originalError: {
+              message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./
+            },
+            filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
+            id: 'cpu-usage'
+          }
+        );
+      });
+    });
+
+    describe('when run against multiple files', function() {
+      it('should report a "warning" message and an "info" message', function() {
+        return expect(
+          inspect([REPORT_008_FILEPATH, REPORT_001_FILEPATH]),
+          'to complete with values satisfying',
+          {
+            message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./,
+            severity: WARNING,
+            originalError: {
+              message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./
+            },
+            filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
+            id: 'cpu-usage'
+          },
+          {
+            message:
+              'Mean CPU consumption percent (6.12%) is within the allowed range of 0-50%',
+            data: {mode: MODE_MEAN, usage: 6.12, min: 0, max: 50},
+            severity: INFO,
+            filepath: /fixture\/reports\/report-001\.json/,
+            id: 'cpu-usage'
+          }
+        );
+      });
+    });
+  });
 
   describe(`mode: ${MODE_MEAN} (defaults)`, function() {
     beforeEach(function() {
@@ -59,6 +114,23 @@ describe('rule:cpu-usage', function() {
               id: 'cpu-usage'
             }
           );
+        });
+
+        describe('when multiple CPU cores are present', function() {
+          it('should adjust the limit accordingly', function() {
+            return expect(
+              inspect(REPORT_009_FILEPATH),
+              'to complete with value satisfying',
+              {
+                message:
+                  'Mean CPU consumption percent (35.06%) is within the allowed range of 0-50%',
+                data: {mode: MODE_MEAN, usage: 35.06, min: 0, max: 50},
+                severity: INFO,
+                filepath: /fixture\/reports\/report-009-cpu-usage-multicore\.json/,
+                id: 'cpu-usage'
+              }
+            );
+          });
         });
       });
     });

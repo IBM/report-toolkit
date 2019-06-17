@@ -6,10 +6,7 @@
     "dumpEventTime": "2019-04-16T15:46:19Z",
     "dumpEventTimeStamp": "1555454779495",
     "processId": 67845,
-    "commandLine": [
-      "node",
-      "--experimental-report"
-    ],
+    "commandLine": ["node", "--experimental-report"],
     "nodejsVersion": "v11.12.0",
     "wordSize": 64,
     "arch": "x64",
@@ -41,6 +38,80 @@
     "osRelease": "18.5.0",
     "osVersion": "Darwin Kernel Version 18.5.0: Mon Mar 11 20:40:32 PDT 2019; root:xnu-4903.251.3~3/RELEASE_X86_64",
     "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz",
+        "speed": 2700,
+        "user": 123707280,
+        "nice": 0,
+        "sys": 80585050,
+        "idle": 303826800,
+        "irq": 0
+      }
+    ],
     "host": "yoyodyne"
   },
   "javascriptStack": {
