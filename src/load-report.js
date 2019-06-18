@@ -7,9 +7,10 @@ import {
   of,
   pipeIf,
   sort,
-  throwError
+  throwGnosticError
 } from './observable';
 
+import {GNOSTIC_ERR_INVALID_PARAMETER} from './error';
 import {Report} from './report';
 import _ from 'lodash/fp';
 import fs from 'fs';
@@ -56,8 +57,9 @@ export const loadReport = (
 ) =>
   iif(
     () => _.isEmpty(filepaths),
-    throwError(
-      new Error('Invalid parameters: one or more filepaths are required')
+    throwGnosticError(
+      GNOSTIC_ERR_INVALID_PARAMETER,
+      'Invalid parameters; a minimum of one filepath or parsed report Object is required'
     ),
     fromAny(filepaths)
   ).pipe(

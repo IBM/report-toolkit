@@ -1,16 +1,23 @@
-import expect from 'unexpected';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+import unexpected from 'unexpected';
 import unexpectedRxJS from './unexpected-rxjs';
 import unexpectedSinon from 'unexpected-sinon';
 
 global.sinon = sinon;
 
-global.expect = expect
+const expect = (global.expect = unexpected
   .clone()
   .use(unexpectedSinon)
-  .use(unexpectedRxJS);
+  .use(unexpectedRxJS));
 
 proxyquire.noPreserveCache();
 
 global.proxyquire = proxyquire;
+
+expect.addAssertion(
+  '<function> to (throw|throw error|throw exception) with code <string>',
+  (expect, subject, code) => {
+    return expect(subject, 'to throw', {code});
+  }
+);

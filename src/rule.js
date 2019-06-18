@@ -1,4 +1,10 @@
 import {
+  GNOSTIC_ERR_INVALID_RULE_CONFIG,
+  GNOSTIC_ERR_INVALID_RULE_DEFINITION,
+  GNOSTIC_ERR_INVALID_SCHEMA,
+  GnosticError
+} from './error';
+import {
   catchError,
   concat,
   filter,
@@ -80,6 +86,14 @@ export class Rule {
    */
   constructor(ruleDef) {
     ruleDef = Rule.applyDefaults(ruleDef);
+
+    if (!_.isFunction(ruleDef.inspect)) {
+      throw GnosticError.create(
+        GNOSTIC_ERR_INVALID_RULE_DEFINITION,
+        `Definition for rule ${ruleDef.id ||
+          ruleDef.filepath} must export an "inspect" function`
+      );
+    }
     Object.assign(this, {
       [kRuleInspect]: ruleDef.inspect,
       [kRuleMeta]: ruleDef.meta,
@@ -136,7 +150,8 @@ export class Rule {
     const validate = ajv.compile(schema);
 
     if (ajv.errors) {
-      throw new Error(
+      throw GnosticError.create(
+        GNOSTIC_ERR_INVALID_SCHEMA,
         `Schema for rule ${this.id} is invalid: ${ajv.errorsText()}`
       );
     }
@@ -144,8 +159,15 @@ export class Rule {
     validatorMap.set(this, config => {
       debug(`validating ${this.id} with config`, config);
       validate(config);
-      if (ajv.errors) {
-        throw new Error(`Invalid rule configuration: ${ajv.errorsText()}`);
+      if (validate.errors) {
+        const errors = ajv.errorsText(validate.errors, {
+          dataVar: 'config'
+        });
+        throw GnosticError.create(
+          GNOSTIC_ERR_INVALID_RULE_CONFIG,
+          `Invalid configuration for rule "${this.id}": ${errors}`,
+          {url: this.url}
+        );
       }
     });
 
@@ -279,12 +301,7 @@ export class Rule {
   static applyDefaults(ruleDef) {
     return _.defaultsDeep(
       {
-        meta: {docs: {}},
-        inspect: () => {
-          throw new Error(
-            `Rule "${ruleDef.id}" has no "inspect" implementation`
-          );
-        }
+        meta: {docs: {}}
       },
       ruleDef
     );

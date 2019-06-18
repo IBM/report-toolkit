@@ -1,4 +1,11 @@
-import {Rule, kRuleInspect} from '../src/rule';
+import {
+  GNOSTIC_ERR_INVALID_RULE_CONFIG,
+  GNOSTIC_ERR_INVALID_RULE_DEFINITION
+} from '../src/error';
+
+import {Rule} from '../src/rule';
+import _ from 'lodash/fp';
+import {ajv} from '../src/ajv';
 
 describe('module:rule', function() {
   let sandbox;
@@ -14,15 +21,15 @@ describe('module:rule', function() {
   describe('Rule', function() {
     describe('constructor', function() {
       it('should apply default "meta" property', function() {
-        expect(new Rule({}), 'to satisfy', {meta: {}});
+        expect(new Rule({inspect: _.noop}), 'to satisfy', {meta: {}});
       });
 
-      describe('when called with rule def missing an "inspect" property', function() {
-        it('should supply an implementation which throws', function() {
+      describe('when called with rule def missing an "inspect" function', function() {
+        it('should throw', function() {
           expect(
-            () => new Rule({})[kRuleInspect](),
-            'to throw',
-            /Rule ".+?" has no "inspect" implementation/
+            () => new Rule({}),
+            'to throw with code',
+            GNOSTIC_ERR_INVALID_RULE_DEFINITION
           );
         });
       });
@@ -35,7 +42,7 @@ describe('module:rule', function() {
         });
 
         it('should create a Rule', function() {
-          expect(Rule.create(), 'to be a', Rule);
+          expect(Rule.create({inspect: _.noop}), 'to be a', Rule);
         });
       });
     });
@@ -43,14 +50,19 @@ describe('module:rule', function() {
     describe('property', function() {
       describe('id', function() {
         it('should return the Rule id', function() {
-          expect(new Rule({id: 'foo'}), 'to have property', 'id', 'foo');
+          expect(
+            new Rule({id: 'foo', inspect: _.noop}),
+            'to have property',
+            'id',
+            'foo'
+          );
         });
       });
 
       describe('description', function() {
         it('should return the description', function() {
           expect(
-            new Rule({meta: {docs: {description: 'foo'}}}),
+            new Rule({meta: {docs: {description: 'foo'}}, inspect: _.noop}),
             'to have property',
             'description',
             'foo'
@@ -61,7 +73,10 @@ describe('module:rule', function() {
       describe('url', function() {
         it('should return the url', function() {
           expect(
-            new Rule({meta: {docs: {url: 'https://something'}}}),
+            new Rule({
+              meta: {docs: {url: 'https://something'}},
+              inspect: _.noop
+            }),
             'to have property',
             'url',
             'https://something'
@@ -72,7 +87,7 @@ describe('module:rule', function() {
       describe('filepath', function() {
         it('should return the filepath', function() {
           expect(
-            new Rule({filepath: __filename}),
+            new Rule({filepath: __filename, inspect: _.noop}),
             'to have property',
             'filepath',
             __filename
@@ -82,7 +97,56 @@ describe('module:rule', function() {
 
       describe('meta', function() {
         it('should return the metadata', function() {
-          expect(new Rule(), 'to have property', 'meta');
+          expect(
+            new Rule({meta: 'foo', inspect: _.noop}),
+            'to have property',
+            'meta',
+            'foo'
+          );
+        });
+      });
+
+      describe('validate', function() {
+        let rule;
+        beforeEach(function() {
+          sandbox.spy(ajv, 'compile');
+        });
+
+        describe('when a rule has no schema', function() {
+          beforeEach(function() {
+            rule = new Rule({inspect: _.noop});
+          });
+
+          it('should be a noop', function() {
+            expect(rule.validate, 'to be', _.noop);
+          });
+        });
+
+        describe('when a rule has a schema', function() {
+          beforeEach(function() {
+            rule = new Rule({
+              inspect: _.noop,
+              id: 'foo',
+              meta: {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    foo: {
+                      type: 'boolean'
+                    }
+                  },
+                  additionalProperties: false
+                }
+              }
+            });
+          });
+          it('should throw if passed an invalid config', function() {
+            expect(
+              () => rule.validate({foo: 'baz'}),
+              'to throw with code',
+              GNOSTIC_ERR_INVALID_RULE_CONFIG
+            );
+          });
         });
       });
     });

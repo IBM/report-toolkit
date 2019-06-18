@@ -1,5 +1,6 @@
 import {ERROR, INFO, WARNING} from '../../constants';
 import {FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE} from '../../formatters/index';
+import {GNOSTIC_ERR_INVALID_CLI_OPTION, GnosticError} from '../../error';
 import {GROUPS, OPTIONS} from './common';
 import {fail, toFormattedString} from '../console';
 
@@ -33,7 +34,14 @@ export const builder = yargs =>
     })
     .check(argv => {
       if (![FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE].includes(argv.format)) {
-        throw new Error(`Invalid format "${argv.format}"`);
+        throw GnosticError.create(
+          GNOSTIC_ERR_INVALID_CLI_OPTION,
+          `Invalid format "${argv.format}". Allowed formats: ${[
+            FORMAT_CSV,
+            FORMAT_JSON,
+            FORMAT_TABLE
+          ].join(', ')}`
+        );
       }
       return true;
     });

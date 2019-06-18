@@ -6,8 +6,9 @@ import {
   FORMAT_PIPE,
   FORMAT_TABLE
 } from '../../formatters';
+import {GNOSTIC_ERR_INVALID_CLI_OPTION, GnosticError} from '../../error';
 import {GROUPS, OPTIONS} from './common';
-import {iif, tap, throwError} from '../../observable';
+import {iif, tap, throwGnosticError} from '../../observable';
 
 import _ from 'lodash/fp';
 import colors from '../colors';
@@ -45,7 +46,12 @@ export const builder = yargs =>
     })
     .check(argv => {
       if (!ALLOWED_FORMATS.includes(argv.format)) {
-        throw new Error(`Invalid format "${argv.format}"`);
+        throw GnosticError.create(
+          GNOSTIC_ERR_INVALID_CLI_OPTION,
+          `Invalid format "${
+            argv.format
+          }". Allowed formats: ${ALLOWED_FORMATS.join(', ')}`
+        );
       }
       return true;
     });
@@ -91,7 +97,10 @@ export const handler = ({
         wrapValues
       })
     ),
-    throwError(new Error(`Unknown transform ${transformer}`))
+    throwGnosticError(
+      GNOSTIC_ERR_INVALID_CLI_OPTION,
+      `Unknown transform ${transformer}`
+    )
   ).subscribe(result => {
     if (output) {
       return writeFileSync(output, result);

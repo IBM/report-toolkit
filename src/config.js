@@ -1,4 +1,10 @@
 import {
+  GNOSTIC_ERR_INVALID_CONFIG,
+  GNOSTIC_ERR_MISSING_CONFIG,
+  GNOSTIC_ERR_UNKNOWN_BUILTIN_CONFIG,
+  GnosticError
+} from './error';
+import {
   map,
   mapTo,
   mergeMap,
@@ -6,7 +12,7 @@ import {
   pipeIf,
   switchMapTo,
   tap,
-  throwError
+  throwGnosticError
 } from './observable';
 
 import {BUILTIN_CONFIGS} from './configs';
@@ -87,8 +93,9 @@ const flattenConfig = (config, configObjects = []) => {
       if (BUILTIN_CONFIGS.has(value)) {
         push(BUILTIN_CONFIGS.get(value));
       } else {
-        throw new Error(
-          `unknown builtin config at position ${idx}: "${value}"`
+        throw GnosticError.create(
+          GNOSTIC_ERR_UNKNOWN_BUILTIN_CONFIG,
+          `Unknown builtin config at position ${idx}: "${value}"`
         );
       }
     } else if (_.isObject(value)) {
@@ -98,7 +105,10 @@ const flattenConfig = (config, configObjects = []) => {
           : value
       );
     } else {
-      throw new Error(`invalid config value: "${value}"`);
+      throw GnosticError.create(
+        GNOSTIC_ERR_INVALID_CONFIG,
+        `Invalid config value: "${value}"`
+      );
     }
   };
 
@@ -156,11 +166,10 @@ export const loadConfig = ({
     pipeIf(
       _.isEmpty,
       switchMapTo(
-        throwError(
-          new Error(
-            `no config found within ${searchPath ||
-              'current working directory'}`
-          )
+        throwGnosticError(
+          GNOSTIC_ERR_MISSING_CONFIG,
+          `No config file found within ${searchPath ||
+            'current working directory'}`
         )
       )
     )

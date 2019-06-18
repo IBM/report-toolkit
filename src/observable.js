@@ -37,6 +37,7 @@ import {
   toArray
 } from 'rxjs/operators';
 
+import {GnosticError} from './error';
 import _ from 'lodash/fp';
 import isPromise from 'p-is-promise';
 
@@ -83,6 +84,9 @@ export const fromAny = value =>
       ? EMPTY
       : of(value);
   });
+
+export const throwGnosticError = (code, message, opts = {}) =>
+  throwError(GnosticError.create(code, message, opts));
 
 export {
   bindNodeCallback,

@@ -8,13 +8,14 @@ import {
   filter,
   mergeMap,
   share,
-  throwError,
+  throwGnosticError,
   toArray
 } from '../observable';
 import {createDebugger, isDebugEnabled} from '../debug';
 import {filterEnabledRules, loadConfig} from '../config';
 
 import {ERROR} from '../constants';
+import {GNOSTIC_ERR_INVALID_PARAMETER} from '../error';
 import _ from 'lodash/fp';
 import {inspectReports} from '../inspect-report';
 import {loadReport} from '../load-report';
@@ -45,10 +46,11 @@ export const inspect = (
     severity = ERROR
   } = {}
 ) => {
-  // XXX: rewrite so that loadReport throws this
+  // XXX: rewrite so that loadReport throws this (which it does)
   if (_.isEmpty(filepaths)) {
-    return throwError(
-      new Error('Invalid parameters: one or more filepaths are required')
+    return throwGnosticError(
+      GNOSTIC_ERR_INVALID_PARAMETER,
+      'Invalid parameters; a minimum of one filepath or parsed report Object is required'
     );
   }
 
