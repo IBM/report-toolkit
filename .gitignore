@@ -69,3 +69,4 @@ gnostic*.yml
 report.*.json
 
 *.disabled
+gnostic_scan-results
