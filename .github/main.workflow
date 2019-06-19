@@ -1,4 +1,4 @@
-workflow "Post-Push" {
+workflow "Mirror to GHE" {
   resolves = ["Mirror Repository"]
   on = "push"
 }
