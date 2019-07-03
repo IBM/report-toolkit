@@ -3,26 +3,44 @@
   "version": "0.0.0",
   "private": true,
   "description": "consumes Node.js diagnostic reports, outputs useful information",
-  "bin": {
-    "gnostic": "packages/cli/index.js"
-  },
-  "main": "packages/core/index.js",
-  "module": "packages/core/src/index.js",
-  "scripts": {
-    "test": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --stream test",
-    "lint": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --parallel --reject-cycles lint",
-    "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint && syncpack list-mismatches",
-    "fix": "cross-env NPM_CONFIG_LOGLEVEL=silent syncpack format && lerna run --parallel --no-bail fix"
-  },
+  "keywords": [],
   "repository": {
     "type": "git",
     "url": "https://github.com/ibm/gnostic.git"
   },
-  "keywords": [],
-  "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "license": "Apache-2.0",
-  "engines": {
-    "node": ">=8"
+  "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
+  "main": "packages/core/index.js",
+  "module": "packages/core/src/index.js",
+  "bin": {
+    "gnostic": "packages/cli/index.js"
+  },
+  "scripts": {
+    "bootstrap": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap",
+    "fix": "cross-env NPM_CONFIG_LOGLEVEL=silent syncpack format && lerna run --parallel --no-bail fix",
+    "lint": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --parallel --reject-cycles lint",
+    "test": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --stream test",
+    "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint && syncpack list-mismatches"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{yml,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "endOfLine": "auto",
+    "singleQuote": true
   },
   "dependencies": {
     "rxjs": "^6.5.2"
@@ -55,24 +73,7 @@
     "unexpected-rxjs": "^0.2.0",
     "unexpected-sinon": "^10.11.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.{yml,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "prettier": {
-    "singleQuote": true,
-    "bracketSpacing": false,
-    "endOfLine": "auto"
+  "engines": {
+    "node": ">=8"
   }
 }
