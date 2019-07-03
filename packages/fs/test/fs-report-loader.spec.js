@@ -14,7 +14,7 @@ describe('@gnostic/fs:fs-report-loader', function() {
         it('should parse the report JSON', function() {
           return expect(
             of(REPORT_001_FILEPATH).pipe(toObjectFromFilepath()),
-            'to complete with value',
+            'to complete with value satisfying',
             {filepath: REPORT_001_FILEPATH, rawReport: REPORT_001}
           );
         });
