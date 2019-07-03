@@ -1,25 +1,47 @@
-root: true
-parser: babel-eslint
 extends:
   - semistandard
-  - plugin:prettier/recommended
+  - 'plugin:prettier/recommended'
+  - 'plugin:import/errors'
+overrides:
+  - files:
+      - packages/*/index.js
+      - .mocharc.js
+      - packages/inspector/src/rules/*.js
+    parserOptions:
+      sourceType: script
+  - env:
+      mocha: true
+    files:
+      - '**/test/**/*.spec.js'
+    globals:
+      expect: false
+      proxyquire: false
+      sinon: false
+    rules:
+      no-restricted-syntax:
+        - error
+        - selector: "Program > ExpressionStatement > CallExpression[callee.name=describe] > Literal:not([raw=/^'@gnostic\\u002F\\S+?(:\\S+)*'/])"
+          message: 'Top-level describe() must be of format "@gnostic/<package>" or "@gnostic/<package>:<module>[:module...]"'
+parser: babel-eslint
+plugins:
+  - monorepo
+  - simple-import-sort
+root: true
 rules:
+  import/exports-last: true
+  import/extensions:
+    - error
+    - always
+    - ignorePackages: true
+  import/order: 0
+  monorepo/no-internal-import: 0
+  no-restricted-syntax:
+    - error
+    - selector: 'CallExpression[callee.name=Symbol] > Literal:not([value=/^gnostic-[a-z-]+$/])'
+      message: 'Symbol() must be called with a kebab-case description beginning with  "gnostic-"'
+  simple-import-sort/sort: error
+  sort-imports: 0
+  standard/computed-property-even-spacing: 0
   strict:
     - error
     - safe
-  standard/computed-property-even-spacing: false
-overrides:
-  - files:
-      - src/index.js
-      - src/gnostic.js
-      - .mocharc.js
-    parserOptions:
-      sourceType: script
-  - files:
-      - test/**/*.spec.js
-    env:
-      mocha: true
-    globals:
-      expect: false
-      sinon: false
-      proxyquire: false

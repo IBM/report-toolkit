@@ -1,18 +1,22 @@
 {
-  "name": "gnostic",
+  "name": "gnostic-dev",
   "version": "0.0.0",
+  "private": true,
   "description": "consumes Node.js diagnostic reports, outputs useful information",
-  "main": "src/index.js",
-  "scripts": {
-    "posttest": "markdownlint --ignore node_modules . && eslint .",
-    "test": "mocha \"test/**/*.spec.js\""
-  },
   "bin": {
-    "gnostic": "src/cli/gnostic.js"
+    "gnostic": "packages/cli/index.js"
+  },
+  "main": "packages/core/index.js",
+  "module": "packages/core/src/index.js",
+  "scripts": {
+    "test": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --stream test",
+    "lint": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --parallel --reject-cycles lint",
+    "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint && syncpack list-mismatches",
+    "fix": "cross-env NPM_CONFIG_LOGLEVEL=silent syncpack format && lerna run --parallel --no-bail fix"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.ibm.com/christopher-hiller/gnostic"
+    "url": "https://github.com/ibm/gnostic.git"
   },
   "keywords": [],
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
@@ -21,45 +25,34 @@
     "node": ">=8"
   },
   "dependencies": {
-    "cli-table3": "^0.5.1",
-    "cosmiconfig": "^5.2.1",
-    "debug": "^4.1.1",
-    "esm": "^3.2.25",
-    "fast-safe-stringify": "^2.0.6",
-    "json-ptr": "^1.1.2",
-    "json2csv": "^4.5.1",
-    "kleur": "^3.0.3",
-    "lodash": "^4.17.11",
-    "log-symbols": "^3.0.0",
-    "ms": "^2.1.2",
-    "p-is-promise": "^2.1.0",
-    "rfc6902": "^3.0.2",
-    "rxjs": "^6.5.2",
-    "strip-ansi": "^5.2.0",
-    "term-size": "^2.1.0",
-    "traverse": "^0.6.6",
-    "wrap-ansi": "^5.1.0",
-    "yargs": "^13.2.4"
+    "rxjs": "^6.5.2"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^10.0.2",
+    "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-config-semistandard": "^13.0.0",
     "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-monorepo": "^0.2.1",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-simple-import-sort": "^4.0.0",
     "eslint-plugin-standard": "^4.0.0",
+    "esm": "^3.2.25",
     "husky": "^1.3.1",
-    "lint-staged": "^8.2.0",
+    "lerna": "^2.11.0",
+    "lint-staged": "^8.2.1",
     "markdownlint-cli": "^0.14.1",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
     "proxyquire": "^2.1.0",
     "sinon": "^7.3.2",
-    "unexpected": "^11.6.0",
+    "syncpack": "^4.5.3",
+    "unexpected": "^11.6.1",
+    "unexpected-rxjs": "^0.2.0",
     "unexpected-sinon": "^10.11.2"
   },
   "husky": {

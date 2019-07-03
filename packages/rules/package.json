@@ -1,0 +1,31 @@
+{
+  "name": "@gnostic/rules",
+  "description": "",
+  "version": "0.0.0",
+  "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
+  "dependencies": {
+    "@gnostic/common": "^0.0.0",
+    "esm": "^3.2.25"
+  },
+  "devDependencies": {
+    "@gnostic/core": "^0.0.0",
+    "@gnostic/fs": "^0.0.0"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "files": [
+    "index.js",
+    "src"
+  ],
+  "keywords": [],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "src/index.js",
+  "repository": "ibm/gnostic.git",
+  "scripts": {
+    "fix": "eslint --fix .",
+    "lint": "eslint .",
+    "test": "mocha"
+  }
+}

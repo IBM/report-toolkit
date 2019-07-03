@@ -1,8 +1,10 @@
 'use strict';
 
 module.exports = {
-  'no-warnings': true,
+  color: true,
   'experimental-report': true,
-  require: ['esm', 'test/setup'],
-  'forbid-only': Boolean(process.env.CI)
+  'forbid-only': Boolean(process.env.CI),
+  'no-warnings': true,
+  recursive: true,
+  require: ['esm', require.resolve('./packages/common/test/setup.js')]
 };
