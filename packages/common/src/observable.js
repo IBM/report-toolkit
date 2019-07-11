@@ -42,7 +42,7 @@ import {
 } from 'rxjs/operators/index.js';
 
 import {GnosticError} from './error.js';
-import {_, isPromise} from './util.js';
+import {_} from './util.js';
 
 /**
  * Pipes source Observable to one or more Operators if the predicate is truthy.
@@ -81,7 +81,7 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
  */
 export const fromAny = value =>
   defer(() =>
-    _.overSome([isPromise, _.isArray])(value)
+    _.overSome([_.isPromise, _.isArray])(value)
       ? from(value).pipe(mergeMap(fromAny))
       : _.isUndefined(value)
       ? EMPTY

@@ -4,4 +4,4 @@ export * from './promise.js';
 
 export {stream};
 
-export * from '@gnostic/common/src/constants.js';
+export {constants} from '@gnostic/common';

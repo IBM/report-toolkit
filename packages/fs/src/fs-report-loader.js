@@ -1,12 +1,8 @@
-import {
-  bindNodeCallback,
-  map,
-  mergeMap,
-  toObjectFromJSON
-} from '@gnostic/common/src/observable.js';
-import fs from 'fs';
+import {observable} from '@gnostic/common';
+import {readFile as readFileNodeback} from 'fs';
+const {bindNodeCallback, map, mergeMap, toObjectFromJSON} = observable;
 
-const readFile = bindNodeCallback(fs.readFile);
+const readFile = bindNodeCallback(readFileNodeback);
 
 export const toObjectFromFilepath = () => observable =>
   observable.pipe(

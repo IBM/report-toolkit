@@ -2,6 +2,7 @@ extends:
   - semistandard
   - 'plugin:prettier/recommended'
   - 'plugin:import/errors'
+  - 'plugin:monorepo/recommended'
 overrides:
   - files:
       - packages/*/index.js
@@ -28,13 +29,12 @@ plugins:
   - simple-import-sort
 root: true
 rules:
-  import/exports-last: true
+  import/exports-last: error
   import/extensions:
     - error
     - always
     - ignorePackages: true
   import/order: 0
-  monorepo/no-internal-import: 0
   no-restricted-syntax:
     - error
     - selector: 'CallExpression[callee.name=Symbol] > Literal:not([value=/^gnostic-[a-z-]+$/])'

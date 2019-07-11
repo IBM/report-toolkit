@@ -3,9 +3,9 @@
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
+  "browser": "dist/gnostic-report.umd.js",
   "dependencies": {
     "@gnostic/common": "^0.0.0",
-    "esm": "^3.2.25",
     "fast-safe-stringify": "^2.0.6",
     "json2csv": "^4.5.1"
   },
@@ -13,12 +13,12 @@
     "node": ">=8"
   },
   "files": [
-    "index.js",
+    "dist",
     "src"
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "dist/gnostic-report.cjs.js",
   "module": "src/index.js",
   "repository": "ibm/gnostic.git",
   "scripts": {

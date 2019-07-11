@@ -1,5 +1,4 @@
-import {_} from '@gnostic/common';
-import {map, pipeIf} from '@gnostic/common/src/observable.js';
+import {_, observable} from '@gnostic/common';
 import * as commonFormatters from '@gnostic/formatters';
 import colors from 'kleur';
 import {error, success} from 'log-symbols';
@@ -7,6 +6,8 @@ import stripAnsi from 'strip-ansi';
 import termsize from 'term-size';
 
 import {table} from './table-formatter.js';
+
+const {map, pipeIf} = observable;
 
 const formatters = {...commonFormatters, table};
 

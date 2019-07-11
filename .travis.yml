@@ -5,7 +5,7 @@ node_js:
   - '12'
   - '10'
   - '8'
-install: npm ci && npm run bootstrap
+install: npm ci
 cache:
   directories:
     - ~/.npm # cache npm's cache

@@ -1,11 +1,5 @@
-import {_} from '@gnostic/common';
-import {ERROR, INFO, WARNING} from '@gnostic/common/src/constants.js';
-import {fromAny} from '@gnostic/common/src/observable.js';
-import {
-  toInspection,
-  toReportFromObject,
-  toRuleConfig
-} from '@gnostic/core/src/stream.js';
+import {_, constants, observable} from '@gnostic/common';
+import {stream} from '@gnostic/core';
 import {
   fromSearchpathToRuleDefinition,
   toObjectFromFilepath
@@ -16,14 +10,18 @@ import resolvePkg from 'resolve-pkg';
 import {colors, fail, toFormattedString} from '../console-utils.js';
 import {GROUPS, OPTIONS} from './common.js';
 
-export const command = 'inspect <file..>';
-
-export const desc = 'Inspect diagnostic report JSON against rules';
+const {ERROR, INFO, WARNING} = constants;
+const {fromAny} = observable;
+const {toInspection, toReportFromObject, toRuleConfig} = stream;
 
 const BUILTIN_RULES_DIR = join(
   resolvePkg('@gnostic/rules', {cwd: __dirname}),
   'src'
 );
+
+export const command = 'inspect <file..>';
+
+export const desc = 'Inspect diagnostic report JSON against rules';
 
 export const builder = yargs =>
   yargs

@@ -5,7 +5,7 @@
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "@gnostic/common": "^0.0.0",
-    "esm": "^3.2.25"
+    "cosmiconfig": "^5.2.1"
   },
   "devDependencies": {
     "resolve-pkg": "^2.0.0"
@@ -14,12 +14,12 @@
     "node": ">=8"
   },
   "files": [
-    "index.js",
+    "dist",
     "src"
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "dist/gnostic-fs.cjs.js",
   "module": "src/index.js",
   "repository": "ibm/gnostic.git",
   "scripts": {

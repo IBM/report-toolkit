@@ -1,9 +1,11 @@
-import {fromAny} from '@gnostic/common/src/observable.js';
-import {json} from '@gnostic/formatters/src/index.js';
+import {observable} from '@gnostic/common';
+import {json} from '@gnostic/formatters';
 import {toObjectFromFilepath} from '@gnostic/fs';
 import {writeFileSync} from 'fs';
 
 import {OPTIONS} from './common.js';
+
+const {fromAny} = observable;
 
 export const command = 'redact <file>';
 

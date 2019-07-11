@@ -1,5 +1,7 @@
-import {map, toArray} from '@gnostic/common/src/observable.js';
+import {observable} from '@gnostic/common';
 import stringify from 'fast-safe-stringify';
+
+const {map, toArray} = observable;
 
 export const toJson = ({pretty} = {}) => observable =>
   observable.pipe(

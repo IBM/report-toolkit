@@ -1,21 +1,17 @@
-import {
-  bindNodeCallback,
-  filter,
-  fromAny,
-  map,
-  mergeAll
-} from '@gnostic/common/src/observable.js';
-import fs from 'fs';
-import path from 'path';
+import {observable} from '@gnostic/common';
+import {readdir as readdirNodeback} from 'fs';
+import {basename, join} from 'path';
 
-const readdir = bindNodeCallback(fs.readdir);
+const {bindNodeCallback, filter, fromAny, map, mergeAll} = observable;
+
+const readdir = bindNodeCallback(readdirNodeback);
 
 const toRuleDefinitionFromFilepath = (extension = '.js') => observable =>
   observable.pipe(
     map(filepath => ({
       ruleDef: require(filepath),
       filepath,
-      id: path.basename(filepath, extension)
+      id: basename(filepath, extension)
     }))
   );
 
@@ -28,7 +24,7 @@ export const fromDirpathToFilepaths = dirpath => {
   return readdir(dirpath).pipe(
     mergeAll(),
     filter(filepath => filepath !== 'index.js'),
-    map(filepath => path.join(dirpath, filepath))
+    map(filepath => join(dirpath, filepath))
   );
 };
 

@@ -1,16 +1,21 @@
-import {NAMESPACE} from '@gnostic/common/src/constants.js';
-import {createDebugger} from '@gnostic/common/src/debug.js';
 import {
+  _,
+  constants,
+  createDebugger,
+  error,
+  observable,
+  symbols
+} from '@gnostic/common';
+
+const {NAMESPACE} = constants;
+const {map, of} = observable;
+const {kFlattenedConfig} = symbols;
+const debug = createDebugger('config');
+const {
   GNOSTIC_ERR_INVALID_CONFIG,
   GNOSTIC_ERR_UNKNOWN_BUILTIN_CONFIG,
   GnosticError
-} from '@gnostic/common/src/error.js';
-import {map, of} from '@gnostic/common/src/observable.js';
-import {kFlattenedConfig} from '@gnostic/common/src/symbols.js';
-import {_, traverse} from '@gnostic/common/src/util.js';
-
-const debug = createDebugger('config');
-
+} = error;
 const TRUE_VALUES = new Set(['on', 'yes']);
 const FALSE_VALUES = new Set(['off', 'no']);
 const DEFAULT_CONFIG_SHAPE = {
@@ -22,7 +27,7 @@ const DEFAULT_CONFIG_SHAPE = {
 };
 
 const normalizeBooleans = obj =>
-  traverse(obj).map(function(value) {
+  _.traverse(obj).map(function(value) {
     if (_.isString(value)) {
       if (TRUE_VALUES.has(value)) {
         this.update(true);

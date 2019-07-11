@@ -1,5 +1,5 @@
-import {_} from '@gnostic/common';
-import {map, pipeIf} from '@gnostic/common/src/observable.js';
+import {_, observable} from '@gnostic/common';
+const {map, pipeIf} = observable;
 
 export const toPipe = ({headers = false} = {}) => observable =>
   observable.pipe(pipeIf(!headers, map(_.get('value'))));

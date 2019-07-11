@@ -1,5 +1,4 @@
-import {_} from '@gnostic/common';
-import {createDebugger} from '@gnostic/common/src/debug.js';
+import {_, createDebugger} from '@gnostic/common';
 
 const debug = createDebugger(module);
 const ruleMap = new WeakMap();
@@ -9,6 +8,7 @@ export class RuleConfig {
    *
    * @param {Rule} rule
    * @param {Object} [rawConfig]
+   * @throws GNOSTIC_ERR_INVALID_RULE_CONFIG
    */
   constructor(rule, rawConfig = {}) {
     ruleMap.set(this, rule);
@@ -20,10 +20,9 @@ export class RuleConfig {
       rawConfig = {};
     }
 
-    this.config = rawConfig;
-    this.validate();
-    // IMPORTANT: validate() *mutates* the config, so we must freeze AFTER
-    Object.freeze(rawConfig);
+    debug(`found raw config %O`, rawConfig);
+
+    this.config = Object.freeze(this.validate(rawConfig));
   }
 
   get rule() {
@@ -37,12 +36,13 @@ export class RuleConfig {
   /**
    * validate the config against meta.schema using ajv
    * @todo
-   * @param {Object} config
+   * @param {Object} rawConfig
    * @returns boolean
    */
-  validate() {
-    this.rule.validate(this.config);
+  validate(rawConfig) {
+    const config = this.rule.validate(rawConfig);
     debug(`config for rule ${this.id} OK:`, this.config);
+    return config;
   }
 
   inspect(contexts) {

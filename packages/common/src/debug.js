@@ -24,11 +24,6 @@ export const enableDebugger = () => {
   debug.enable(APP_NAMESPACE);
 };
 
-export const isDebugEnabled = _.pipe(
-  getDebugNamespace,
-  debug.enabled
-);
-
 export const createDebugPipe = (...args) => {
   const debug = createDebugger(...args);
   return (fn = _.identity) => observable =>

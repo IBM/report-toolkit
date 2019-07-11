@@ -1,15 +1,27 @@
-import {_} from '@gnostic/common';
-import {DEFAULT_DIFF_OPTIONS} from '@gnostic/common/src/constants.js';
-import {createDebugPipe} from '@gnostic/common/src/debug.js';
-import {of} from '@gnostic/common/src/observable.js';
-import {toReportDiff, toReportFromObject} from '@gnostic/core/src/stream.js';
+import {_, constants, createDebugPipe, observable} from '@gnostic/common';
+import {stream} from '@gnostic/core';
 import {toObjectFromFilepath} from '@gnostic/fs';
 
 import {colors, toFormattedString} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';
 import {GROUPS, OPTIONS} from './common.js';
 
+const {toReportDiff, toReportFromObject} = stream;
+const {DEFAULT_DIFF_OPTIONS} = constants;
+const {of} = observable;
+
 const debug = createDebugPipe('cli', 'commands', 'diff');
+
+const OP_COLORS = {
+  add: 'green',
+  remove: 'red',
+  replace: 'yellow'
+};
+const OP_CODE = {
+  add: 'A',
+  remove: 'D',
+  replace: 'M'
+};
 
 export const command = 'diff <file1> <file2>';
 
@@ -26,18 +38,6 @@ export const builder = yargs =>
     },
     ...OPTIONS.OUTPUT
   });
-
-const OP_COLORS = {
-  add: 'green',
-  remove: 'red',
-  replace: 'yellow'
-};
-
-const OP_CODE = {
-  add: 'A',
-  remove: 'D',
-  replace: 'M'
-};
 
 /**
  * @todo handle same-file issue

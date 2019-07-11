@@ -12,19 +12,19 @@
     "@gnostic/formatters": "^0.0.0",
     "@gnostic/fs": "^0.0.0",
     "@gnostic/inspector": "^0.0.0",
-    "@gnostic/transformers": "^0.0.0",
-    "esm": "^3.2.25"
+    "@gnostic/transformers": "^0.0.0"
   },
   "engines": {
     "node": ">=8"
   },
   "files": [
-    "index.js",
+    "dist",
     "src"
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "dist/gnostic.cjs.js",
+  "module": "src/index.js",
   "repository": "ibm/gnostic.git",
   "scripts": {
     "fix": "eslint --fix .",

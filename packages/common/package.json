@@ -3,9 +3,9 @@
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
+  "browser": "dist/gnostic-common.umd.js",
   "dependencies": {
     "debug": "^4.1.1",
-    "esm": "^3.2.25",
     "lodash": "^4.17.11",
     "p-is-promise": "^2.1.0",
     "rxjs": "^6.5.2",
@@ -15,12 +15,12 @@
     "node": ">=8"
   },
   "files": [
-    "index.js",
+    "dist",
     "src"
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "dist/gnostic-common.cjs.js",
   "module": "src/index.js",
   "repository": "ibm/gnostic.git",
   "scripts": {

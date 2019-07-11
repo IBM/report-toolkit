@@ -1,5 +1,5 @@
-import {_} from '@gnostic/common';
-import {mergeMap} from '@gnostic/common/src/observable.js';
+import {_, observable} from '@gnostic/common';
+const {mergeMap} = observable;
 
 const NUMERIC_FIELDS = [
   'javascriptHeap.totalMemory',

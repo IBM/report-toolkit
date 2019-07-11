@@ -1,12 +1,13 @@
-import traverse from 'traverse';
-
 import {REDACTED_TOKEN} from './constants.js';
 import {kRedacted} from './symbols.js';
+import {_} from './util.js';
 
 const AWS_STR = '(AWS|aws|Aws)?_?';
 const QUOTE_STR = '("|\')';
 const CONNECT_STR = 's*(:|=>|=)s*';
 const OPT_QUOTE_STR = `${QUOTE_STR}?`;
+
+const INTERESTING_KEYS = ['environmentVariables'];
 
 export const SECRETS = [
   /passw(or)?d/i,
@@ -32,8 +33,6 @@ export const SECRETS = [
   )
 ];
 
-const INTERESTING_KEYS = ['environmentVariables'];
-
 /**
  * Recursively redacts strings from a value based on key matching.
  * Does not mutate `obj`.  Or at least that's the idea.
@@ -44,7 +43,7 @@ export const redact = obj => {
   if (obj[kRedacted]) {
     return obj;
   }
-  const redacted = traverse(obj).map(function(value) {
+  const redacted = _.traverse(obj).map(function(value) {
     const path = this.path.join('.');
     if (
       path &&

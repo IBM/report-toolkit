@@ -1,5 +1,5 @@
-import {_} from '@gnostic/common';
-import {kReport, kReportFilepath} from '@gnostic/common/src/symbols.js';
+import {_, symbols} from '@gnostic/common';
+const {kReport, kReportFilepath} = symbols;
 
 const KNOWN_PROPS = [
   'header',

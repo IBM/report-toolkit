@@ -1,8 +1,9 @@
-import {_} from '@gnostic/common';
-import {NAMESPACE} from '@gnostic/common/src/constants.js';
-import {createDebugger} from '@gnostic/common/src/debug.js';
-import {GNOSTIC_ERR_MISSING_CONFIG} from '@gnostic/common/src/error.js';
-import {
+import {_, constants, createDebugger, error, observable} from '@gnostic/common';
+import cosmiconfig from 'cosmiconfig';
+
+const {NAMESPACE} = constants;
+const {GNOSTIC_ERR_MISSING_CONFIG} = error;
+const {
   map,
   mapTo,
   mergeMap,
@@ -11,8 +12,7 @@ import {
   switchMapTo,
   tap,
   throwGnosticError
-} from '@gnostic/common/src/observable.js';
-import cosmiconfig from 'cosmiconfig';
+} = observable;
 
 const debug = createDebugger('cli', 'loaders', 'config');
 

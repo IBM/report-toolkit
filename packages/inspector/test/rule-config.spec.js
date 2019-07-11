@@ -1,3 +1,5 @@
+import {_} from '@gnostic/common';
+
 import {RuleConfig} from '../src/rule-config.js';
 
 describe('@gnostic/inspector:rule-config', function() {
@@ -15,7 +17,7 @@ describe('@gnostic/inspector:rule-config', function() {
     describe('constructor', function() {
       it('should associate a Rule with a config', function() {
         const config = {};
-        const rule = {id: 'foo', validate() {}};
+        const rule = {id: 'foo', validate: _.identity};
         expect(
           new RuleConfig(rule, config),
           'to have property',

@@ -1,11 +1,19 @@
-import {_} from '@gnostic/common';
 import {
-  DEFAULT_DIFF_OPTIONS,
-  DEFAULT_LOAD_REPORT_OPTIONS
-} from '@gnostic/common/src/constants.js';
-import {createDebugPipe} from '@gnostic/common/src/debug.js';
-import {GNOSTIC_ERR_INVALID_PARAMETER} from '@gnostic/common/src/error.js';
-import {
+  _,
+  constants,
+  createDebugPipe,
+  error,
+  observable,
+  redact
+} from '@gnostic/common';
+import {diffReports} from '@gnostic/diff';
+import {createRule, createRuleConfig, inspectReports} from '@gnostic/inspector';
+import {createReport, isReport} from '@gnostic/report';
+
+const {DEFAULT_DIFF_OPTIONS, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
+
+const {GNOSTIC_ERR_INVALID_PARAMETER} = error;
+const {
   defer,
   filter,
   fromAny,
@@ -20,11 +28,7 @@ import {
   throwGnosticError,
   toArray,
   toObjectFromJSON
-} from '@gnostic/common/src/observable.js';
-import {redact} from '@gnostic/common/src/redact.js';
-import {diffReports} from '@gnostic/diff';
-import {createRule, createRuleConfig, inspectReports} from '@gnostic/inspector';
-import {createReport, isReport} from '@gnostic/report';
+} = observable;
 
 const debug = createDebugPipe('core', 'stream');
 

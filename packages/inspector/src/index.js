@@ -1,8 +1,7 @@
-import {_} from '@gnostic/common';
-import {ERROR, INFO, WARNING} from '@gnostic/common/src/constants.js';
-import {filter, map, mergeMap} from '@gnostic/common/src/observable.js';
-export {createRule} from './rule.js';
-export {createRuleConfig} from './rule-config.js';
+import {_, constants, observable} from '@gnostic/common';
+
+const {ERROR, INFO, WARNING} = constants;
+const {filter, map, mergeMap} = observable;
 
 const SEVERITIES = {
   [ERROR]: 30,
@@ -32,3 +31,6 @@ export const inspectReports = (
       message => _.get(message.severity, SEVERITIES) >= SEVERITIES[severity]
     )
   );
+
+export {createRule} from './rule.js';
+export {createRuleConfig} from './rule-config.js';

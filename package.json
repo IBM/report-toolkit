@@ -1,5 +1,5 @@
 {
-  "name": "gnostic-dev",
+  "name": "gnostic-monorepo",
   "version": "0.0.0",
   "private": true,
   "description": "consumes Node.js diagnostic reports, outputs useful information",
@@ -10,15 +10,18 @@
   },
   "license": "Apache-2.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "main": "packages/core/index.js",
+  "main": "packages/core/dist/gnostic-core.cjs.js",
   "module": "packages/core/src/index.js",
-  "bin": {
-    "gnostic": "packages/cli/index.js"
-  },
   "scripts": {
     "bootstrap": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap",
-    "fix": "cross-env NPM_CONFIG_LOGLEVEL=silent syncpack format && lerna run --parallel --no-bail fix",
-    "lint": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --parallel --reject-cycles lint",
+    "build": "rollup -c",
+    "clean": "git clean -fdx packages",
+    "dev": "rollup -c -w",
+    "fix": "cross-env NPM_CONFIG_LOGLEVEL=silent syncpack format && lerna run --stream --no-bail fix",
+    "postinstall": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap --no-ci",
+    "lint": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --stream --reject-cycles lint",
+    "prerelease": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run clean && npm run build",
+    "pretest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run build",
     "test": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna run --stream test",
     "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint && syncpack list-mismatches"
   },
@@ -42,11 +45,13 @@
     "endOfLine": "auto",
     "singleQuote": true
   },
-  "dependencies": {
-    "rxjs": "^6.5.2"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@stream-io/rollup-plugin-node-builtins": "^2.1.1",
     "babel-eslint": "^10.0.2",
+    "babel-plugin-lodash-fp": "^1.2.0",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",
@@ -67,6 +72,15 @@
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
     "proxyquire": "^2.1.0",
+    "readdir-withfiletypes": "^1.0.2",
+    "rollup": "^1.16.4",
+    "rollup-external-modules": "^2.0.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.0.1",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-subpath-externals": "^3.0.0",
+    "rxjs": "^6.5.2",
     "sinon": "^7.3.2",
     "syncpack": "^4.5.3",
     "unexpected": "^11.6.1",

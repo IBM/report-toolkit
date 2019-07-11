@@ -1,11 +1,12 @@
-import {_} from '@gnostic/common';
-import {
-  GNOSTIC_ERR_INVALID_RULE_CONFIG,
-  GNOSTIC_ERR_INVALID_RULE_DEFINITION
-} from '@gnostic/common/src/error.js';
+import {_, error} from '@gnostic/common';
 
 import {AJV} from '../src/ajv.js';
 import {Rule} from '../src/rule.js';
+
+const {
+  GNOSTIC_ERR_INVALID_RULE_CONFIG,
+  GNOSTIC_ERR_INVALID_RULE_DEFINITION
+} = error;
 
 describe('@gnostic/inspector:rule', function() {
   let sandbox;
@@ -115,7 +116,7 @@ describe('@gnostic/inspector:rule', function() {
           });
 
           it('should be a noop', function() {
-            expect(rule.validate, 'to be', _.noop);
+            expect(rule.validate, 'to be', _.identity);
           });
         });
 

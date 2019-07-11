@@ -1,16 +1,11 @@
-import {_} from '@gnostic/common';
-import {
-  concatMap,
-  from,
-  map,
-  pipeIf,
-  reduce
-} from '@gnostic/common/src/observable.js';
+import {_, observable} from '@gnostic/common';
 import CLITable3 from 'cli-table3';
 import wrapAnsi from 'wrap-ansi';
 
 import {version} from '../package.json';
 import colors from './colors.js';
+
+const {concatMap, from, map, pipeIf, reduce} = observable;
 
 const DEFAULT_TABLE_OPTS = {
   chars: {

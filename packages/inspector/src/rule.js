@@ -1,13 +1,23 @@
-import {_} from '@gnostic/common';
-import {WARNING} from '@gnostic/common/src/constants.js';
-import {createDebugger} from '@gnostic/common/src/debug.js';
 import {
+  _,
+  constants,
+  createDebugger,
+  error,
+  observable,
+  symbols
+} from '@gnostic/common';
+
+import {AJV} from './ajv.js';
+import {createRuleConfig} from './rule-config.js';
+
+const {WARNING} = constants;
+const {
   GNOSTIC_ERR_INVALID_RULE_CONFIG,
   GNOSTIC_ERR_INVALID_RULE_DEFINITION,
   GNOSTIC_ERR_INVALID_SCHEMA,
   GnosticError
-} from '@gnostic/common/src/error.js';
-import {
+} = error;
+const {
   catchError,
   concat,
   filter,
@@ -19,16 +29,8 @@ import {
   pluck,
   single,
   throwError
-} from '@gnostic/common/src/observable.js';
-import {
-  kRuleFilepath,
-  kRuleId,
-  kRuleInspect,
-  kRuleMeta
-} from '@gnostic/common/src/symbols.js';
-
-import {AJV} from './ajv.js';
-import {createRuleConfig} from './rule-config.js';
+} = observable;
+const {kRuleFilepath, kRuleId, kRuleInspect, kRuleMeta} = symbols;
 
 const debug = createDebugger('inspector', 'rule');
 
@@ -147,7 +149,7 @@ export class Rule {
     const schema = this.schema;
 
     if (!schema) {
-      return _.noop;
+      return _.identity;
     }
 
     debug(`found schema for rule ${this.id}`, schema);
@@ -174,6 +176,7 @@ export class Rule {
           {url: this.url}
         );
       }
+      return config;
     });
 
     return validatorMap.get(this);

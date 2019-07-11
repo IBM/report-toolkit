@@ -1,5 +1,13 @@
 {
   "lerna": "2.11.0",
   "packages": ["packages/*"],
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "command": {
+    "publish": {
+      "allowBranch": "latest",
+      "conventionalCommits": true,
+      "message": "chore(release): %s"
+    }
+  },
+  "ignoreChanges": ["**/test/**", "*.spec.js", "*.md"]
 }

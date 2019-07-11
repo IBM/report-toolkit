@@ -1,6 +1,8 @@
-import {toArray} from '@gnostic/common/src/observable.js';
+import {observable} from '@gnostic/common';
 
 import * as stream from './stream.js';
+
+const {toArray} = observable;
 
 export const inspect = async (...args) =>
   stream
