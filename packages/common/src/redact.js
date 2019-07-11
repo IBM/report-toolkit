@@ -7,9 +7,7 @@ const QUOTE_STR = '("|\')';
 const CONNECT_STR = 's*(:|=>|=)s*';
 const OPT_QUOTE_STR = `${QUOTE_STR}?`;
 
-const INTERESTING_KEYS = ['environmentVariables'];
-
-export const SECRETS = [
+const SECRETS = [
   /passw(or)?d/i,
   /^pw$/,
   /^pass$/i,
@@ -33,26 +31,53 @@ export const SECRETS = [
   )
 ];
 
+const isSecret = (secrets, value, key) =>
+  _.some(matcher => {
+    return _.isString(matcher)
+      ? key === matcher || value === matcher
+      : matcher.test(key) || matcher.test(value);
+  }, secrets);
+
 /**
- * Recursively redacts strings from a value based on key matching.
- * Does not mutate `obj`.  Or at least that's the idea.
+ * Recursively redacts strings from a value based on key matching. Does not
+ * mutate `obj`. Returned value will have a `kRedacted` Symbol key set to
+ * `true`. Unless option `force` is `true`, any `obj` having this root property
+ * will be returned w/o modification.
  * @param {T} obj - Object whose string values may be redacted
+ * @param {Object} [opts] - Options
+ * @param {string|string[]|RegExp|RegExp[]} [opts.match] - Also redact these
+ * keypaths (e.g., `header.cwd`) or matching values. A matching keypath will
+ * redact all children; if the value of `match` is `header`, _everything_ in the
+ * report's `header` prop will be redacted.
+ * @param {boolean} [opts.force] - If `true`, redact an already-redacted object
+ * (one which has `[kRedacted]: true` root prop)
  * @returns {T} `obj` with potentially redacted values
+ * @see https://npm.im/traverse
  */
-export const redact = obj => {
-  if (obj[kRedacted]) {
+export const redact = (obj, opts = {}) => {
+  let {force, match} = _.defaults({force: false, match: []}, opts);
+
+  if (!force && kRedacted in obj) {
     return obj;
   }
-  const redacted = _.traverse(obj).map(function(value) {
-    const path = this.path.join('.');
-    if (
-      path &&
-      INTERESTING_KEYS.some(key => path.includes(key)) &&
-      SECRETS.some(regex => regex.test(this.key) || regex.test(value))
-    ) {
-      this.update(REDACTED_TOKEN);
-    }
-  });
-  redacted[kRedacted] = true;
-  return redacted;
+
+  // coerce match to array for easier processing
+  match = !_.isArray(match) ? [match] : match;
+
+  const secrets = _.uniq([...match, ...SECRETS]);
+
+  return {
+    // NOTE: this is NOT `Array.prototype.map`
+    ..._.traverse(obj).map(function(value) {
+      // potential optimization: keys whose keypaths are longer than the current
+      // path will never match, so we could disregard them if we pre-processed
+      // the `keys` array further
+      if (this.path.length && isSecret(secrets, value, this.path.join('.'))) {
+        this.update(REDACTED_TOKEN);
+      }
+    }),
+    [kRedacted]: true
+  };
 };
+
+export {SECRETS};

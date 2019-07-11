@@ -29,6 +29,7 @@ import isUndefined from 'lodash/fp/isUndefined.js';
 import join from 'lodash/fp/join.js';
 import map from 'lodash/fp/map.js';
 import memoize from 'lodash/fp/memoize.js';
+import merge from 'lodash/fp/merge.js';
 import negate from 'lodash/fp/negate.js';
 import noop from 'lodash/fp/noop.js';
 import omit from 'lodash/fp/omit.js';
@@ -43,11 +44,13 @@ import reduce from 'lodash/fp/reduce.js';
 import reverse from 'lodash/fp/reverse.js';
 import size from 'lodash/fp/size.js';
 import some from 'lodash/fp/some.js';
+import split from 'lodash/fp/split.js';
 import sum from 'lodash/fp/sum.js';
 import tap from 'lodash/fp/tap.js';
 import toPairs from 'lodash/fp/toPairs.js';
 import trimEnd from 'lodash/fp/trimEnd.js';
 import unary from 'lodash/fp/unary.js';
+import uniq from 'lodash/fp/uniq.js';
 import isPromise from 'p-is-promise';
 import traverse from 'traverse';
 
@@ -81,6 +84,7 @@ export const _ = {
   join,
   map,
   memoize,
+  merge,
   negate,
   noop,
   omit,
@@ -95,11 +99,13 @@ export const _ = {
   reverse,
   size,
   some,
+  split,
   sum,
   tap,
   toPairs,
   trimEnd,
   unary,
+  uniq,
 
   isPromise,
   traverse

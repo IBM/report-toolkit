@@ -75,7 +75,7 @@ const catchHandlerError = (severity = WARNING) => observable =>
       of({
         message: _.isError(originalError)
           ? originalError.message
-          : String(originalError).trim(),
+          : originalError.toString().trim(),
         originalError,
         severity
       })
@@ -266,9 +266,6 @@ export class Rule {
         );
       }),
       filter(([message]) => message),
-      // TODO: it may be necessary to use distinct() here, or otherwise handle
-      // rule misbehavior.  we don't want duplicate messages--should eat duplicates?
-      // should we throw an error that the rule author must fix?
       this.normalizeMessage(config)
     );
   }
@@ -278,7 +275,6 @@ export class Rule {
    * @param {Object} [config] - User-supplied config, if any
    */
   normalizeMessage(config) {
-    const id = this.id;
     return observable =>
       observable.pipe(
         map(([msg, filepath]) => {
@@ -291,17 +287,16 @@ export class Rule {
           } else {
             message = msg;
           }
-          message = String(message).trim();
-          const result = compactMessage({
-            originalError,
-            message,
-            filepath,
-            id,
-            severity,
+          message = message.toString().trim();
+          return compactMessage({
+            config,
             data,
-            config
+            filepath,
+            id: this.id,
+            message,
+            originalError,
+            severity
           });
-          return result;
         })
       );
   }
