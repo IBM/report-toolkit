@@ -54,6 +54,8 @@ import uniq from 'lodash/fp/uniq.js';
 import isPromise from 'p-is-promise';
 import traverse from 'traverse';
 
+export const coerceToArray = value => (isArray(value) ? value : [value]);
+
 export const _ = {
   clamp,
   concat,
