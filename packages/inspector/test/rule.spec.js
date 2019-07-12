@@ -10,7 +10,7 @@ const {
 
 describe('@gnostic/inspector:rule', function() {
   let sandbox;
-  let ajv = AJV();
+  const ajv = AJV();
 
   beforeEach(function() {
     sandbox = sinon.createSandbox();

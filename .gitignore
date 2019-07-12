@@ -72,3 +72,4 @@ report.*.json
 gnostic_scan-results
 
 dist/
+.rollup

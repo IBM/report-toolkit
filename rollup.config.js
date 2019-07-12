@@ -6,6 +6,7 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
+import visualizer from 'rollup-plugin-visualizer';
 
 const makeConfigs = pkgpath => {
   const pkg = require(`${pkgpath}/package.json`);
@@ -45,7 +46,8 @@ const makeConfigs = pkgpath => {
         json(),
         babel({
           exclude: [path.join(pkgpath, 'node_modules', '**')]
-        })
+        }),
+        visualizer({filename: `.rollup/${path.basename(pkg.browser)}.html`})
       ]
     });
   }
@@ -65,7 +67,8 @@ const makeConfigs = pkgpath => {
         json(),
         babel({
           exclude: [path.join(pkgpath, 'node_modules', '**')]
-        })
+        }),
+        visualizer({filename: `.rollup/${path.basename(pkg.main)}.html`})
       ]
     }
   ];

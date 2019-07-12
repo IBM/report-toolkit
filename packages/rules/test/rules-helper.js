@@ -1,8 +1,10 @@
-import {_} from '@gnostic/common';
-import {INFO} from '@gnostic/common/src/constants.js';
-import {fromAny, map} from '@gnostic/common/src/observable.js';
-import {createRule, toInspection} from '@gnostic/core/src/stream.js';
+import {_, constants, observable} from '@gnostic/common';
+import {stream} from '@gnostic/core';
 import {fromFilepathToRuleDefinition, toObjectFromFilepath} from '@gnostic/fs';
+
+const {INFO} = constants;
+const {fromAny, map} = observable;
+const {createRule, toInspection} = stream;
 
 export const createInspect = (ruleFilepath, config = {}) => {
   createRule.cache.clear();

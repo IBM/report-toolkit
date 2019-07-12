@@ -5,9 +5,7 @@ extends:
   - 'plugin:monorepo/recommended'
 overrides:
   - files:
-      - packages/*/index.js
       - .mocharc.js
-      - packages/inspector/src/rules/*.js
     parserOptions:
       sourceType: script
   - env:
@@ -23,9 +21,9 @@ overrides:
         - error
         - selector: "Program > ExpressionStatement > CallExpression[callee.name=describe] > Literal:not([raw=/^'@gnostic\\u002F\\S+?(:\\S+)*'/])"
           message: 'Top-level describe() must be of format "@gnostic/<package>" or "@gnostic/<package>:<module>[:module...]"'
+      monorepo/no-internal-import: 0
 parser: babel-eslint
 plugins:
-  - monorepo
   - simple-import-sort
 root: true
 rules:

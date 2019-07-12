@@ -20,10 +20,5 @@
   "license": "Apache-2.0",
   "main": "dist/gnostic-report.cjs.js",
   "module": "src/index.js",
-  "repository": "ibm/gnostic.git",
-  "scripts": {
-    "fix": "eslint --fix .",
-    "lint": "eslint .",
-    "test": "mocha"
-  }
+  "repository": "ibm/gnostic.git"
 }
