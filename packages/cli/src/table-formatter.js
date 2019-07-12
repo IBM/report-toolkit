@@ -11,6 +11,7 @@ const DEFAULT_TABLE_OPTS = {
   chars: {
     bottom: '',
     'bottom-left': '',
+    'bottom-mid': '',
     'bottom-right': '',
     left: '',
     'left-mid': '',
