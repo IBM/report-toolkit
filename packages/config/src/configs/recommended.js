@@ -1,8 +1,8 @@
 exports.config = {
   name: 'recommended',
   rules: {
+    'cpu-usage': 'on',
     'library-mismatch': 'on',
-    'long-timeout': 'on',
-    'cpu-usage': 'on'
+    'long-timeout': 'on'
   }
 };

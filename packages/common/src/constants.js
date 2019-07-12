@@ -14,11 +14,11 @@ export const DEFAULT_DIFF_OPTIONS = Object.freeze({
 });
 
 export const DEFAULT_LOAD_REPORT_OPTIONS = Object.freeze({
-  showSecretsUnsafe: false,
-  sortField: 'header.dumpEventTimestamp',
-  sortDirection: 'asc',
   disableSort: false,
-  severity: ERROR
+  severity: ERROR,
+  showSecretsUnsafe: false,
+  sortDirection: 'asc',
+  sortField: 'header.dumpEventTimestamp'
 });
 
 export const REDACTED_TOKEN = '[REDACTED]';

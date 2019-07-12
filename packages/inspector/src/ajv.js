@@ -5,9 +5,9 @@ export const AJV = _.once(
   () =>
     new Ajv({
       meta: false,
-      validateSchema: false,
       missingRefs: 'ignore',
-      verbose: true,
-      useDefaults: true
+      useDefaults: true,
+      validateSchema: false,
+      verbose: true
     })
 );

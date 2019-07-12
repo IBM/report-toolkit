@@ -90,7 +90,7 @@ const formatTableHeaders = _.pipe(
 
 const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
-  const {fields, truncateValues, wrapValues, maxWidth} = opts;
+  const {fields, maxWidth, truncateValues, wrapValues} = opts;
   if (_.some('widthPct', fields) && (truncateValues || wrapValues)) {
     opts.colWidths = calculateColumnWidths(maxWidth, fields);
   }
@@ -106,7 +106,7 @@ const colValuesByFields = _.curry((fields, row) =>
 
 export const table = (opts = {}) => {
   const table = createTable(opts);
-  const {fields, wrapValues, outputHeader, outputFooter} = opts;
+  const {fields, outputFooter, outputHeader, wrapValues} = opts;
   const colValues = colValuesByFields(fields);
   const padding =
     table.options.style['padding-left'] - table.options.style['padding-right'];

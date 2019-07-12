@@ -5,7 +5,7 @@ describe('@gnostic/config', function() {
     describe('filterEnabledRules', function() {
       it('should return an array of enabled rule IDs', function() {
         expect(
-          filterEnabledRules({rules: {foo: true, bar: false}}),
+          filterEnabledRules({rules: {bar: false, foo: true}}),
           'to equal',
           ['foo']
         );

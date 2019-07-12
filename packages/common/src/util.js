@@ -81,6 +81,7 @@ export const _ = {
   isFunction,
   isNaN,
   isObject,
+  isPromise,
   isString,
   isUndefined,
   join,
@@ -105,10 +106,9 @@ export const _ = {
   sum,
   tap,
   toPairs,
+  traverse,
   trimEnd,
-  unary,
-  uniq,
 
-  isPromise,
-  traverse
+  unary,
+  uniq
 };

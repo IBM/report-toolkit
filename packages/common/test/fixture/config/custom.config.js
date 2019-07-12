@@ -3,8 +3,8 @@ exports.config = [
   {
     name: 'CUSTOM',
     rules: {
-      'long-timeout': ['on', {timeout: 3000}],
-      'library-mismatch': 'off'
+      'library-mismatch': 'off',
+      'long-timeout': ['on', {timeout: 3000}]
     }
   }
 ];

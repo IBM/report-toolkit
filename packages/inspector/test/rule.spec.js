@@ -60,7 +60,7 @@ describe('@gnostic/inspector:rule', function() {
       describe('description', function() {
         it('should return the description', function() {
           expect(
-            new Rule({meta: {docs: {description: 'foo'}}, inspect: _.noop}),
+            new Rule({inspect: _.noop, meta: {docs: {description: 'foo'}}}),
             'to have property',
             'description',
             'foo'
@@ -72,8 +72,8 @@ describe('@gnostic/inspector:rule', function() {
         it('should return the url', function() {
           expect(
             new Rule({
-              meta: {docs: {url: 'https://something'}},
-              inspect: _.noop
+              inspect: _.noop,
+              meta: {docs: {url: 'https://something'}}
             }),
             'to have property',
             'url',
@@ -96,7 +96,7 @@ describe('@gnostic/inspector:rule', function() {
       describe('meta', function() {
         it('should return the metadata', function() {
           expect(
-            new Rule({meta: 'foo', inspect: _.noop}),
+            new Rule({inspect: _.noop, meta: 'foo'}),
             'to have property',
             'meta',
             'foo'
@@ -123,17 +123,17 @@ describe('@gnostic/inspector:rule', function() {
         describe('when a rule has a schema', function() {
           beforeEach(function() {
             rule = new Rule({
-              inspect: _.noop,
               id: 'foo',
+              inspect: _.noop,
               meta: {
                 schema: {
-                  type: 'object',
+                  additionalProperties: false,
                   properties: {
                     foo: {
                       type: 'boolean'
                     }
                   },
-                  additionalProperties: false
+                  type: 'object'
                 }
               }
             });

@@ -1,21 +1,21 @@
 exports.meta = {
   docs: {
-    description: 'Identify potential library version mismatches',
     category: 'runtime',
+    description: 'Identify potential library version mismatches',
     url: 'https://more-information-for-this-rule'
   },
   schema: {
-    type: 'object',
+    additionalProperties: false,
     properties: {
       ignore: {
-        type: 'array',
         items: {
           type: 'string'
         },
-        minItems: 1
+        minItems: 1,
+        type: 'array'
       }
     },
-    additionalProperties: false
+    type: 'object'
   }
 };
 
@@ -24,7 +24,7 @@ const VERSION_REGEXP = /(\d+(?:\.\d+)+[a-z]?)/;
 exports.inspect = (config = {}) => {
   const ignoredComponents = new Set(config.ignore || []);
   return context => {
-    const {sharedObjects, header} = context;
+    const {header, sharedObjects} = context;
     return (
       Object.keys(header.componentVersions)
         .filter(component => !ignoredComponents.has(component))

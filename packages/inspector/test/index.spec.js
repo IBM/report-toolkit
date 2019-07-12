@@ -26,7 +26,7 @@ describe('@gnostic/inspector', function() {
           of({
             inspect: sandbox
               .stub()
-              .returns(of({message: 'foo', id: 'bar', severity: ERROR}))
+              .returns(of({id: 'bar', message: 'foo', severity: ERROR}))
           }).pipe(
             inspectReports(
               of(
@@ -36,8 +36,8 @@ describe('@gnostic/inspector', function() {
           ),
           'to complete with value satisfying',
           {
-            message: 'foo',
             id: 'bar',
+            message: 'foo',
             severity: ERROR
           }
         );

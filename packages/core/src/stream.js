@@ -64,19 +64,19 @@ export const diff = (reports, opts = {}) => {
 
 export const toInspection = (reports, opts = {}) => {
   const {
+    disableSort,
     severity,
     showSecretsUnsafe,
-    sortField,
     sortDirection,
-    disableSort
+    sortField
   } = _.defaults(DEFAULT_LOAD_REPORT_OPTIONS, opts);
   const multicastReports = defer(() =>
     reports.pipe(
       toReport({
+        disableSort,
         showSecretsUnsafe,
-        sortField,
         sortDirection,
-        disableSort
+        sortField
       }),
       share()
     )
@@ -99,7 +99,7 @@ export const inspect = (reports, rules, config, {severity} = {}) =>
   );
 
 export const toReportFromObject = (opts = {}) => {
-  const {showSecretsUnsafe, sortField, sortDirection, disableSort} = _.defaults(
+  const {disableSort, showSecretsUnsafe, sortDirection, sortField} = _.defaults(
     DEFAULT_LOAD_REPORT_OPTIONS,
     opts
   );
@@ -113,7 +113,7 @@ export const toReportFromObject = (opts = {}) => {
             : {rawReport: redact(obj)}
         )
       ),
-      map(({rawReport, filepath}) => createReport(rawReport, filepath)),
+      map(({filepath, rawReport}) => createReport(rawReport, filepath)),
       pipeIf(!disableSort, sort(`rawReport.${sortField}`, sortDirection))
     );
 };
@@ -146,7 +146,7 @@ export const toRuleConfig = (config = {}) => {
   return ruleDefs =>
     ruleDefs.pipe(
       pipeIf(ruleIdsCount, filter(({id}) => Boolean(_.get(id, config.rules)))),
-      map(({ruleDef, filepath, id}) =>
+      map(({filepath, id, ruleDef}) =>
         createRule(ruleDef, {filepath, id}).toRuleConfig(config)
       )
     );

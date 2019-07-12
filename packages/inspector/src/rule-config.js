@@ -46,7 +46,7 @@ export class RuleConfig {
   }
 
   inspect(contexts) {
-    return this.rule.inspect({contexts, config: this.config});
+    return this.rule.inspect({config: this.config, contexts});
   }
 
   static create(rule, rawConfig) {

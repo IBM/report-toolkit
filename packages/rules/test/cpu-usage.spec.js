@@ -33,13 +33,13 @@ describe('@gnostic/rules:cpu-usage', function() {
           inspect(REPORT_008_FILEPATH),
           'to complete with value satisfying',
           {
+            filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
+            id: 'cpu-usage',
             message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./,
-            severity: WARNING,
             originalError: {
               message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./
             },
-            filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
-            id: 'cpu-usage'
+            severity: WARNING
           }
         );
       });
@@ -51,21 +51,21 @@ describe('@gnostic/rules:cpu-usage', function() {
           inspect([REPORT_008_FILEPATH, REPORT_001_FILEPATH]),
           'to complete with values satisfying',
           {
+            filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
+            id: 'cpu-usage',
             message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./,
-            severity: WARNING,
             originalError: {
               message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./
             },
-            filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
-            id: 'cpu-usage'
+            severity: WARNING
           },
           {
+            data: {max: 50, min: 0, mode: MODE_MEAN, usage: 6.12},
+            filepath: /fixture\/reports\/report-001\.json/,
+            id: 'cpu-usage',
             message:
               'Mean CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-            data: {mode: MODE_MEAN, usage: 6.12, min: 0, max: 50},
-            severity: INFO,
-            filepath: /fixture\/reports\/report-001\.json/,
-            id: 'cpu-usage'
+            severity: INFO
           }
         );
       });
@@ -84,12 +84,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MEAN, usage: 6.12},
+              filepath: /fixture\/reports\/report-001\.json/,
+              id: 'cpu-usage',
               message:
                 'Mean CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_MEAN, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-001\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -101,12 +101,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MEAN, usage: 70.12},
+              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
+              id: 'cpu-usage',
               message:
                 'Mean CPU consumption percent (70.12%) is outside the allowed range of 0-50%',
-              data: {mode: MODE_MEAN, usage: 70.12, min: 0, max: 50},
-              severity: ERROR,
-              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -117,12 +117,12 @@ describe('@gnostic/rules:cpu-usage', function() {
               inspect(REPORT_009_FILEPATH),
               'to complete with value satisfying',
               {
+                data: {max: 50, min: 0, mode: MODE_MEAN, usage: 35.06},
+                filepath: /fixture\/reports\/report-009-cpu-usage-multicore\.json/,
+                id: 'cpu-usage',
                 message:
                   'Mean CPU consumption percent (35.06%) is within the allowed range of 0-50%',
-                data: {mode: MODE_MEAN, usage: 35.06, min: 0, max: 50},
-                severity: INFO,
-                filepath: /fixture\/reports\/report-009-cpu-usage-multicore\.json/,
-                id: 'cpu-usage'
+                severity: INFO
               }
             );
           });
@@ -139,12 +139,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             }),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MEAN, usage: 38.12},
+              filepath: '(multiple files)',
+              id: 'cpu-usage',
               message:
                 'Mean CPU consumption percent (38.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_MEAN, usage: 38.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: '(multiple files)',
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -160,12 +160,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH]),
             'to complete with value satisfying',
             {
+              data: {max: 30, min: 0, mode: MODE_MEAN, usage: 38.12},
+              filepath: '(multiple files)',
+              id: 'cpu-usage',
               message:
                 'Mean CPU consumption percent (38.12%) is outside the allowed range of 0-30%',
-              data: {mode: MODE_MEAN, usage: 38.12, min: 0, max: 30},
-              severity: ERROR,
-              filepath: '(multiple files)',
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -185,12 +185,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MIN, usage: 6.12},
+              filepath: /fixture\/reports\/report-001\.json/,
+              id: 'cpu-usage',
               message:
                 'Minimum CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_MIN, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-001\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -202,12 +202,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MIN, usage: 70.12},
+              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
+              id: 'cpu-usage',
               message:
                 'Minimum CPU consumption percent (70.12%) is outside the allowed range of 0-50%',
-              data: {mode: MODE_MIN, usage: 70.12, min: 0, max: 50},
-              severity: ERROR,
-              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -223,12 +223,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             }),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MIN, usage: 6.12},
+              filepath: '(multiple files)',
+              id: 'cpu-usage',
               message:
                 'Minimum CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_MIN, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: '(multiple files)',
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -237,8 +237,8 @@ describe('@gnostic/rules:cpu-usage', function() {
       describe('when cpu usage not within allowed limits', function() {
         beforeEach(function() {
           inspect = createInspect('../src/cpu-usage.js', {
-            mode: MODE_MIN,
-            min: 10
+            min: 10,
+            mode: MODE_MIN
           });
         });
 
@@ -247,12 +247,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH]),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 10, mode: MODE_MIN, usage: 6.12},
+              filepath: '(multiple files)',
+              id: 'cpu-usage',
               message:
                 'Minimum CPU consumption percent (6.12%) is outside the allowed range of 10-50%',
-              data: {mode: MODE_MIN, usage: 6.12, min: 10, max: 50},
-              severity: ERROR,
-              filepath: '(multiple files)',
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -272,12 +272,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MAX, usage: 6.12},
+              filepath: /fixture\/reports\/report-001\.json/,
+              id: 'cpu-usage',
               message:
                 'Maximum CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_MAX, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-001\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -289,12 +289,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MAX, usage: 70.12},
+              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
+              id: 'cpu-usage',
               message:
                 'Maximum CPU consumption percent (70.12%) is outside the allowed range of 0-50%',
-              data: {mode: MODE_MAX, usage: 70.12, min: 0, max: 50},
-              severity: ERROR,
-              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -310,12 +310,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             }),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MAX, usage: 6.12},
+              filepath: '(multiple files)',
+              id: 'cpu-usage',
               message:
                 'Maximum CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_MAX, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: '(multiple files)',
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -333,12 +333,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH]),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_MAX, usage: 70.12},
+              filepath: '(multiple files)',
+              id: 'cpu-usage',
               message:
                 'Maximum CPU consumption percent (70.12%) is outside the allowed range of 0-50%',
-              data: {mode: MODE_MAX, usage: 70.12, min: 0, max: 50},
-              severity: ERROR,
-              filepath: '(multiple files)',
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -358,12 +358,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_ALL, usage: 6.12},
+              filepath: /fixture\/reports\/report-001\.json/,
+              id: 'cpu-usage',
               message:
                 'Report CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_ALL, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-001\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -375,12 +375,12 @@ describe('@gnostic/rules:cpu-usage', function() {
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_ALL, usage: 70.12},
+              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
+              id: 'cpu-usage',
               message:
                 'Report CPU consumption percent (70.12%) is outside the allowed range of 0-50%',
-              data: {mode: MODE_ALL, usage: 70.12, min: 0, max: 50},
-              severity: ERROR,
-              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });
@@ -396,20 +396,20 @@ describe('@gnostic/rules:cpu-usage', function() {
             }),
             'to complete with values satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_ALL, usage: 6.12},
+              filepath: /fixture\/reports\/report-001\.json/,
+              id: 'cpu-usage',
               message:
                 'Report CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_ALL, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-001\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             },
             {
+              data: {max: 50, min: 0, mode: MODE_ALL, usage: 0},
+              filepath: /fixture\/reports\/report-002-library-mismatch\.json/,
+              id: 'cpu-usage',
               message:
                 'Report CPU consumption percent (0%) is within the allowed range of 0-50%',
-              data: {mode: MODE_ALL, usage: 0, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-002-library-mismatch\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             }
           );
         });
@@ -423,20 +423,20 @@ describe('@gnostic/rules:cpu-usage', function() {
             }),
             'to complete with values satisfying',
             {
+              data: {max: 50, min: 0, mode: MODE_ALL, usage: 6.12},
+              filepath: /fixture\/reports\/report-001\.json/,
+              id: 'cpu-usage',
               message:
                 'Report CPU consumption percent (6.12%) is within the allowed range of 0-50%',
-              data: {mode: MODE_ALL, usage: 6.12, min: 0, max: 50},
-              severity: INFO,
-              filepath: /fixture\/reports\/report-001\.json/,
-              id: 'cpu-usage'
+              severity: INFO
             },
             {
+              data: {max: 50, min: 0, mode: MODE_ALL, usage: 70.12},
+              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
+              id: 'cpu-usage',
               message:
                 'Report CPU consumption percent (70.12%) is outside the allowed range of 0-50%',
-              data: {mode: MODE_ALL, usage: 70.12, min: 0, max: 50},
-              severity: ERROR,
-              filepath: /fixture\/reports\/report-006-cpu-usage\.json/,
-              id: 'cpu-usage'
+              severity: ERROR
             }
           );
         });

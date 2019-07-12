@@ -7,7 +7,7 @@ describe('@gnostic/formatters:csv', function() {
     describe('toCsv()', function() {
       it('should parse a JS object into CSV', function() {
         return expect(
-          of({foo: 1, bar: 2, baz: 3}, {foo: 4, bar: 5, baz: 6}).pipe(
+          of({bar: 2, baz: 3, foo: 1}, {bar: 5, baz: 6, foo: 4}).pipe(
             toCsv({
               fields: [
                 {label: 'Foo', value: 'foo'},

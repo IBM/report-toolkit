@@ -31,10 +31,10 @@ describe('@gnostic/rules:long-timeout', function() {
           ),
           'to complete with value satisfying',
           {
+            filepath: /fixture\/reports\/report-003-long-timeout\.json/,
             id: 'long-timeout',
             message:
               'libuv handle at address 0x00007ffeefbfe2e8 is a timer with future expiry in 3h',
-            filepath: /fixture\/reports\/report-003-long-timeout\.json/,
             severity: ERROR
           }
         );
@@ -65,10 +65,10 @@ describe('@gnostic/rules:long-timeout', function() {
             ),
             'to complete with value satisfying',
             {
+              filepath: /fixture\/reports\/report-003-long-timeout\.json/,
               id: 'long-timeout',
               message:
                 'libuv handle at address 0x00007ffeefbfe2e8 is a timer with future expiry in 3h',
-              filepath: /fixture\/reports\/report-003-long-timeout\.json/,
               severity: ERROR
             }
           );

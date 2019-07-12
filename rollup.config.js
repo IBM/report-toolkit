@@ -14,11 +14,6 @@ const makeConfigs = pkgpath => {
   if (pkg.browser) {
     configs.push({
       input: require.resolve(`${pkgpath}/${pkg.module}`),
-      output: {
-        name: pkg.name.replace(/^@/, '').replace('/', '.'),
-        file: path.join(pkgpath, pkg.browser),
-        format: 'umd'
-      },
       onwarn(warning, warn) {
         // this circular dependency warning is known and is not something
         // we can do anything about.
@@ -33,6 +28,11 @@ const makeConfigs = pkgpath => {
         ) {
           warn(warning);
         }
+      },
+      output: {
+        file: path.join(pkgpath, pkg.browser),
+        format: 'umd',
+        name: pkg.name.replace(/^@/, '').replace('/', '.')
       },
       plugins: [
         builtins(),
@@ -54,9 +54,9 @@ const makeConfigs = pkgpath => {
   return [
     ...configs,
     {
+      external: rollupExternalModules,
       input: require.resolve(`${pkgpath}/${pkg.module}`),
       output: {file: path.join(pkgpath, pkg.main), format: 'cjs'},
-      external: rollupExternalModules,
       plugins: [
         resolve({
           preferBuiltins: true

@@ -2,20 +2,20 @@ const ms = require('ms');
 
 exports.meta = {
   docs: {
-    description: 'Warn about far-future callbacks in timeout queue',
     category: 'event-queue',
+    description: 'Warn about far-future callbacks in timeout queue',
     url: 'https://more-information-for-this-rule'
   },
   schema: {
-    type: 'object',
+    additionalProperties: false,
     properties: {
       timeout: {
-        type: ['integer', 'string'],
+        default: 10000,
         minimum: 0,
-        default: 10000
+        type: ['integer', 'string']
       }
     },
-    additionalProperties: false
+    type: 'object'
   }
 };
 

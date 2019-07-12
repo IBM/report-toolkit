@@ -30,11 +30,11 @@ export const desc = 'Diff two reports';
 export const builder = yargs =>
   yargs.options({
     prop: {
-      type: 'array',
-      nargs: 1,
-      description: 'Filter by property name',
       default: DEFAULT_DIFF_OPTIONS.properties,
-      group: GROUPS.FILTER
+      description: 'Filter by property name',
+      group: GROUPS.FILTER,
+      nargs: 1,
+      type: 'array'
     },
     ...OPTIONS.OUTPUT
   });
@@ -63,8 +63,8 @@ export const handler = argv => {
       debug(() => config.diff && `using diff-specific options: ${config.diff}`),
       toReportFromObject({
         ...config.diff,
-        showSecretsUnsafe,
-        disableSort: true
+        disableSort: true,
+        showSecretsUnsafe
       }),
       debug(report => `created Report from ${report.filepath}`),
       toReportDiff({...config.diff, properties}),
@@ -93,8 +93,8 @@ export const handler = argv => {
             widthPct: 36
           }
         ],
-        pretty,
         outputHeader: `Diff: ${file1} <=> ${file2}`,
+        pretty,
         truncateValues,
         wrapValues
       })

@@ -25,6 +25,8 @@ overrides:
 parser: babel-eslint
 plugins:
   - simple-import-sort
+  - sort-keys-fix
+  - sort-destructure-keys
 root: true
 rules:
   import/exports-last: error
@@ -38,6 +40,8 @@ rules:
     - selector: 'CallExpression[callee.name=Symbol] > Literal:not([value=/^gnostic-[a-z-]+$/])'
       message: 'Symbol() must be called with a kebab-case description beginning with  "gnostic-"'
   simple-import-sort/sort: error
+  sort-keys-fix/sort-keys-fix: error
+  sort-destructure-keys/sort-destructure-keys: error
   sort-imports: 0
   standard/computed-property-even-spacing: 0
   strict:

@@ -11,7 +11,7 @@ export const createInspect = (ruleFilepath, config = {}) => {
   const ruleConfigs = fromFilepathToRuleDefinition(
     require.resolve(ruleFilepath)
   ).pipe(
-    map(({ruleDef, filepath, id}) =>
+    map(({filepath, id, ruleDef}) =>
       createRule(ruleDef, {filepath, id}).toRuleConfig({rules: {[id]: config}})
     )
   );

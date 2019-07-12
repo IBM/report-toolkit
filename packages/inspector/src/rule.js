@@ -101,10 +101,10 @@ export class Rule {
       );
     }
     Object.assign(this, {
-      [kRuleInspect]: ruleDef.inspect,
-      [kRuleMeta]: ruleDef.meta,
+      [kRuleFilepath]: ruleDef.filepath,
       [kRuleId]: ruleDef.id,
-      [kRuleFilepath]: ruleDef.filepath
+      [kRuleInspect]: ruleDef.inspect,
+      [kRuleMeta]: ruleDef.meta
     });
   }
 

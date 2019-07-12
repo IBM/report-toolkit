@@ -1,7 +1,7 @@
 import {_, observable} from '@gnostic/common';
 import ptr from 'json-ptr';
 import {createPatch} from 'rfc6902';
-const {filter, mergeMap, Observable, pipeIf} = observable;
+const {Observable, filter, mergeMap, pipeIf} = observable;
 
 /**
  * snooze-inducing paths to omit from the diff

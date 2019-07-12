@@ -22,8 +22,8 @@ describe('@gnostic/core:promise', function() {
       diffStub = sandbox.stub().returnsObservableOf({});
       subject = proxyquire(require.resolve('../src/promise.js'), {
         './stream.js': {
-          inspect: inspectStub,
-          diff: diffStub
+          diff: diffStub,
+          inspect: inspectStub
         }
       });
     });

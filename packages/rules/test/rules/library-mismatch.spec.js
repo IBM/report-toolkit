@@ -17,17 +17,17 @@ describe('@gnostic/rules:library-mismatch', function() {
         ),
         'to complete with values satisfying',
         {
+          filepath: /fixture\/reports\/report-002-library-mismatch\.json/,
           id: 'library-mismatch',
           message:
             'Custom shared library at /usr/local/opt/openssl@1.1/lib/libcrypto.1.1.dylib in use conflicting with openssl@1.1.1b',
-          filepath: /fixture\/reports\/report-002-library-mismatch\.json/,
           severity: ERROR
         },
         {
+          filepath: /fixture\/reports\/report-002-library-mismatch\.json/,
           id: 'library-mismatch',
           message:
             'Custom shared library at /usr/local/opt/openssl@1.1/lib/libssl.1.1.dylib in use conflicting with openssl@1.1.1b',
-          filepath: /fixture\/reports\/report-002-library-mismatch\.json/,
           severity: ERROR
         }
       );

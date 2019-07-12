@@ -12,16 +12,16 @@ describe('@gnostic/common:redact', function() {
 
         beforeEach(function() {
           obj = {
-            FOO_SESSION_ID: 'aklsdjhflskfjdf',
             BOO: 'BAH',
-            environmentVariables: {
-              SECRET: 'kjdfgshfkdsjfh',
-              API_KEY: 'kldjfghn,vcx',
-              'ACCESS-KEY': 'gkasdjhfksd',
-              things: ['THING_TOKEN']
-            },
+            FOO_SESSION_ID: 'aklsdjhflskfjdf',
             PEANUT: {
               BUTTER: '&jelly'
+            },
+            environmentVariables: {
+              'ACCESS-KEY': 'gkasdjhfksd',
+              API_KEY: 'kldjfghn,vcx',
+              SECRET: 'kjdfgshfkdsjfh',
+              things: ['THING_TOKEN']
             }
           };
         });
@@ -29,16 +29,16 @@ describe('@gnostic/common:redact', function() {
         it('should redact the default set of secrets', function() {
           const actual = redact(obj);
           expect(actual, 'to satisfy', {
-            FOO_SESSION_ID: REDACTED_TOKEN,
             BOO: 'BAH',
-            environmentVariables: {
-              SECRET: REDACTED_TOKEN,
-              API_KEY: REDACTED_TOKEN,
-              'ACCESS-KEY': REDACTED_TOKEN,
-              things: REDACTED_TOKEN
-            },
+            FOO_SESSION_ID: REDACTED_TOKEN,
             PEANUT: {
               BUTTER: '&jelly'
+            },
+            environmentVariables: {
+              'ACCESS-KEY': REDACTED_TOKEN,
+              API_KEY: REDACTED_TOKEN,
+              SECRET: REDACTED_TOKEN,
+              things: REDACTED_TOKEN
             },
             [kRedacted]: true
           });
@@ -66,16 +66,16 @@ describe('@gnostic/common:redact', function() {
           describe('when option `match` is a string', function() {
             it('should redact matching key', function() {
               expect(redact(obj, {match: 'PEANUT.BUTTER'}), 'to equal', {
-                FOO_SESSION_ID: REDACTED_TOKEN,
                 BOO: 'BAH',
-                environmentVariables: {
-                  SECRET: REDACTED_TOKEN,
-                  API_KEY: REDACTED_TOKEN,
-                  'ACCESS-KEY': REDACTED_TOKEN,
-                  things: REDACTED_TOKEN
-                },
+                FOO_SESSION_ID: REDACTED_TOKEN,
                 PEANUT: {
                   BUTTER: REDACTED_TOKEN
+                },
+                environmentVariables: {
+                  'ACCESS-KEY': REDACTED_TOKEN,
+                  API_KEY: REDACTED_TOKEN,
+                  SECRET: REDACTED_TOKEN,
+                  things: REDACTED_TOKEN
                 },
                 [kRedacted]: true
               });
@@ -83,16 +83,16 @@ describe('@gnostic/common:redact', function() {
 
             it('should redact matching value', function() {
               expect(redact(obj, {match: '&jelly'}), 'to equal', {
-                FOO_SESSION_ID: REDACTED_TOKEN,
                 BOO: 'BAH',
-                environmentVariables: {
-                  SECRET: REDACTED_TOKEN,
-                  API_KEY: REDACTED_TOKEN,
-                  'ACCESS-KEY': REDACTED_TOKEN,
-                  things: REDACTED_TOKEN
-                },
+                FOO_SESSION_ID: REDACTED_TOKEN,
                 PEANUT: {
                   BUTTER: REDACTED_TOKEN
+                },
+                environmentVariables: {
+                  'ACCESS-KEY': REDACTED_TOKEN,
+                  API_KEY: REDACTED_TOKEN,
+                  SECRET: REDACTED_TOKEN,
+                  things: REDACTED_TOKEN
                 },
                 [kRedacted]: true
               });
@@ -102,16 +102,16 @@ describe('@gnostic/common:redact', function() {
           describe('when option `match` is a RegExp', function() {
             it('should redact matching key', function() {
               expect(redact(obj, {match: /PEANUT\.BUTTER/}), 'to equal', {
-                FOO_SESSION_ID: REDACTED_TOKEN,
                 BOO: 'BAH',
-                environmentVariables: {
-                  SECRET: REDACTED_TOKEN,
-                  API_KEY: REDACTED_TOKEN,
-                  'ACCESS-KEY': REDACTED_TOKEN,
-                  things: REDACTED_TOKEN
-                },
+                FOO_SESSION_ID: REDACTED_TOKEN,
                 PEANUT: {
                   BUTTER: REDACTED_TOKEN
+                },
+                environmentVariables: {
+                  'ACCESS-KEY': REDACTED_TOKEN,
+                  API_KEY: REDACTED_TOKEN,
+                  SECRET: REDACTED_TOKEN,
+                  things: REDACTED_TOKEN
                 },
                 [kRedacted]: true
               });
@@ -119,16 +119,16 @@ describe('@gnostic/common:redact', function() {
 
             it('should redact matching value', function() {
               expect(redact(obj, {match: /&jelly/}), 'to equal', {
-                FOO_SESSION_ID: REDACTED_TOKEN,
                 BOO: 'BAH',
-                environmentVariables: {
-                  SECRET: REDACTED_TOKEN,
-                  API_KEY: REDACTED_TOKEN,
-                  'ACCESS-KEY': REDACTED_TOKEN,
-                  things: REDACTED_TOKEN
-                },
+                FOO_SESSION_ID: REDACTED_TOKEN,
                 PEANUT: {
                   BUTTER: REDACTED_TOKEN
+                },
+                environmentVariables: {
+                  'ACCESS-KEY': REDACTED_TOKEN,
+                  API_KEY: REDACTED_TOKEN,
+                  SECRET: REDACTED_TOKEN,
+                  things: REDACTED_TOKEN
                 },
                 [kRedacted]: true
               });

@@ -12,10 +12,10 @@ export const builder = yargs => yargs.options(OPTIONS.OUTPUT);
 
 export const handler = ({
   color,
+  format = 'table',
   pretty = false,
   truncate: truncateValues = true,
-  wrap: wrapValues = false,
-  format = 'table'
+  wrap: wrapValues = false
 }) => {
   fromSearchpathToRuleDefinition()
     .pipe(
@@ -34,8 +34,8 @@ export const handler = ({
             value: _.getOr(colors.dim('(no description)'), 'description')
           }
         ],
-        pretty,
         outputHeader: 'Available Rules',
+        pretty,
         truncateValues,
         wrapValues
       })

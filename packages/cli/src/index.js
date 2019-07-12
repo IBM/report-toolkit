@@ -21,18 +21,18 @@ const main = () => {
         .scriptName(NAMESPACE)
         .demandCommand()
         .options({
+          rc: {
+            desc: 'Custom file or directory path to .gnosticrc.js',
+            normalize: true,
+            requiresArg: true,
+            type: 'string'
+          },
           verbose: {
             alias: ['v', 'debug'],
             desc: 'Enable verbose output',
             global: true,
             group: GROUPS.OUTPUT,
             type: 'boolean'
-          },
-          rc: {
-            desc: 'Custom file or directory path to .gnosticrc.js',
-            normalize: true,
-            requiresArg: true,
-            type: 'string'
           }
         })
         .wrap(

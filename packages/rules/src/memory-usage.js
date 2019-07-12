@@ -1,29 +1,29 @@
 exports.meta = {
   docs: {
-    description: 'Assert memory usage % is within a range',
     category: 'resource',
+    description: 'Assert memory usage % is within a range',
     url: 'https://more-information-for-this-rule'
   },
   schema: {
-    type: 'object',
+    additionalProperties: false,
     properties: {
-      min: {
-        type: 'integer',
-        minimum: 0,
-        default: 0
-      },
       max: {
-        type: 'integer',
+        default: 50,
         minimum: 0,
-        default: 50
+        type: 'integer'
+      },
+      min: {
+        default: 0,
+        minimum: 0,
+        type: 'integer'
       },
       mode: {
-        type: 'string',
+        default: 'mean',
         enum: ['mean', 'min', 'max', 'all'],
-        default: 'mean'
+        type: 'string'
       }
     },
-    additionalProperties: false
+    type: 'object'
   }
 };
 
@@ -33,13 +33,14 @@ const MODE_MIN = (exports.MODE_MIN = 'min');
 const MODE_MAX = (exports.MODE_MAX = 'max');
 
 const hrMap = {
-  [MODE_MEAN]: 'Mean',
-  [MODE_MIN]: 'Minimum',
+  [MODE_ALL]: 'Report',
   [MODE_MAX]: 'Maximum',
-  [MODE_ALL]: 'Report'
+  [MODE_MEAN]: 'Mean',
+  [MODE_MIN]: 'Minimum'
 };
 
 const computations = {
+  [MODE_MAX]: usages => usages.reduce((acc, value) => Math.max(acc, value), 0),
   [MODE_MEAN]: usages =>
     usages.reduce(
       (acc, value, i, arr) =>
@@ -47,40 +48,47 @@ const computations = {
       0
     ),
   [MODE_MIN]: usages =>
-    usages.reduce((acc, value) => Math.min(acc, value), Infinity),
-  [MODE_MAX]: usages => usages.reduce((acc, value) => Math.max(acc, value), 0)
+    usages.reduce((acc, value) => Math.min(acc, value), Infinity)
 };
 
 const withinRange = (min, max, usage) => usage >= min && usage <= max;
 
-const ok = ({mode, min, max}, usage) => {
+const ok = ({max, min, mode}, usage) => {
   return {
-    message: `${hrMap[mode]} memory usage percent (${usage}%) is within the allowed range ${min}-${max}%`,
     data: {
-      mode,
-      usage,
+      max,
       min,
-      max
+      mode,
+      usage
     },
+    message: `${hrMap[mode]} memory usage percent (${usage}%) is within the allowed range ${min}-${max}%`,
     severity: 'info'
   };
 };
 
-const fail = ({mode, min, max}, usage) => {
+const fail = ({max, min, mode}, usage) => {
   return {
-    message: `${hrMap[mode]} memory usage percent (${usage}%) is outside the allowed range ${min}-${max}%`,
     data: {
-      mode,
-      usage,
+      max,
       min,
-      max
-    }
+      mode,
+      usage
+    },
+    message: `${hrMap[mode]} memory usage percent (${usage}%) is outside the allowed range ${min}-${max}%`
   };
 };
 
-exports.inspect = ({min, max, mode} = {}) => {
+exports.inspect = ({max, min, mode} = {}) => {
   const usages = [];
   return {
+    complete() {
+      if (mode !== MODE_ALL) {
+        const usage = computations[mode](usages);
+        return withinRange(min, max, usage)
+          ? ok({max, min, mode}, usage)
+          : fail({max, min, mode}, usage);
+      }
+    },
     next(context) {
       const usage = parseFloat(
         (
@@ -91,18 +99,10 @@ exports.inspect = ({min, max, mode} = {}) => {
       );
       if (mode === MODE_ALL) {
         return withinRange(min, max, usage)
-          ? ok({min, max, mode}, usage)
-          : fail({min, max, mode}, usage);
+          ? ok({max, min, mode}, usage)
+          : fail({max, min, mode}, usage);
       } else {
         usages.push(usage);
-      }
-    },
-    complete() {
-      if (mode !== MODE_ALL) {
-        const usage = computations[mode](usages);
-        return withinRange(min, max, usage)
-          ? ok({min, max, mode}, usage)
-          : fail({min, max, mode}, usage);
       }
     }
   };

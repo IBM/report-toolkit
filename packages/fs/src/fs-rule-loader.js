@@ -9,9 +9,9 @@ const readdir = bindNodeCallback(readdirNodeback);
 const toRuleDefinitionFromFilepath = (extension = '.js') => observable =>
   observable.pipe(
     map(filepath => ({
-      ruleDef: require(filepath),
       filepath,
-      id: basename(filepath, extension)
+      id: basename(filepath, extension),
+      ruleDef: require(filepath)
     }))
   );
 

@@ -7,7 +7,7 @@ describe('@gnostic/formatters:json', function() {
     describe('toJson()', function() {
       it('should parse a JS object and return JSON', function() {
         return expect(
-          of({foo: 1, bar: 2, baz: 3}, {foo: 4, bar: 5, baz: 6}).pipe(toJson()),
+          of({bar: 2, baz: 3, foo: 1}, {bar: 5, baz: 6, foo: 4}).pipe(toJson()),
           'to complete with value',
           '[{"foo":1,"bar":2,"baz":3},{"foo":4,"bar":5,"baz":6}]'
         );
@@ -16,7 +16,7 @@ describe('@gnostic/formatters:json', function() {
       describe('when "pretty" option enabled', function() {
         it('should parse a JS object and return pretty JSON', function() {
           return expect(
-            of({foo: 1, bar: 2, baz: 3}, {foo: 4, bar: 5, baz: 6}).pipe(
+            of({bar: 2, baz: 3, foo: 1}, {bar: 5, baz: 6, foo: 4}).pipe(
               toJson({pretty: true})
             ),
             'to complete with value',

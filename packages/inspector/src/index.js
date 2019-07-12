@@ -5,8 +5,8 @@ const {filter, map, mergeMap} = observable;
 
 const SEVERITIES = {
   [ERROR]: 30,
-  [WARNING]: 20,
-  [INFO]: 10
+  [INFO]: 10,
+  [WARNING]: 20
 };
 
 export const BUILTIN_RULES_DIR = 'rules';

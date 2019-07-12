@@ -26,15 +26,15 @@ export const desc = 'Inspect diagnostic report JSON against rules';
 export const builder = yargs =>
   yargs
     .positional('file', {
-      type: 'array',
-      coerce: v => (_.isArray(v) ? v : [v])
+      coerce: v => (_.isArray(v) ? v : [v]),
+      type: 'array'
     })
     .options({
       severity: {
         choices: [INFO, WARNING, ERROR],
+        default: ERROR,
         description: 'Minimum severity level for messages',
-        group: GROUPS.FILTER,
-        default: ERROR
+        group: GROUPS.FILTER
       },
       ...OPTIONS.OUTPUT
     });
@@ -84,12 +84,12 @@ export const handler = argv => {
             widthPct: 50
           }
         ],
+        outputFooter: t =>
+          fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`),
+        outputHeader: 'Diagnostic Report Inspection',
         pretty,
         truncateValues,
-        wrapValues,
-        outputHeader: 'Diagnostic Report Inspection',
-        outputFooter: t =>
-          fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`)
+        wrapValues
       })
     )
     .subscribe(console.log);

@@ -23,24 +23,24 @@ export const builder = yargs =>
   yargs
     .options({
       field: {
-        type: 'array',
-        requiresArg: true,
+        defaultDescription: '(all numeric fields)',
         description:
           'Filter on field by keypath (e.g., "javascriptHeap.totalMemory")',
-        defaultDescription: '(all numeric fields)',
-        group: GROUPS.FILTER
+        group: GROUPS.FILTER,
+        requiresArg: true,
+        type: 'array'
       },
       ...OPTIONS.OUTPUT,
       format: {
         choices: ALLOWED_FORMATS,
+        default: FORMAT_TABLE,
         description: 'Output format',
-        group: GROUPS.OUTPUT,
-        default: FORMAT_TABLE
+        group: GROUPS.OUTPUT
       }
     })
     .positional('file', {
-      type: 'array',
-      coerce: v => (_.isArray(v) ? v : [v])
+      coerce: v => (_.isArray(v) ? v : [v]),
+      type: 'array'
     })
     .positional('transform', {
       choices: TRANSFORMER_NUMERIC
@@ -85,8 +85,8 @@ export const handler = argv => {
             )
           }
         ],
-        pretty,
         outputHeader: 'Transformation Result',
+        pretty,
         truncateValues,
         wrapValues
       })
