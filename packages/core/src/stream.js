@@ -22,8 +22,8 @@ const {
   mergeMap,
   of,
   pipeIf,
-  share,
   sort,
+  switchMapTo,
   take,
   throwGnosticError,
   toArray,
@@ -62,34 +62,20 @@ export const diff = (reports, opts = {}) => {
   );
 };
 
-export const toInspection = (reports, opts = {}) => {
-  const {
-    disableSort,
-    severity,
-    showSecretsUnsafe,
-    sortDirection,
-    sortField
-  } = _.defaults(DEFAULT_LOAD_REPORT_OPTIONS, opts);
-  const multicastReports = defer(() =>
-    reports.pipe(
-      toReport({
-        disableSort,
-        showSecretsUnsafe,
-        sortDirection,
-        sortField
-      }),
-      share()
-    )
-  );
-  return ruleConfigs =>
-    defer(() =>
-      isObservable(reports)
-        ? ruleConfigs.pipe(inspectReports(multicastReports, {severity}))
-        : throwGnosticError(
-            GNOSTIC_ERR_INVALID_PARAMETER,
-            'inspect() requires an Observable of reports'
+export const toInspection = (reports, opts = DEFAULT_LOAD_REPORT_OPTIONS) => {
+  const {severity} = opts;
+
+  return isObservable(reports)
+    ? ruleConfigs => ruleConfigs.pipe(inspectReports(reports, {severity}))
+    : ruleConfigs =>
+        ruleConfigs.pipe(
+          switchMapTo(
+            throwGnosticError(
+              GNOSTIC_ERR_INVALID_PARAMETER,
+              'Parameter to toInspection() must be of type Observable<Report>'
+            )
           )
-    );
+        );
 };
 
 export const inspect = (reports, rules, config, {severity} = {}) =>
@@ -113,8 +99,8 @@ export const toReportFromObject = (opts = {}) => {
             : {rawReport: redact(obj)}
         )
       ),
-      map(({filepath, rawReport}) => createReport(rawReport, filepath)),
-      pipeIf(!disableSort, sort(`rawReport.${sortField}`, sortDirection))
+      pipeIf(!disableSort, sort(`rawReport.${sortField}`, sortDirection)),
+      map(({filepath, rawReport}) => createReport(rawReport, filepath))
     );
 };
 

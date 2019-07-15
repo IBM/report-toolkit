@@ -8,6 +8,7 @@ import {
 } from '@gnostic/common';
 
 import {AJV} from './ajv.js';
+import {createMessage} from './message.js';
 import {createRuleConfig} from './rule-config.js';
 
 const {WARNING} = constants;
@@ -20,14 +21,15 @@ const {
 const {
   catchError,
   concat,
+  concatMap,
+  defer,
   filter,
   from,
   fromAny,
   map,
   mergeMap,
   of,
-  pluck,
-  single,
+  tap,
   throwError
 } = observable;
 const {kRuleFilepath, kRuleId, kRuleInspect, kRuleMeta} = symbols;
@@ -35,25 +37,10 @@ const {kRuleFilepath, kRuleId, kRuleInspect, kRuleMeta} = symbols;
 const debug = createDebugger('inspector', 'rule');
 
 /**
- * Removes falsy values, empty arrays and objects from a `Message`.
- * Does not remove `Error` objects (e.g., `originalError`)
- */
-const compactMessage = _.omitBy(_.overEvery([_.negate(_.isError), _.isEmpty]));
-
-/**
  * @typedef {Object} RuleDefinition
  * @property {Object} meta - (schema for `meta` prop)
  * @property {Function} inspect - Async function which receives `Context` object
  * and optional configuration
- */
-
-/**
- * @typedef {Object} Message
- * @property {string} message - Message text
- * @property {?*} data - Optional extra data
- * @property {string} severity - Message severity
- * @property {?string} filepath - Filepath to report (if any)
- * @property {string} id - Rule ID
  */
 
 /**
@@ -200,105 +187,89 @@ export class Rule {
    * `complete`.
    * 1. Normalize the result of the `inspect()` so we can make assumptions about
    *    the shape of the returned value.
-   * 2. For each `Report` (`context`), run the `next` handler as if it returned
-   *    a `Promise`. This handler is passed the `context`, and any `Error`s
+   * 2. For each `Report` (`report`), run the `next` handler as if it returned
+   *    a `Promise`. This handler is passed the `report`, and any `Error`s
    *    thrown are trapped. The handler may return a string ("message"), a
    *    partial `Message` object, `Array` thereof, or a `Promise` resolving to
    *    any of that stuff, or just `undefined` in the case of "nothing to
    *    mention"
-   * 3. Return values are correlated with the filepath of the context. Note that
+   * 3. Return values are correlated with the filepath of the report. Note that
    *    `Report` objects may not *have* a filepath if they were not loaded from
    *    file.
    * 4. Once all `Report`s have passed through the `next` handler, call the
-   *    `complete` handler.  It receives no `context`, and can be used in tandem
+   *    `complete` handler.  It receives no `report`, and can be used in tandem
    *    with `next` to perform aggregation. Supports the same return values as
    *    `next`
    * 5. Finally, filter out empty/falsy partial `Message`s (e.g., those without
    *    actual `string` `message` props), and normalize the `Message` by adding
    *    relevant metadata (`Rule` ID, user-supplied config used, default
    *    severity, etc.)
-   * @param {Observable<Report>} contexts - Report objects
+   * @param {Observable<Report>} reports - Report objects
    * @param {Object} [config] - Optional rule-specific config
    * @returns {Observable<Message>}
    */
-  inspect({contexts, config = {}}) {
+  inspect({reports, config = {}}) {
     return from(this.handlers(config)).pipe(
       Rule.normalizeHandler(),
       mergeMap(handler => {
-        // for this handler, the set of contexts that threw an error
-        // when the handler ran.
-        // these errors are *not* inspection results, but rather expected
-        // or uncaught exceptions (or rejections) thrown out of the handler code.
-        const errored = new Set();
-        const next = async context => handler.next(context);
+        // smite Zalgo by normalizing the return values to Promises
+        const next = async report => handler.next(report);
         const complete = async () => handler.complete();
+
+        // the intent here is to provide the user filepath information
+        // whenever possible. in the case of Rules using the "complete"
+        // handler, they may--but not always--be generating a message based
+        // on the aggregate of several reports. in that case, we cannot
+        // cross-reference a single filepath. however, if a Rule _throws_
+        // when inspecting a filepath, we can consider the aggregate to contain
+        // one less file, because the Rule cannot process the file further.
+        // ultimately, if the count of non-error-throwing filepaths is equal to
+        // one (1), we only have a single report file ("aggregated" or not),
+        // and can then cross-reference it when providing output to the user.
+        const nonThrowingReportFilepaths = [];
+        const id = this.id;
         return concat(
-          contexts.pipe(
-            mergeMap(context =>
-              fromAny(next(context)).pipe(
+          reports.pipe(
+            tap(report => {
+              if (report.filepath) {
+                nonThrowingReportFilepaths.push(report.filepath);
+              }
+            }),
+            concatMap(report =>
+              fromAny(next(report)).pipe(
                 catchError(err => {
-                  errored.add(context.filepath);
+                  nonThrowingReportFilepaths.pop();
                   return throwError(err);
                 }),
                 catchHandlerError(),
-                map(message => [message, context.filepath])
+                map(message =>
+                  createMessage(message, {
+                    config,
+                    filepath: report.filepath,
+                    id
+                  })
+                )
               )
             )
           ),
-
-          // if we only have a single context *which has not errored*, use its
-          // filepath, otherwise emit "(multiple files)" for the `filepath`.
-          // single() returns `undefined` if all contexts have errors, and it
-          // throws if multiple contexts *don't* have errors; we have to account
-          // for both.
-          contexts.pipe(
-            single(context => !errored.has(context.filepath)),
-            map(v => (_.isUndefined(v) ? {filepath: '(multiple files)'} : v)),
-            catchError(() => of({filepath: '(multiple files)'})),
-            pluck('filepath'),
-            mergeMap(filepath =>
-              fromAny(complete()).pipe(
-                catchHandlerError(),
-                map(message => [message, filepath])
-              )
-            )
+          defer(() => fromAny(complete())).pipe(
+            catchHandlerError(),
+            map(message => {
+              const isAggregate = nonThrowingReportFilepaths.length > 1;
+              // this will be ignored by Message if the above is true.
+              const filepath = nonThrowingReportFilepaths.shift();
+              return createMessage(message, {
+                config,
+                filepath,
+                id,
+                isAggregate
+              });
+            })
           )
         );
       }),
-      filter(([message]) => message),
-      this.normalizeMessage(config)
+      filter(message => message.isNonEmpty())
     );
-  }
-
-  /**
-   * Operator which normalizes a `Message` and adds metadata to it.
-   * @param {Object} [config] - User-supplied config, if any
-   */
-  normalizeMessage(config) {
-    return observable =>
-      observable.pipe(
-        map(([msg, filepath]) => {
-          let data, severity, originalError, message;
-          if (_.isObject(msg)) {
-            data = msg.data;
-            severity = msg.severity;
-            originalError = msg.originalError;
-            message = msg.message;
-          } else {
-            message = msg;
-          }
-          message = message.toString().trim();
-          return compactMessage({
-            config,
-            data,
-            filepath,
-            id: this.id,
-            message,
-            originalError,
-            severity
-          });
-        })
-      );
   }
 
   /**

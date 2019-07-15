@@ -11,7 +11,7 @@ import {colors, fail, toFormattedString} from '../console-utils.js';
 import {GROUPS, OPTIONS} from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {fromAny} = observable;
+const {fromAny, share} = observable;
 const {toInspection, toReportFromObject, toRuleConfig} = stream;
 
 const BUILTIN_RULES_DIR = join(
@@ -26,7 +26,7 @@ export const desc = 'Inspect diagnostic report JSON against rules';
 export const builder = yargs =>
   yargs
     .positional('file', {
-      coerce: v => (_.isArray(v) ? v : [v]),
+      coerce: _.coerceToArray,
       type: 'array'
     })
     .options({
@@ -53,7 +53,8 @@ export const handler = argv => {
   } = argv;
   const reports = fromAny(filepaths).pipe(
     toObjectFromFilepath({...config.inspect}),
-    toReportFromObject({...config.inspect, showSecretsUnsafe})
+    toReportFromObject({...config.inspect, showSecretsUnsafe}),
+    share()
   );
   fromSearchpathToRuleDefinition(BUILTIN_RULES_DIR)
     .pipe(

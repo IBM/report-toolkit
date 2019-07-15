@@ -56,7 +56,11 @@ const makeConfigs = pkgpath => {
     {
       external: rollupExternalModules,
       input: require.resolve(`${pkgpath}/${pkg.module}`),
-      output: {file: path.join(pkgpath, pkg.main), format: 'cjs'},
+      output: {
+        file: path.join(pkgpath, pkg.main),
+        format: 'cjs',
+        sourcemap: true
+      },
       plugins: [
         resolve({
           preferBuiltins: true

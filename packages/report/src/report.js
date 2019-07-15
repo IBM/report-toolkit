@@ -1,5 +1,8 @@
-import {_, symbols} from '@gnostic/common';
+import {_, constants, createDebugger, symbols} from '@gnostic/common';
+
 const {kReport, kReportFilepath} = symbols;
+const {NO_FILEPATH} = constants;
+const debug = createDebugger('report');
 
 const KNOWN_PROPS = [
   'header',
@@ -14,29 +17,27 @@ const KNOWN_PROPS = [
 ];
 
 export class Report {
-  constructor(report, filepath = '(no filepath)') {
+  constructor(report, filepath = NO_FILEPATH) {
     Object.assign(this, _.pick(KNOWN_PROPS, report));
     this[kReportFilepath] = filepath;
     this[kReport] = true;
+    debug(
+      `created Report generated on ${this.header.dumpEventTime} w/ filepath ${this[kReportFilepath]}`
+    );
   }
 
   get filepath() {
     return this[kReportFilepath];
   }
 
-  static create(report, filepath) {
-    return report[kReport]
-      ? report
-      : Object.freeze(new Report(report, filepath));
+  static create(rawReport, filepath) {
+    return Object.freeze(new Report(rawReport, filepath));
   }
 
   static isReport(value) {
-    return _.isObject(value) && Boolean(value[kReportFilepath]);
+    return _.isObject(value) && _.has(kReportFilepath, value);
   }
 }
 
 export const createReport = Report.create;
-export const createReportWithFilepath = _.curry((filepath, report) =>
-  createReport(report, filepath)
-);
 export const isReport = Report.isReport;

@@ -22,7 +22,7 @@
     "lint": "eslint .",
     "prerelease": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run clean && npm run build",
     "pretest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run build",
-    "test": "mocha",
+    "test": "mocha \"./packages/*/test/**/*.spec.js\"",
     "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint"
   },
   "husky": {

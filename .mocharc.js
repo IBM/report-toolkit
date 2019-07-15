@@ -5,6 +5,5 @@ module.exports = {
   'experimental-report': true,
   'forbid-only': Boolean(process.env.CI),
   'no-warnings': true,
-  require: ['esm', require.resolve('./packages/common/test/setup.js')],
-  spec: './packages/*/test/**/*.spec.js'
+  require: ['esm', require.resolve('./packages/common/test/setup.js')]
 };
