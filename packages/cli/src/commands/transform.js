@@ -1,7 +1,7 @@
 import {_, createDebugPipe, error, observable} from '@gnostic/common';
 import {FORMAT_CSV, FORMAT_JSON, FORMAT_PIPE} from '@gnostic/formatters';
 import {toObjectFromFilepath} from '@gnostic/fs';
-import {TRANSFORMER_NUMERIC, transformers} from '@gnostic/transformers';
+import {constants, transformers} from '@gnostic/transformers';
 import {writeFileSync} from 'fs';
 
 import {colors, toFormattedString} from '../console-utils.js';
@@ -12,7 +12,7 @@ const {fromAny, iif, throwGnosticError} = observable;
 const {GNOSTIC_ERR_INVALID_CLI_OPTION} = error;
 
 const debug = createDebugPipe('cli', 'commands', 'transform');
-
+const {TRANSFORMER_NUMERIC} = constants;
 const ALLOWED_FORMATS = [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE, FORMAT_PIPE];
 
 export const command = 'transform <transformer> <file..>';
@@ -39,11 +39,11 @@ export const builder = yargs =>
       }
     })
     .positional('file', {
-      coerce: v => (_.isArray(v) ? v : [v]),
+      coerce: _.coerceToArray,
       type: 'array'
     })
     .positional('transform', {
-      choices: TRANSFORMER_NUMERIC
+      choices: [TRANSFORMER_NUMERIC]
     });
 
 export const handler = argv => {
