@@ -1,4 +1,4 @@
-import {_} from '@gnostic/common';
+import {_} from '@report-toolkit/common';
 import Ajv from 'ajv';
 
 export const AJV = _.once(

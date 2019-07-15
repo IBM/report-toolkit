@@ -1,7 +1,7 @@
-import REPORT_001 from '@gnostic/common/test/fixture/reports/report-001.json';
-import REPORT_002 from '@gnostic/common/test/fixture/reports/report-002-library-mismatch.json';
+import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
+import REPORT_002 from '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json';
 
-describe('@gnostic/core:promise', function() {
+describe('@report-toolkit/core:promise', function() {
   let sandbox;
   let subject;
 

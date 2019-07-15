@@ -1,5 +1,5 @@
-import {_} from '@gnostic/common';
-import {fromSearchpathToRuleDefinition} from '@gnostic/fs';
+import {_} from '@report-toolkit/common';
+import {fromSearchpathToRuleDefinition} from '@report-toolkit/fs';
 
 import {colors, toFormattedString} from '../console-utils.js';
 import {OPTIONS} from './common.js';

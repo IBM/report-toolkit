@@ -1,4 +1,4 @@
-import {observable} from '@gnostic/common';
+import {observable} from '@report-toolkit/common';
 import stringify from 'fast-safe-stringify';
 
 const {map, toArray} = observable;

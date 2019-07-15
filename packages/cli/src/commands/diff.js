@@ -1,6 +1,11 @@
-import {_, constants, createDebugPipe, observable} from '@gnostic/common';
-import {stream} from '@gnostic/core';
-import {toObjectFromFilepath} from '@gnostic/fs';
+import {
+  _,
+  constants,
+  createDebugPipe,
+  observable
+} from '@report-toolkit/common';
+import {stream} from '@report-toolkit/core';
+import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {colors, toFormattedString} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';

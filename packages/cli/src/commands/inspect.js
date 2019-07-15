@@ -1,9 +1,9 @@
-import {_, constants, observable} from '@gnostic/common';
-import {stream} from '@gnostic/core';
+import {_, constants, observable} from '@report-toolkit/common';
+import {stream} from '@report-toolkit/core';
 import {
   fromSearchpathToRuleDefinition,
   toObjectFromFilepath
-} from '@gnostic/fs';
+} from '@report-toolkit/fs';
 import {join} from 'path';
 import resolvePkg from 'resolve-pkg';
 
@@ -15,7 +15,7 @@ const {fromAny, share} = observable;
 const {toInspection, toReportFromObject, toRuleConfig} = stream;
 
 const BUILTIN_RULES_DIR = join(
-  resolvePkg('@gnostic/rules', {cwd: __dirname}),
+  resolvePkg('@report-toolkit/rules', {cwd: __dirname}),
   'src'
 );
 
@@ -87,7 +87,7 @@ export const handler = argv => {
         ],
         outputFooter: t =>
           fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`),
-        outputHeader: 'Diagnostic Report Inspection',
+        outputHeader: 'diagnostic Report Inspection',
         pretty,
         truncateValues,
         wrapValues

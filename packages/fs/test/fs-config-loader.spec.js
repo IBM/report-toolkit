@@ -1,10 +1,10 @@
-import customConfig from '@gnostic/common/test/fixture/config/custom.config.js';
+import customConfig from '@report-toolkit/common/test/fixture/config/custom.config.js';
 import {join} from 'path';
 
 // import {fromFilesystemToConfig} from '../src/fs-config-loader.js';
 
 const defaultConfig = [
-  'gnostic:recommended',
+  'report-toolkit:recommended',
   {
     rules: {
       'long-timeout': ['on', {timeout: 5000}]
@@ -12,7 +12,7 @@ const defaultConfig = [
   }
 ];
 
-describe('@gnostic/fs:fs-config-loader', function() {
+describe('@report-toolkit/fs:fs-config-loader', function() {
   let sandbox;
 
   beforeEach(function() {

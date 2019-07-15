@@ -63,13 +63,13 @@ typings/
 
 # terminalizer stuff
 *.gif
-gnostic*.yml
+report-toolkit*.yml
 
 # generated reports
 report.*.json
 
 *.disabled
-gnostic_scan-results
+*_scan-results
 
 dist/
 .rollup

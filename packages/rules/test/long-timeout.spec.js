@@ -1,10 +1,10 @@
-import {ERROR} from '@gnostic/common/src/constants.js';
+import {ERROR} from '@report-toolkit/common/src/constants.js';
 
 import {createInspect, getDefaultConfigValue} from './rules-helper.js';
 
 const RULE_PATH = '../src/long-timeout.js';
 
-describe('@gnostic/rules:long-timeout', function() {
+describe('@report-toolkit/rules:long-timeout', function() {
   let inspect;
 
   beforeEach(function() {
@@ -16,7 +16,7 @@ describe('@gnostic/rules:long-timeout', function() {
       it('should not report', function() {
         return expect(
           inspect(
-            '@gnostic/common/test/fixture/reports/report-004-long-timeout-unref.json'
+            '@report-toolkit/common/test/fixture/reports/report-004-long-timeout-unref.json'
           ),
           'not to emit values'
         );
@@ -27,7 +27,7 @@ describe('@gnostic/rules:long-timeout', function() {
       it('should report', function() {
         return expect(
           inspect(
-            '@gnostic/common/test/fixture/reports/report-003-long-timeout.json'
+            '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json'
           ),
           'to complete with value satisfying',
           {
@@ -45,7 +45,7 @@ describe('@gnostic/rules:long-timeout', function() {
       it('should not report', function() {
         return expect(
           inspect(
-            '@gnostic/common/test/fixture/reports/report-007-long-timeout-expired.json'
+            '@report-toolkit/common/test/fixture/reports/report-007-long-timeout-expired.json'
           ),
           'not to emit values'
         );
@@ -61,7 +61,7 @@ describe('@gnostic/rules:long-timeout', function() {
         it('should report', function() {
           return expect(
             inspect(
-              '@gnostic/common/test/fixture/reports/report-003-long-timeout.json'
+              '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json'
             ),
             'to complete with value satisfying',
             {
@@ -82,7 +82,7 @@ describe('@gnostic/rules:long-timeout', function() {
       it('should apply the default value', function() {
         return expect(
           inspect(
-            '@gnostic/common/test/fixture/reports/report-003-long-timeout.json'
+            '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json'
           ),
           'to complete with value satisfying',
           {

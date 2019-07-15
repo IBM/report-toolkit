@@ -1,8 +1,8 @@
-import {_} from '@gnostic/common';
+import {_} from '@report-toolkit/common';
 
 import {RuleConfig} from '../src/rule-config.js';
 
-describe('@gnostic/inspector:rule-config', function() {
+describe('@report-toolkit/inspector:rule-config', function() {
   let sandbox;
 
   beforeEach(function() {

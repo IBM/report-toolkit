@@ -1,4 +1,4 @@
-import {_, observable} from '@gnostic/common';
+import {_, observable} from '@report-toolkit/common';
 import CLITable3 from 'cli-table3';
 import wrapAnsi from 'wrap-ansi';
 
@@ -44,7 +44,7 @@ const withHeader = _.curry((header, value) => {
   header = constantValue(header);
   return (
     colors.grey('[') +
-    colors.cyan().bold('gnostic') +
+    colors.cyan().bold('report-toolkit') +
     ' ' +
     colors.cyan(`v${version}`) +
     colors.grey('] ') +

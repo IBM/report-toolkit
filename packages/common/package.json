@@ -1,9 +1,9 @@
 {
-  "name": "@gnostic/common",
+  "name": "@report-toolkit/common",
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "browser": "dist/gnostic-common.umd.js",
+  "browser": "dist/report-toolkit-common.umd.js",
   "dependencies": {
     "debug": "^4.1.1",
     "lodash": "^4.17.11",
@@ -20,7 +20,7 @@
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "dist/gnostic-common.cjs.js",
+  "main": "dist/report-toolkit-common.cjs.js",
   "module": "src/index.js",
-  "repository": "ibm/gnostic.git"
+  "repository": "ibm/report-toolkit.git"
 }

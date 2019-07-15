@@ -1,14 +1,14 @@
-import {_, error} from '@gnostic/common';
+import {_, error} from '@report-toolkit/common';
 
 import {AJV} from '../src/ajv.js';
 import {Rule} from '../src/rule.js';
 
 const {
-  GNOSTIC_ERR_INVALID_RULE_CONFIG,
-  GNOSTIC_ERR_INVALID_RULE_DEFINITION
+  REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
+  REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION
 } = error;
 
-describe('@gnostic/inspector:rule', function() {
+describe('@report-toolkit/inspector:rule', function() {
   let sandbox;
   const ajv = AJV();
 
@@ -31,7 +31,7 @@ describe('@gnostic/inspector:rule', function() {
           expect(
             () => new Rule({}),
             'to throw with code',
-            GNOSTIC_ERR_INVALID_RULE_DEFINITION
+            REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION
           );
         });
       });
@@ -142,7 +142,7 @@ describe('@gnostic/inspector:rule', function() {
             expect(
               () => rule.validate({foo: 'baz'}),
               'to throw with code',
-              GNOSTIC_ERR_INVALID_RULE_CONFIG
+              REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG
             );
           });
         });

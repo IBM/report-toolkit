@@ -1,11 +1,11 @@
 {
-  "name": "@gnostic/config",
+  "name": "@report-toolkit/config",
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "browser": "dist/gnostic-config.umd.js",
+  "browser": "dist/report-toolkit-config.umd.js",
   "dependencies": {
-    "@gnostic/common": "^0.0.0"
+    "@report-toolkit/common": "^0.0.0"
   },
   "engines": {
     "node": ">=8"
@@ -16,7 +16,7 @@
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "dist/gnostic-config.cjs.js",
+  "main": "dist/report-toolkit-config.cjs.js",
   "module": "src/index.js",
-  "repository": "ibm/gnostic.git"
+  "repository": "ibm/report-toolkit.git"
 }

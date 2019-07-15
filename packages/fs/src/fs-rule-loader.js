@@ -1,4 +1,4 @@
-import {observable} from '@gnostic/common';
+import {observable} from '@report-toolkit/common';
 import {readdir as readdirNodeback} from 'fs';
 import {basename, join} from 'path';
 

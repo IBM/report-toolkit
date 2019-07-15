@@ -1,7 +1,7 @@
-import {_, createDebugPipe, error, observable} from '@gnostic/common';
-import {FORMAT_CSV, FORMAT_JSON, FORMAT_PIPE} from '@gnostic/formatters';
-import {toObjectFromFilepath} from '@gnostic/fs';
-import {constants, transformers} from '@gnostic/transformers';
+import {_, createDebugPipe, error, observable} from '@report-toolkit/common';
+import {FORMAT_CSV, FORMAT_JSON, FORMAT_PIPE} from '@report-toolkit/formatters';
+import {toObjectFromFilepath} from '@report-toolkit/fs';
+import {constants, transformers} from '@report-toolkit/transformers';
 import {writeFileSync} from 'fs';
 
 import {colors, toFormattedString} from '../console-utils.js';
@@ -9,7 +9,7 @@ import {FORMAT_TABLE} from '../table-formatter.js';
 import {GROUPS, OPTIONS} from './common.js';
 
 const {fromAny, iif, throwGnosticError} = observable;
-const {GNOSTIC_ERR_INVALID_CLI_OPTION} = error;
+const {REPORT_TOOLKIT_ERR_INVALID_CLI_OPTION} = error;
 
 const debug = createDebugPipe('cli', 'commands', 'transform');
 const {TRANSFORMER_NUMERIC} = constants;
@@ -92,7 +92,7 @@ export const handler = argv => {
       })
     ),
     throwGnosticError(
-      GNOSTIC_ERR_INVALID_CLI_OPTION,
+      REPORT_TOOLKIT_ERR_INVALID_CLI_OPTION,
       `Unknown transform ${transformer}`
     )
   ).subscribe(result => {

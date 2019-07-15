@@ -1,5 +1,5 @@
 exports.config = [
-  'gnostic:recommended',
+  'report-toolkit:recommended',
   {
     name: 'CUSTOM',
     rules: {

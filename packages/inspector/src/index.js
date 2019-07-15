@@ -1,4 +1,9 @@
-import {_, constants, createDebugPipe, observable} from '@gnostic/common';
+import {
+  _,
+  constants,
+  createDebugPipe,
+  observable
+} from '@report-toolkit/common';
 
 const {ERROR, INFO, WARNING} = constants;
 const {filter, mergeMap} = observable;

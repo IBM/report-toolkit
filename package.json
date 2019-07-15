@@ -1,16 +1,16 @@
 {
-  "name": "gnostic-monorepo",
+  "name": "report-toolkit-monorepo",
   "version": "0.0.0",
   "private": true,
   "description": "consumes Node.js diagnostic reports, outputs useful information",
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ibm/gnostic.git"
+    "url": "https://github.com/ibm/report-toolkit.git"
   },
   "license": "Apache-2.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "main": "packages/core/dist/gnostic-core.cjs.js",
+  "main": "packages/core/dist/report-toolkit-core.cjs.js",
   "module": "packages/core/src/index.js",
   "scripts": {
     "bootstrap": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap",

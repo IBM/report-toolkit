@@ -1,4 +1,4 @@
-import {_, observable} from '@gnostic/common';
+import {_, observable} from '@report-toolkit/common';
 const {mergeMap} = observable;
 
 const NUMERIC_FIELDS = [

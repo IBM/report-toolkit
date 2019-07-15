@@ -1,10 +1,10 @@
 {
-  "name": "@gnostic/fs",
+  "name": "@report-toolkit/fs",
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@gnostic/common": "^0.0.0",
+    "@report-toolkit/common": "^0.0.0",
     "cosmiconfig": "^5.2.1"
   },
   "devDependencies": {
@@ -19,7 +19,7 @@
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "dist/gnostic-fs.cjs.js",
+  "main": "dist/report-toolkit-fs.cjs.js",
   "module": "src/index.js",
-  "repository": "ibm/gnostic.git"
+  "repository": "ibm/report-toolkit.git"
 }

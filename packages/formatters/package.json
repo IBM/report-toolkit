@@ -1,11 +1,11 @@
 {
-  "name": "@gnostic/formatters",
+  "name": "@report-toolkit/formatters",
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "browser": "dist/gnostic-formatters.umd.js",
+  "browser": "dist/report-toolkit-formatters.umd.js",
   "dependencies": {
-    "@gnostic/common": "^0.0.0",
+    "@report-toolkit/common": "^0.0.0",
     "fast-safe-stringify": "^2.0.6",
     "json2csv": "^4.5.1"
   },
@@ -18,7 +18,7 @@
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "dist/gnostic-formatters.cjs.js",
+  "main": "dist/report-toolkit-formatters.cjs.js",
   "module": "src/index.js",
-  "repository": "ibm/gnostic.git"
+  "repository": "ibm/report-toolkit.git"
 }

@@ -19,8 +19,8 @@ overrides:
     rules:
       no-restricted-syntax:
         - error
-        - selector: "Program > ExpressionStatement > CallExpression[callee.name=describe] > Literal:not([raw=/^'@gnostic\\u002F\\S+?(:\\S+)*'/])"
-          message: 'Top-level describe() must be of format "@gnostic/<package>" or "@gnostic/<package>:<module>[:module...]"'
+        - selector: "Program > ExpressionStatement > CallExpression[callee.name=describe] > Literal:not([raw=/^'@report-toolkit\\u002F\\S+?(:\\S+)*'/])"
+          message: 'Top-level describe() must be of format "@report-toolkit/<package>" or "@report-toolkit/<package>:<module>[:module...]"'
       monorepo/no-internal-import: 0
 parser: babel-eslint
 plugins:
@@ -37,8 +37,8 @@ rules:
   import/order: 0
   no-restricted-syntax:
     - error
-    - selector: 'CallExpression[callee.name=Symbol] > Literal:not([value=/^gnostic-[a-z-]+$/])'
-      message: 'Symbol() must be called with a kebab-case description beginning with  "gnostic-"'
+    - selector: 'CallExpression[callee.name=Symbol] > Literal:not([value=/^report-toolkit-[a-z-]+$/])'
+      message: 'Symbol() must be called with a kebab-case description beginning with  "report-toolkit-"'
   simple-import-sort/sort: error
   sort-keys-fix/sort-keys-fix: error
   sort-destructure-keys/sort-destructure-keys: error

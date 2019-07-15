@@ -5,14 +5,18 @@ import {
   error,
   observable,
   redact
-} from '@gnostic/common';
-import {diffReports} from '@gnostic/diff';
-import {createRule, createRuleConfig, inspectReports} from '@gnostic/inspector';
-import {createReport, isReport} from '@gnostic/report';
+} from '@report-toolkit/common';
+import {diffReports} from '@report-toolkit/diff';
+import {
+  createRule,
+  createRuleConfig,
+  inspectReports
+} from '@report-toolkit/inspector';
+import {createReport, isReport} from '@report-toolkit/report';
 
 const {DEFAULT_DIFF_OPTIONS, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
 
-const {GNOSTIC_ERR_INVALID_PARAMETER} = error;
+const {REPORT_TOOLKIT_ERR_INVALID_PARAMETER} = error;
 const {
   defer,
   filter,
@@ -71,7 +75,7 @@ export const toInspection = (reports, opts = DEFAULT_LOAD_REPORT_OPTIONS) => {
         ruleConfigs.pipe(
           switchMapTo(
             throwGnosticError(
-              GNOSTIC_ERR_INVALID_PARAMETER,
+              REPORT_TOOLKIT_ERR_INVALID_PARAMETER,
               'Parameter to toInspection() must be of type Observable<Report>'
             )
           )

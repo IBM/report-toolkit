@@ -1,4 +1,4 @@
-import {_, observable} from '@gnostic/common';
+import {_, observable} from '@report-toolkit/common';
 import {AsyncParser} from 'json2csv';
 const {concatMapTo, finalize, fromEvent, map, takeUntil, tap} = observable;
 

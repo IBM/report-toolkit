@@ -1,6 +1,6 @@
-import {observable} from '@gnostic/common';
-import {json} from '@gnostic/formatters';
-import {toObjectFromFilepath} from '@gnostic/fs';
+import {observable} from '@report-toolkit/common';
+import {json} from '@report-toolkit/formatters';
+import {toObjectFromFilepath} from '@report-toolkit/fs';
 import {writeFileSync} from 'fs';
 
 import {OPTIONS} from './common.js';

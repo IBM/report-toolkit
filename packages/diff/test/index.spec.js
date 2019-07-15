@@ -1,11 +1,11 @@
-import {of} from '@gnostic/common/src/observable.js';
-import REPORT_DIFF from '@gnostic/common/test/fixture/diff/report-001-002.json';
-import REPORT_1 from '@gnostic/common/test/fixture/reports/report-001.json';
-import REPORT_2 from '@gnostic/common/test/fixture/reports/report-002-library-mismatch.json';
+import {of} from '@report-toolkit/common/src/observable.js';
+import REPORT_DIFF from '@report-toolkit/common/test/fixture/diff/report-001-002.json';
+import REPORT_1 from '@report-toolkit/common/test/fixture/reports/report-001.json';
+import REPORT_2 from '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json';
 
 import {DIFF_OMIT_PATHS, diffReports} from '../src/index.js';
 
-describe('@gnostic/diff', function() {
+describe('@report-toolkit/diff', function() {
   describe('function', function() {
     describe('diffReports()', function() {
       let source;

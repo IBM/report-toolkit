@@ -1,25 +1,25 @@
-import {ERROR, INFO, WARNING} from '@gnostic/common/src/constants.js';
+import {ERROR, INFO, WARNING} from '@report-toolkit/common/src/constants.js';
 
 import {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN} from '../src/cpu-usage.js';
 import {createInspect} from './rules-helper.js';
 
 const REPORT_001_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-001.json'
+  '@report-toolkit/common/test/fixture/reports/report-001.json'
 );
 const REPORT_002_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-002-library-mismatch.json'
+  '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 const REPORT_006_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-006-cpu-usage.json'
+  '@report-toolkit/common/test/fixture/reports/report-006-cpu-usage.json'
 );
 const REPORT_008_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-008-cpu-usage-no-cpus.json'
+  '@report-toolkit/common/test/fixture/reports/report-008-cpu-usage-no-cpus.json'
 );
 const REPORT_009_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-009-cpu-usage-multicore.json'
+  '@report-toolkit/common/test/fixture/reports/report-009-cpu-usage-multicore.json'
 );
 
-describe('@gnostic/rules:cpu-usage', function() {
+describe('@report-toolkit/rules:cpu-usage', function() {
   let inspect;
 
   describe('when "header.cpus" prop missing', function() {

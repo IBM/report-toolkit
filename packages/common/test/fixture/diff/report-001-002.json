@@ -9,7 +9,7 @@
     "op": "replace",
     "path": "/header/cwd",
     "value": "/Users/boneskull/projects/nodejs/node",
-    "oldValue": "/Users/boneskull/projects/christopher-hiller/gnostic"
+    "oldValue": "/Users/boneskull/projects/christopher-hiller/report-toolkit"
   },
   {
     "op": "replace",
@@ -106,7 +106,7 @@
     "op": "replace",
     "path": "/environmentVariables/PWD",
     "value": "/Users/boneskull/projects/nodejs/node",
-    "oldValue": "/Users/boneskull/projects/christopher-hiller/gnostic"
+    "oldValue": "/Users/boneskull/projects/christopher-hiller/report-toolkit"
   },
   {
     "op": "replace",
@@ -118,7 +118,7 @@
     "op": "replace",
     "path": "/environmentVariables/OLDPWD",
     "value": "/usr/local/opt/openssl",
-    "oldValue": "/Users/boneskull/projects/christopher-hiller/gnostic/test"
+    "oldValue": "/Users/boneskull/projects/christopher-hiller/report-toolkit/test"
   },
   {
     "op": "replace",
@@ -180,7 +180,7 @@
   {
     "op": "add",
     "path": "/sharedObjects/41",
-    "value": "/usr/lib/libDiagnosticMessagesClient.dylib"
+    "value": "/usr/lib/libdiagnosticMessagesClient.dylib"
   },
   {
     "op": "add",

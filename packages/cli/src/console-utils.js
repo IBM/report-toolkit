@@ -1,5 +1,5 @@
-import {_, observable} from '@gnostic/common';
-import * as commonFormatters from '@gnostic/formatters';
+import {_, observable} from '@report-toolkit/common';
+import * as commonFormatters from '@report-toolkit/formatters';
 import colors from 'kleur';
 import {error, success} from 'log-symbols';
 import stripAnsi from 'strip-ansi';

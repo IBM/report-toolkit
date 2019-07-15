@@ -4,7 +4,7 @@ import {REDACTED_TOKEN} from '../src/constants.js';
 import {redact} from '../src/redact.js';
 import {kRedacted} from '../src/symbols.js';
 
-describe('@gnostic/common:redact', function() {
+describe('@report-toolkit/common:redact', function() {
   describe('function', function() {
     describe('redact()', function() {
       describe('when provided an object with secret keys', function() {

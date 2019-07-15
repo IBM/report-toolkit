@@ -1,6 +1,6 @@
-# gnostic
+# report-toolkit
 
-> A toolkit for consumers of Node.js Diagnostic Reports
+> A toolkit for consumers of Node.js diagnostic Reports
 
 ## Features
 
@@ -32,31 +32,31 @@
 ### For CLI Usage
 
 ```shell
-$ npx gnostic --help
+$ npx report-toolkit --help
 ```
 
 or install globally:
 
 ```shell
-$ npm install -g gnostic
-$ gnostic --help
+$ npm install -g report-toolkit
+$ report-toolkit --help
 ```
 
 ### For Usage as a Library
 
 ```shell
-$ npm install gnostic
+$ npm install report-toolkit
 ```
 
 and:
 
 ```js
 // my-app.js
-const {inspect} = require('gnostic');
+const {inspect} = require('report-toolkit');
 
 async function main() {
   const report = JSON.parse(process.report.getReport());
-  // configuration automatically loaded from `.gnosticrc.js` in CWD
+  // configuration automatically loaded from `.report-toolkitrc.js` in CWD
   const results = await inspect(report);
   if (results.length) {
     results.forEach(result => {
@@ -71,7 +71,7 @@ async function main() {
 main();
 ```
 
-## About Diagnostic Reports
+## About diagnostic Reports
 
 Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
@@ -90,8 +90,8 @@ Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
 ## Future Ideas & Extension
 
-- gnostic-as-a-service: send reports to a service which returns inspection or diff results
-- Client-side ("in your app") wrapper for report transmission or direct invocation of gnostic
+- report-toolkit-as-a-service: send reports to a service which returns inspection or diff results
+- Client-side ("in your app") wrapper for report transmission or direct invocation of report-toolkit
 - Use CLI or API to trigger report generation from a running `node` process & interpret results; could be real-time
 - Easy cloud deployment & integration
 - "Connectors" for logging, tracing & observability tools

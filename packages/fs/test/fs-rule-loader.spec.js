@@ -4,13 +4,13 @@ import resolvePkg from 'resolve-pkg';
 const SRC_DIR = path.resolve(__dirname, '..', 'src');
 const RULES_DIR = path.join(SRC_DIR, 'rules');
 const FIXTURE_RULES_DIR = path.join(
-  resolvePkg('@gnostic/common', {cwd: __dirname}),
+  resolvePkg('@report-toolkit/common', {cwd: __dirname}),
   'test',
   'fixture',
   'rules'
 );
 
-describe('@gnostic/fs:fs-rule-loader', function() {
+describe('@report-toolkit/fs:fs-rule-loader', function() {
   const FILES = ['foo.js', 'bar.js'];
   let sandbox;
   let subject;

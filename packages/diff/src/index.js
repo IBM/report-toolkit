@@ -1,4 +1,4 @@
-import {_, observable} from '@gnostic/common';
+import {_, observable} from '@report-toolkit/common';
 import ptr from 'json-ptr';
 import {createPatch} from 'rfc6902';
 const {Observable, filter, mergeMap, pipeIf} = observable;

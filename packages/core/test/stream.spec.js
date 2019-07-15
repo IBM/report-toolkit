@@ -1,17 +1,17 @@
-import {ERROR} from '@gnostic/common/src/constants.js';
-import {GNOSTIC_ERR_INVALID_PARAMETER} from '@gnostic/common/src/error.js';
-import {of} from '@gnostic/common/src/observable.js';
-import REPORT_001 from '@gnostic/common/test/fixture/reports/report-001.json';
-import REPORT_002 from '@gnostic/common/test/fixture/reports/report-002-library-mismatch.json';
+import {ERROR} from '@report-toolkit/common/src/constants.js';
+import {REPORT_TOOLKIT_ERR_INVALID_PARAMETER} from '@report-toolkit/common/src/error.js';
+import {of} from '@report-toolkit/common/src/observable.js';
+import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
+import REPORT_002 from '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json';
 
 const REPORT_001_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-001.json'
+  '@report-toolkit/common/test/fixture/reports/report-001.json'
 );
 const REPORT_002_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-002-library-mismatch.json'
+  '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('@gnostic/core:stream', function() {
+describe('@report-toolkit/core:stream', function() {
   let sandbox;
   let subject;
 
@@ -33,7 +33,7 @@ describe('@gnostic/core:stream', function() {
     sandbox = sinon.createSandbox();
 
     subject = proxyquire(require.resolve('../src/stream'), {
-      '@gnostic/inspector': {
+      '@report-toolkit/inspector': {
         inspectReports: sandbox
           .stub()
           .returns(sandbox.stub().returnsObservableOf(msg001, msg002))
@@ -59,14 +59,14 @@ describe('@gnostic/core:stream', function() {
             of({}).pipe(toInspection()),
             'to emit error satisfying',
             {
-              code: GNOSTIC_ERR_INVALID_PARAMETER
+              code: REPORT_TOOLKIT_ERR_INVALID_PARAMETER
             }
           );
         });
       });
 
       describe('when called with an Observable of Reports', function() {
-        it('should delegate to @gnostic/inspector.inspectReports()', function() {
+        it('should delegate to @report-toolkit/inspector.inspectReports()', function() {
           return expect(
             of({}).pipe(toInspection(of(REPORT_001))),
             'to complete with value',
@@ -106,7 +106,8 @@ describe('@gnostic/core:stream', function() {
             value: 4658
           },
           {
-            oldValue: '/Users/boneskull/projects/christopher-hiller/gnostic',
+            oldValue:
+              '/Users/boneskull/projects/christopher-hiller/report-toolkit',
             op: 'replace',
             path: '/header/cwd',
             value: '/Users/boneskull/projects/nodejs/node'
@@ -205,7 +206,8 @@ describe('@gnostic/core:stream', function() {
             value: 'unix2003'
           },
           {
-            oldValue: '/Users/boneskull/projects/christopher-hiller/gnostic',
+            oldValue:
+              '/Users/boneskull/projects/christopher-hiller/report-toolkit',
             op: 'replace',
             path: '/environmentVariables/PWD',
             value: '/Users/boneskull/projects/nodejs/node'
@@ -220,7 +222,7 @@ describe('@gnostic/core:stream', function() {
           },
           {
             oldValue:
-              '/Users/boneskull/projects/christopher-hiller/gnostic/test',
+              '/Users/boneskull/projects/christopher-hiller/report-toolkit/test',
             op: 'replace',
             path: '/environmentVariables/OLDPWD',
             value: '/usr/local/opt/openssl'
@@ -285,7 +287,7 @@ describe('@gnostic/core:stream', function() {
           {
             op: 'add',
             path: '/sharedObjects/41',
-            value: '/usr/lib/libDiagnosticMessagesClient.dylib'
+            value: '/usr/lib/libdiagnosticMessagesClient.dylib'
           },
           {
             op: 'add',

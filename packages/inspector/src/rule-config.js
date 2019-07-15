@@ -1,4 +1,4 @@
-import {_, createDebugger} from '@gnostic/common';
+import {_, createDebugger} from '@report-toolkit/common';
 
 const debug = createDebugger('inspector', 'rule-config');
 const ruleMap = new WeakMap();
@@ -8,7 +8,7 @@ export class RuleConfig {
    *
    * @param {Rule} rule
    * @param {Object} [rawConfig]
-   * @throws GNOSTIC_ERR_INVALID_RULE_CONFIG
+   * @throws REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG
    */
   constructor(rule, rawConfig = {}) {
     ruleMap.set(this, rule);

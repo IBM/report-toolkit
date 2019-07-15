@@ -1,6 +1,6 @@
 import {filterEnabledRules} from '../src/index.js';
 
-describe('@gnostic/config', function() {
+describe('@report-toolkit/config', function() {
   describe('function', function() {
     describe('filterEnabledRules', function() {
       it('should return an array of enabled rule IDs', function() {

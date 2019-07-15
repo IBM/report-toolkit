@@ -1,5 +1,10 @@
-import {_, constants, createDebugger, enableDebugger} from '@gnostic/common';
-import {fromFilesystemToConfig} from '@gnostic/fs';
+import {
+  _,
+  constants,
+  createDebugger,
+  enableDebugger
+} from '@report-toolkit/common';
+import {fromFilesystemToConfig} from '@report-toolkit/fs';
 import yargs from 'yargs/yargs.js';
 
 import {GROUPS} from './commands/common.js';
@@ -22,7 +27,7 @@ const main = () => {
         .demandCommand()
         .options({
           rc: {
-            desc: 'Custom file or directory path to .gnosticrc.js',
+            desc: 'Custom file or directory path to .report-toolkitrc.js',
             normalize: true,
             requiresArg: true,
             type: 'string'

@@ -1,8 +1,14 @@
-import {_, constants, createDebugger, error, observable} from '@gnostic/common';
+import {
+  _,
+  constants,
+  createDebugger,
+  error,
+  observable
+} from '@report-toolkit/common';
 import cosmiconfig from 'cosmiconfig';
 
 const {NAMESPACE} = constants;
-const {GNOSTIC_ERR_MISSING_CONFIG} = error;
+const {REPORT_TOOLKIT_ERR_MISSING_CONFIG} = error;
 const {
   map,
   mapTo,
@@ -71,7 +77,7 @@ export const fromFilesystemToConfig = ({
       _.isEmpty,
       switchMapTo(
         throwGnosticError(
-          GNOSTIC_ERR_MISSING_CONFIG,
+          REPORT_TOOLKIT_ERR_MISSING_CONFIG,
           `No config file found within ${searchPath ||
             'current working directory'}`
         )

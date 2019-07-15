@@ -5,16 +5,16 @@ import {
   error,
   observable,
   symbols
-} from '@gnostic/common';
+} from '@report-toolkit/common';
 
 const {NAMESPACE} = constants;
 const {map, of} = observable;
 const {kFlattenedConfig} = symbols;
 const debug = createDebugger('config');
 const {
-  GNOSTIC_ERR_INVALID_CONFIG,
-  GNOSTIC_ERR_UNKNOWN_BUILTIN_CONFIG,
-  GnosticError
+  GnosticError,
+  REPORT_TOOLKIT_ERR_INVALID_CONFIG,
+  REPORT_TOOLKIT_ERR_UNKNOWN_BUILTIN_CONFIG
 } = error;
 const TRUE_VALUES = new Set(['on', 'yes']);
 const FALSE_VALUES = new Set(['off', 'no']);
@@ -63,7 +63,7 @@ const flattenConfig = (config, configObjects = []) => {
         push(BUILTIN_CONFIGS.get(value));
       } else {
         throw GnosticError.create(
-          GNOSTIC_ERR_UNKNOWN_BUILTIN_CONFIG,
+          REPORT_TOOLKIT_ERR_UNKNOWN_BUILTIN_CONFIG,
           `Unknown builtin config: "${value}"`
         );
       }
@@ -75,7 +75,7 @@ const flattenConfig = (config, configObjects = []) => {
       );
     } else {
       throw GnosticError.create(
-        GNOSTIC_ERR_INVALID_CONFIG,
+        REPORT_TOOLKIT_ERR_INVALID_CONFIG,
         `Invalid config value: "${value}"`
       );
     }

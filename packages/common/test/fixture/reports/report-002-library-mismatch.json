@@ -415,7 +415,7 @@
     "/usr/lib/system/libxpc.dylib",
     "/usr/lib/libobjc.A.dylib",
     "/usr/lib/libc++abi.dylib",
-    "/usr/lib/libDiagnosticMessagesClient.dylib",
+    "/usr/lib/libdiagnosticMessagesClient.dylib",
     "/usr/lib/libicucore.A.dylib",
     "/usr/lib/libz.1.dylib",
     "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",

@@ -5,7 +5,7 @@ import {
   error,
   observable,
   symbols
-} from '@gnostic/common';
+} from '@report-toolkit/common';
 
 import {AJV} from './ajv.js';
 import {createMessage} from './message.js';
@@ -13,10 +13,10 @@ import {createRuleConfig} from './rule-config.js';
 
 const {WARNING} = constants;
 const {
-  GNOSTIC_ERR_INVALID_RULE_CONFIG,
-  GNOSTIC_ERR_INVALID_RULE_DEFINITION,
-  GNOSTIC_ERR_INVALID_SCHEMA,
-  GnosticError
+  GnosticError,
+  REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
+  REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
+  REPORT_TOOLKIT_ERR_INVALID_SCHEMA
 } = error;
 const {
   catchError,
@@ -82,7 +82,7 @@ export class Rule {
 
     if (!_.isFunction(ruleDef.inspect)) {
       throw GnosticError.create(
-        GNOSTIC_ERR_INVALID_RULE_DEFINITION,
+        REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
         `Definition for rule ${ruleDef.id ||
           ruleDef.filepath} must export an "inspect" function`
       );
@@ -145,7 +145,7 @@ export class Rule {
 
     if (ajv.errors) {
       throw GnosticError.create(
-        GNOSTIC_ERR_INVALID_SCHEMA,
+        REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
         `Schema for rule ${this.id} is invalid: ${ajv.errorsText()}`
       );
     }
@@ -158,7 +158,7 @@ export class Rule {
           dataVar: 'config'
         });
         throw GnosticError.create(
-          GNOSTIC_ERR_INVALID_RULE_CONFIG,
+          REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
           `Invalid configuration for rule "${this.id}": ${errors}`,
           {url: this.url}
         );

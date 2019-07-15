@@ -1,1 +1,1 @@
-export * from '@gnostic/core';
+export * from '@report-toolkit/core';

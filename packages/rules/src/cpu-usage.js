@@ -1,4 +1,4 @@
-const {INFO} = require('@gnostic/common').constants;
+const {INFO} = require('@report-toolkit/common').constants;
 
 exports.meta = {
   docs: {

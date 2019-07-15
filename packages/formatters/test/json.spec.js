@@ -1,8 +1,8 @@
-import {of} from '@gnostic/common/src/observable.js';
+import {of} from '@report-toolkit/common/src/observable.js';
 
 import {toJson} from '../src/json.js';
 
-describe('@gnostic/formatters:json', function() {
+describe('@report-toolkit/formatters:json', function() {
   describe('function', function() {
     describe('toJson()', function() {
       it('should parse a JS object and return JSON', function() {

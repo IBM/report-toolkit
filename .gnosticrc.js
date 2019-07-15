@@ -1,5 +1,5 @@
 exports.config = [
-  'gnostic:recommended',
+  'report-toolkit:recommended',
   {
     rules: {
       'long-timeout': ['on', {timeout: 5000}]

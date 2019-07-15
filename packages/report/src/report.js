@@ -1,4 +1,4 @@
-import {_, constants, createDebugger, symbols} from '@gnostic/common';
+import {_, constants, createDebugger, symbols} from '@report-toolkit/common';
 
 const {kReport, kReportFilepath} = symbols;
 const {NO_FILEPATH} = constants;

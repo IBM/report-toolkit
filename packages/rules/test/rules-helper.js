@@ -1,6 +1,9 @@
-import {_, constants, observable} from '@gnostic/common';
-import {stream} from '@gnostic/core';
-import {fromFilepathToRuleDefinition, toObjectFromFilepath} from '@gnostic/fs';
+import {_, constants, observable} from '@report-toolkit/common';
+import {stream} from '@report-toolkit/core';
+import {
+  fromFilepathToRuleDefinition,
+  toObjectFromFilepath
+} from '@report-toolkit/fs';
 
 const {INFO} = constants;
 const {fromAny, map} = observable;

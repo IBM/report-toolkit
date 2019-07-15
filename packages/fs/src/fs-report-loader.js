@@ -1,4 +1,4 @@
-import {createDebugPipe, observable} from '@gnostic/common';
+import {createDebugPipe, observable} from '@report-toolkit/common';
 import {readFile as readFileNodeback} from 'fs';
 const {bindNodeCallback, map, mergeMap, toObjectFromJSON} = observable;
 

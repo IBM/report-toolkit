@@ -1,4 +1,4 @@
-import {_, constants} from '@gnostic/common';
+import {_, constants} from '@report-toolkit/common';
 const {ERROR, MULTIPLE_FILEPATHS} = constants;
 
 export class Message {

@@ -1,8 +1,8 @@
-import {of} from '@gnostic/common/src/observable.js';
+import {of} from '@report-toolkit/common/src/observable.js';
 
 import {toCsv} from '../src/csv.js';
 
-describe('@gnostic/formatters:csv', function() {
+describe('@report-toolkit/formatters:csv', function() {
   describe('function', function() {
     describe('toCsv()', function() {
       it('should parse a JS object into CSV', function() {

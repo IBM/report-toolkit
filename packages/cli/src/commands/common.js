@@ -1,4 +1,4 @@
-import {FORMAT_CSV, FORMAT_JSON} from '@gnostic/formatters';
+import {FORMAT_CSV, FORMAT_JSON} from '@report-toolkit/formatters';
 
 import {FORMAT_TABLE} from '../table-formatter.js';
 

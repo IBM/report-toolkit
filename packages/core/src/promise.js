@@ -1,4 +1,4 @@
-import {observable} from '@gnostic/common';
+import {observable} from '@report-toolkit/common';
 
 import * as stream from './stream.js';
 

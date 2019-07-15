@@ -1,14 +1,14 @@
-import {ERROR} from '@gnostic/common/src/constants.js';
-import {of} from '@gnostic/common/src/observable.js';
-import {createReport} from '@gnostic/report';
+import {ERROR} from '@report-toolkit/common/src/constants.js';
+import {of} from '@report-toolkit/common/src/observable.js';
+import {createReport} from '@report-toolkit/report';
 
 import {inspectReports} from '../src/index.js';
 
 const REPORT_002_FILEPATH = require.resolve(
-  '@gnostic/common/test/fixture/reports/report-002-library-mismatch.json'
+  '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('@gnostic/inspector', function() {
+describe('@report-toolkit/inspector', function() {
   let sandbox;
 
   beforeEach(function() {

@@ -1,11 +1,11 @@
 {
-  "name": "@gnostic/transformers",
+  "name": "@report-toolkit/transformers",
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "browser": "dist/gnostic-transformers.umd.js",
+  "browser": "dist/report-toolkit-transformers.umd.js",
   "dependencies": {
-    "@gnostic/common": "^0.0.0"
+    "@report-toolkit/common": "^0.0.0"
   },
   "engines": {
     "node": ">=8"
@@ -16,7 +16,7 @@
   ],
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "dist/gnostic-transformers.cjs.js",
+  "main": "dist/report-toolkit-transformers.cjs.js",
   "module": "src/index.js",
-  "repository": "ibm/gnostic.git"
+  "repository": "ibm/report-toolkit.git"
 }
