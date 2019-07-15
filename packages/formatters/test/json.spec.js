@@ -7,31 +7,66 @@ describe('@gnostic/formatters:json', function() {
     describe('toJson()', function() {
       it('should parse a JS object and return JSON', function() {
         return expect(
-          of({bar: 2, baz: 3, foo: 1}, {bar: 5, baz: 6, foo: 4}).pipe(toJson()),
+          of(
+            {
+              bar: 2,
+              baz: 3,
+              foo: 1
+            },
+            {
+              bar: 5,
+              baz: 6,
+              foo: 4
+            }
+          ).pipe(toJson()),
           'to complete with value',
-          '[{"foo":1,"bar":2,"baz":3},{"foo":4,"bar":5,"baz":6}]'
+          JSON.stringify([
+            {
+              bar: 2,
+              baz: 3,
+              foo: 1
+            },
+            {
+              bar: 5,
+              baz: 6,
+              foo: 4
+            }
+          ])
         );
       });
 
       describe('when "pretty" option enabled', function() {
         it('should parse a JS object and return pretty JSON', function() {
           return expect(
-            of({bar: 2, baz: 3, foo: 1}, {bar: 5, baz: 6, foo: 4}).pipe(
-              toJson({pretty: true})
-            ),
+            of(
+              {
+                bar: 2,
+                baz: 3,
+                foo: 1
+              },
+              {
+                bar: 5,
+                baz: 6,
+                foo: 4
+              }
+            ).pipe(toJson({pretty: true})),
             'to complete with value',
-            `[
-  {
-    "foo": 1,
-    "bar": 2,
-    "baz": 3
-  },
-  {
-    "foo": 4,
-    "bar": 5,
-    "baz": 6
-  }
-]`
+            JSON.stringify(
+              [
+                {
+                  bar: 2,
+                  baz: 3,
+                  foo: 1
+                },
+                {
+                  bar: 5,
+                  baz: 6,
+                  foo: 4
+                }
+              ],
+              null,
+              2
+            )
           );
         });
       });

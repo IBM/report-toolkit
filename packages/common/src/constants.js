@@ -2,6 +2,8 @@ export const ERROR = 'error';
 export const WARNING = 'warning';
 export const INFO = 'info';
 export const NAMESPACE = 'gnostic';
+export const NO_FILEPATH = '(no filepath)';
+export const MULTIPLE_FILEPATHS = '(multiple files)';
 
 export const DEFAULT_DIFF_OPTIONS = Object.freeze({
   properties: Object.freeze([

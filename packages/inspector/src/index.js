@@ -1,7 +1,8 @@
-import {_, constants, observable} from '@gnostic/common';
+import {_, constants, createDebugPipe, observable} from '@gnostic/common';
 
 const {ERROR, INFO, WARNING} = constants;
-const {filter, map, mergeMap} = observable;
+const {filter, mergeMap} = observable;
+const debug = createDebugPipe('inspector');
 
 const SEVERITIES = {
   [ERROR]: 30,
@@ -24,11 +25,13 @@ export const inspectReports = (
 ) => ruleConfigs =>
   ruleConfigs.pipe(
     mergeMap(ruleConfig => ruleConfig.inspect(reports)),
-    map(message =>
-      _.has('severity', message) ? message : {...message, severity: ERROR}
-    ),
+    debug(msg => `received message ${JSON.stringify(msg)}`),
     filter(
-      message => _.get(message.severity, SEVERITIES) >= SEVERITIES[severity]
+      _.pipe(
+        _.get('severity'),
+        _.get(_.__, SEVERITIES),
+        _.gte(_.__, SEVERITIES[severity])
+      )
     )
   );
 

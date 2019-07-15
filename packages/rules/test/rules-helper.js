@@ -4,7 +4,7 @@ import {fromFilepathToRuleDefinition, toObjectFromFilepath} from '@gnostic/fs';
 
 const {INFO} = constants;
 const {fromAny, map} = observable;
-const {createRule, toInspection} = stream;
+const {createRule, toInspection, toReportFromObject} = stream;
 
 export const createInspect = (ruleFilepath, config = {}) => {
   createRule.cache.clear();
@@ -18,7 +18,8 @@ export const createInspect = (ruleFilepath, config = {}) => {
   return (filepaths, opts = {}) => {
     const reports = fromAny(filepaths).pipe(
       map(require.resolve),
-      toObjectFromFilepath()
+      toObjectFromFilepath(),
+      toReportFromObject()
     );
 
     return ruleConfigs.pipe(toInspection(reports, {severity: INFO, ...opts}));

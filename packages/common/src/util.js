@@ -13,6 +13,7 @@ import flip from 'lodash/fp/flip.js';
 import forEach from 'lodash/fp/forEach.js';
 import get from 'lodash/fp/get.js';
 import getOr from 'lodash/fp/getOr.js';
+import gte from 'lodash/fp/gte.js';
 import has from 'lodash/fp/has.js';
 import identity from 'lodash/fp/identity.js';
 import includes from 'lodash/fp/includes.js';
@@ -40,6 +41,7 @@ import overEvery from 'lodash/fp/overEvery.js';
 import overSome from 'lodash/fp/overSome.js';
 import pick from 'lodash/fp/pick.js';
 import pipe from 'lodash/fp/pipe.js';
+import __ from 'lodash/fp/placeholder.js';
 import reduce from 'lodash/fp/reduce.js';
 import reverse from 'lodash/fp/reverse.js';
 import size from 'lodash/fp/size.js';
@@ -57,6 +59,7 @@ import traverse from 'traverse';
 export const coerceToArray = value => (isArray(value) ? value : [value]);
 
 export const _ = {
+  __,
   clamp,
   concat,
   constant,
@@ -70,6 +73,7 @@ export const _ = {
   forEach,
   get,
   getOr,
+  gte,
   has,
   identity,
   includes,

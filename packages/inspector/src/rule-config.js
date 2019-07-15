@@ -1,6 +1,6 @@
 import {_, createDebugger} from '@gnostic/common';
 
-const debug = createDebugger(module);
+const debug = createDebugger('inspector', 'rule-config');
 const ruleMap = new WeakMap();
 
 export class RuleConfig {
@@ -45,8 +45,8 @@ export class RuleConfig {
     return config;
   }
 
-  inspect(contexts) {
-    return this.rule.inspect({config: this.config, contexts});
+  inspect(reports) {
+    return this.rule.inspect({config: this.config, reports});
   }
 
   static create(rule, rawConfig) {

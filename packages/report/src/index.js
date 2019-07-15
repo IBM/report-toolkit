@@ -1,6 +1,1 @@
-export {
-  Report,
-  createReport,
-  createReportWithFilepath,
-  isReport
-} from './report.js';
+export {Report, createReport, isReport} from './report.js';
