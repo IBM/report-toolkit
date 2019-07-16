@@ -1,6 +1,6 @@
 import {REDACTED_TOKEN} from './constants.js';
 import {kRedacted} from './symbols.js';
-import {_, coerceToArray} from './util.js';
+import {_} from './util.js';
 
 const AWS_STR = '(AWS|aws|Aws)?_?';
 const QUOTE_STR = '("|\')';
@@ -67,7 +67,7 @@ export const redact = (obj, opts = {}) => {
   }
 
   // coerce these to array for easier processing
-  match = coerceToArray(match);
+  match = _.castArray(match);
 
   const secrets = _.uniq([...match, ...SECRETS]);
 

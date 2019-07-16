@@ -26,7 +26,7 @@ export const desc = 'Inspect diagnostic report JSON against rules';
 export const builder = yargs =>
   yargs
     .positional('file', {
-      coerce: _.coerceToArray,
+      coerce: _.castArray,
       type: 'array'
     })
     .options({

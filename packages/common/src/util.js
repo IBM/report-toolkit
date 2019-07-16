@@ -1,5 +1,6 @@
 // there is probably a better way, but I don't know what it is.
 
+import castArray from 'lodash/fp/castArray.js';
 import clamp from 'lodash/fp/clamp.js';
 import concat from 'lodash/fp/concat.js';
 import constant from 'lodash/fp/constant.js';
@@ -56,10 +57,9 @@ import uniq from 'lodash/fp/uniq.js';
 import isPromise from 'p-is-promise';
 import traverse from 'traverse';
 
-export const coerceToArray = value => (isArray(value) ? value : [value]);
-
 export const _ = {
   __,
+  castArray,
   clamp,
   concat,
   constant,

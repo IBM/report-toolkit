@@ -39,7 +39,7 @@ export const builder = yargs =>
       }
     })
     .positional('file', {
-      coerce: _.coerceToArray,
+      coerce: _.castArray,
       type: 'array'
     })
     .positional('transform', {
