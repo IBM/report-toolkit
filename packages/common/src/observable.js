@@ -43,7 +43,7 @@ import {
   toArray
 } from 'rxjs/operators/index.js';
 
-import {GnosticError} from './error.js';
+import {RTkError} from './error.js';
 import {_} from './util.js';
 
 /**
@@ -117,8 +117,8 @@ export const fromAny = value =>
  * @param {string} [opts.url] - URL for more info
  * @returns {import('rxjs').Observable} An Observable emitting a single error
  */
-export const throwGnosticError = (code, message, opts = {}) =>
-  throwError(GnosticError.create(code, message, opts));
+export const throwRTkError = (code, message, opts = {}) =>
+  throwError(RTkError.create(code, message, opts));
 
 /**
  * A simple operator that parses a JSON string into the resulting JS representation.

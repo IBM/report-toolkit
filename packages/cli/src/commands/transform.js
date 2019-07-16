@@ -8,7 +8,7 @@ import {colors, toFormattedString} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';
 import {GROUPS, OPTIONS} from './common.js';
 
-const {fromAny, iif, throwGnosticError} = observable;
+const {fromAny, iif, throwRTkError} = observable;
 const {REPORT_TOOLKIT_ERR_INVALID_CLI_OPTION} = error;
 
 const debug = createDebugPipe('cli', 'commands', 'transform');
@@ -91,7 +91,7 @@ export const handler = argv => {
         wrapValues
       })
     ),
-    throwGnosticError(
+    throwRTkError(
       REPORT_TOOLKIT_ERR_INVALID_CLI_OPTION,
       `Unknown transform ${transformer}`
     )

@@ -12,9 +12,9 @@ const {map, of} = observable;
 const {kFlattenedConfig} = symbols;
 const debug = createDebugger('config');
 const {
-  GnosticError,
   REPORT_TOOLKIT_ERR_INVALID_CONFIG,
-  REPORT_TOOLKIT_ERR_UNKNOWN_BUILTIN_CONFIG
+  REPORT_TOOLKIT_ERR_UNKNOWN_BUILTIN_CONFIG,
+  RTkError
 } = error;
 const TRUE_VALUES = new Set(['on', 'yes']);
 const FALSE_VALUES = new Set(['off', 'no']);
@@ -62,7 +62,7 @@ const flattenConfig = (config, configObjects = []) => {
       if (BUILTIN_CONFIGS.has(value)) {
         push(BUILTIN_CONFIGS.get(value));
       } else {
-        throw GnosticError.create(
+        throw RTkError.create(
           REPORT_TOOLKIT_ERR_UNKNOWN_BUILTIN_CONFIG,
           `Unknown builtin config: "${value}"`
         );
@@ -74,7 +74,7 @@ const flattenConfig = (config, configObjects = []) => {
           : value
       );
     } else {
-      throw GnosticError.create(
+      throw RTkError.create(
         REPORT_TOOLKIT_ERR_INVALID_CONFIG,
         `Invalid config value: "${value}"`
       );

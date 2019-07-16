@@ -17,7 +17,7 @@ const {
   pipeIf,
   switchMapTo,
   tap,
-  throwGnosticError
+  throwRTkError
 } = observable;
 
 const debug = createDebugger('cli', 'loaders', 'config');
@@ -76,7 +76,7 @@ export const fromFilesystemToConfig = ({
     pipeIf(
       _.isEmpty,
       switchMapTo(
-        throwGnosticError(
+        throwRTkError(
           REPORT_TOOLKIT_ERR_MISSING_CONFIG,
           `No config file found within ${searchPath ||
             'current working directory'}`

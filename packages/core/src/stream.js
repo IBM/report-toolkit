@@ -29,7 +29,7 @@ const {
   sort,
   switchMapTo,
   take,
-  throwGnosticError,
+  throwRTkError,
   toArray,
   toObjectFromJSON
 } = observable;
@@ -74,7 +74,7 @@ export const toInspection = (reports, opts = DEFAULT_LOAD_REPORT_OPTIONS) => {
     : ruleConfigs =>
         ruleConfigs.pipe(
           switchMapTo(
-            throwGnosticError(
+            throwRTkError(
               REPORT_TOOLKIT_ERR_INVALID_PARAMETER,
               'Parameter to toInspection() must be of type Observable<Report>'
             )

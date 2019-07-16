@@ -1,4 +1,4 @@
-export class GnosticError extends Error {
+export class RTkError extends Error {
   /**
    * Calls parent class and assigns `code` prop.
    * @param {string} [message] - Error message
@@ -27,7 +27,7 @@ export class GnosticError extends Error {
   }
 
   /**
-   * Create a GnosticError
+   * Create a RTkError
    * @param {string} code - Error code
    * @param {string} message - Error message
    * @param {Object} [opts] - Options
@@ -39,7 +39,7 @@ export class GnosticError extends Error {
     message = '(unknown error)',
     {data, url} = {}
   ) {
-    return new GnosticError(message, code, {data, url});
+    return new RTkError(message, code, {data, url});
   }
 }
 export const REPORT_TOOLKIT_ERR_UNKNOWN_ERROR =
@@ -63,4 +63,4 @@ export const REPORT_TOOLKIT_ERR_MISSING_CONFIG =
 export const REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION =
   'REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION';
 
-export const createGnosticError = GnosticError.create;
+export const createRTkError = RTkError.create;

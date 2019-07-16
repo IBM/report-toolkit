@@ -13,10 +13,10 @@ import {createRuleConfig} from './rule-config.js';
 
 const {WARNING} = constants;
 const {
-  GnosticError,
   REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
   REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
-  REPORT_TOOLKIT_ERR_INVALID_SCHEMA
+  REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
+  RTkError
 } = error;
 const {
   catchError,
@@ -81,7 +81,7 @@ export class Rule {
     ruleDef = Rule.applyDefaults(ruleDef);
 
     if (!_.isFunction(ruleDef.inspect)) {
-      throw GnosticError.create(
+      throw RTkError.create(
         REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
         `Definition for rule ${ruleDef.id ||
           ruleDef.filepath} must export an "inspect" function`
@@ -144,7 +144,7 @@ export class Rule {
     const validate = ajv.compile(schema);
 
     if (ajv.errors) {
-      throw GnosticError.create(
+      throw RTkError.create(
         REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
         `Schema for rule ${this.id} is invalid: ${ajv.errorsText()}`
       );
@@ -157,7 +157,7 @@ export class Rule {
         const errors = ajv.errorsText(validate.errors, {
           dataVar: 'config'
         });
-        throw GnosticError.create(
+        throw RTkError.create(
           REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
           `Invalid configuration for rule "${this.id}": ${errors}`,
           {url: this.url}
