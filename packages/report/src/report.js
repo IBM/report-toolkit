@@ -16,6 +16,10 @@ const KNOWN_PROPS = [
   'sharedObjects'
 ];
 
+/**
+ * Represents a Diagnostic Report
+ * @todo Need to add type defs or a schema or something
+ */
 export class Report {
   constructor(report, filepath = NO_FILEPATH) {
     Object.assign(this, _.pick(KNOWN_PROPS, report));

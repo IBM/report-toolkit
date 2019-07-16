@@ -26,6 +26,14 @@ export class GnosticError extends Error {
     this.url = url;
   }
 
+  /**
+   * Create a GnosticError
+   * @param {string} code - Error code
+   * @param {string} message - Error message
+   * @param {Object} [opts] - Options
+   * @param {any} [opts.data] - Anything
+   * @param {string} [opts.url] - URL for more info
+   */
   static create(
     code = REPORT_TOOLKIT_ERR_UNKNOWN_ERROR,
     message = '(unknown error)',

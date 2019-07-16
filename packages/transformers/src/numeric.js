@@ -1,4 +1,7 @@
+// @ts-check
+
 import {_, observable} from '@report-toolkit/common';
+
 const {mergeMap} = observable;
 
 const NUMERIC_FIELDS = [
@@ -58,11 +61,26 @@ const NUMERIC_FIELDS = [
   'libuv.length'
 ];
 
-export const toNumeric = ({
-  fields: field = NUMERIC_FIELDS
-} = {}) => observable =>
+/**
+ * Transforms a Report into Transform
+ * @param {Object} [opts] - Options
+ * @param {string[]} [opts.fields] - Array of numeric fields we care about; defaults to ALL known numeric fields
+ * @returns {import('rxjs/internal/types').OperatorFunction<import('@report-toolkit/report').Report,{key:string,value:string}>}
+ */
+export const toNumeric = ({fields = NUMERIC_FIELDS} = {}) => observable =>
   observable.pipe(
-    mergeMap(report =>
-      _.map(field => ({key: field, value: _.get(field, report)}), field)
-    )
+    mergeMap(report => {
+      const valueOf = _.pipe(
+        _.propertyOf(report),
+        _.toNumber
+      );
+      const tuple = key => [key, valueOf(key)];
+      const onlyNumbers = ([key, value]) => !_.isNaN(value);
+      const transform = _.pipe(
+        _.map(tuple),
+        _.filter(onlyNumbers),
+        _.map(_.fromPairs)
+      );
+      return transform(fields);
+    })
   );

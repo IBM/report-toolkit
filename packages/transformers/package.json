@@ -5,7 +5,8 @@
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "browser": "dist/report-toolkit-transformers.umd.js",
   "dependencies": {
-    "@report-toolkit/common": "^0.0.0"
+    "@report-toolkit/common": "^0.0.0",
+    "hash.js": "^1.1.7"
   },
   "engines": {
     "node": ">=8"

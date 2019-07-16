@@ -1,3 +1,5 @@
+// @ts-check
+
 import {
   bindNodeCallback,
   combineLatest,
@@ -48,14 +50,31 @@ import {_} from './util.js';
  * Pipes source Observable to one or more Operators if the predicate is truthy.
  * If falsy, just returns the source Observable.
  * @param {Function|any} predicate - If a function, evaluated with the value from the source Observable. Anything else is evaluated when called.
- * @param  {...Operator} operators - One or more RxJS operators to pipe to
- * @returns {Observable}
+ * @param {import('rxjs').OperatorFunction<any,any>} operator - One or more RxJS operators to pipe to
+ * @param {...import('rxjs').OperatorFunction<any,any>} operators - More RxJS operators to pipe to
+ * @returns {import('rxjs').OperatorFunction<any,any>}
  */
-export const pipeIf = (predicate, ...operators) => {
+export const pipeIf = (predicate, operator, ...operators) => {
   predicate = _.isFunction(predicate) ? predicate : _.constant(predicate);
   return observable =>
     observable.pipe(
-      mergeMap(v => (predicate(v) ? of(v).pipe(...operators) : of(v)))
+      mergeMap(v =>
+        predicate(v)
+          ? of(v).pipe(
+              // this can't be how it is, right?
+              operator,
+              operators[0],
+              operators[1],
+              operators[2],
+              operators[3],
+              operators[4],
+              operators[5],
+              operators[6],
+              operators[7],
+              operators[8]
+            )
+          : of(v)
+      )
     );
 };
 
@@ -64,7 +83,7 @@ export const pipeIf = (predicate, ...operators) => {
  * @see https://lodash.com/docs/4.17.11#orderBy
  * @param {string|string[]|Function|Function[]|Object|Object[]} iteratee - Any supported LoDash iteratee or list thereof
  * @param {string|string[]} [direction=asc] - Order in which to sort (`asc` or `desc`) or list thereof, corresponding to each item in `iteratee` (if `iteratee` is a list)
- * @returns {Observable<T>} Note that returning an Array from `mergeMap` fn is handled like calling `from`, so the resulting Observable does *not* emit Arrays.
+ * @returns {import('rxjs').OperatorFunction<any,any>}
  */
 export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
   observable.pipe(
@@ -76,8 +95,9 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
  * Recursively explodes any value, an Array, a Promise, a Promise of Arrays, a
  * Promise of Arrays of Promises, etc., into a single Observable.
  * Returns `EMPTY` if value is undefined.
- * @param {*} value - Probably anything
- * @returns {Observable<*|EMPTY>}
+ * @todo This can probably be done more efficiently using a loop.
+ * @param {any} value - Probably anything
+ * @returns {Observable<any>}
  */
 export const fromAny = value =>
   defer(() =>
@@ -88,11 +108,24 @@ export const fromAny = value =>
       : of(value)
   );
 
+/**
+ * Creates an Observable
+ * @param {string} code - Error code
+ * @param {string} message - Error message
+ * @param {Object} [opts] - Extra info
+ * @param {*} [opts.data] - Extra data
+ * @param {string} [opts.url] - URL for more info
+ * @returns {import('rxjs').Observable} An Observable emitting a single error
+ */
 export const throwGnosticError = (code, message, opts = {}) =>
   throwError(GnosticError.create(code, message, opts));
 
+/**
+ * A simple operator that parses a JSON string into the resulting JS representation.
+ * @returns {import('rxjs').OperatorFunction<string,any>}
+ */
 export const toObjectFromJSON = () => observable =>
-  observable.pipe(map(JSON.parse));
+  observable.pipe(map(_.unary(JSON.parse)));
 
 export {
   bindNodeCallback,
