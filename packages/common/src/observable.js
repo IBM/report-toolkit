@@ -81,8 +81,8 @@ export const pipeIf = (predicate, operator, ...operators) => {
 /**
  * Essentially wraps `_.orderBy()`
  * @see https://lodash.com/docs/4.17.11#orderBy
- * @param {string|string[]|Function|Function[]|Object|Object[]} iteratee - Any supported LoDash iteratee or list thereof
- * @param {string|string[]} [direction=asc] - Order in which to sort (`asc` or `desc`) or list thereof, corresponding to each item in `iteratee` (if `iteratee` is a list)
+ * @param {import('lodash').List<any>} iteratee - Any supported LoDash iteratee or list thereof
+ * @param {import('lodash').Many<boolean|"asc"|"desc">} [direction=asc] - Order in which to sort (`asc` or `desc`) or list thereof, corresponding to each item in `iteratee` (if `iteratee` is a list)
  * @returns {import('rxjs').OperatorFunction<any,any>}
  */
 export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
