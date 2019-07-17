@@ -1,5 +1,6 @@
 import {_, createDebugPipe, observable} from '@report-toolkit/common';
 import * as commonFormatters from '@report-toolkit/formatters';
+import {writeFile as writeFileFs} from 'fs';
 import colors from 'kleur';
 import {error, success} from 'log-symbols';
 import stripAnsi from 'strip-ansi';
@@ -9,7 +10,9 @@ import {table} from './table-formatter.js';
 
 const debug = createDebugPipe('cli', 'console-utils');
 
-const {map, pipeIf} = observable;
+const {bindNodeCallback, iif, map, mergeMap, of, pipeIf, tap} = observable;
+
+const writeFile = bindNodeCallback(writeFileFs);
 
 const formatters = {...commonFormatters, table};
 
@@ -78,6 +81,30 @@ export const toFormattedString = (format, opts = {}) => {
       map(String),
       pipeIf(color === false, map(stripAnsi))
     );
+};
+
+/**
+ * Writes CLI output to file or STDOUT
+ * @todo might want to be moved to commands/common.js
+ * @todo probably emits stuff it shouldn't
+ * @param {string} [filepath] - If present, will write to file
+ */
+export const toOutput = filepath => {
+  return observable => {
+    return observable.pipe(
+      mergeMap(output => {
+        return iif(
+          () => filepath,
+          writeFile(filepath, output),
+          of(output).pipe(
+            tap(res => {
+              console.log(res);
+            })
+          )
+        );
+      })
+    );
+  };
 };
 
 export {colors};
