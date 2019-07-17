@@ -1,11 +1,17 @@
+// @ts-check
+
 import {_} from '@report-toolkit/common';
 
-const DEFAULT_TRANSFORMER_METADATA = Object.freeze({
-  fields: []
-});
+/**
+ * @typedef {"json"|"csv"|"table"} Formatters
+ * @typedef {{label: string, value: string, color?: string|Function}} Field
+ * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {{defaultFormat?: Formatters, fields?: Field[], allowedFormats?: Formatters|Formatters[]}} TransformerOptions
+ */
 
 /**
- * @typedef {{label: string, key: sring}} Field
+ * @template T
+ * @typedef {(...opts: any)=>import('rxjs/internal/types').OperatorFunction<Report,T>} TransformFunction<T>
  */
 
 /**
@@ -17,35 +23,36 @@ const DEFAULT_TRANSFORMER_METADATA = Object.freeze({
  * and delegates them to the `Transformer#transform` function.
  * This allows a reasonable way of attaching metadata to the Transformer
  * while making function contexts and method calls unnecessary.
+ * @template T
  */
-class Transformer extends Function {
+export class Transformer extends Function {
   /**
-   *
-   * @param {Function} transform
-   * @param {Object} [meta]
-   * @param {Field[]} [meta.fields]
+   * Sets defaults and instance props
+   * @param {TransformFunction<T>} transform
+   * @param {TransformerOptions} [opts] - Transformer options
    */
-  constructor(transform, meta = {}) {
+  constructor(transform, {allowedFormats, defaultFormat, fields} = {}) {
     super();
-    meta = _.defaults(DEFAULT_TRANSFORMER_METADATA, meta);
-    this._transform = transform;
-    this._fields = meta.fields;
+    this.transform = transform;
+    this.fields = fields;
+    this.defaultFormat =
+      typeof allowedFormats === 'string' ? allowedFormats : defaultFormat;
+    this.allowedFormats = _.castArray(allowedFormats);
   }
 
   static get [Symbol.species]() {
     return Function;
   }
 
-  get fields() {
-    return this._fields;
-  }
-
-  transform(...args) {
-    return this._transform(...args);
-  }
-
-  static create(transform, fields) {
-    return new Proxy(new Transformer(transform, fields), {
+  /**
+   * Creates a Transformer
+   * @template T
+   * @param {TransformFunction<T>} transform - Transformer function
+   * @param {TransformerOptions} opts - Transformer options
+   * @returns {Transformer<T>}
+   */
+  static create(transform, opts = {}) {
+    return new Proxy(new Transformer(transform, opts), {
       apply(target, thisArg, args) {
         return target.transform(...args);
       }

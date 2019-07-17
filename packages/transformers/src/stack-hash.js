@@ -9,13 +9,29 @@ const {map} = observable;
 const DEFAULT_STRIP_REGEXP = /[0-9]+/g;
 
 /**
- * Given a report, generate a SHA1 hash of the stack trace. Useful
- * when determining whether a stack trace is new or already known.
- * @param {Object} [opts] - Options
- * @param {RegExp|Function|string} [opts.strip] - Strips anything matching this RegExp or string from the `javascriptStack.message` prop.  If function, used as a projector.
- * @returns {import('rxjs/internal/types').OperatorFunction<import('@report-toolkit/report').Report,{dumpEventTime:string,filename?:string,sha1:string,message:string}>}
+ * @typedef {{dumpEventTime:string,filename?:string,sha1:string,message:string}} StackHashResult
+ */
+
+/**
+ * @template T
+ * @typedef {import('./transformer.js').TransformFunction<T>} TransformFunction
+ * @typedef {import('./transformer.js').Transformer} Transformer
+ */
+
+/**
+ * A Transformer which extracts JavaScript stacks from a Report and assigns
+ * unique SHA1 hash identifiers.
+ * @type {Transformer<StackHashResult>}
  */
 export const toStackHash = createTransformer(
+  /**
+   * Given a report, generate a SHA1 hash of the stack trace. Useful when
+   * determining whether a stack trace is new or already known.
+   * @param {Object} [opts] - Options
+   * @param {RegExp|Function|string} [opts.strip] - Strips anything matching
+   * this RegExp or string from the `javascriptStack.message` prop.  If
+   * function, used as a projector.
+   */
   ({strip = DEFAULT_STRIP_REGEXP} = {}) => observable =>
     observable.pipe(
       map(report => {
