@@ -7,7 +7,7 @@ import {
 import {join} from 'path';
 import resolvePkg from 'resolve-pkg';
 
-import {fail, toFormattedString} from '../console-utils.js';
+import {fail, toFormattedString, toOutput} from '../console-utils.js';
 import {GROUPS, OPTIONS} from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
@@ -48,6 +48,7 @@ export const handler = argv => {
     format = 'table',
     pretty = false,
     color,
+    output,
     severity = ERROR,
     showSecretsUnsafe = false
   } = argv;
@@ -85,7 +86,8 @@ export const handler = argv => {
         pretty,
         truncateValues,
         wrapValues
-      })
+      }),
+      toOutput(output)
     )
-    .subscribe(console.log);
+    .subscribe();
 };

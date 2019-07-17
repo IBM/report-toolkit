@@ -2,7 +2,7 @@ import {constants, createDebugPipe, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
-import {toFormattedString} from '../console-utils.js';
+import {toFormattedString, toOutput} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';
 import {GROUPS, OPTIONS} from './common.js';
 
@@ -55,6 +55,7 @@ export const handler = argv => {
     format = FORMAT_TABLE,
     pretty = false,
     color,
+    output,
     showSecretsUnsafe = false
   } = argv;
   of(file1, file2)
@@ -99,7 +100,8 @@ export const handler = argv => {
         pretty,
         truncateValues,
         wrapValues
-      })
+      }),
+      toOutput(output)
     )
-    .subscribe(console.log);
+    .subscribe();
 };
