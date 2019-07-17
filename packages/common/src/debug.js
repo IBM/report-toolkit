@@ -26,9 +26,9 @@ export const createDebugPipe = (...args) => {
   return (fn = _.identity) => observable =>
     observable.pipe(
       tap(value => {
-        const msg = fn(value);
-        if (msg) {
-          debug(msg);
+        const msg = _.castArray(fn(value));
+        if (msg.length) {
+          debug(...msg);
         }
       })
     );
