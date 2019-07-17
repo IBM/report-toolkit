@@ -2,6 +2,8 @@
 
 import {_, observable} from '@report-toolkit/common';
 
+import {createTransformer} from './transformer.js';
+
 const {mergeMap} = observable;
 
 const NUMERIC_FIELDS = [
@@ -67,20 +69,17 @@ const NUMERIC_FIELDS = [
  * @param {string[]} [opts.fields] - Array of numeric fields we care about; defaults to ALL known numeric fields
  * @returns {import('rxjs/internal/types').OperatorFunction<import('@report-toolkit/report').Report,{key:string,value:string}>}
  */
-export const toNumeric = ({fields = NUMERIC_FIELDS} = {}) => observable =>
-  observable.pipe(
-    mergeMap(report => {
-      const valueOf = _.pipe(
-        _.propertyOf(report),
-        _.toNumber
-      );
-      const tuple = key => [key, valueOf(key)];
-      const onlyNumbers = ([key, value]) => !_.isNaN(value);
-      const transform = _.pipe(
-        _.map(tuple),
-        _.filter(onlyNumbers),
-        _.map(_.fromPairs)
-      );
-      return transform(fields);
-    })
-  );
+export const toNumeric = createTransformer(
+  ({fields = NUMERIC_FIELDS} = {}) => observable =>
+    observable.pipe(
+      mergeMap(report => {
+        const tuple = key => [key, _.get(key, report)];
+        const transform = _.pipe(
+          _.map(tuple),
+          _.map(([key, value]) => ({key, value}))
+        );
+        return transform(fields);
+      })
+    ),
+  {fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}]}
+);

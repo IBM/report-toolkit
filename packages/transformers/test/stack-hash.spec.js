@@ -15,15 +15,15 @@ describe('@report-toolkit/transformers:stack-hash', function() {
       {
         dumpEventTime: '2019-04-29T12:31:35Z',
         filename: 'report.20190429.123135.45164.0.001.json',
-        hash: 'a87a1ecedf547e5f223fe47ae4fefb4e86637397',
-        message: 'Error [ERR_SYNTHETIC]: JavaScript Callstack'
+        message: 'Error [ERR_SYNTHETIC]: JavaScript Callstack',
+        sha1: 'a87a1ecedf547e5f223fe47ae4fefb4e86637397'
       }
     );
   });
 
   describe('when the same stack occurs in a different report', function() {
     it('should emit an object containing the same hash', async function() {
-      const {hash} = await of(REPORT_003)
+      const {sha1} = await of(REPORT_003)
         .pipe(toStackHash())
         .toPromise();
       return expect(
@@ -32,8 +32,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         {
           dumpEventTime: '2019-04-16T15:46:19Z',
           filename: 'report.20190416.154619.67845.001.json',
-          hash,
-          message: 'Error [ERR_SYNTHETIC]: JavaScript Callstack'
+          message: 'Error [ERR_SYNTHETIC]: JavaScript Callstack',
+          sha1
         }
       );
     });
@@ -47,8 +47,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         {
           dumpEventTime: '2019-04-29T12:31:35Z',
           filename: 'report.20190429.123135.45164.0.001.json',
-          hash: 'a1c25c242fa4e8b157c79b71224b529d6d922564',
-          message: '[ERR_SYNTHETIC]: JavaScript Callstack'
+          message: '[ERR_SYNTHETIC]: JavaScript Callstack',
+          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564'
         }
       );
     });
@@ -62,8 +62,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         {
           dumpEventTime: '2019-04-29T12:31:35Z',
           filename: 'report.20190429.123135.45164.0.001.json',
-          hash: 'a1c25c242fa4e8b157c79b71224b529d6d922564',
-          message: '[ERR_SYNTHETIC]: JavaScript Callstack'
+          message: '[ERR_SYNTHETIC]: JavaScript Callstack',
+          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564'
         }
       );
     });
@@ -77,8 +77,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         {
           dumpEventTime: '2019-04-29T12:31:35Z',
           filename: 'report.20190429.123135.45164.0.001.json',
-          hash: 'a1c25c242fa4e8b157c79b71224b529d6d922564',
-          message: '[ERR_SYNTHETIC]: JavaScript Callstack'
+          message: '[ERR_SYNTHETIC]: JavaScript Callstack',
+          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564'
         }
       );
     });

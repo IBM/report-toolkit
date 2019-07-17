@@ -6,7 +6,7 @@ import {
 } from '@report-toolkit/transformers';
 import {writeFileSync} from 'fs';
 
-import {colors, toFormattedString} from '../console-utils.js';
+import {toFormattedString} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';
 import {fromFilepathToReport, GROUPS, OPTIONS} from './common.js';
 
@@ -51,7 +51,7 @@ export const builder = yargs =>
 export const handler = argv => {
   const {
     file: filepaths,
-    transformer,
+    transformer: transformerName,
     config,
     truncate: truncateValues = true,
     wrap: wrapValues = false,
@@ -61,36 +61,21 @@ export const handler = argv => {
     output,
     showSecretsUnsafe = false
   } = argv;
-  const transform = transformers[transformer];
+  const transformer = transformers[transformerName];
   iif(
-    () => transform,
+    () => transformer,
     fromFilepathToReport(filepaths, {
       ...config.transform,
       showSecretsUnsafe
     }).pipe(
-      debug(() => `using transformer "${transformer}"`),
-      transform({
+      debug(() => `using transformer "${transformerName}"`),
+      transformer({
         ...config.transform,
-        ..._.getOr({}, `transform.${transformer}`, config)
+        ..._.getOr({}, `transform.${transformerName}`, config)
       }),
       toFormattedString(format, {
         color,
-        fields: [
-          {
-            label: 'Keypath',
-            value: _.pipe(
-              _.get('key'),
-              colors.cyan
-            )
-          },
-          {
-            label: 'Value',
-            value: _.pipe(
-              _.get('value'),
-              colors.magenta
-            )
-          }
-        ],
+        fields: transformer.fields,
         outputHeader: 'Transformation Result',
         pretty,
         truncateValues,
@@ -99,7 +84,7 @@ export const handler = argv => {
     ),
     throwRTkError(
       REPORT_TOOLKIT_ERR_INVALID_CLI_OPTION,
-      `Unknown transform ${transformer}`
+      `Unknown transform ${transformerName}`
     )
   ).subscribe(result => {
     if (output) {

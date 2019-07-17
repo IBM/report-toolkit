@@ -1,10 +1,11 @@
-import {_, observable} from '@report-toolkit/common';
+import {_, createDebugPipe, observable} from '@report-toolkit/common';
 import CLITable3 from 'cli-table3';
 import wrapAnsi from 'wrap-ansi';
 
 import {version} from '../package.json';
 import colors from './colors.js';
 
+const debug = createDebugPipe('cli', 'table-formatter');
 const {concatMap, from, map, pipeIf, reduce} = observable;
 
 const DEFAULT_TABLE_OPTS = {
@@ -112,7 +113,9 @@ export const table = (opts = {}) => {
     table.options.style['padding-left'] - table.options.style['padding-right'];
   return observable =>
     observable.pipe(
+      debug(v => `received data ${JSON.stringify(v)}`),
       map(colValues),
+      debug(v => `creating row ${JSON.stringify(v)}`),
       pipeIf(
         wrapValues,
         map(

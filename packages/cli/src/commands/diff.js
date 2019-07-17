@@ -1,13 +1,8 @@
-import {
-  _,
-  constants,
-  createDebugPipe,
-  observable
-} from '@report-toolkit/common';
+import {constants, createDebugPipe, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
-import {colors, toFormattedString} from '../console-utils.js';
+import {toFormattedString} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';
 import {GROUPS, OPTIONS} from './common.js';
 
@@ -78,23 +73,25 @@ export const handler = argv => {
         color,
         fields: [
           {
+            color: row => OP_COLORS[row.op],
             label: 'Op',
-            value: row => colors[OP_COLORS[row.op]](OP_CODE[row.op]),
+            value: row => OP_CODE[row.op],
             widthPct: 4
           },
           {
+            color: row => OP_COLORS[row.op],
             label: 'Path',
-            value: row => colors[OP_COLORS[row.op]](row.path),
+            value: 'path',
             widthPct: 24
           },
           {
             label: file1,
-            value: _.get('value'),
+            value: 'value',
             widthPct: 36
           },
           {
             label: file2,
-            value: _.get('oldValue'),
+            value: 'oldValue',
             widthPct: 36
           }
         ],

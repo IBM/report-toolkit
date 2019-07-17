@@ -7,7 +7,7 @@ import {
 import {join} from 'path';
 import resolvePkg from 'resolve-pkg';
 
-import {colors, fail, toFormattedString} from '../console-utils.js';
+import {fail, toFormattedString} from '../console-utils.js';
 import {GROUPS, OPTIONS} from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
@@ -65,23 +65,17 @@ export const handler = argv => {
         fields: [
           {
             label: 'File',
-            value: _.pipe(
-              _.get('filepath'),
-              colors.cyan
-            ),
+            value: 'filepath',
             widthPct: 30
           },
           {
             label: 'Rule',
-            value: _.pipe(
-              _.get('id'),
-              colors.magenta
-            ),
+            value: 'id',
             widthPct: 20
           },
           {
             label: 'Message',
-            value: _.get('message'),
+            value: 'message',
             widthPct: 50
           }
         ],
