@@ -1,6 +1,13 @@
+import {observable} from '@report-toolkit/common';
+import {stream} from '@report-toolkit/core';
 import {FORMAT_CSV, FORMAT_JSON} from '@report-toolkit/formatters';
+import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {FORMAT_TABLE} from '../table-formatter.js';
+
+const {toReportFromObject} = stream;
+
+const {fromAny, share} = observable;
 
 export const GROUPS = {
   FILTER: 'Filter:',
@@ -55,3 +62,10 @@ export const OPTIONS = {
     }
   }
 };
+
+export const fromFilepathToReport = (filepaths, opts = {}) =>
+  fromAny(filepaths).pipe(
+    toObjectFromFilepath(opts),
+    toReportFromObject(opts),
+    share()
+  );
