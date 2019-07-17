@@ -1,43 +1,20 @@
 {
   "compilerOptions": {
+    "target": "ES2015",
     "baseUrl": ".",
     "paths": {
-      "@report-toolkit/cli": [
-        "./packages/cli/src/index.js"
-      ],
-      "@report-toolkit/common": [
-        "./packages/common/src/index.js"
-      ],
-      "@report-toolkit/config": [
-        "./packages/config/src/index.js"
-      ],
-      "@report-toolkit/core": [
-        "./packages/core/src/index.js"
-      ],
-      "@report-toolkit/diff": [
-        "./packages/diff/src/index.js"
-      ],
-      "@report-toolkit/formatters": [
-        "./packages/formatters/src/index.js"
-      ],
-      "@report-toolkit/fs": [
-        "./packages/fs/src/index.js"
-      ],
-      "report-toolkit": [
-        "./packages/gnostic/src/index.js"
-      ],
-      "@report-toolkit/inspector": [
-        "./packages/inspector/src/index.js"
-      ],
-      "@report-toolkit/report": [
-        "./packages/report/src/index.js"
-      ],
-      "@report-toolkit/rules": [
-        "./packages/rules/src/index.js"
-      ],
-      "@report-toolkit/transformers": [
-        "./packages/transformers/src/index.js"
-      ]
+      "@report-toolkit/cli": ["./packages/cli/src/index.js"],
+      "@report-toolkit/common": ["./packages/common/src/index.js"],
+      "@report-toolkit/config": ["./packages/config/src/index.js"],
+      "@report-toolkit/core": ["./packages/core/src/index.js"],
+      "@report-toolkit/diff": ["./packages/diff/src/index.js"],
+      "@report-toolkit/formatters": ["./packages/formatters/src/index.js"],
+      "@report-toolkit/fs": ["./packages/fs/src/index.js"],
+      "report-toolkit": ["./packages/gnostic/src/index.js"],
+      "@report-toolkit/inspector": ["./packages/inspector/src/index.js"],
+      "@report-toolkit/report": ["./packages/report/src/index.js"],
+      "@report-toolkit/rules": ["./packages/rules/src/index.js"],
+      "@report-toolkit/transformers": ["./packages/transformers/src/index.js"]
     }
   }
 }
