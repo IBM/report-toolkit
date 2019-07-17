@@ -75,6 +75,7 @@
     "prettier": "^1.18.2",
     "proxyquire": "^2.1.1",
     "readdir-withfiletypes": "^1.0.2",
+    "resolve-pkg": "^2.0.0",
     "rollup": "^1.16.4",
     "rollup-external-modules": "^2.0.0",
     "rollup-plugin-babel": "^4.3.3",
