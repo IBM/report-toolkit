@@ -1,13 +1,13 @@
 import {
   _,
   constants,
-  createDebugger,
+  createDebugPipe,
   error,
   observable
 } from '@report-toolkit/common';
 import cosmiconfig from 'cosmiconfig';
 
-const {NAMESPACE} = constants;
+const {SHORT_NAMESPACE} = constants;
 const {REPORT_TOOLKIT_ERR_MISSING_CONFIG} = error;
 const {
   map,
@@ -16,15 +16,14 @@ const {
   of,
   pipeIf,
   switchMapTo,
-  tap,
   throwRTkError
 } = observable;
 
-const debug = createDebugger('cli', 'loaders', 'config');
+const debug = createDebugPipe('cli', 'loaders', 'config');
 
 const getExplorer = _.memoize(opts =>
   cosmiconfig(
-    NAMESPACE,
+    SHORT_NAMESPACE,
     _.defaultsDeep(
       {
         loaders: {'.js': cosmiconfig.loadJs, noExt: cosmiconfig.loadJs}
@@ -41,11 +40,9 @@ const toConfigFromSearchPath = (opts = {}) => {
       mergeMap(searchpath => explorer.search(searchpath)),
       pipeIf(
         _.isObject,
-        tap(config => {
-          debug(`found config at ${config.filepath}`);
-        })
-      ),
-      map(_.get('config.config'))
+        debug(config => `found config at ${config.filepath}`),
+        map(_.get('config.config'))
+      )
     );
 };
 
@@ -67,9 +64,7 @@ export const fromFilesystemToConfig = ({
     pipeIf(_.isString, toConfigFromFilepath()),
     pipeIf(
       rawConfig => _.isEmpty(rawConfig) && search,
-      tap(() => {
-        debug(`searching in ${searchPath} for config`);
-      }),
+      debug(searchPath => `searching in ${searchPath} for config`),
       mapTo(searchPath),
       toConfigFromSearchPath()
     ),
