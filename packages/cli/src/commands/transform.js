@@ -1,18 +1,20 @@
 import {_, createDebugPipe, error, observable} from '@report-toolkit/common';
 import {FORMAT_CSV, FORMAT_JSON, FORMAT_PIPE} from '@report-toolkit/formatters';
-import {toObjectFromFilepath} from '@report-toolkit/fs';
-import {constants, transformers} from '@report-toolkit/transformers';
+import {
+  constants as transformerNames,
+  transformers
+} from '@report-toolkit/transformers';
 import {writeFileSync} from 'fs';
 
 import {colors, toFormattedString} from '../console-utils.js';
 import {FORMAT_TABLE} from '../table-formatter.js';
-import {GROUPS, OPTIONS} from './common.js';
+import {fromFilepathToReport, GROUPS, OPTIONS} from './common.js';
 
-const {fromAny, iif, throwRTkError} = observable;
+const {iif, throwRTkError} = observable;
+
 const {REPORT_TOOLKIT_ERR_INVALID_CLI_OPTION} = error;
 
 const debug = createDebugPipe('cli', 'commands', 'transform');
-const {TRANSFORMER_NUMERIC} = constants;
 const ALLOWED_FORMATS = [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE, FORMAT_PIPE];
 
 export const command = 'transform <transformer> <file..>';
@@ -43,7 +45,7 @@ export const builder = yargs =>
       type: 'array'
     })
     .positional('transform', {
-      choices: [TRANSFORMER_NUMERIC]
+      choices: Object.keys(transformerNames)
     });
 
 export const handler = argv => {
@@ -51,7 +53,6 @@ export const handler = argv => {
     file: filepaths,
     transformer,
     config,
-    field,
     truncate: truncateValues = true,
     wrap: wrapValues = false,
     format = FORMAT_JSON,
@@ -63,10 +64,15 @@ export const handler = argv => {
   const transform = transformers[transformer];
   iif(
     () => transform,
-    fromAny(filepaths).pipe(
-      toObjectFromFilepath({...config.transform, showSecretsUnsafe}),
-      debug(transformer => `using transformer "${transformer}"`),
-      transform({...config.transform, field}),
+    fromFilepathToReport(filepaths, {
+      ...config.transform,
+      showSecretsUnsafe
+    }).pipe(
+      debug(() => `using transformer "${transformer}"`),
+      transform({
+        ...config.transform,
+        ..._.getOr({}, `transform.${transformer}`, config)
+      }),
       toFormattedString(format, {
         color,
         fields: [

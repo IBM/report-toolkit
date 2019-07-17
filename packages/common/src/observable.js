@@ -43,38 +43,22 @@ import {
   toArray
 } from 'rxjs/operators/index.js';
 
-import {RTkError} from './error.js';
+import {createRTkError} from './error.js';
 import {_} from './util.js';
 
 /**
  * Pipes source Observable to one or more Operators if the predicate is truthy.
  * If falsy, just returns the source Observable.
  * @param {Function|any} predicate - If a function, evaluated with the value from the source Observable. Anything else is evaluated when called.
- * @param {import('rxjs').OperatorFunction<any,any>} operator - One or more RxJS operators to pipe to
  * @param {...import('rxjs').OperatorFunction<any,any>} operators - More RxJS operators to pipe to
  * @returns {import('rxjs').OperatorFunction<any,any>}
  */
-export const pipeIf = (predicate, operator, ...operators) => {
+export const pipeIf = (predicate, ...operators) => {
   predicate = _.isFunction(predicate) ? predicate : _.constant(predicate);
   return observable =>
     observable.pipe(
-      mergeMap(v =>
-        predicate(v)
-          ? of(v).pipe(
-              // this can't be how it is, right?
-              operator,
-              operators[0],
-              operators[1],
-              operators[2],
-              operators[3],
-              operators[4],
-              operators[5],
-              operators[6],
-              operators[7],
-              operators[8]
-            )
-          : of(v)
-      )
+      // @ts-ignore
+      mergeMap(v => (predicate(v) ? of(v).pipe(...operators) : of(v)))
     );
 };
 
@@ -118,7 +102,7 @@ export const fromAny = value =>
  * @returns {import('rxjs').Observable} An Observable emitting a single error
  */
 export const throwRTkError = (code, message, opts = {}) =>
-  throwError(RTkError.create(code, message, opts));
+  throwError(createRTkError(code, message, opts));
 
 /**
  * A simple operator that parses a JSON string into the resulting JS representation.
