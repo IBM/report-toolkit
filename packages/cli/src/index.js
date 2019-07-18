@@ -1,17 +1,20 @@
 import {
   _,
-  constants,
+  constants as commonConstants,
   createDebugger,
   enableDebugger
 } from '@report-toolkit/common';
-import {fromFilesystemToConfig} from '@report-toolkit/fs';
+import {
+  constants as fsConstants,
+  fromFilesystemToConfig
+} from '@report-toolkit/fs';
 import yargs from 'yargs/yargs.js';
 
 import {GROUPS} from './commands/common.js';
 import * as commands from './commands/index.js';
 import {FORMAT_TABLE} from './table-formatter.js';
 
-const {NAMESPACE} = constants;
+const {NAMESPACE} = commonConstants;
 
 const debug = createDebugger('cli', 'main');
 
@@ -26,18 +29,18 @@ const main = () => {
         .scriptName(NAMESPACE)
         .demandCommand()
         .options({
-          rc: {
-            desc: 'Custom file or directory path to .report-toolkitrc.js',
-            normalize: true,
-            requiresArg: true,
-            type: 'string'
-          },
-          verbose: {
-            alias: ['v', 'debug'],
-            desc: 'Enable verbose output',
+          debug: {
+            alias: ['verbose'],
+            desc: 'Enable debug output',
             global: true,
             group: GROUPS.OUTPUT,
             type: 'boolean'
+          },
+          rc: {
+            desc: `Custom file or directory path to ${fsConstants.RC_FILENAME}`,
+            normalize: true,
+            requiresArg: true,
+            type: 'string'
           }
         })
         .wrap(

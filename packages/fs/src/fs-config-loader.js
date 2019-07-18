@@ -1,13 +1,8 @@
-import {
-  _,
-  constants,
-  createDebugPipe,
-  error,
-  observable
-} from '@report-toolkit/common';
+import {_, createDebugPipe, error, observable} from '@report-toolkit/common';
 import cosmiconfig from 'cosmiconfig';
 
-const {SHORT_NAMESPACE} = constants;
+import {RC_NAMESPACE} from './constants.js';
+
 const {REPORT_TOOLKIT_ERR_MISSING_CONFIG} = error;
 const {
   map,
@@ -23,7 +18,7 @@ const debug = createDebugPipe('cli', 'loaders', 'config');
 
 const getExplorer = _.memoize(opts =>
   cosmiconfig(
-    SHORT_NAMESPACE,
+    RC_NAMESPACE,
     _.defaultsDeep(
       {
         loaders: {'.js': cosmiconfig.loadJs, noExt: cosmiconfig.loadJs}
