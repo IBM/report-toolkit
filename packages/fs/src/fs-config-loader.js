@@ -3,7 +3,7 @@ import cosmiconfig from 'cosmiconfig';
 
 import {RC_NAMESPACE} from './constants.js';
 
-const {REPORT_TOOLKIT_ERR_MISSING_CONFIG} = error;
+const {RTKERR_MISSING_CONFIG} = error;
 const {
   map,
   mapTo,
@@ -67,7 +67,7 @@ export const fromFilesystemToConfig = ({
       _.isEmpty,
       switchMapTo(
         throwRTkError(
-          REPORT_TOOLKIT_ERR_MISSING_CONFIG,
+          RTKERR_MISSING_CONFIG,
           `No config file found within ${searchPath ||
             'current working directory'}`
         )

@@ -12,9 +12,8 @@ import yargs from 'yargs/yargs.js';
 
 import {GROUPS} from './commands/common.js';
 import * as commands from './commands/index.js';
-import {FORMAT_TABLE} from './table-formatter.js';
 
-const {NAMESPACE} = commonConstants;
+const {DEFAULT_TRANSFORMER, NAMESPACE} = commonConstants;
 
 const debug = createDebugger('cli', 'main');
 
@@ -58,7 +57,7 @@ const main = () => {
           debug('parsed CLI arguments: %O', argv);
           // any format other than the default "table" will not be in color
           argv.color = _.isUndefined(argv.color)
-            ? argv.format !== FORMAT_TABLE
+            ? argv.format !== DEFAULT_TRANSFORMER
             : argv.color;
 
           argv.config = await fromFilesystemToConfig(argv.rc).toPromise();

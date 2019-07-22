@@ -13,9 +13,9 @@ import {createRuleConfig} from './rule-config.js';
 
 const {WARNING} = constants;
 const {
-  REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
-  REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
-  REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
+  RTKERR_INVALID_RULE_CONFIG,
+  RTKERR_INVALID_RULE_DEFINITION,
+  RTKERR_INVALID_SCHEMA,
   RTkError
 } = error;
 const {
@@ -82,7 +82,7 @@ export class Rule {
 
     if (!_.isFunction(ruleDef.inspect)) {
       throw RTkError.create(
-        REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
+        RTKERR_INVALID_RULE_DEFINITION,
         `Definition for rule ${ruleDef.id ||
           ruleDef.filepath} must export an "inspect" function`
       );
@@ -145,7 +145,7 @@ export class Rule {
 
     if (ajv.errors) {
       throw RTkError.create(
-        REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
+        RTKERR_INVALID_SCHEMA,
         `Schema for rule ${this.id} is invalid: ${ajv.errorsText()}`
       );
     }
@@ -158,7 +158,7 @@ export class Rule {
           dataVar: 'config'
         });
         throw RTkError.create(
-          REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
+          RTKERR_INVALID_RULE_CONFIG,
           `Invalid configuration for rule "${this.id}": ${errors}`,
           {url: this.url}
         );

@@ -2,8 +2,7 @@ import {constants, createDebugPipe, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
-import {toFormattedString, toOutput} from '../console-utils.js';
-import {FORMAT_TABLE} from '../table-formatter.js';
+import {toOutput} from '../console-utils.js';
 import {GROUPS, OPTIONS} from './common.js';
 
 const {toReportDiff, toReportFromObject} = stream;
@@ -46,17 +45,16 @@ export const builder = yargs =>
  */
 export const handler = argv => {
   const {
+    color,
     config,
     file1,
     file2,
-    prop: properties,
-    truncate: truncateValues = true,
-    wrap: wrapValues = false,
-    format = FORMAT_TABLE,
-    pretty = false,
-    color,
     output,
-    showSecretsUnsafe = false
+    pretty = false,
+    prop: properties,
+    showSecretsUnsafe = false,
+    truncate: truncateValues = true,
+    wrap: wrapValues = false
   } = argv;
   of(file1, file2)
     .pipe(
@@ -70,37 +68,37 @@ export const handler = argv => {
       debug(report => `created Report from ${report.filepath}`),
       toReportDiff({...config.diff, properties}),
       debug(result => result && `diff generated for ${file1} : ${file2}`),
-      toFormattedString(format, {
-        color,
-        fields: [
-          {
-            color: row => OP_COLORS[row.op],
-            label: 'Op',
-            value: row => OP_CODE[row.op],
-            widthPct: 4
-          },
-          {
-            color: row => OP_COLORS[row.op],
-            label: 'Path',
-            value: 'path',
-            widthPct: 24
-          },
-          {
-            label: file1,
-            value: 'value',
-            widthPct: 36
-          },
-          {
-            label: file2,
-            value: 'oldValue',
-            widthPct: 36
-          }
-        ],
-        outputHeader: `Diff: ${file1} <=> ${file2}`,
-        pretty,
-        truncateValues,
-        wrapValues
-      }),
+      // toFormattedString('', {
+      //   color,
+      //   fields: [
+      //     {
+      //       color: row => OP_COLORS[row.op],
+      //       label: 'Op',
+      //       value: row => OP_CODE[row.op],
+      //       widthPct: 4
+      //     },
+      //     {
+      //       color: row => OP_COLORS[row.op],
+      //       label: 'Path',
+      //       value: 'path',
+      //       widthPct: 24
+      //     },
+      //     {
+      //       label: file1,
+      //       value: 'value',
+      //       widthPct: 36
+      //     },
+      //     {
+      //       label: file2,
+      //       value: 'oldValue',
+      //       widthPct: 36
+      //     }
+      //   ],
+      //   outputHeader: `Diff: ${file1} <=> ${file2}`,
+      //   pretty,
+      //   truncateValues,
+      //   wrapValues
+      // }),
       toOutput(output)
     )
     .subscribe();

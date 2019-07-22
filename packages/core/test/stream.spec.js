@@ -1,5 +1,5 @@
 import {ERROR} from '@report-toolkit/common/src/constants.js';
-import {REPORT_TOOLKIT_ERR_INVALID_PARAMETER} from '@report-toolkit/common/src/error.js';
+import {RTKERR_INVALID_PARAMETER} from '@report-toolkit/common/src/error.js';
 import {of} from '@report-toolkit/common/src/observable.js';
 import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
 import REPORT_002 from '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json';
@@ -59,7 +59,7 @@ describe('@report-toolkit/core:stream', function() {
             of({}).pipe(toInspection()),
             'to emit error satisfying',
             {
-              code: REPORT_TOOLKIT_ERR_INVALID_PARAMETER
+              code: RTKERR_INVALID_PARAMETER
             }
           );
         });

@@ -10,7 +10,6 @@
     "@report-toolkit/common": "^0.0.0",
     "@report-toolkit/config": "^0.0.0",
     "@report-toolkit/core": "^0.0.0",
-    "@report-toolkit/formatters": "^0.0.0",
     "@report-toolkit/fs": "^0.0.0",
     "@report-toolkit/inspector": "^0.0.0",
     "@report-toolkit/report": "^0.0.0",

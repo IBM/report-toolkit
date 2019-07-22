@@ -16,6 +16,8 @@ export const DEFAULT_DIFF_OPTIONS = Object.freeze({
   showSecretsUnsafe: false
 });
 
+export const DEFAULT_TRANSFORMER = 'table';
+
 export const DEFAULT_LOAD_REPORT_OPTIONS = Object.freeze({
   disableSort: false,
   severity: ERROR,

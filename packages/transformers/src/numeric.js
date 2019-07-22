@@ -1,8 +1,4 @@
-// @ts-check
-
 import {_, observable} from '@report-toolkit/common';
-
-import {createTransformer} from './transformer.js';
 
 const {mergeMap} = observable;
 
@@ -64,22 +60,41 @@ const NUMERIC_FIELDS = [
 ];
 
 /**
+ * @type {TransformerMeta}
+ */
+export const meta = {
+  description: 'Filter on numeric fields',
+  fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}],
+  input: ['report'],
+  name: 'numeric',
+  output: 'object'
+};
+
+/**
  * Transforms a Report into Transform
  * @param {Object} [opts] - Options
  * @param {string[]} [opts.fields] - Array of numeric fields we care about; defaults to ALL known numeric fields
- * @returns {import('rxjs/internal/types').OperatorFunction<import('@report-toolkit/report').Report,{key:string,value:string}>}
+ * @type {TransformFunction<Report,NumericTransformResult>}
  */
-export const toNumeric = createTransformer(
-  ({fields = NUMERIC_FIELDS} = {}) => observable =>
-    observable.pipe(
-      mergeMap(report => {
-        const tuple = key => [key, _.get(key, report)];
-        const transform = _.pipe(
-          _.map(tuple),
-          _.map(([key, value]) => ({key, value}))
-        );
-        return transform(fields);
-      })
-    ),
-  {fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}]}
-);
+export const transform = ({fields = NUMERIC_FIELDS} = {}) => observable =>
+  observable.pipe(
+    mergeMap(report => {
+      const tuple = key => [key, _.get(key, report)];
+      const transform = _.pipe(
+        _.map(tuple),
+        _.map(([key, value]) => ({key, value}))
+      );
+      return transform(fields);
+    })
+  );
+
+/**
+ * @typedef {{key:string,value:string}} NumericTransformResult
+ * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ */
+
+/**
+ * @template T,U
+ * @typedef {import('./transformer.js').TransformFunction<T,U>} TransformFunction
+ */

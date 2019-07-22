@@ -1,9 +1,10 @@
 import {_, createDebugPipe, observable} from '@report-toolkit/common';
 import CLITable3 from 'cli-table3';
+import colors from 'kleur';
 import wrapAnsi from 'wrap-ansi';
 
+// @ts-ignore
 import {version} from '../package.json';
-import colors from './colors.js';
 
 const debug = createDebugPipe('cli', 'table-formatter');
 const {concatMap, from, map, pipeIf, reduce} = observable;
@@ -26,9 +27,18 @@ const DEFAULT_TABLE_OPTS = {
     'top-mid': '',
     'top-right': ''
   },
+  /**
+   * @type {number[]}
+   */
   colWidthPcts: [],
+  /**
+   * @type {Field[]}
+   */
   fields: [],
   style: {
+    /**
+     * @type {object[]}
+     */
     head: []
   },
   wordWrap: true
@@ -39,9 +49,17 @@ const fieldWidthPcts = _.pipe(
   _.map(Number)
 );
 
+/**
+ * @param {(...args: any[]) => string | string} v
+ */
 const constantValue = v => (_.isFunction(v) ? v : _.constant(v));
 
-const withHeader = _.curry((header, value) => {
+/**
+ * @param {(arg: CLITable3.Table) => string | string} header
+ * @param {CLITable3.Table} value
+ * @returns {string}
+ */
+const withHeader = (header, value) => {
   header = constantValue(header);
   return (
     colors.grey('[') +
@@ -53,13 +71,20 @@ const withHeader = _.curry((header, value) => {
     `
 `
   );
-});
-
-const withFooter = _.curry((footer, value) => {
+};
+/**
+ * @param {(arg: CLITable3.Table) => string | string} footer
+ * @param {CLITable3.Table} value
+ * @returns {string}
+ */
+const withFooter = (footer, value) => {
+  /**
+   * @type {(arg: CLITable3.Table) => string}
+   */
   footer = constantValue(footer);
   return `
 ${footer(value)}`;
-});
+};
 
 /**
  * This little nasty accepts a list of field objects with `widthPct`
@@ -68,6 +93,10 @@ ${footer(value)}`;
  * @todo "Infinity" should be a problem
  */
 const normalizeColWidthPcts = _.pipe(
+  /**
+   * @param {Field[]} fields
+   * @returns {number[]}
+   */
   fields => {
     const fieldsCount = _.size(fields);
     const colWidthPcts = fieldWidthPcts(fields);
@@ -78,17 +107,32 @@ const normalizeColWidthPcts = _.pipe(
   _.map(_.clamp(0, 100))
 );
 
+/**
+ *
+ * @param {number} [maxWidth] - Maximum column width
+ * @param {Field[]} [fields] - Field settings
+ * @returns {number[]}
+ */
 const calculateColumnWidths = (maxWidth = 80, fields = []) =>
   _.map(
     pct => Math.floor((pct / 100) * maxWidth),
     normalizeColWidthPcts(fields)
   );
 
+/**
+ * @param {Field[]} fields - Field whose table headers need formatting
+ * @returns {string[]} Formatted headers
+ */
 const formatTableHeaders = _.pipe(
   _.map('label'),
   _.map(colors.underline)
 );
 
+/**
+ *
+ * @param {Object} [opts] - Options
+ * @returns {CLITable3.Table}
+ */
 const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
   const {fields, maxWidth, truncateValues, wrapValues} = opts;
@@ -101,11 +145,29 @@ const createTable = (opts = {}) => {
   });
 };
 
-const colValuesByFields = _.curry((fields, row) =>
-  _.map(_.invokeArgs('value', [row]), fields)
+const colValuesByFields = _.curry(
+  /**
+   * @param {Field[]} fields
+   * @param {object} row
+   * @returns {string[]}
+   */
+  (fields, row) => _.map(_.invokeArgs('value', [row]), fields)
 );
 
-export const table = (opts = {}) => {
+/**
+ * @type {TransformerMeta}
+ */
+export const meta = {
+  description: 'Tabular output',
+  input: ['object'],
+  name: 'table',
+  output: 'string'
+};
+
+/**
+ * @type {TransformFunction<object,string>}
+ */
+export const transform = (opts = {}) => {
   const table = createTable(opts);
   const {fields, outputFooter, outputHeader, wrapValues} = opts;
   const colValues = colValuesByFields(fields);
@@ -113,18 +175,36 @@ export const table = (opts = {}) => {
     table.options.style['padding-left'] - table.options.style['padding-right'];
   return observable =>
     observable.pipe(
-      debug(v => `received data ${JSON.stringify(v)}`),
+      debug(
+        /**
+         * @param {object} value
+         */
+        // @ts-ignore
+        value => [`received data %O`, value]
+      ),
       map(colValues),
-      debug(v => `creating row ${JSON.stringify(v)}`),
+      // @ts-ignore
+      debug(
+        /**
+         * @param {object} value
+         */
+        // @ts-ignore
+        value => [`creating row %O`, value]
+      ),
       pipeIf(
         wrapValues,
         map(
           // this force-wraps the column text
-          _.map((col, idx) =>
-            wrapAnsi(col, table.options.colWidths[idx] - padding, {
-              hard: true,
-              wordWrap: false
-            })
+          _.map(
+            /**
+             * @param {string} col
+             * @param {string | number} idx
+             */
+            (col, idx) =>
+              wrapAnsi(col, table.options.colWidths[idx] - padding, {
+                hard: true,
+                wordWrap: false
+              })
           )
         )
       ),
@@ -135,16 +215,29 @@ export const table = (opts = {}) => {
         return table;
       }, table),
       concatMap(table => {
-        let output = [table];
+        /**
+         * @type {Array<string|CLITable3.Table>}
+         */
+        const output = [table];
         if (outputHeader) {
-          output = [withHeader(outputHeader, table), ...output];
+          output.unshift(withHeader(outputHeader, table));
         }
         if (outputFooter) {
-          output = [...output, withFooter(outputFooter, table)];
+          output.push(withFooter(outputFooter, table));
         }
         return from(output);
-      })
+      }),
+      map(String)
     );
 };
 
-export const FORMAT_TABLE = 'table';
+/**
+ * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('./transformer.js').Field} Field
+ * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ */
+
+/**
+ * @template T,U
+ * @typedef {import('./transformer.js').TransformFunction<T,U>} TransformFunction
+ */

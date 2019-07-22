@@ -7,11 +7,10 @@ import {
 import {join} from 'path';
 import resolvePkg from 'resolve-pkg';
 
-import {fail, toFormattedString, toOutput} from '../console-utils.js';
-import {GROUPS, OPTIONS} from './common.js';
+import {fail, toOutput} from '../console-utils.js';
+import {fromFilepathToReport, GROUPS, OPTIONS} from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {fromAny, share} = observable;
 const {toInspection, toReportFromObject, toRuleConfig} = stream;
 
 const BUILTIN_RULES_DIR = join(
@@ -52,42 +51,51 @@ export const handler = argv => {
     severity = ERROR,
     showSecretsUnsafe = false
   } = argv;
-  const reports = fromAny(filepaths).pipe(
-    toObjectFromFilepath({...config.inspect}),
-    toReportFromObject({...config.inspect, showSecretsUnsafe}),
-    share()
-  );
+  /**
+   * @type {Observable<Report>}
+   */
+  const reports = fromFilepathToReport(filepaths, {
+    ...config.inspect,
+    showSecretsUnsafe
+  });
   fromSearchpathToRuleDefinition(BUILTIN_RULES_DIR)
     .pipe(
       toRuleConfig(config),
       toInspection(reports, {severity}),
-      toFormattedString(format, {
-        color,
-        fields: [
-          {
-            label: 'File',
-            value: 'filepath',
-            widthPct: 30
-          },
-          {
-            label: 'Rule',
-            value: 'id',
-            widthPct: 20
-          },
-          {
-            label: 'Message',
-            value: 'message',
-            widthPct: 50
-          }
-        ],
-        outputFooter: t =>
-          fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`),
-        outputHeader: 'diagnostic Report Inspection',
-        pretty,
-        truncateValues,
-        wrapValues
-      }),
+      // toFormattedString(format, {
+      //   color,
+      //   fields: [
+      //     {
+      //       label: 'File',
+      //       value: 'filepath',
+      //       widthPct: 30
+      //     },
+      //     {
+      //       label: 'Rule',
+      //       value: 'id',
+      //       widthPct: 20
+      //     },
+      //     {
+      //       label: 'Message',
+      //       value: 'message',
+      //       widthPct: 50
+      //     }
+      //   ],
+      //   outputFooter: t =>
+      //     fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`),
+      //   outputHeader: 'diagnostic Report Inspection',
+      //   pretty,
+      //   truncateValues,
+      //   wrapValues
+      // }),
       toOutput(output)
     )
     .subscribe();
 };
+/**
+ * @template T
+ * @typedef {import('rxjs').Observable<T>} Observable
+ */
+/**
+ * @typedef {import('@report-toolkit/report').Report} Report
+ */

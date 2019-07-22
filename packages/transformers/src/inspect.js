@@ -1,22 +1,17 @@
-import {observable, redact} from '@report-toolkit/common';
-
-const {map} = observable;
+import {inspectReports} from '@report-toolkit/inspector';
 
 /**
  * @type {TransformerMeta}
  */
 export const meta = {
-  description: 'Redact secrets from a report',
+  description: 'Inspect report for problems',
   input: ['report'],
-  name: 'redact',
-  output: 'report'
+  name: 'inspect',
+  output: 'object'
 };
 
-/**
- * @type {TransformFunction<Report,Report>}
- */
-export const transform = (opts = {}) => observable =>
-  observable.pipe(map(report => redact(report, opts)));
+export const transform = (reports, opts = {}) => observable =>
+  observable.pipe(inspectReports(reports, opts));
 
 /**
  * @typedef {import('@report-toolkit/report').Report} Report
@@ -26,4 +21,8 @@ export const transform = (opts = {}) => observable =>
 /**
  * @template T,U
  * @typedef {import('./transformer.js').TransformFunction<T,U>} TransformFunction
+ */
+/**
+ * @template T
+ * @typedef {import('rxjs').Observable<T>} Observable
  */

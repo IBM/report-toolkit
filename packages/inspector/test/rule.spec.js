@@ -3,10 +3,7 @@ import {_, error} from '@report-toolkit/common';
 import {AJV} from '../src/ajv.js';
 import {Rule} from '../src/rule.js';
 
-const {
-  REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
-  REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION
-} = error;
+const {RTKERR_INVALID_RULE_CONFIG, RTKERR_INVALID_RULE_DEFINITION} = error;
 
 describe('@report-toolkit/inspector:rule', function() {
   let sandbox;
@@ -31,7 +28,7 @@ describe('@report-toolkit/inspector:rule', function() {
           expect(
             () => new Rule({}),
             'to throw with code',
-            REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION
+            RTKERR_INVALID_RULE_DEFINITION
           );
         });
       });
@@ -142,7 +139,7 @@ describe('@report-toolkit/inspector:rule', function() {
             expect(
               () => rule.validate({foo: 'baz'}),
               'to throw with code',
-              REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG
+              RTKERR_INVALID_RULE_CONFIG
             );
           });
         });
