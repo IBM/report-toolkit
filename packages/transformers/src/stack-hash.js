@@ -24,8 +24,8 @@ export const meta = {
     },
     {label: 'Error', value: 'message'}
   ],
+  id: 'stack-hash',
   input: ['report'],
-  name: 'stack-hash',
   output: 'object'
 };
 

@@ -32,7 +32,6 @@ const main = () => {
             alias: ['verbose'],
             desc: 'Enable debug output',
             global: true,
-            group: GROUPS.OUTPUT,
             type: 'boolean'
           },
           rc: {

@@ -3,10 +3,13 @@ import stringify from 'fast-safe-stringify';
 
 const {concatMap, of} = observable;
 
+/**
+ * @type {TransformerMeta}
+ */
 export const meta = {
   description: 'Newline-delimited output',
+  id: 'newline',
   input: ['string', 'object', 'number'],
-  name: 'newline',
   output: 'string'
 };
 

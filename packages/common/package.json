@@ -6,6 +6,7 @@
   "browser": "dist/report-toolkit-common.umd.js",
   "dependencies": {
     "debug": "^4.1.1",
+    "kleur": "^3.0.3",
     "lodash": "^4.17.11",
     "p-is-promise": "^2.1.0",
     "rxjs": "^6.5.2",

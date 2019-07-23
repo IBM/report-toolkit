@@ -1,12 +1,9 @@
-import {_, createDebugPipe, observable} from '@report-toolkit/common';
-import {validateTransforms} from '@report-toolkit/transformers';
-import termsize from 'term-size';
+import {_} from '@report-toolkit/common';
+import {runTransforms, validateTransforms} from '@report-toolkit/transformers';
 
-import {normalizeFields, toOutput} from '../console-utils.js';
+import {terminalColumns, toOutput} from '../console-utils.js';
 import {fromFilepathToReport, OPTIONS} from './common.js';
 
-const {concatMap, map, toArray} = observable;
-const debug = createDebugPipe('cli', 'command', 'transform');
 export const command = 'transform <file..>';
 
 export const desc = 'Transform a report';
@@ -15,11 +12,18 @@ export const builder = yargs =>
   yargs
     .positional('file', {
       coerce: _.castArray,
-      type: 'array'
+      normalize: true
     })
     .options({
       ...OPTIONS.OUTPUT,
-      ...{...OPTIONS.TRANSFORM, coerce: _.castArray, required: true}
+      ...{
+        transform: {
+          ...OPTIONS.TRANSFORM.transform,
+          coerce: _.castArray,
+          default: 'json',
+          type: 'array'
+        }
+      }
     });
 
 export const handler = argv => {
@@ -44,32 +48,13 @@ export const handler = argv => {
   });
   validateTransforms(transformerNames)
     .pipe(
-      // XXX: this is hacky and bad
-      map(transformer =>
-        Object.assign(transformer, {
-          fields: normalizeFields(transformer.fields)
-        })
-      ),
-      toArray(),
-      concatMap(transformers =>
-        // @ts-ignore
-        reports.pipe(
-          debug(() => `running transforms: ${_.map('id', transformers)}`),
-          ..._.map(
-            transformer =>
-              transformer({
-                ...config.transform,
-                ..._.getOr({}, transformer.id, config),
-                maxWidth: termsize().columns,
-                outputHeader: 'Transformation Result',
-                pretty,
-                truncateValues,
-                wrapValues
-              }),
-            transformers
-          )
-        )
-      ),
+      runTransforms(reports, config, config.transform, {
+        maxWidth: terminalColumns,
+        outputHeader: 'Transformation Result',
+        pretty,
+        truncateValues,
+        wrapValues
+      }),
       toOutput(output, {color})
     )
     .subscribe();

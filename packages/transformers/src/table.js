@@ -1,6 +1,5 @@
-import {_, createDebugPipe, observable} from '@report-toolkit/common';
+import {_, colors, createDebugPipe, observable} from '@report-toolkit/common';
 import CLITable3 from 'cli-table3';
-import colors from 'kleur';
 import wrapAnsi from 'wrap-ansi';
 
 // @ts-ignore
@@ -159,8 +158,8 @@ const colValuesByFields = _.curry(
  */
 export const meta = {
   description: 'Tabular output',
+  id: 'table',
   input: ['object'],
-  name: 'table',
   output: 'string'
 };
 

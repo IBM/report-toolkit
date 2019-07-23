@@ -8,8 +8,8 @@ const {map, toArray} = observable;
  */
 export const meta = {
   description: 'JSON',
+  id: 'json',
   input: ['string', 'object', 'number', 'report'],
-  name: 'json',
   output: 'string'
 };
 

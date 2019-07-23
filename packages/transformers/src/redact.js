@@ -7,8 +7,8 @@ const {map} = observable;
  */
 export const meta = {
   description: 'Redact secrets from a report',
+  id: 'redact',
   input: ['report'],
-  name: 'redact',
   output: 'report'
 };
 

@@ -14,7 +14,7 @@ const DEFAULT_TRANSFORMER_META = Object.freeze({
  */
 
 /**
- * @typedef {{name: string, description?: string, input?: string[], output: string, fields?: Field[], alias?: string|string[]}} TransformerMeta
+ * @typedef {{id: string, description?: string, input?: string[], output: string, fields?: Field[], alias?: string|string[]}} TransformerMeta
  */
 
 /**
@@ -60,7 +60,7 @@ export class Transformer extends Function {
   }
 
   get id() {
-    return this._meta.name;
+    return this._meta.id;
   }
 
   get input() {
@@ -69,14 +69,6 @@ export class Transformer extends Function {
 
   get output() {
     return this._meta.output;
-  }
-
-  get canBegin() {
-    return _.includes(this.input, 'report');
-  }
-
-  get canEnd() {
-    return this.output === 'string';
   }
 
   get fields() {
@@ -93,6 +85,14 @@ export class Transformer extends Function {
    */
   canPipeTo(transformer) {
     return _.includes(this.output, transformer.input);
+  }
+
+  canBeginWith(type) {
+    return _.includes(type, this.input);
+  }
+
+  canEndWith(type) {
+    return this.output === type;
   }
 
   /**

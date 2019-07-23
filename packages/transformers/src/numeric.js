@@ -65,8 +65,8 @@ const NUMERIC_FIELDS = [
 export const meta = {
   description: 'Filter on numeric fields',
   fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}],
+  id: 'numeric',
   input: ['report'],
-  name: 'numeric',
   output: 'object'
 };
 

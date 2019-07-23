@@ -1,52 +1,12 @@
-import {_, observable} from '@report-toolkit/common';
+import {_, colors, observable} from '@report-toolkit/common';
 import {writeFile as writeFileFs} from 'fs';
-import colors from 'kleur';
 import {error, success} from 'log-symbols';
 import stripAnsi from 'strip-ansi';
+import termsize from 'term-size';
 
 const {bindNodeCallback, iif, map, mergeMap, of, pipeIf, tap} = observable;
 
 const writeFile = bindNodeCallback(writeFileFs);
-
-const FIELD_COLORS = Object.freeze(['cyan', 'magenta', 'blue', 'green']);
-
-export const normalizeFields = _.pipe(
-  _.toPairs,
-  _.map(
-    /**
-     * @param {[number, import('packages/transformers/src/transformer').Field]} value
-     */
-    ([idx, field]) => {
-      // a field can have a string `color`, no `color`, or a function which accepts a `row` and returns a string.
-      // likewise, it can have a `value` function which accepts a `row` and returns a value, or just a string, which
-      // corresponds to a property of the `row` object.
-      const fieldColor = field.color || FIELD_COLORS[idx % FIELD_COLORS.length];
-      const colorFn = _.isFunction(fieldColor)
-        ? (row, value) => {
-            // the function might not return a color
-            const color =
-              colors[fieldColor(row)] ||
-              FIELD_COLORS[idx % FIELD_COLORS.length];
-            return colors[color](value);
-          }
-        : (row, value) => colors[/** @type {string} */ (fieldColor)](value);
-      const valueFn = _.isFunction(field.value)
-        ? row => {
-            // yuck
-            const fn =
-              /**
-               * @type {function(typeof row): string}
-               */ (field.value);
-            return fn(row);
-          }
-        : _.get(field.value);
-      return {
-        ...field,
-        value: row => colorFn(row, valueFn(row))
-      };
-    }
-  )
-);
 
 export const ok = text =>
   colors.green(success) + ' ' + colors.green().bold(text);
@@ -79,3 +39,5 @@ export const toOutput = (filepath, {color = true} = {}) => observable =>
   );
 
 export {colors};
+
+export const terminalColumns = termsize().columns;

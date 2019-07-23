@@ -1,9 +1,7 @@
 import {_, constants, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
-import {
-  fromSearchpathToRuleDefinition,
-  toObjectFromFilepath
-} from '@report-toolkit/fs';
+import {fromSearchpathToRuleDefinition} from '@report-toolkit/fs';
+import {runTransforms, validateTransforms} from '@report-toolkit/transformers';
 import {join} from 'path';
 import resolvePkg from 'resolve-pkg';
 
@@ -11,7 +9,8 @@ import {fail, toOutput} from '../console-utils.js';
 import {fromFilepathToReport, GROUPS, OPTIONS} from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {toInspection, toReportFromObject, toRuleConfig} = stream;
+const {toInspection, toRuleConfig} = stream;
+const {toArray} = observable;
 
 const BUILTIN_RULES_DIR = join(
   resolvePkg('@report-toolkit/rules', {cwd: __dirname}),
@@ -44,8 +43,8 @@ export const handler = argv => {
     config,
     truncate: truncateValues = true,
     wrap: wrapValues = false,
-    format = 'table',
     pretty = false,
+    transform: transformerIds,
     color,
     output,
     severity = ERROR,
@@ -54,42 +53,60 @@ export const handler = argv => {
   /**
    * @type {Observable<Report>}
    */
-  const reports = fromFilepathToReport(filepaths, {
-    ...config.inspect,
-    showSecretsUnsafe
-  });
-  fromSearchpathToRuleDefinition(BUILTIN_RULES_DIR)
+  // const reports = ;
+  validateTransforms(
+    transformerIds,
+    {
+      beginWith: 'object'
+    },
+    {
+      fields: [
+        {
+          label: 'File',
+          value: 'filepath',
+          widthPct: 30
+        },
+        {
+          label: 'Rule',
+          value: 'id',
+          widthPct: 20
+        },
+        {
+          label: 'Message',
+          value: 'message',
+          widthPct: 50
+        }
+      ]
+    }
+  )
     .pipe(
-      toRuleConfig(config),
-      toInspection(reports, {severity}),
-      // toFormattedString(format, {
-      //   color,
-      //   fields: [
-      //     {
-      //       label: 'File',
-      //       value: 'filepath',
-      //       widthPct: 30
-      //     },
-      //     {
-      //       label: 'Rule',
-      //       value: 'id',
-      //       widthPct: 20
-      //     },
-      //     {
-      //       label: 'Message',
-      //       value: 'message',
-      //       widthPct: 50
-      //     }
-      //   ],
-      //   outputFooter: t =>
-      //     fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`),
-      //   outputHeader: 'diagnostic Report Inspection',
-      //   pretty,
-      //   truncateValues,
-      //   wrapValues
-      // }),
+      runTransforms(
+        fromSearchpathToRuleDefinition(BUILTIN_RULES_DIR).pipe(
+          toRuleConfig(config),
+          toInspection(
+            fromFilepathToReport(filepaths, {
+              ...config.inspect,
+              showSecretsUnsafe
+            }),
+            {severity}
+          )
+        ),
+        config,
+        _.getOr({}, 'inspect', config)
+      ),
       toOutput(output)
     )
+
+    // toFormattedString(format, {
+    //   color,
+    //   outputFooter: t =>
+    //     fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`),
+    //   outputHeader: 'diagnostic Report Inspection',
+    //   pretty,
+    //   truncateValues,
+    //   wrapValues
+    // }),
+
     .subscribe();
 };
 /**

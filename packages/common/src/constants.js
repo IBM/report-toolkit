@@ -18,6 +18,9 @@ export const DEFAULT_DIFF_OPTIONS = Object.freeze({
 
 export const DEFAULT_TRANSFORMER = 'table';
 
+/**
+ * @type {InspectReportOptions}
+ */
 export const DEFAULT_LOAD_REPORT_OPTIONS = Object.freeze({
   disableSort: false,
   severity: ERROR,
@@ -27,3 +30,7 @@ export const DEFAULT_LOAD_REPORT_OPTIONS = Object.freeze({
 });
 
 export const REDACTED_TOKEN = '[REDACTED]';
+
+/**
+ * @typedef {{disableSort?: boolean, severity?: string, showSecretsUnsafe?: boolean, sortDirection?: "asc"|"desc", sortField?: string}} InspectReportOptions
+ */

@@ -8,8 +8,8 @@ const {concatMapTo, finalize, fromEvent, map, takeUntil, tap} = observable;
  */
 export const meta = {
   description: 'Comma-separated values',
+  id: 'csv',
   input: ['string', 'object', 'report'],
-  name: 'csv',
   output: 'string'
 };
 

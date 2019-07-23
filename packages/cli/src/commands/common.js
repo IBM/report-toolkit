@@ -1,7 +1,7 @@
-import {_, constants,observable} from '@report-toolkit/common';
+import {_, constants, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
-import {transformers} from '@report-toolkit/transformers';
+import {knownTransformerIds} from '@report-toolkit/transformers';
 
 const {toReportFromObject} = stream;
 
@@ -31,7 +31,7 @@ export const OPTIONS = {
     },
     pretty: {
       description: 'Pretty-print JSON output',
-      group: GROUPS.TRANSFORM,
+      group: GROUPS.OUTPUT,
       type: 'boolean'
     },
     'show-secrets-unsafe': {
@@ -39,28 +39,30 @@ export const OPTIONS = {
       group: GROUPS.TRANSFORM,
       type: 'boolean'
     },
-    transform: {
-      // @todo list transform aliases
-      alias: 't',
-      choices: Object.keys(transformers),
-      coerce: _.castArray,
-      default: constants.DEFAULT_TRANSFORMER,
-      description: 'Transform(s) to apply',
-      group: GROUPS.TRANSFORM
-    },
     truncate: {
       conflicts: 'wrap',
       default: true,
       description: 'Truncate values (table format)',
-      group: GROUPS.TRANSFORM,
+      group: GROUPS.OUTPUT,
       type: 'boolean'
     },
     wrap: {
       conflicts: 'truncate',
       description:
         'Hard-wrap values (table format only; implies --no-truncate)',
-      group: GROUPS.TRANSFORM,
+      group: GROUPS.OUTPUT,
       type: 'boolean'
+    }
+  },
+  TRANSFORM: {
+    transform: {
+      // @todo list transform aliases
+      alias: 't',
+      choices: knownTransformerIds,
+      coerce: _.castArray,
+      default: constants.DEFAULT_TRANSFORMER,
+      description: 'Transform(s) to apply',
+      group: GROUPS.TRANSFORM
     }
   }
 };
