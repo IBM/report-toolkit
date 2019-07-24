@@ -2,28 +2,30 @@ import {_, observable} from '@report-toolkit/common';
 import hashjs from 'hash.js';
 
 const {map} = observable;
-const DEFAULT_STRIP_REGEXP = /[0-9]+/g;
 
 /**
  * @type {TransformerMeta}
  */
 export const meta = {
+  defaults: /** @type {StackHashTransformOptions} */ ({
+    fields: [
+      {
+        label: 'SHA1',
+        value: 'sha1'
+      },
+      {
+        label: 'Time',
+        value: 'dumpEventTime'
+      },
+      {
+        label: 'File',
+        value: 'filename'
+      },
+      {label: 'Error', value: 'message'}
+    ],
+    strip: /[0-9]+/g
+  }),
   description: 'Generate unique hash for JS stack trace',
-  fields: [
-    {
-      label: 'SHA1',
-      value: 'sha1'
-    },
-    {
-      label: 'Time',
-      value: 'dumpEventTime'
-    },
-    {
-      label: 'File',
-      value: 'filename'
-    },
-    {label: 'Error', value: 'message'}
-  ],
   id: 'stack-hash',
   input: ['report'],
   output: 'object'
@@ -32,13 +34,10 @@ export const meta = {
 /**
  * Given a report, generate a SHA1 hash of the stack trace. Useful when
  * determining whether a stack trace is new or already known.
- * @param {Object} [opts] - Options
- * @param {RegExp|Function|string} [opts.strip] - Strips anything matching
- * this RegExp or string from the `javascriptStack.message` prop.  If
- * function, used as a projector.
- * @type {TransformFunction<Report,StackHashResult>}
+ * @param {Partial<StackHashTransformOptions>} [opts] - Options
+ * @returns {TransformFunction<Report,StackHashTransformResult>}
  */
-export const transform = ({strip = DEFAULT_STRIP_REGEXP} = {}) => observable =>
+export const transform = ({strip} = {}) => observable =>
   observable.pipe(
     map(report => {
       // @ts-ignore
@@ -61,11 +60,14 @@ export const transform = ({strip = DEFAULT_STRIP_REGEXP} = {}) => observable =>
   );
 
 /**
- * @typedef {{dumpEventTime:string,filename?:string,sha1:string,message:string}} StackHashResult
+ * @typedef {{dumpEventTime:string,filename?:string,sha1:string,message:string}} StackHashTransformResult
+ * @typedef {{fields: TransformerField[], strip: RegExp|function(string):string|string}} StackHashTransformOptions
+ */
+/**
  * @typedef {import('@report-toolkit/report').Report} Report
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ * @typedef {import('./transformer.js').TransformerField} TransformerField
  */
-
 /**
  * @template T,U
  * @typedef {import('./transformer.js').TransformFunction<T,U>} TransformFunction

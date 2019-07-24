@@ -1,7 +1,7 @@
 import {_, constants, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {fromSearchpathToRuleDefinition} from '@report-toolkit/fs';
-import {runTransforms, validateTransforms} from '@report-toolkit/transformers';
+import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 import {join} from 'path';
 import resolvePkg from 'resolve-pkg';
 
@@ -53,8 +53,7 @@ export const handler = argv => {
   /**
    * @type {Observable<Report>}
    */
-  // const reports = ;
-  validateTransforms(
+  loadTransforms(
     transformerIds,
     {
       beginWith: 'object'

@@ -14,8 +14,10 @@ export const meta = {
 };
 
 /**
- * @type {TransformFunction<string|object,string>}
- * @param {object} [parserOpts]
+ * CSV transformer; accepts whatever json2csv can handle
+ * @see https://npm.im/json2csv
+ * @param {CSVTransformOptions} [parserOpts]
+ * @returns {TransformFunction<string|object,CSVTransformResult>}
  */
 export const transform = (parserOpts = {}) => observable => {
   const parser = new AsyncParser(parserOpts, {
@@ -35,8 +37,18 @@ export const transform = (parserOpts = {}) => observable => {
 };
 
 /**
+ * This is a single CSV-formatted row
+ * @typedef {string} CSVTransformResult
+ */
+/**
+ * Options for AsyncParser
+ * @typedef {object} CSVTransformOptions
+ */
+
+/**
  * @typedef {import('@report-toolkit/report').Report} Report
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ * @typedef {import('./transformer.js').TransformerField} TransformerField
  */
 /**
  * @template T,U

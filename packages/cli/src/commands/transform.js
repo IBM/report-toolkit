@@ -1,5 +1,5 @@
 import {_} from '@report-toolkit/common';
-import {runTransforms, validateTransforms} from '@report-toolkit/transformers';
+import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
 import {fromFilepathToReport, OPTIONS} from './common.js';
@@ -46,7 +46,7 @@ export const handler = argv => {
     ...config.transform,
     showSecretsUnsafe
   });
-  validateTransforms(transformerNames)
+  loadTransforms(transformerNames)
     .pipe(
       runTransforms(reports, config, config.transform, {
         maxWidth: terminalColumns,

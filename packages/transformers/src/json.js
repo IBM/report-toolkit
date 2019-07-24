@@ -7,6 +7,11 @@ const {map, toArray} = observable;
  * @type {TransformerMeta}
  */
 export const meta = {
+  defaults: /**
+   * @type {Partial<JSONTransformOptions>}
+   */ ({
+    pretty: false
+  }),
   description: 'JSON',
   id: 'json',
   input: ['string', 'object', 'number', 'report'],
@@ -15,10 +20,10 @@ export const meta = {
 
 /**
  * Emits a single JSON blob.
- * @type {TransformFunction<object,string>}
- * @param {{pretty?: boolean}} [opts]
+ * @param {Partial<JSONTransformOptions>} [opts]
+ * @returns {TransformFunction<object,string>}
  */
-export const transform = ({pretty = false} = {}) => observable =>
+export const transform = ({pretty} = {}) => observable =>
   observable.pipe(
     toArray(),
     map(
@@ -29,8 +34,14 @@ export const transform = ({pretty = false} = {}) => observable =>
   );
 
 /**
+ * @typedef {object} JSONTransformOptions
+ * @property {TransformerField[]} fields
+ * @property {boolean} pretty
+ */
+/**
  * @typedef {import('@report-toolkit/report').Report} Report
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ * @typedef {import('./transformer.js').TransformerField} TransformerField
  */
 /**
  * @template T,U

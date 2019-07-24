@@ -2,7 +2,7 @@ import {_, observable} from '@report-toolkit/common';
 
 const {mergeMap} = observable;
 
-const NUMERIC_FIELDS = [
+const NUMERIC_KEYPATHS = [
   'javascriptHeap.totalMemory',
   'javascriptHeap.totalCommittedMemory',
   'javascriptHeap.usedMemory',
@@ -63,8 +63,13 @@ const NUMERIC_FIELDS = [
  * @type {TransformerMeta}
  */
 export const meta = {
+  defaults: /**
+   * @type {NumericTransformOptions}
+   */ ({
+    fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}],
+    keys: NUMERIC_KEYPATHS
+  }),
   description: 'Filter on numeric fields',
-  fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}],
   id: 'numeric',
   input: ['report'],
   output: 'object'
@@ -72,28 +77,39 @@ export const meta = {
 
 /**
  * Transforms a Report into Transform
- * @param {Object} [opts] - Options
- * @param {string[]} [opts.fields] - Array of numeric fields we care about; defaults to ALL known numeric fields
- * @type {TransformFunction<Report,NumericTransformResult>}
+ * @param {Partial<NumericTransformOptions>} [opts] - Options
+ * @returns {TransformFunction<Report,NumericTransformResult>}
  */
-export const transform = ({fields = NUMERIC_FIELDS} = {}) => observable =>
-  observable.pipe(
-    mergeMap(report => {
-      const tuple = key => [key, _.get(key, report)];
-      const transform = _.pipe(
-        _.map(tuple),
-        _.map(([key, value]) => ({key, value}))
-      );
-      return transform(fields);
-    })
-  );
+export const transform = ({keys} = {}) => {
+  return observable =>
+    observable.pipe(
+      mergeMap(report => {
+        const tuple = key => [key, _.get(key, report)];
+        const transform = _.pipe(
+          _.map(tuple),
+          _.map(([key, value]) => ({key, value}))
+        );
+        return transform(keys);
+      })
+    );
+};
 
 /**
- * @typedef {{key:string,value:string}} NumericTransformResult
- * @typedef {import('@report-toolkit/report').Report} Report
- * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ * @typedef {object} NumericTransformOptions
+ * @property {TransformerField[]} fields - Field definitions for other transformers which might want to use them
+ * @property {string[]} keys - Keys to extract; supports dot-separted keypaths
+ */
+/**
+ * @typedef {object} NumericTransformResult
+ * @property {string} key - The key name (dot-separated)
+ * @property {number} value - The numeric value of the property at `key`
  */
 
+/**
+ * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
+ * @typedef {import('./transformer.js').TransformerField} TransformerField
+ */
 /**
  * @template T,U
  * @typedef {import('./transformer.js').TransformFunction<T,U>} TransformFunction
