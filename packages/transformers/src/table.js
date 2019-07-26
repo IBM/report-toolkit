@@ -5,7 +5,7 @@ import wrapAnsi from 'wrap-ansi';
 // @ts-ignore
 import {version} from '../package.json';
 
-const debug = createDebugPipe('cli', 'table-formatter');
+const debug = createDebugPipe('transformers', 'table');
 const {concatMap, from, map, pipeIf, reduce} = observable;
 
 const DEFAULT_TABLE_OPTS = {
@@ -134,13 +134,16 @@ const formatTableHeaders = _.pipe(
  */
 const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
-  const {fields, maxWidth, truncateValues, wrapValues} = opts;
-  if (_.some('widthPct', fields) && (truncateValues || wrapValues)) {
+  const {fields, maxWidth, truncate} = opts;
+  if (truncate) {
     opts.colWidths = calculateColumnWidths(maxWidth, fields);
   }
   return new CLITable3({
-    ...opts,
-    head: formatTableHeaders(fields)
+    // "truncate" is used by CLITable3 for the truncation symbol.
+    ..._.omit('truncate', opts),
+    // @ts-ignore
+    head: formatTableHeaders(fields),
+    truncate: '…'
   });
 };
 
@@ -168,7 +171,7 @@ export const meta = {
  */
 export const transform = (opts = {}) => {
   const table = createTable(opts);
-  const {fields, outputFooter, outputHeader, wrapValues} = opts;
+  const {fields, outputFooter, outputHeader, wrap} = opts;
   const colValues = colValuesByFields(fields);
   const padding =
     table.options.style['padding-left'] - table.options.style['padding-right'];
@@ -182,16 +185,8 @@ export const transform = (opts = {}) => {
         value => [`received data %O`, value]
       ),
       map(colValues),
-      // @ts-ignore
-      debug(
-        /**
-         * @param {object} value
-         */
-        // @ts-ignore
-        value => [`creating row %O`, value]
-      ),
       pipeIf(
-        wrapValues,
+        wrap,
         map(
           // this force-wraps the column text
           _.map(

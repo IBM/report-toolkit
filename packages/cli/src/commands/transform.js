@@ -11,51 +11,50 @@ export const desc = 'Transform a report';
 export const builder = yargs =>
   yargs
     .positional('file', {
-      coerce: _.castArray,
-      normalize: true
+      coerce: _.castArray
     })
     .options({
       ...OPTIONS.OUTPUT,
       ...{
         transform: {
-          ...OPTIONS.TRANSFORM.transform,
-          coerce: _.castArray,
-          default: 'json',
-          type: 'array'
+          ...OPTIONS.OUTPUT.transform,
+          default: 'json'
         }
-      }
+      },
+      ...OPTIONS.JSON_TRANSFORM,
+      ...{
+        pretty: {
+          ...OPTIONS.JSON_TRANSFORM.pretty,
+          default: false
+        }
+      },
+      ...OPTIONS.TABLE_TRANSFORM
     });
 
 export const handler = argv => {
-  const {
-    color,
-    config,
-    file: filepaths,
-    output,
-    pretty = false,
-    showSecretsUnsafe = false,
-    transform: transformerNames,
-    truncate: truncateValues = true,
-    wrap: wrapValues = false
-  } = argv;
-
   /**
    * @type {Observable<Report>}
    */
-  const reports = fromFilepathToReport(filepaths, {
-    ...config.transform,
-    showSecretsUnsafe
-  });
-  loadTransforms(transformerNames)
+  const reports = fromFilepathToReport(
+    argv.file,
+    _.getOr(
+      _.get('config.transform.showSecretsUnsafe', argv),
+      'showSecretsUnsafe',
+      argv
+    )
+  );
+  loadTransforms(argv.transform)
     .pipe(
-      runTransforms(reports, config, config.transform, {
-        maxWidth: terminalColumns,
-        outputHeader: 'Transformation Result',
-        pretty,
-        truncateValues,
-        wrapValues
-      }),
-      toOutput(output, {color})
+      runTransforms(
+        reports,
+        _.mergeAll([
+          _.getOr({}, 'config', argv),
+          _.getOr({}, 'config.transform', argv),
+          {maxWidth: terminalColumns, outputHeader: 'Transformation Result'}
+        ]),
+        argv
+      ),
+      toOutput(argv.output, {color: argv.color})
     )
     .subscribe();
 };

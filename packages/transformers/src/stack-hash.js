@@ -19,7 +19,7 @@ export const meta = {
       },
       {
         label: 'File',
-        value: 'filename'
+        value: 'filepath'
       },
       {label: 'Error', value: 'message'}
     ],
@@ -41,7 +41,8 @@ export const transform = ({strip} = {}) => observable =>
   observable.pipe(
     map(report => {
       // @ts-ignore
-      const {dumpEventTime, filename} = report.header;
+      const {dumpEventTime} = report.header;
+      const {filepath} = report;
       // @ts-ignore
       const {message, stack} = report.javascriptStack;
       const strippedMessage = _.isFunction(strip)
@@ -49,7 +50,7 @@ export const transform = ({strip} = {}) => observable =>
         : message.replace(strip, '');
       return {
         dumpEventTime,
-        filename,
+        filepath,
         message: strippedMessage,
         sha1: hashjs
           .sha1()

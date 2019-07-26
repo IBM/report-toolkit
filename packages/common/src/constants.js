@@ -31,6 +31,8 @@ export const DEFAULT_LOAD_REPORT_OPTIONS = Object.freeze({
 
 export const REDACTED_TOKEN = '[REDACTED]';
 
+export const DEFAULT_TERMINAL_WIDTH = 80;
+
 /**
  * @typedef {{disableSort?: boolean, severity?: string, showSecretsUnsafe?: boolean, sortDirection?: "asc"|"desc", sortField?: string}} InspectReportOptions
  */

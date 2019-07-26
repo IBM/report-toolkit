@@ -23,7 +23,7 @@ const transformerModules = new Map(
   _.map(transformer => [transformer.meta.id, transformer], knownTransformers)
 );
 const transformerInstances = new Map();
-
+const DEFAULT_TRANSFORMER = 'table';
 const {
   RTKERR_INVALID_PARAMETER,
   RTKERR_INVALID_TRANSFORMER_HEAD,
@@ -34,11 +34,11 @@ const {
   concatMap,
   from,
   iif,
-  map,
   mergeAll,
   mergeMap,
   of,
   pipeIf,
+  tap,
   throwRTkError,
   toArray
 } = observable;
@@ -49,14 +49,14 @@ export const knownTransformerIds = _.map('meta.id', knownTransformers);
 /**
  * @param {string} id
  */
-export const loadTransformer = (id, opts = {}) => {
+export const loadTransformer = id => {
   if (transformerInstances.has(id)) {
     return transformerInstances.get(id);
   }
   const {meta, transform} = transformerModules.get(id);
   return createTransformer(
     /** @type {TransformFunction<any,any>} */ (transform),
-    _.merge(meta, opts)
+    meta
   );
 };
 
@@ -113,7 +113,7 @@ export const loadTransforms = (
       toArray(),
       // TODO: I'd rather this not be so imperative, but I'm not sure of a decent
       // way to go about this using RxJS
-      map(
+      tap(
         /**
          * @param {Transformer[]} transformers
          */
@@ -128,20 +128,14 @@ export const loadTransforms = (
             );
           }
 
+          if (!transformers[transformers.length - 1].canEndWith(endWith)) {
+            transformers.push(loadTransformer(DEFAULT_TRANSFORMER));
+          }
+
           let nextTransformer = transformers[++idx];
           while (nextTransformer) {
             transformer = transformer.pipe(nextTransformer);
-            // transformer = nextTransformer;
             nextTransformer = transformers[++idx];
-          }
-
-          if (!transformer.canEndWith(endWith)) {
-            transformers.push(loadTransformer('table'));
-            // // TODO: list valid transformers (using URL?)
-            // throw createRTkError(
-            //   RTKERR_INVALID_TRANSFORMER_TAIL,
-            //   `The last transformer ("${transformer.id}") must output a string`
-            // );
           }
 
           return transformers;
@@ -160,27 +154,29 @@ export const loadTransforms = (
       'Expected one or more Transformers or Transformer names'
     )
   );
-
-export const runTransforms = (
-  source,
-  config = {},
-  commandConfig = {},
-  opts = {}
-) => observable =>
+/**
+ * @param {Observable<Report>} source
+ */
+export const runTransforms = (source, config = {}, opts = {}) => /**
+ * @param {Observable<Transformer>} observable
+ */ observable =>
   observable.pipe(
     toArray(),
     concatMap(transformers =>
+      // @ts-ignore
       source.pipe(
         debug(
           () => `running transforms: ${_.map('id', transformers).join(' => ')}`
         ),
         ..._.map(
           transformer =>
-            transformer.transform({
-              ...commandConfig,
-              ..._.getOr({}, transformer.id, config),
-              ...opts
-            }),
+            transformer.transform(
+              _.mergeAll([
+                config,
+                _.getOr({}, `transformers.${transformer.id}`, config),
+                opts
+              ])
+            ),
           transformers
         )
       )

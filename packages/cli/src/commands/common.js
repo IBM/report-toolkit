@@ -3,17 +3,27 @@ import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 import {knownTransformerIds} from '@report-toolkit/transformers';
 
+import {terminalColumns} from '../console-utils.js';
+
 const {toReportFromObject} = stream;
 
 const {fromAny, share} = observable;
 
 export const GROUPS = {
   FILTER: 'Filter:',
+  JSON_TRANSFORM: '"json" Transform Options:',
   OUTPUT: 'Output:',
-  TRANSFORM: 'Transform:'
+  TABLE_TRANSFORM: '"table" Transform Options:'
 };
 
 export const OPTIONS = {
+  JSON_TRANSFORM: {
+    pretty: {
+      description: 'Pretty-print JSON output',
+      group: GROUPS.JSON_TRANSFORM,
+      type: 'boolean'
+    }
+  },
   OUTPUT: {
     color: {
       default: true,
@@ -29,32 +39,12 @@ export const OPTIONS = {
       requiresArg: true,
       type: 'string'
     },
-    pretty: {
-      description: 'Pretty-print JSON output',
-      group: GROUPS.OUTPUT,
-      type: 'boolean'
-    },
     'show-secrets-unsafe': {
       description: 'Live dangerously & do not automatically redact secrets',
-      group: GROUPS.TRANSFORM,
-      type: 'boolean'
-    },
-    truncate: {
-      conflicts: 'wrap',
-      default: true,
-      description: 'Truncate values (table format)',
       group: GROUPS.OUTPUT,
       type: 'boolean'
     },
-    wrap: {
-      conflicts: 'truncate',
-      description:
-        'Hard-wrap values (table format only; implies --no-truncate)',
-      group: GROUPS.OUTPUT,
-      type: 'boolean'
-    }
-  },
-  TRANSFORM: {
+
     transform: {
       // @todo list transform aliases
       alias: 't',
@@ -62,7 +52,22 @@ export const OPTIONS = {
       coerce: _.castArray,
       default: constants.DEFAULT_TRANSFORMER,
       description: 'Transform(s) to apply',
-      group: GROUPS.TRANSFORM
+      group: GROUPS.OUTPUT,
+      type: 'array'
+    }
+  },
+  TABLE_TRANSFORM: {
+    'max-width': {
+      defaultDescription: `terminal width (${terminalColumns})`,
+      description: 'Set maximum output width; ignored if --no-truncate used',
+      group: GROUPS.TABLE_TRANSFORM,
+      type: 'number'
+    },
+    truncate: {
+      default: true,
+      description: 'Truncate & word-wrap output',
+      group: GROUPS.TABLE_TRANSFORM,
+      type: 'boolean'
     }
   }
 };

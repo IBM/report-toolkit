@@ -32,6 +32,7 @@ import join from 'lodash/fp/join.js';
 import map from 'lodash/fp/map.js';
 import memoize from 'lodash/fp/memoize.js';
 import merge from 'lodash/fp/merge.js';
+import mergeAll from 'lodash/fp/mergeAll.js';
 import negate from 'lodash/fp/negate.js';
 import noop from 'lodash/fp/noop.js';
 import omit from 'lodash/fp/omit.js';
@@ -92,6 +93,7 @@ export const _ = {
   map,
   memoize,
   merge,
+  mergeAll,
   negate,
   noop,
   omit,

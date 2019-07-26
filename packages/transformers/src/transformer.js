@@ -68,7 +68,6 @@ class Transformer {
 
   transform(opts = {}) {
     const defaults = [this.defaults, opts];
-    opts = _.defaultsDeep(opts, this.defaults);
     if (this._source && optionMap.has(this._source)) {
       const sourceOpts = optionMap.get(this._source);
       defaults.push({fields: sourceOpts.fields});

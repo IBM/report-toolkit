@@ -1,11 +1,11 @@
-import {_, colors, observable} from '@report-toolkit/common';
+import {colors, constants, observable} from '@report-toolkit/common';
 import {writeFile as writeFileFs} from 'fs';
 import {error, success} from 'log-symbols';
 import stripAnsi from 'strip-ansi';
 import termsize from 'term-size';
 
 const {bindNodeCallback, iif, map, mergeMap, of, pipeIf, tap} = observable;
-
+const {DEFAULT_TERMINAL_WIDTH} = constants;
 const writeFile = bindNodeCallback(writeFileFs);
 
 export const ok = text =>
@@ -40,4 +40,4 @@ export const toOutput = (filepath, {color = true} = {}) => observable =>
 
 export {colors};
 
-export const terminalColumns = termsize().columns;
+export const terminalColumns = termsize().columns || DEFAULT_TERMINAL_WIDTH;
