@@ -1,6 +1,6 @@
-const ms = require('ms');
+import ms from 'ms';
 
-exports.meta = {
+export const meta = {
   docs: {
     category: 'event-queue',
     description: 'Warn about far-future callbacks in timeout queue',
@@ -19,7 +19,7 @@ exports.meta = {
   }
 };
 
-exports.inspect = ({timeout} = {}) => {
+export const inspect = ({timeout} = {}) => {
   timeout = typeof timeout === 'string' ? ms(timeout) : timeout;
   return context => {
     const {libuv} = context;

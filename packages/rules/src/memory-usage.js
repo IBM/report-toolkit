@@ -1,4 +1,4 @@
-exports.meta = {
+export const meta = {
   docs: {
     category: 'resource',
     description: 'Assert memory usage % is within a range',
@@ -78,7 +78,7 @@ const fail = ({max, min, mode}, usage) => {
   };
 };
 
-exports.inspect = ({max, min, mode} = {}) => {
+export const inspect = ({max, min, mode} = {}) => {
   const usages = [];
   return {
     complete() {

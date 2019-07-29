@@ -19,9 +19,10 @@ const knownTransformers = [
   table
 ];
 
-const transformerModules = new Map(
+const transformerModules = _.fromPairs(
   _.map(transformer => [transformer.meta.id, transformer], knownTransformers)
 );
+
 const transformerInstances = new Map();
 const DEFAULT_TRANSFORMER = 'table';
 const {
@@ -53,7 +54,13 @@ export const loadTransformer = id => {
   if (transformerInstances.has(id)) {
     return transformerInstances.get(id);
   }
-  const {meta, transform} = transformerModules.get(id);
+  if (!isKnownTransformer(id)) {
+    throw createRTkError(
+      RTKERR_UNKNOWN_TRANSFORMER,
+      `Unknown transformer "${id}"`
+    );
+  }
+  const {meta, transform} = transformerModules[id];
   return createTransformer(
     /** @type {TransformFunction<any,any>} */ (transform),
     meta
@@ -63,7 +70,7 @@ export const loadTransformer = id => {
 /**
  * @param {string} id
  */
-export const isKnownTransformer = id => transformerModules.has(id);
+export const isKnownTransformer = id => Boolean(transformerModules[id]);
 
 export {Transformer};
 
@@ -155,19 +162,21 @@ export const loadTransforms = (
     )
   );
 /**
- * @param {Observable<Report>} source
+ * @param {Observable<any>} source
  */
 export const runTransforms = (source, config = {}, opts = {}) => /**
  * @param {Observable<Transformer>} observable
  */ observable =>
   observable.pipe(
     toArray(),
+    debug(
+      transformers =>
+        `running transform(s): ${_.map('id', transformers).join(' => ')}`
+    ),
+    debug(() => [`received opts %O`, opts]),
     concatMap(transformers =>
-      // @ts-ignore
       source.pipe(
-        debug(
-          () => `running transforms: ${_.map('id', transformers).join(' => ')}`
-        ),
+        // @ts-ignore
         ..._.map(
           transformer =>
             transformer.transform(
@@ -179,6 +188,17 @@ export const runTransforms = (source, config = {}, opts = {}) => /**
             ),
           transformers
         )
+      )
+    )
+  );
+
+export const compatibleTransforms = sourceType =>
+  _.keys(
+    _.fromPairs(
+      _.filter(
+        ([id, transformerModule]) =>
+          _.includes(sourceType, transformerModule.meta.input),
+        _.toPairs(transformerModules)
       )
     )
   );

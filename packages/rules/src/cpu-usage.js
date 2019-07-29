@@ -1,6 +1,8 @@
-const {INFO} = require('@report-toolkit/common').constants;
+import {constants} from '@report-toolkit/common';
 
-exports.meta = {
+const {INFO} = constants;
+
+export const meta = {
   docs: {
     category: 'resource',
     description: 'Assert CPU usage % is within a range',
@@ -82,7 +84,7 @@ const fail = ({max, min, mode}, usage) => {
   };
 };
 
-exports.inspect = (config = {}) => {
+export const inspect = (config = {}) => {
   let {max, min, mode} = config;
   min = min || 0;
   max = max || 50;

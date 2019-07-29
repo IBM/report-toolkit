@@ -21,7 +21,7 @@ const getExplorer = _.memoize(opts =>
     RC_NAMESPACE,
     _.defaultsDeep(
       {
-        loaders: {'.js': cosmiconfig.loadJs, noExt: cosmiconfig.loadJs}
+        loaders: {noExt: cosmiconfig.loadJs}
       },
       opts
     )
@@ -51,7 +51,7 @@ const toConfigFromFilepath = (opts = {}) => {
 };
 
 export const fromFilesystemToConfig = ({
-  config: rawConfigOrFilepath,
+  config: rawConfigOrFilepath = {},
   searchPath = process.cwd(),
   search = true
 } = {}) =>

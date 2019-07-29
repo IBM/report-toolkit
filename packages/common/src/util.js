@@ -12,6 +12,7 @@ import defaultsDeepAll from 'lodash/fp/defaultsDeepAll.js';
 import filter from 'lodash/fp/filter.js';
 import flip from 'lodash/fp/flip.js';
 import forEach from 'lodash/fp/forEach.js';
+import fromPairs from 'lodash/fp/fromPairs.js';
 import get from 'lodash/fp/get.js';
 import getOr from 'lodash/fp/getOr.js';
 import gte from 'lodash/fp/gte.js';
@@ -29,6 +30,7 @@ import isObject from 'lodash/fp/isObject.js';
 import isString from 'lodash/fp/isString.js';
 import isUndefined from 'lodash/fp/isUndefined.js';
 import join from 'lodash/fp/join.js';
+import keys from 'lodash/fp/keys.js';
 import map from 'lodash/fp/map.js';
 import memoize from 'lodash/fp/memoize.js';
 import merge from 'lodash/fp/merge.js';
@@ -72,6 +74,7 @@ export const _ = {
   filter,
   flip,
   forEach,
+  fromPairs,
   get,
   getOr,
   gte,
@@ -90,6 +93,7 @@ export const _ = {
   isString,
   isUndefined,
   join,
+  keys,
   map,
   memoize,
   merge,

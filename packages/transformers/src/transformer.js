@@ -67,12 +67,14 @@ class Transformer {
   }
 
   transform(opts = {}) {
-    const defaults = [this.defaults, opts];
+    const defaults = [this.defaults];
     if (this._source && optionMap.has(this._source)) {
       const sourceOpts = optionMap.get(this._source);
       defaults.push({fields: sourceOpts.fields});
     }
-    opts = _.defaultsDeepAll(defaults);
+    // NOTE: _.defaultsDeepAll applies defaults the same way _.assignAll does
+    // which is the same way non-fp lodash does!
+    opts = _.defaultsDeepAll([opts, ...defaults]);
     if (opts.fields) {
       opts = {...opts, fields: Transformer.normalizeFields(opts.fields)};
     }

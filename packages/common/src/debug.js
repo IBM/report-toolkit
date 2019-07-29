@@ -36,7 +36,7 @@ export const createDebugPipe = (...args) => {
 
   return (
     /**
-     * @param {(...args: any[]) => string|string[]} fn
+     * @param {(...args: any[]) => string|any[]} fn
      */
     fn =>
       /**
@@ -47,7 +47,7 @@ export const createDebugPipe = (...args) => {
         observable.pipe(
           tap(value => {
             /**
-             * @type {string[]}
+             * @type {any[]}
              */
             const msg = _.castArray(fn(value));
             if (msg.length) {

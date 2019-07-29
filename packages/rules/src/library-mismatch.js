@@ -1,4 +1,4 @@
-exports.meta = {
+export const meta = {
   docs: {
     category: 'runtime',
     description: 'Identify potential library version mismatches',
@@ -21,7 +21,7 @@ exports.meta = {
 
 const VERSION_REGEXP = /(\d+(?:\.\d+)+[a-z]?)/;
 
-exports.inspect = (config = {}) => {
+export const inspect = (config = {}) => {
   const ignoredComponents = new Set(config.ignore || []);
   return context => {
     const {header, sharedObjects} = context;
