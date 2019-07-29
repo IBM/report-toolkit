@@ -134,6 +134,7 @@ const formatTableHeaders = _.pipe(
  */
 const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
+  console.error(opts);
   const {fields, maxWidth, truncate} = opts;
   if (truncate) {
     opts.colWidths = calculateColumnWidths(maxWidth, fields);

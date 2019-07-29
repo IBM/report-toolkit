@@ -134,9 +134,10 @@ Transformer.normalizeFields = _.pipe(
       const colorFn = _.isFunction(fieldColor)
         ? (row, value) => {
             // the function might not return a color
-            const color =
-              colors[fieldColor(row)] ||
-              FIELD_COLORS[idx % FIELD_COLORS.length];
+            const result = fieldColor(row);
+            const color = colors[result]
+              ? result
+              : FIELD_COLORS[idx % FIELD_COLORS.length];
             return colors[color](value);
           }
         : (row, value) => colors[/** @type {string} */ (fieldColor)](value);
