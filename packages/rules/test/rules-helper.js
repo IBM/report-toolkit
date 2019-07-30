@@ -10,7 +10,6 @@ const {fromAny, map} = observable;
 const {createRule, toInspection, toReportFromObject} = stream;
 
 export const createInspect = (ruleFilepath, config = {}) => {
-  createRule.cache.clear();
   const ruleConfigs = fromFilepathToRuleDefinition(
     require.resolve(ruleFilepath)
   ).pipe(
