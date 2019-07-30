@@ -18,8 +18,8 @@ describe('@report-toolkit/transformers:csv', function() {
           ),
           'to complete with values',
           '"Foo","Bar","Baz"',
-          '\n1,2,3',
-          '\n4,5,6'
+          '1,2,3',
+          '4,5,6'
         );
       });
     });
