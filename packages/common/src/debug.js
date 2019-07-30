@@ -9,6 +9,10 @@ const APP_NAMESPACE = `${SHORT_NAMESPACE}*`;
 
 const joinDebugNamespace = _.join(NAMESPACE_SEPARATOR);
 
+/**
+ * Returns a namespace for debug pkg
+ * @param {string[]} args Strings to append to debug namespace
+ */
 const getDebugNamespace = (...args) =>
   joinDebugNamespace([SHORT_NAMESPACE, ...args]);
 
@@ -17,19 +21,44 @@ export const createDebugger = _.pipe(
   debug
 );
 
+/**
+ * Enables entire debug namespace for this module
+ */
 export const enableDebugger = () => {
   debug.enable(APP_NAMESPACE);
 };
 
+/**
+ * @param {string[]} args
+ */
 export const createDebugPipe = (...args) => {
   const debug = createDebugger(...args);
-  return (fn = _.identity) => observable =>
-    observable.pipe(
-      tap(value => {
-        const msg = _.castArray(fn(value));
-        if (msg.length) {
-          debug(...msg);
-        }
-      })
-    );
+
+  return (
+    /**
+     * @param {(...args: any[]) => string|any[]} fn
+     */
+    fn =>
+      /**
+       * @param {Observable} observable
+       * @returns {Observable}
+       */
+      observable =>
+        observable.pipe(
+          tap(value => {
+            /**
+             * @type {any[]}
+             */
+            const msg = _.castArray(fn(value));
+            if (msg.length) {
+              // @ts-ignore
+              debug(...msg);
+            }
+          })
+        )
+  );
 };
+
+/**
+ * @typedef {import('rxjs').Observable} Observable
+ */

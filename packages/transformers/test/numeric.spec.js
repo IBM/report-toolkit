@@ -1,5 +1,3 @@
-describe('@report-toolkit/transformers', function() {
-  describe('transformer:numeric', function() {
-    it('should yank out numeric values');
-  });
+describe('@report-toolkit/transformers:numeric', function() {
+  it('should yank out numeric values');
 });

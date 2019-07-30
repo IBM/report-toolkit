@@ -1,4 +1,5 @@
 import {of} from '@report-toolkit/common/src/observable.js';
+// @ts-ignore
 import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
 
 import {toObjectFromFilepath} from '../src/index.js';

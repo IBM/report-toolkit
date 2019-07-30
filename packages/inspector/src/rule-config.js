@@ -8,7 +8,7 @@ export class RuleConfig {
    *
    * @param {Rule} rule
    * @param {Object} [rawConfig]
-   * @throws REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG
+   * @throws RTKERR_INVALID_RULE_CONFIG
    */
   constructor(rule, rawConfig = {}) {
     ruleMap.set(this, rule);

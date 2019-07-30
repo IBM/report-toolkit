@@ -1,8 +1,6 @@
 import customConfig from '@report-toolkit/common/test/fixture/config/custom.config.js';
 import {join} from 'path';
 
-// import {fromFilesystemToConfig} from '../src/fs-config-loader.js';
-
 const defaultConfig = [
   'report-toolkit:recommended',
   {
@@ -31,12 +29,13 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
         beforeEach(function() {
           subject = proxyquire(require.resolve('../src/fs-config-loader.js'), {
             cosmiconfig: () => ({
-              search: sandbox.stub().callsFake(searchPath => {
-                if (searchPath === process.cwd()) {
-                  return Promise.resolve({config: {config: defaultConfig}});
-                }
-                return Promise.resolve({config: {config: customConfig}});
-              })
+              search: sandbox
+                .stub()
+                .callsFake(searchPath =>
+                  searchPath === process.cwd()
+                    ? Promise.resolve({config: {config: defaultConfig}})
+                    : Promise.resolve({config: {config: customConfig}})
+                )
             })
           }).fromFilesystemToConfig;
         });

@@ -1,26 +1,29 @@
-// @ts-check
-
 import {observable, redact} from '@report-toolkit/common';
-
-import {createTransformer} from './transformer.js';
 
 const {map} = observable;
 
 /**
+ * @type {TransformerMeta}
+ */
+export const meta = {
+  description: 'Redact secrets from a report',
+  id: 'redact',
+  input: ['report'],
+  output: 'report'
+};
+
+/**
+ * @type {TransformFunction<Report,Report>}
+ */
+export const transform = (opts = {}) => observable =>
+  observable.pipe(map(report => redact(report, opts)));
+
+/**
  * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
  */
 
 /**
- * @template T
- * @typedef {import('./transformer.js').TransformFunction<T>} TransformFunction
- * @typedef {import('./transformer.js').Transformer} Transformer
+ * @template T,U
+ * @typedef {import('./transformer.js').TransformFunction<T,U>} TransformFunction
  */
-
-/**
- * @type {Transformer<Report>}
- */
-export const toRedactedReport = createTransformer(
-  (opts = {}) => observable =>
-    observable.pipe(map(report => redact(report, opts))),
-  {allowedFormats: 'json'}
-);

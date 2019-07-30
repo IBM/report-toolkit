@@ -20,8 +20,7 @@ export const BUILTIN_RULES_DIR = 'rules';
 /**
  * Pipes `Report` objects into each `RuleConfig`, then filters on severity level.
  * @param {Observable<Report>} reports - Stream of Report objects
- * @param {Object} [opts] - Optional opts
- * @param {string} [severity=error] - Severity level to filter on; any message severity *lower* than this will be discarded
+ * @param {import('@report-toolkit/common/src/constants').InspectReportOptions} [opts] - Optional opts
  * @returns {Observable<Message>}
  */
 export const inspectReports = (

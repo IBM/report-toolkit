@@ -1,38 +1,11 @@
-const {INFO} = require('@report-toolkit/common').constants;
+import {constants} from '@report-toolkit/common';
 
-exports.meta = {
-  docs: {
-    category: 'resource',
-    description: 'Assert CPU usage % is within a range',
-    url: 'https://more-information-for-this-rule'
-  },
-  schema: {
-    additionalProperties: false,
-    properties: {
-      max: {
-        default: 50,
-        minimum: 0,
-        type: 'integer'
-      },
-      min: {
-        default: 0,
-        minimum: 0,
-        type: 'integer'
-      },
-      mode: {
-        default: 'mean',
-        enum: ['mean', 'min', 'max', 'all'],
-        type: 'string'
-      }
-    },
-    type: 'object'
-  }
-};
+const {INFO} = constants;
 
-const MODE_ALL = (exports.MODE_ALL = 'all');
-const MODE_MEAN = (exports.MODE_MEAN = 'mean');
-const MODE_MIN = (exports.MODE_MIN = 'min');
-const MODE_MAX = (exports.MODE_MAX = 'max');
+const MODE_ALL = 'all';
+const MODE_MEAN = 'mean';
+const MODE_MIN = 'min';
+const MODE_MAX = 'max';
 
 const hrMap = {
   [MODE_ALL]: 'Report',
@@ -82,7 +55,36 @@ const fail = ({max, min, mode}, usage) => {
   };
 };
 
-exports.inspect = (config = {}) => {
+export const meta = {
+  docs: {
+    category: 'resource',
+    description: 'Assert CPU usage % is within a range',
+    url: 'https://more-information-for-this-rule'
+  },
+  schema: {
+    additionalProperties: false,
+    properties: {
+      max: {
+        default: 50,
+        minimum: 0,
+        type: 'integer'
+      },
+      min: {
+        default: 0,
+        minimum: 0,
+        type: 'integer'
+      },
+      mode: {
+        default: 'mean',
+        enum: ['mean', 'min', 'max', 'all'],
+        type: 'string'
+      }
+    },
+    type: 'object'
+  }
+};
+
+export const inspect = (config = {}) => {
   let {max, min, mode} = config;
   min = min || 0;
   max = max || 50;
@@ -119,3 +121,5 @@ exports.inspect = (config = {}) => {
     }
   };
 };
+
+export {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN};

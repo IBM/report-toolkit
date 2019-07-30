@@ -1,9 +1,12 @@
-import {observable} from '@report-toolkit/common';
+import {_, constants, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
-import {FORMAT_CSV, FORMAT_JSON} from '@report-toolkit/formatters';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
+import {
+  compatibleTransforms,
+  knownTransformerIds
+} from '@report-toolkit/transformers';
 
-import {FORMAT_TABLE} from '../table-formatter.js';
+import {terminalColumns} from '../console-utils.js';
 
 const {toReportFromObject} = stream;
 
@@ -11,22 +14,25 @@ const {fromAny, share} = observable;
 
 export const GROUPS = {
   FILTER: 'Filter:',
-  OUTPUT: 'Output:'
+  JSON_TRANSFORM: '"json" Transform Options:',
+  OUTPUT: 'Output:',
+  TABLE_TRANSFORM: '"table" Transform Options:'
 };
 
 export const OPTIONS = {
+  JSON_TRANSFORM: {
+    pretty: {
+      description: 'Pretty-print JSON output',
+      group: GROUPS.JSON_TRANSFORM,
+      type: 'boolean'
+    }
+  },
   OUTPUT: {
     color: {
       default: true,
-      description: 'Use colors w/ "table" format',
+      description: 'Use color output where applicable',
       group: GROUPS.OUTPUT,
       type: 'boolean'
-    },
-    format: {
-      choices: [FORMAT_CSV, FORMAT_JSON, FORMAT_TABLE],
-      default: FORMAT_TABLE,
-      description: 'Output format',
-      group: GROUPS.OUTPUT
     },
     output: {
       alias: 'o',
@@ -36,32 +42,55 @@ export const OPTIONS = {
       requiresArg: true,
       type: 'string'
     },
-    pretty: {
-      description: 'Pretty-print JSON output',
-      group: GROUPS.OUTPUT,
-      type: 'boolean'
-    },
     'show-secrets-unsafe': {
       description: 'Live dangerously & do not automatically redact secrets',
       group: GROUPS.OUTPUT,
       type: 'boolean'
     },
-    truncate: {
-      conflicts: 'wrap',
-      default: true,
-      description: 'Truncate values (table format)',
+    transform: {
+      // @todo list transform aliases
+      alias: 't',
+      choices: knownTransformerIds,
+      coerce: _.castArray,
+      default: constants.DEFAULT_TRANSFORMER,
+      description: 'Transform(s) to apply',
       group: GROUPS.OUTPUT,
-      type: 'boolean'
+      type: 'array'
+    }
+  },
+  TABLE_TRANSFORM: {
+    'max-width': {
+      defaultDescription: `terminal width (${terminalColumns})`,
+      description: 'Set maximum output width; ignored if --no-truncate used',
+      group: GROUPS.TABLE_TRANSFORM,
+      type: 'number'
     },
-    wrap: {
-      conflicts: 'truncate',
-      description:
-        'Hard-wrap values (table format only; implies --no-truncate)',
-      group: GROUPS.OUTPUT,
+    truncate: {
+      default: true,
+      description: 'Truncate & word-wrap output',
+      group: GROUPS.TABLE_TRANSFORM,
       type: 'boolean'
     }
   }
 };
+
+export const getOptions = (
+  group,
+  {
+    sourceType = 'report',
+    defaultTransformer = constants.DEFAULT_TRANSFORMER
+  } = {}
+) =>
+  group.transform
+    ? {
+        ...group,
+        transform: {
+          ...group.transform,
+          choices: compatibleTransforms(sourceType),
+          default: defaultTransformer
+        }
+      }
+    : group;
 
 export const fromFilepathToReport = (filepaths, opts = {}) =>
   fromAny(filepaths).pipe(

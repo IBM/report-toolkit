@@ -12,6 +12,7 @@ import defaultsDeepAll from 'lodash/fp/defaultsDeepAll.js';
 import filter from 'lodash/fp/filter.js';
 import flip from 'lodash/fp/flip.js';
 import forEach from 'lodash/fp/forEach.js';
+import fromPairs from 'lodash/fp/fromPairs.js';
 import get from 'lodash/fp/get.js';
 import getOr from 'lodash/fp/getOr.js';
 import gte from 'lodash/fp/gte.js';
@@ -29,9 +30,11 @@ import isObject from 'lodash/fp/isObject.js';
 import isString from 'lodash/fp/isString.js';
 import isUndefined from 'lodash/fp/isUndefined.js';
 import join from 'lodash/fp/join.js';
+import keys from 'lodash/fp/keys.js';
 import map from 'lodash/fp/map.js';
 import memoize from 'lodash/fp/memoize.js';
 import merge from 'lodash/fp/merge.js';
+import mergeAll from 'lodash/fp/mergeAll.js';
 import negate from 'lodash/fp/negate.js';
 import noop from 'lodash/fp/noop.js';
 import omit from 'lodash/fp/omit.js';
@@ -51,7 +54,7 @@ import split from 'lodash/fp/split.js';
 import sum from 'lodash/fp/sum.js';
 import tap from 'lodash/fp/tap.js';
 import toPairs from 'lodash/fp/toPairs.js';
-import trimEnd from 'lodash/fp/trimEnd.js';
+import trim from 'lodash/fp/trim.js';
 import unary from 'lodash/fp/unary.js';
 import uniq from 'lodash/fp/uniq.js';
 import isPromise from 'p-is-promise';
@@ -71,6 +74,7 @@ export const _ = {
   filter,
   flip,
   forEach,
+  fromPairs,
   get,
   getOr,
   gte,
@@ -89,9 +93,11 @@ export const _ = {
   isString,
   isUndefined,
   join,
+  keys,
   map,
   memoize,
   merge,
+  mergeAll,
   negate,
   noop,
   omit,
@@ -111,8 +117,7 @@ export const _ = {
   tap,
   toPairs,
   traverse,
-  trimEnd,
-
+  trim,
   unary,
   uniq
 };

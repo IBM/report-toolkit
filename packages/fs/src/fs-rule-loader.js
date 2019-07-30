@@ -1,6 +1,6 @@
 import {observable} from '@report-toolkit/common';
 import {readdir as readdirNodeback} from 'fs';
-import {basename, join} from 'path';
+import {basename, extname, join} from 'path';
 
 const {bindNodeCallback, filter, fromAny, map, mergeAll} = observable;
 
@@ -18,12 +18,12 @@ const toRuleDefinitionFromFilepath = (extension = '.js') => observable =>
 /**
  * Returns a list of absolute paths to files in a directory
  * @param {string} dirpath - Directory to read
- * @returns {Observable<string>} Stream of filepaths
+ * @returns {import('@report-toolkit/common/src/observable').Observable<string>} Stream of filepaths
  */
 export const fromDirpathToFilepaths = dirpath => {
   return readdir(dirpath).pipe(
     mergeAll(),
-    filter(filepath => filepath !== 'index.js'),
+    filter(filepath => filepath !== 'index.js' && extname(filepath) === '.js'),
     map(filepath => join(dirpath, filepath))
   );
 };

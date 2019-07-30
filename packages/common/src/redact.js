@@ -1,6 +1,9 @@
 import {REDACTED_TOKEN} from './constants.js';
+import {createDebugger} from './debug.js';
 import {kRedacted} from './symbols.js';
 import {_} from './util.js';
+
+const debug = createDebugger('common', 'redact');
 
 const AWS_STR = '(AWS|aws|Aws)?_?';
 const QUOTE_STR = '("|\')';
@@ -44,8 +47,8 @@ const isSecret = (secrets, value, key) =>
  * mutate `obj`. Returned value will have a `kRedacted` Symbol key set to
  * `true`. Unless option `force` is `true`, any `obj` having this root property
  * will be returned w/o modification.
- * @param {T} obj - Object whose string values may be redacted
- * @param {Object} [opts] - Options
+ * @param {object} obj - Object whose string values may be redacted
+ * @param {object} [opts] - Options
  * @param {string|string[]|RegExp|RegExp[]} [opts.match] - Also redact these
  * keypaths (e.g., `header.cwd`) or matching values. A matching keypath will
  * redact all children; if the value of `match` is `header`, _everything_ in the
@@ -53,7 +56,7 @@ const isSecret = (secrets, value, key) =>
  * @param {Set<string>} [opts.whitelist=['sharedObjects']] - Whitelist these keypaths from redaction
  * @param {boolean} [opts.force] - If `true`, redact an already-redacted object
  * (one which has `[kRedacted]: true` root prop)
- * @returns {T} `obj` with potentially redacted values
+ * @returns {object} `obj` with potentially redacted values
  * @see https://npm.im/traverse
  */
 export const redact = (obj, opts = {}) => {
@@ -63,6 +66,7 @@ export const redact = (obj, opts = {}) => {
   );
 
   if (!force && kRedacted in obj) {
+    debug('encountered previously-redacted obj');
     return obj;
   }
 
@@ -71,7 +75,8 @@ export const redact = (obj, opts = {}) => {
 
   const secrets = _.uniq([...match, ...SECRETS]);
 
-  return {
+  let redactedCount = 0;
+  const result = {
     // NOTE: this is NOT `Array.prototype.map`
     ..._.traverse(obj).map(function(value) {
       // potential optimization: keys whose keypaths are longer than the current
@@ -84,10 +89,15 @@ export const redact = (obj, opts = {}) => {
         isSecret(secrets, value, keypath)
       ) {
         this.update(REDACTED_TOKEN);
+        redactedCount++;
       }
     }),
     [kRedacted]: true
   };
+
+  debug(`redacted ${redactedCount} values`);
+
+  return result;
 };
 
 export {SECRETS};

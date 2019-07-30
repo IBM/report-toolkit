@@ -13,9 +13,9 @@ import {createRuleConfig} from './rule-config.js';
 
 const {WARNING} = constants;
 const {
-  REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
-  REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
-  REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
+  RTKERR_INVALID_RULE_CONFIG,
+  RTKERR_INVALID_RULE_DEFINITION,
+  RTKERR_INVALID_SCHEMA,
   RTkError
 } = error;
 const {
@@ -35,13 +35,6 @@ const {
 const {kRuleFilepath, kRuleId, kRuleInspect, kRuleMeta} = symbols;
 
 const debug = createDebugger('inspector', 'rule');
-
-/**
- * @typedef {Object} RuleDefinition
- * @property {Object} meta - (schema for `meta` prop)
- * @property {Function} inspect - Async function which receives `Context` object
- * and optional configuration
- */
 
 /**
  * Map of Rules to config schema validation functions
@@ -75,14 +68,14 @@ const catchHandlerError = (severity = WARNING) => observable =>
 export class Rule {
   /**
    * Applies defaults, assigns some metadata.
-   * @param {RuleDefinition} ruleDef
+   * @param {Partial<RuleOptions>} ruleDef
    */
   constructor(ruleDef) {
     ruleDef = Rule.applyDefaults(ruleDef);
 
     if (!_.isFunction(ruleDef.inspect)) {
       throw RTkError.create(
-        REPORT_TOOLKIT_ERR_INVALID_RULE_DEFINITION,
+        RTKERR_INVALID_RULE_DEFINITION,
         `Definition for rule ${ruleDef.id ||
           ruleDef.filepath} must export an "inspect" function`
       );
@@ -145,7 +138,7 @@ export class Rule {
 
     if (ajv.errors) {
       throw RTkError.create(
-        REPORT_TOOLKIT_ERR_INVALID_SCHEMA,
+        RTKERR_INVALID_SCHEMA,
         `Schema for rule ${this.id} is invalid: ${ajv.errorsText()}`
       );
     }
@@ -158,7 +151,7 @@ export class Rule {
           dataVar: 'config'
         });
         throw RTkError.create(
-          REPORT_TOOLKIT_ERR_INVALID_RULE_CONFIG,
+          RTKERR_INVALID_RULE_CONFIG,
           `Invalid configuration for rule "${this.id}": ${errors}`,
           {url: this.url}
         );
@@ -312,9 +305,10 @@ export class Rule {
    */
   static create(ruleDefinition, {filepath, id} = {}) {
     return new Rule({
-      ..._.pick(['inspect', 'meta'], ruleDefinition),
       filepath,
-      id
+      id,
+      inspect: ruleDefinition.inspect,
+      meta: ruleDefinition.meta
     });
   }
 
@@ -323,14 +317,17 @@ export class Rule {
   }
 }
 
+export const createRule = Rule.create;
+
 /**
- * Creates a `Rule` from a user-defined (or builtin) `RuleDefinition`, which
- * is the exports of a rule definition file.
- * The same `Rule` cannot be created twice from the same definition.
- * @param {RuleDefinition} ruleDefinition - Rule definition
- * @param {Object} [opts] - Options
- * @param {string} [opts.filepath] - Filepath to rule definition, if available
- * @param {string} [opts.id] - ID of rule definition (derived from filepath), if available
- * @returns {Rule} New rule
+ * @typedef {Object} RuleDefinition
+ * @property {Object} meta - (schema for `meta` prop)
+ * @property {Function} inspect - Async function which receives `Context` object
+ * and optional configuration
  */
-export const createRule = _.memoize(Rule.create);
+
+/**
+ * @typedef {RuleDefinition} RuleOptions
+ * @property {string} filepath - Filepath of rule, if present
+ * @property {string} id - Unique rule ID
+ */

@@ -1,8 +1,8 @@
 import {of} from '@report-toolkit/common/src/observable.js';
 
-import {toJson} from '../src/json.js';
+import {transform} from '../src/json.js';
 
-describe('@report-toolkit/formatters:json', function() {
+describe('@report-toolkit/transformers:json', function() {
   describe('function', function() {
     describe('toJson()', function() {
       it('should parse a JS object and return JSON', function() {
@@ -18,7 +18,7 @@ describe('@report-toolkit/formatters:json', function() {
               baz: 6,
               foo: 4
             }
-          ).pipe(toJson()),
+          ).pipe(transform()),
           'to complete with value',
           JSON.stringify([
             {
@@ -49,7 +49,7 @@ describe('@report-toolkit/formatters:json', function() {
                 baz: 6,
                 foo: 4
               }
-            ).pipe(toJson({pretty: true})),
+            ).pipe(transform({pretty: true})),
             'to complete with value',
             JSON.stringify(
               [

@@ -3,7 +3,7 @@ import cosmiconfig from 'cosmiconfig';
 
 import {RC_NAMESPACE} from './constants.js';
 
-const {REPORT_TOOLKIT_ERR_MISSING_CONFIG} = error;
+const {RTKERR_MISSING_CONFIG} = error;
 const {
   map,
   mapTo,
@@ -21,7 +21,7 @@ const getExplorer = _.memoize(opts =>
     RC_NAMESPACE,
     _.defaultsDeep(
       {
-        loaders: {'.js': cosmiconfig.loadJs, noExt: cosmiconfig.loadJs}
+        loaders: {noExt: cosmiconfig.loadJs}
       },
       opts
     )
@@ -51,7 +51,7 @@ const toConfigFromFilepath = (opts = {}) => {
 };
 
 export const fromFilesystemToConfig = ({
-  config: rawConfigOrFilepath,
+  config: rawConfigOrFilepath = {},
   searchPath = process.cwd(),
   search = true
 } = {}) =>
@@ -59,7 +59,7 @@ export const fromFilesystemToConfig = ({
     pipeIf(_.isString, toConfigFromFilepath()),
     pipeIf(
       rawConfig => _.isEmpty(rawConfig) && search,
-      debug(searchPath => `searching in ${searchPath} for config`),
+      debug(() => `searching in ${searchPath} for config`),
       mapTo(searchPath),
       toConfigFromSearchPath()
     ),
@@ -67,7 +67,7 @@ export const fromFilesystemToConfig = ({
       _.isEmpty,
       switchMapTo(
         throwRTkError(
-          REPORT_TOOLKIT_ERR_MISSING_CONFIG,
+          RTKERR_MISSING_CONFIG,
           `No config file found within ${searchPath ||
             'current working directory'}`
         )

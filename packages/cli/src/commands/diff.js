@@ -1,14 +1,19 @@
-import {constants, createDebugPipe, observable} from '@report-toolkit/common';
+import {
+  _,
+  constants,
+  createDebugPipe,
+  observable
+} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
+import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 
-import {toFormattedString, toOutput} from '../console-utils.js';
-import {FORMAT_TABLE} from '../table-formatter.js';
-import {GROUPS, OPTIONS} from './common.js';
+import {terminalColumns, toOutput} from '../console-utils.js';
+import {getOptions, GROUPS, OPTIONS} from './common.js';
 
 const {toReportDiff, toReportFromObject} = stream;
 const {DEFAULT_DIFF_OPTIONS} = constants;
-const {of} = observable;
+const {of, share} = observable;
 
 const debug = createDebugPipe('cli', 'commands', 'diff');
 
@@ -36,7 +41,9 @@ export const builder = yargs =>
       nargs: 1,
       type: 'array'
     },
-    ...OPTIONS.OUTPUT
+    ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
+    ...OPTIONS.JSON_TRANSFORM,
+    ...OPTIONS.TABLE_TRANSFORM
   });
 
 /**
@@ -45,63 +52,60 @@ export const builder = yargs =>
  * @param {*} argv
  */
 export const handler = argv => {
-  const {
-    config,
-    file1,
-    file2,
-    prop: properties,
-    truncate: truncateValues = true,
-    wrap: wrapValues = false,
-    format = FORMAT_TABLE,
-    pretty = false,
-    color,
-    output,
-    showSecretsUnsafe = false
-  } = argv;
-  of(file1, file2)
+  const {file1, file2, prop: properties} = argv;
+  const source = of(file1, file2).pipe(
+    toObjectFromFilepath(),
+    debug(
+      () =>
+        argv.config.diff && `using diff-specific options: ${argv.config.diff}`
+    ),
+    toReportFromObject({
+      ...argv.config.diff,
+      disableSort: true,
+      showSecretsUnsafe: argv.showSecretsUnsafe
+    }),
+    debug(report => `created Report from ${report.filepath}`),
+    toReportDiff({...argv.config.diff, properties}),
+    share()
+  );
+  loadTransforms(argv.transform, {beginWith: 'object'})
     .pipe(
-      toObjectFromFilepath(),
-      debug(() => config.diff && `using diff-specific options: ${config.diff}`),
-      toReportFromObject({
-        ...config.diff,
-        disableSort: true,
-        showSecretsUnsafe
-      }),
-      debug(report => `created Report from ${report.filepath}`),
-      toReportDiff({...config.diff, properties}),
-      debug(result => result && `diff generated for ${file1} : ${file2}`),
-      toFormattedString(format, {
-        color,
-        fields: [
+      runTransforms(
+        source,
+        _.mergeAll([
+          _.getOr({}, 'config', argv),
           {
-            color: row => OP_COLORS[row.op],
-            label: 'Op',
-            value: row => OP_CODE[row.op],
-            widthPct: 4
-          },
-          {
-            color: row => OP_COLORS[row.op],
-            label: 'Path',
-            value: 'path',
-            widthPct: 24
-          },
-          {
-            label: file1,
-            value: 'value',
-            widthPct: 36
-          },
-          {
-            label: file2,
-            value: 'oldValue',
-            widthPct: 36
+            fields: [
+              {
+                color: row => OP_COLORS[row.op],
+                label: 'Op',
+                value: row => OP_CODE[row.op],
+                widthPct: 4
+              },
+              {
+                color: row => OP_COLORS[row.op],
+                label: 'Path',
+                value: 'path',
+                widthPct: 24
+              },
+              {
+                label: file1,
+                value: 'value',
+                widthPct: 36
+              },
+              {
+                label: file2,
+                value: 'oldValue',
+                widthPct: 36
+              }
+            ],
+            outputHeader: `Diff: ${file1} <=> ${file2}`,
+            maxWidth: terminalColumns
           }
-        ],
-        outputHeader: `Diff: ${file1} <=> ${file2}`,
-        pretty,
-        truncateValues,
-        wrapValues
-      }),
-      toOutput(output)
+        ]),
+        argv
+      ),
+      toOutput(argv.output, {color: argv.color})
     )
     .subscribe();
 };

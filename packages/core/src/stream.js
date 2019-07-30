@@ -16,7 +16,7 @@ import {createReport, isReport} from '@report-toolkit/report';
 
 const {DEFAULT_DIFF_OPTIONS, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
 
-const {REPORT_TOOLKIT_ERR_INVALID_PARAMETER} = error;
+const {RTKERR_INVALID_PARAMETER} = error;
 const {
   defer,
   filter,
@@ -75,7 +75,7 @@ export const toInspection = (reports, opts = DEFAULT_LOAD_REPORT_OPTIONS) => {
         ruleConfigs.pipe(
           switchMapTo(
             throwRTkError(
-              REPORT_TOOLKIT_ERR_INVALID_PARAMETER,
+              RTKERR_INVALID_PARAMETER,
               'Parameter to toInspection() must be of type Observable<Report>'
             )
           )

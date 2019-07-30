@@ -1,32 +1,3 @@
-exports.meta = {
-  docs: {
-    category: 'resource',
-    description: 'Assert memory usage % is within a range',
-    url: 'https://more-information-for-this-rule'
-  },
-  schema: {
-    additionalProperties: false,
-    properties: {
-      max: {
-        default: 50,
-        minimum: 0,
-        type: 'integer'
-      },
-      min: {
-        default: 0,
-        minimum: 0,
-        type: 'integer'
-      },
-      mode: {
-        default: 'mean',
-        enum: ['mean', 'min', 'max', 'all'],
-        type: 'string'
-      }
-    },
-    type: 'object'
-  }
-};
-
 const MODE_ALL = (exports.MODE_ALL = 'all');
 const MODE_MEAN = (exports.MODE_MEAN = 'mean');
 const MODE_MIN = (exports.MODE_MIN = 'min');
@@ -78,7 +49,7 @@ const fail = ({max, min, mode}, usage) => {
   };
 };
 
-exports.inspect = ({max, min, mode} = {}) => {
+export const inspect = ({max, min, mode} = {}) => {
   const usages = [];
   return {
     complete() {
@@ -106,4 +77,33 @@ exports.inspect = ({max, min, mode} = {}) => {
       }
     }
   };
+};
+
+export const meta = {
+  docs: {
+    category: 'resource',
+    description: 'Assert memory usage % is within a range',
+    url: 'https://more-information-for-this-rule'
+  },
+  schema: {
+    additionalProperties: false,
+    properties: {
+      max: {
+        default: 50,
+        minimum: 0,
+        type: 'integer'
+      },
+      min: {
+        default: 0,
+        minimum: 0,
+        type: 'integer'
+      },
+      mode: {
+        default: 'mean',
+        enum: ['mean', 'min', 'max', 'all'],
+        type: 'string'
+      }
+    },
+    type: 'object'
+  }
 };
