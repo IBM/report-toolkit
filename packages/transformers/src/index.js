@@ -1,6 +1,7 @@
 import {_, createDebugPipe, error, observable} from '@report-toolkit/common';
 
 import * as csv from './csv.js';
+import * as filter from './filter.js';
 import * as json from './json.js';
 import * as newline from './newline.js';
 import * as numeric from './numeric.js';
@@ -11,6 +12,7 @@ import {createTransformer, Transformer} from './transformer.js';
 
 const knownTransformers = [
   csv,
+  filter,
   json,
   newline,
   numeric,
@@ -84,11 +86,16 @@ export {Transformer};
  * @param {Object} [opts] - Options
  * @param {string} [opts.beginWith=report] - Begin transform pipe with this type
  * @param {string} [opts.endWith=string] - End transform pipe with this type
+ * @param {string} [opts.defaultTransformer] - Default transformer
  * @returns {Observable<Transformer>}
  */
 export const loadTransforms = (
   transformerIds,
-  {beginWith = 'report', endWith = 'string'} = {}
+  {
+    beginWith = 'report',
+    endWith = 'string',
+    defaultTransformer = DEFAULT_TRANSFORMER
+  } = {}
 ) =>
   iif(
     () => Boolean(transformerIds.length),
@@ -136,7 +143,7 @@ export const loadTransforms = (
           }
 
           if (!transformers[transformers.length - 1].canEndWith(endWith)) {
-            transformers.push(loadTransformer(DEFAULT_TRANSFORMER));
+            transformers.push(loadTransformer(defaultTransformer));
           }
 
           let nextTransformer = transformers[++idx];

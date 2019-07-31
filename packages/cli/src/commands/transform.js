@@ -4,6 +4,8 @@ import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 import {terminalColumns, toOutput} from '../console-utils.js';
 import {fromFilepathToReport, OPTIONS} from './common.js';
 
+const DEFAULT_TRANSFORMER = 'json';
+
 export const command = 'transform <file..>';
 
 export const desc = 'Transform a report';
@@ -18,7 +20,7 @@ export const builder = yargs =>
       ...{
         transform: {
           ...OPTIONS.OUTPUT.transform,
-          default: 'json'
+          default: DEFAULT_TRANSFORMER
         }
       },
       ...OPTIONS.JSON_TRANSFORM,
@@ -28,6 +30,7 @@ export const builder = yargs =>
           default: false
         }
       },
+      ...OPTIONS.FILTER_TRANSFORM,
       ...OPTIONS.TABLE_TRANSFORM
     });
 
@@ -43,7 +46,7 @@ export const handler = argv => {
       argv
     )
   );
-  loadTransforms(argv.transform)
+  loadTransforms(argv.transform, {defaultTransformer: DEFAULT_TRANSFORMER})
     .pipe(
       runTransforms(
         reports,

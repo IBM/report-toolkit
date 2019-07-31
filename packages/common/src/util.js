@@ -44,6 +44,7 @@ import orderBy from 'lodash/fp/orderBy.js';
 import overEvery from 'lodash/fp/overEvery.js';
 import overSome from 'lodash/fp/overSome.js';
 import pick from 'lodash/fp/pick.js';
+import pickBy from 'lodash/fp/pickBy.js';
 import pipe from 'lodash/fp/pipe.js';
 import __ from 'lodash/fp/placeholder.js';
 import reduce from 'lodash/fp/reduce.js';
@@ -107,6 +108,7 @@ export const _ = {
   overEvery,
   overSome,
   pick,
+  pickBy,
   pipe,
   reduce,
   reverse,

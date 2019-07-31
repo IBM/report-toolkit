@@ -43,7 +43,8 @@ export const builder = yargs =>
     },
     ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
     ...OPTIONS.JSON_TRANSFORM,
-    ...OPTIONS.TABLE_TRANSFORM
+    ...OPTIONS.TABLE_TRANSFORM,
+    ...OPTIONS.FILTER_TRANSFORM
   });
 
 /**

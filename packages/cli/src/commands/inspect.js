@@ -32,7 +32,10 @@ export const builder = yargs =>
         description: 'Minimum severity level for messages',
         group: GROUPS.FILTER
       },
-      ...OPTIONS.OUTPUT
+      ...OPTIONS.OUTPUT,
+      ...OPTIONS.TABLE_TRANSFORM,
+      ...OPTIONS.JSON_TRANSFORM,
+      ...OPTIONS.FILTER_TRANSFORM
     });
 
 export const handler = argv => {

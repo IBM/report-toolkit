@@ -14,6 +14,7 @@ const {fromAny, share} = observable;
 
 export const GROUPS = {
   FILTER: 'Filter:',
+  FILTER_TRANSFORM: '"filter" Transform Options:',
   JSON_TRANSFORM: '"json" Transform Options:',
   OUTPUT: 'Output:',
   TABLE_TRANSFORM: '"table" Transform Options:'
@@ -25,6 +26,22 @@ export const OPTIONS = {
       description: 'Pretty-print JSON output',
       group: GROUPS.JSON_TRANSFORM,
       type: 'boolean'
+    }
+  },
+  FILTER_TRANSFORM: {
+    include: {
+      alias: 'i',
+      description: 'Include properties (keypaths allowed)',
+      group: GROUPS.FILTER_TRANSFORM,
+      type: 'array',
+      coerce: _.castArray
+    },
+    exclude: {
+      alias: 'x',
+      description: 'Exclude properties (keypaths allowed)',
+      group: GROUPS.FILTER_TRANSFORM,
+      type: 'array',
+      coerce: _.castArray
     }
   },
   OUTPUT: {
