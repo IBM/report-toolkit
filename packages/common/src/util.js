@@ -31,7 +31,9 @@ import isString from 'lodash/fp/isString.js';
 import isUndefined from 'lodash/fp/isUndefined.js';
 import join from 'lodash/fp/join.js';
 import keys from 'lodash/fp/keys.js';
+import lowerCase from 'lodash/fp/lowerCase.js';
 import map from 'lodash/fp/map.js';
+import mapKeys from 'lodash/fp/mapKeys.js';
 import memoize from 'lodash/fp/memoize.js';
 import merge from 'lodash/fp/merge.js';
 import mergeAll from 'lodash/fp/mergeAll.js';
@@ -95,7 +97,9 @@ export const _ = {
   isUndefined,
   join,
   keys,
+  lowerCase,
   map,
+  mapKeys,
   memoize,
   merge,
   mergeAll,
