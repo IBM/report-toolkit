@@ -4,6 +4,7 @@ import {readdirSync} from 'readdir-withfiletypes';
 import rollupExternalModules from 'rollup-external-modules';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
+import hashbang from 'rollup-plugin-hashbang';
 import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
 import visualizer from 'rollup-plugin-visualizer';
@@ -51,31 +52,32 @@ const makeConfigs = pkgpath => {
       ]
     });
   }
-  return [
-    ...configs,
-    {
-      external: rollupExternalModules,
-      input: require.resolve(`${pkgpath}/${pkg.module}`),
-      output: {
-        file: path.join(pkgpath, pkg.main),
-        format: 'cjs',
-        sourcemap: true
-      },
-      plugins: [
-        resolve({
-          preferBuiltins: true
-        }),
-        commonjs({
-          include: /node_modules/
-        }),
-        json(),
-        babel({
-          exclude: [path.join(pkgpath, 'node_modules', '**')]
-        }),
-        visualizer({filename: `.rollup/${path.basename(pkg.main)}.html`})
-      ]
-    }
-  ];
+  const cjsConfig = {
+    external: rollupExternalModules,
+    input: require.resolve(`${pkgpath}/${pkg.module}`),
+    output: {
+      file: path.join(pkgpath, pkg.main),
+      format: 'cjs',
+      sourcemap: true
+    },
+    plugins: [
+      resolve({
+        preferBuiltins: true
+      }),
+      commonjs({
+        include: /node_modules/
+      }),
+      json(),
+      babel({
+        exclude: [path.join(pkgpath, 'node_modules', '**')]
+      }),
+      visualizer({filename: `.rollup/${path.basename(pkg.main)}.html`})
+    ]
+  };
+  if (pkgpath.endsWith('cli')) {
+    cjsConfig.plugins.unshift(hashbang());
+  }
+  return [...configs, cjsConfig];
 };
 
 export default readdirSync(path.join(__dirname, 'packages'), {
