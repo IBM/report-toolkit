@@ -1,7 +1,8 @@
-import {_, constants, createDebugger, symbols} from '@report-toolkit/common';
+import {NO_FILEPATH} from './constants.js';
+import {createDebugger} from './debug.js';
+import {kReport, kReportFilepath} from './symbols.js';
+import {_} from './util.js';
 
-const {kReport, kReportFilepath} = symbols;
-const {NO_FILEPATH} = constants;
 const debug = createDebugger('report');
 
 const KNOWN_PROPS = [

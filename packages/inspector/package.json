@@ -9,8 +9,7 @@
     "ajv": "^6.10.0"
   },
   "devDependencies": {
-    "@report-toolkit/fs": "^0.0.0",
-    "@report-toolkit/report": "^0.0.0"
+    "@report-toolkit/fs": "^0.0.0"
   },
   "engines": {
     "node": ">=8"

@@ -11,3 +11,4 @@ export {createDebugger, enableDebugger, createDebugPipe} from './debug.js';
 export {constants, error, observable, _, symbols};
 export {redact} from './redact.js';
 export {default as colors} from 'kleur';
+export {Report, createReport, isReport} from './report.js';

@@ -164,7 +164,7 @@ export const createTransformer = Transformer.create;
 /**
  * @typedef {"json"|"csv"|"table"} Formatters
  * @typedef {{label: string, value: string|function(any): string, color?: string|function(any): string}} TransformerField
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  */
 
 /**

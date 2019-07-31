@@ -39,7 +39,7 @@ export const transform = ({include = [], exclude = []} = {}) => {
 };
 
 /**
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
  * @typedef {{include?: string[], exclude?: string[]}} FilterTransformerOptions
  */

@@ -1,6 +1,6 @@
+import {createReport} from '@report-toolkit/common';
 import {ERROR} from '@report-toolkit/common/src/constants.js';
 import {of} from '@report-toolkit/common/src/observable.js';
-import {createReport} from '@report-toolkit/report';
 
 import {inspectReports} from '../src/index.js';
 

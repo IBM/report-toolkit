@@ -212,7 +212,7 @@ export const compatibleTransforms = sourceType =>
 
 /**
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  */
 /**
  * @template T,U

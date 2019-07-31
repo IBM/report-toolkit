@@ -2,7 +2,9 @@ import {
   _,
   constants,
   createDebugPipe,
+  createReport,
   error,
+  isReport,
   observable,
   redact
 } from '@report-toolkit/common';
@@ -12,7 +14,6 @@ import {
   createRuleConfig,
   inspectReports
 } from '@report-toolkit/inspector';
-import {createReport, isReport} from '@report-toolkit/report';
 
 const {DEFAULT_DIFF_OPTIONS, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
 

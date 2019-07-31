@@ -1,11 +1,10 @@
-import {observable} from '@report-toolkit/common';
+import {createReport, observable} from '@report-toolkit/common';
 // @ts-ignore
 import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
 // @ts-ignore
 import REPORT_003 from '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json';
 // @ts-ignore
 import REPORT_004 from '@report-toolkit/common/test/fixture/reports/report-004-long-timeout-unref.json';
-import {createReport} from '@report-toolkit/report';
 
 import {transform} from '../src/stack-hash.js';
 

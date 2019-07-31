@@ -71,5 +71,5 @@ export const handler = argv => {
  * @typedef {import('rxjs').Observable<T>} Observable
  */
 /**
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  */

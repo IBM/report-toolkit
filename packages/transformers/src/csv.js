@@ -65,7 +65,7 @@ export const transform = (parserOpts = {}) => observable => {
  */
 
 /**
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
  * @typedef {import('./transformer.js').TransformerField} TransformerField
  */

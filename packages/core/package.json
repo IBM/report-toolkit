@@ -8,8 +8,7 @@
     "@report-toolkit/common": "^0.0.0",
     "@report-toolkit/config": "^0.0.0",
     "@report-toolkit/diff": "^0.0.0",
-    "@report-toolkit/inspector": "^0.0.0",
-    "@report-toolkit/report": "^0.0.0"
+    "@report-toolkit/inspector": "^0.0.0"
   },
   "engines": {
     "node": ">=8"

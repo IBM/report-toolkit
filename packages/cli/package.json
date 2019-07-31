@@ -12,7 +12,6 @@
     "@report-toolkit/core": "^0.0.0",
     "@report-toolkit/fs": "^0.0.0",
     "@report-toolkit/inspector": "^0.0.0",
-    "@report-toolkit/report": "^0.0.0",
     "@report-toolkit/rules": "^0.0.0",
     "@report-toolkit/transformers": "^0.0.0",
     "cli-table3": "^0.5.1",

@@ -226,7 +226,7 @@ export const transform = (opts = {}) => {
 };
 
 /**
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  * @typedef {import('./transformer.js').TransformerField} Field
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
  */

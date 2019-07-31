@@ -19,7 +19,7 @@ export const transform = (opts = {}) => observable =>
   observable.pipe(map(report => redact(report, opts)));
 
 /**
- * @typedef {import('@report-toolkit/report').Report} Report
+ * @typedef {import('@report-toolkit/common').Report} Report
  * @typedef {import('./transformer.js').TransformerMeta} TransformerMeta
  */
 
