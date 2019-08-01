@@ -1,4 +1,4 @@
-exports.config = {
+export const config = {
   name: 'recommended',
   rules: {
     'cpu-usage': 'on',

@@ -3,7 +3,7 @@ import {createDebugger} from './debug.js';
 import {kReport, kReportFilepath} from './symbols.js';
 import {_} from './util.js';
 
-const debug = createDebugger('report');
+const debug = createDebugger('common', 'report');
 
 const KNOWN_PROPS = [
   'header',

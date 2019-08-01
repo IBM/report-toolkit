@@ -128,14 +128,9 @@ export const toReport = (opts = {}) => observable =>
 
 export const toRuleConfig = (config = {}) => {
   const ruleIdsCount = _.getOr(0, 'rules.length', config);
-  if (!ruleIdsCount) {
-    debug(
-      'no enabled rules found; enabling ALL built-in rules in an attempt to be useful'
-    );
-  }
-
   return ruleDefs =>
     ruleDefs.pipe(
+      pipeIf(!ruleIdsCount, debug(() => 'whitelisting rules by default')),
       pipeIf(ruleIdsCount, filter(({id}) => Boolean(_.get(id, config.rules)))),
       map(({filepath, id, ruleDef}) =>
         createRule(ruleDef, {filepath, id}).toRuleConfig(config)
@@ -144,3 +139,4 @@ export const toRuleConfig = (config = {}) => {
 };
 
 export {createRule};
+export {parseConfig} from '@report-toolkit/config';

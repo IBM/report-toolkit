@@ -64,13 +64,13 @@ export const fromFilesystemToConfig = ({
       toConfigFromSearchPath()
     ),
     pipeIf(
-      _.isEmpty,
+      _.isEmpty && _.isString(rawConfigOrFilepath),
       switchMapTo(
         throwRTkError(
           RTKERR_MISSING_CONFIG,
-          `No config file found within ${searchPath ||
-            'current working directory'}`
+          `No config file found at ${rawConfigOrFilepath}`
         )
       )
-    )
+    ),
+    pipeIf(_.isEmpty, mapTo({}))
   );

@@ -7,8 +7,10 @@ import {
   symbols
 } from '@report-toolkit/common';
 
+import {config as recommended} from './configs/recommended.js';
+
 const {NAMESPACE} = constants;
-const {map, of} = observable;
+const {map} = observable;
 const {kFlattenedConfig} = symbols;
 const debug = createDebugger('config');
 const {RTKERR_INVALID_CONFIG, RTKERR_UNKNOWN_BUILTIN_CONFIG, RTkError} = error;
@@ -90,12 +92,9 @@ const flattenConfig = (config, configObjects = []) => {
 };
 
 // XXX: move this
-export const BUILTIN_CONFIGS = new Map(
-  ['./configs/recommended.js'].map(filepath => {
-    const {config} = require(filepath);
-    return [`${NAMESPACE}:${config.name}`, config];
-  })
-);
+export const BUILTIN_CONFIGS = new Map([
+  [`${NAMESPACE}:${recommended.name}`, recommended]
+]);
 
 export const filterEnabledRules = _.pipe(
   _.getOr({}, 'rules'),
@@ -110,8 +109,8 @@ export const filterEnabledRules = _.pipe(
   })
 );
 
-export const parseConfig = rawConfig =>
-  of(rawConfig).pipe(
+export const parseConfig = () => observable =>
+  observable.pipe(
     // XXX: unary used because flattenConfig is a bad algorithm
     map(_.unary(flattenConfig)),
     map(_.defaults(DEFAULT_CONFIG_SHAPE))

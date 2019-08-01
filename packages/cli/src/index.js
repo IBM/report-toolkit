@@ -6,6 +6,7 @@ import {
   createDebugger,
   enableDebugger
 } from '@report-toolkit/common';
+import {stream} from '@report-toolkit/core';
 import {
   constants as fsConstants,
   fromFilesystemToConfig
@@ -15,6 +16,7 @@ import yargs from 'yargs/yargs.js';
 import * as commands from './commands/index.js';
 
 const {DEFAULT_TRANSFORMER, NAMESPACE} = commonConstants;
+const {parseConfig} = stream;
 
 const debug = createDebugger('cli', 'main');
 
@@ -62,7 +64,9 @@ const main = () => {
 
           argv.config = await fromFilesystemToConfig({
             searchPath: argv.rc
-          }).toPromise();
+          })
+            .pipe(parseConfig())
+            .toPromise();
 
           return argv;
         })
