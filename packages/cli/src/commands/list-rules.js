@@ -1,10 +1,12 @@
 import {_, observable} from '@report-toolkit/common';
+import {stream} from '@report-toolkit/core';
 import {ruleDefs} from '@report-toolkit/rules';
-import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 
 import {toOutput} from '../console-utils.js';
 import {getOptions, OPTIONS} from './common.js';
+
 const {from, share} = observable;
+const {fromTransformers} = stream;
 export const command = 'list-rules';
 
 export const desc = 'Lists built-in rules';
@@ -19,29 +21,26 @@ export const builder = yargs =>
 
 export const handler = argv => {
   const source = from(ruleDefs).pipe(share());
-  loadTransforms(argv.transform, {beginWith: 'object'})
-    .pipe(
-      runTransforms(
-        source,
-        _.mergeAll([
-          _.getOr({}, 'config', argv),
+  fromTransformers(source, argv.transform, {
+    beginWith: 'object',
+    config: _.mergeAll([
+      _.getOr({}, 'config', argv),
+      {
+        fields: [
           {
-            fields: [
-              {
-                label: 'Rule',
-                value: 'id'
-              },
-              {
-                label: 'Description',
-                value: _.getOr('(no description)', 'description')
-              }
-            ],
-            outputHeader: 'Available Rules'
+            label: 'Rule',
+            value: 'id'
+          },
+          {
+            label: 'Description',
+            value: _.getOr('(no description)', 'description')
           }
-        ]),
-        argv
-      ),
-      toOutput(argv.output, {color: argv.color})
-    )
+        ],
+        outputHeader: 'Available Rules'
+      }
+    ]),
+    overrides: argv
+  })
+    .pipe(toOutput(argv.output, {color: argv.color}))
     .subscribe();
 };

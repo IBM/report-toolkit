@@ -6,12 +6,11 @@ import {
 } from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
-import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
 import {getOptions, GROUPS, OPTIONS} from './common.js';
 
-const {toReportDiff, toReportFromObject} = stream;
+const {toReportDiff, toReportFromObject, fromTransformers} = stream;
 const {DEFAULT_DIFF_OPTIONS} = constants;
 const {of, share} = observable;
 
@@ -69,44 +68,42 @@ export const handler = argv => {
     toReportDiff({...argv.config.diff, properties}),
     share()
   );
-  loadTransforms(argv.transform, {beginWith: 'object'})
-    .pipe(
-      runTransforms(
-        source,
-        _.mergeAll([
-          _.getOr({}, 'config', argv),
+
+  fromTransformers(source, argv.transform, {
+    beginWith: 'object',
+    config: _.mergeAll([
+      _.getOr({}, 'config', argv),
+      {
+        fields: [
           {
-            fields: [
-              {
-                color: row => OP_COLORS[row.op],
-                label: 'Op',
-                value: row => OP_CODE[row.op],
-                widthPct: 4
-              },
-              {
-                color: row => OP_COLORS[row.op],
-                label: 'Path',
-                value: 'path',
-                widthPct: 24
-              },
-              {
-                label: file1,
-                value: 'value',
-                widthPct: 36
-              },
-              {
-                label: file2,
-                value: 'oldValue',
-                widthPct: 36
-              }
-            ],
-            outputHeader: `Diff: ${file1} <=> ${file2}`,
-            maxWidth: terminalColumns
+            color: row => OP_COLORS[row.op],
+            label: 'Op',
+            value: row => OP_CODE[row.op],
+            widthPct: 4
+          },
+          {
+            color: row => OP_COLORS[row.op],
+            label: 'Path',
+            value: 'path',
+            widthPct: 24
+          },
+          {
+            label: file1,
+            value: 'value',
+            widthPct: 36
+          },
+          {
+            label: file2,
+            value: 'oldValue',
+            widthPct: 36
           }
-        ]),
-        argv
-      ),
-      toOutput(argv.output, {color: argv.color})
-    )
+        ],
+        outputHeader: `Diff: ${file1} <=> ${file2}`,
+        maxWidth: terminalColumns
+      }
+    ]),
+    overrides: argv
+  })
+    .pipe(toOutput(argv.output, {color: argv.color}))
     .subscribe();
 };

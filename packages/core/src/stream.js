@@ -14,6 +14,7 @@ import {
   createRuleConfig,
   inspectReports
 } from '@report-toolkit/inspector';
+import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
 
 const {DEFAULT_DIFF_OPTIONS, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
 
@@ -140,3 +141,28 @@ export const toRuleConfig = (config = {}) => {
 
 export {createRule};
 export {parseConfig} from '@report-toolkit/config';
+
+/**
+ * Run `Observable` `source` through chain of transformers
+ * @param {Observable<any>} source
+ * @param {string[]} transformerChain
+ * @param {FromTransformersOptions} [options]
+ */
+export const fromTransformers = (source, transformerChain, options = {}) =>
+  loadTransforms(transformerChain, options).pipe(
+    runTransforms(source, options.config, options.overrides)
+  );
+
+/**
+ * @template T
+ * @typedef {import('@report-toolkit/common/src/observable').Observable} Observable
+ */
+
+/**
+ * @typedef {Object} FromTransformersOptions
+ * @property {string} [beginWith] - Begin transformer chain with this type
+ * @property {string} [endWith] - End transformer chain with this type
+ * @property {string} [defaultTransformer] - Default transformer
+ * @property {object} [config] - Complete transformer configuration object
+ * @property {object} [overrides] - User-supplied overrides
+ */
