@@ -111,7 +111,7 @@ export const getOptions = (
 
 export const fromFilepathToReport = (filepaths, opts = {}) =>
   fromAny(filepaths).pipe(
-    toObjectFromFilepath(opts),
+    toObjectFromFilepath(),
     toReportFromObject(opts),
     share()
   );
