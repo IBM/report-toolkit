@@ -19,5 +19,5 @@
     "checkJs": true,
     "moduleResolution": "node"
   },
-  "exclude": ["packages/*/node_modules", "packages/*/dist"]
+  "exclude": ["**/*/node_modules", "**/*/dist"]
 }
