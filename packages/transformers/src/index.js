@@ -25,37 +25,22 @@ const transformerModules = _.fromPairs(
   _.map(transformer => [transformer.meta.id, transformer], knownTransformers)
 );
 
-const transformerInstances = new Map();
 const DEFAULT_TRANSFORMER = 'table';
 const {
-  RTKERR_INVALID_PARAMETER,
   RTKERR_INVALID_TRANSFORMER_HEAD,
   RTKERR_UNKNOWN_TRANSFORMER,
   createRTkError
 } = error;
-const {
-  concatMap,
-  from,
-  iif,
-  mergeAll,
-  mergeMap,
-  of,
-  pipeIf,
-  tap,
-  throwRTkError,
-  toArray
-} = observable;
+const {concatMap, map, mergeAll, pipeIf, tap, toArray} = observable;
 const debug = createDebugPipe('transformers');
 
 export const knownTransformerIds = _.map('meta.id', knownTransformers);
 
 /**
- * @param {string} id
+ * @param {string} id - Transformer ID
+ * @param {object} [config] - Configuration
  */
-export const loadTransformer = id => {
-  if (transformerInstances.has(id)) {
-    return transformerInstances.get(id);
-  }
+export const loadTransformer = (id, config = {}) => {
   if (!isKnownTransformer(id)) {
     throw createRTkError(
       RTKERR_UNKNOWN_TRANSFORMER,
@@ -65,7 +50,8 @@ export const loadTransformer = id => {
   const {meta, transform} = transformerModules[id];
   return createTransformer(
     /** @type {TransformFunction<any,any>} */ (transform),
-    meta
+    meta,
+    config
   );
 };
 
@@ -77,101 +63,72 @@ export const isKnownTransformer = id => Boolean(transformerModules[id]);
 export {Transformer};
 
 /**
- * Validate an array of transforms and answer whether or not it represents a
- * valid pipe. Use the options to customize the transform pipe for use by other
- * commands (e.g., `inspect` and `diff`) which might start with something other
- * than a Report.
- * @param {Transformer[]|string[]} transformerIds - One or more Transformer or
- * Transformer names
+ * @returns {OperatorFunction<TransformerConfig,Transformer>}
+ */
+export const toTransformer = () => observable =>
+  observable.pipe(
+    pipeIf(
+      ({id}) => isKnownTransformer(id),
+      map(({id, config}) => loadTransformer(id, config))
+    )
+  );
+
+/**
+ *
  * @param {Object} [opts] - Options
  * @param {string} [opts.beginWith=report] - Begin transform pipe with this type
  * @param {string} [opts.endWith=string] - End transform pipe with this type
  * @param {string} [opts.defaultTransformer] - Default transformer
- * @returns {Observable<Transformer>}
+ * @returns {OperatorFunction<Transformer,Transformer>}
  */
-export const loadTransforms = (
-  transformerIds,
-  {
-    beginWith = 'report',
-    endWith = 'string',
-    defaultTransformer = DEFAULT_TRANSFORMER
-  } = {}
-) =>
-  iif(
-    () => Boolean(transformerIds.length),
-    from(transformerIds).pipe(
-      pipeIf(
-        _.isString,
-        mergeMap(
-          /**
-           * @param {string} id
-           * @returns {Observable<Transformer>}
-           */
-          id =>
-            iif(
-              () => isKnownTransformer(id),
-              of(loadTransformer(id)),
-              throwRTkError(
-                RTKERR_UNKNOWN_TRANSFORMER,
-                `Unknown transformer "${id}"`
-              )
-            )
-        ),
-        debug(
-          /**
-           * @param {Transformer} transformer
-           */
-          transformer => `found transformer "${transformer.id}"`
-        )
-      ),
-      toArray(),
-      // TODO: I'd rather this not be so imperative, but I'm not sure of a decent
-      // way to go about this using RxJS
-      tap(
-        /**
-         * @param {Transformer[]} transformers
-         */
-        transformers => {
-          let idx = 0;
-          let transformer = transformers[idx];
-          if (!transformer.canBeginWith(beginWith)) {
-            // TODO: list valid transformers (using URL?)
-            throw createRTkError(
-              RTKERR_INVALID_TRANSFORMER_HEAD,
-              `The first transformer ("${transformer.id}") must accept a "${beginWith}"`
-            );
-          }
-
-          if (!transformers[transformers.length - 1].canEndWith(endWith)) {
-            transformers.push(loadTransformer(defaultTransformer));
-          }
-
-          let nextTransformer = transformers[++idx];
-          while (nextTransformer) {
-            transformer = transformer.pipe(nextTransformer);
-            nextTransformer = transformers[++idx];
-          }
-
-          return transformers;
+export const validateTransformerChain = ({
+  beginWith = 'report',
+  endWith = 'string',
+  defaultTransformer = DEFAULT_TRANSFORMER
+} = {}) => observable =>
+  observable.pipe(
+    toArray(),
+    tap(
+      /**
+       * @param {Transformer[]} transformers
+       */
+      transformers => {
+        let idx = 0;
+        let transformer = transformers[idx];
+        if (!transformer.canBeginWith(beginWith)) {
+          // TODO: list valid transformers (using URL?)
+          throw createRTkError(
+            RTKERR_INVALID_TRANSFORMER_HEAD,
+            `The first transformer ("${transformer.id}") must accept a "${beginWith}"`
+          );
         }
-      ),
-      debug(
-        transformers =>
-          `transformer pipe {${beginWith}} => ${_.map('id', transformers).join(
-            ' => '
-          )} => {${endWith}} OK`
-      ),
-      mergeAll()
+
+        if (!transformers[transformers.length - 1].canEndWith(endWith)) {
+          transformers.push(loadTransformer(defaultTransformer));
+        }
+
+        let nextTransformer = transformers[++idx];
+        while (nextTransformer) {
+          transformer = transformer.pipe(nextTransformer);
+          nextTransformer = transformers[++idx];
+        }
+
+        return transformers;
+      }
     ),
-    throwRTkError(
-      RTKERR_INVALID_PARAMETER,
-      'Expected one or more Transformers or Transformer names'
-    )
+    debug(
+      transformers =>
+        `transformer pipe {${beginWith}} => ${_.map('id', transformers).join(
+          ' => '
+        )} => {${endWith}} OK`
+    ),
+    mergeAll()
   );
+
 /**
  * @param {Observable<any>} source
  */
-export const runTransforms = (source, config = {}, opts = {}) => /**
+export const runTransformer = source => /**
  * @param {Observable<Transformer>} observable
  */ observable =>
   observable.pipe(
@@ -180,21 +137,10 @@ export const runTransforms = (source, config = {}, opts = {}) => /**
       transformers =>
         `running transform(s): ${_.map('id', transformers).join(' => ')}`
     ),
-    debug(() => [`received opts %O`, opts]),
     concatMap(transformers =>
       source.pipe(
         // @ts-ignore
-        ..._.map(
-          transformer =>
-            transformer.transform(
-              _.mergeAll([
-                config,
-                _.getOr({}, `transformers.${transformer.id}`, config),
-                opts
-              ])
-            ),
-          transformers
-        )
+        ..._.map(transformer => transformer.transform(), transformers)
       )
     )
   );
@@ -203,7 +149,7 @@ export const compatibleTransforms = sourceType =>
   _.keys(
     _.fromPairs(
       _.filter(
-        ([id, transformerModule]) =>
+        ([, transformerModule]) =>
           _.includes(sourceType, transformerModule.meta.input),
         _.toPairs(transformerModules)
       )
@@ -225,4 +171,7 @@ export const compatibleTransforms = sourceType =>
 /**
  * @template T,U
  * @typedef {import('rxjs/internal/types').OperatorFunction<T,U>} OperatorFunction
+ */
+/**
+ * @typedef {{id: string, config: object}} TransformerConfig
  */

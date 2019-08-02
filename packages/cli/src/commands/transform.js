@@ -2,15 +2,25 @@ import {_} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
-import {fromFilepathToReport, OPTIONS} from './common.js';
+import {commandConfig, fromFilepathToReport, OPTIONS} from './common.js';
 
-const {fromTransformers} = stream;
+const {transform, fromTransformerChain} = stream;
+
 const DEFAULT_TRANSFORMER = 'json';
+const DEFAULT_TRANSFORM_CONFIG = {
+  maxWidth: terminalColumns,
+  transform: {
+    table: {
+      outputHeader: 'Transformation Result'
+    }
+  }
+};
 
 export const command = 'transform <file..>';
 
 export const desc = 'Transform a report';
 
+// TODO: getOptions() should probably handle all of this merging
 export const builder = yargs =>
   yargs
     .positional('file', {
@@ -39,7 +49,7 @@ export const handler = argv => {
   /**
    * @type {Observable<Report>}
    */
-  const reports = fromFilepathToReport(
+  const source = fromFilepathToReport(
     argv.file,
     _.getOr(
       _.get('config.transform.showSecretsUnsafe', argv),
@@ -47,16 +57,14 @@ export const handler = argv => {
       argv
     )
   );
-  fromTransformers(reports, argv.transform, {
-    defaultTransformer: DEFAULT_TRANSFORMER,
-    config: _.mergeAll([
-      _.getOr({}, 'config', argv),
-      _.getOr({}, 'config.transform', argv),
-      {maxWidth: terminalColumns, outputHeader: 'Transformation Result'}
-    ]),
-    overrides: argv
-  })
-    .pipe(toOutput(argv.output, {color: argv.color}))
+
+  const config = commandConfig('transform', argv, DEFAULT_TRANSFORM_CONFIG);
+
+  fromTransformerChain(argv.transform, config)
+    .pipe(
+      transform(source, {defaultTransformer: DEFAULT_TRANSFORMER}),
+      toOutput(argv.output, {color: argv.color})
+    )
     .subscribe();
 };
 

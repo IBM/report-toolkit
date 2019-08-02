@@ -5,17 +5,6 @@ export const NAMESPACE = 'report-toolkit';
 export const SHORT_NAMESPACE = 'rtk';
 export const NO_FILEPATH = '(no filepath)';
 export const MULTIPLE_FILEPATHS = '(multiple files)';
-
-export const DEFAULT_DIFF_OPTIONS = Object.freeze({
-  properties: Object.freeze([
-    'environmentVariables',
-    'header',
-    'userLimits',
-    'sharedObjects'
-  ]),
-  showSecretsUnsafe: false
-});
-
 export const DEFAULT_TRANSFORMER = 'table';
 
 /**

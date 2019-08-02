@@ -1,19 +1,24 @@
-import {
-  _,
-  constants,
-  createDebugPipe,
-  observable
-} from '@report-toolkit/common';
+import {createDebugPipe, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
-import {getOptions, GROUPS, OPTIONS} from './common.js';
+import {commandConfig, getOptions, GROUPS, OPTIONS} from './common.js';
 
-const {toReportDiff, toReportFromObject, fromTransformers} = stream;
-const {DEFAULT_DIFF_OPTIONS} = constants;
+const {
+  toReportDiff,
+  toReportFromObject,
+  transform,
+  fromTransformerChain
+} = stream;
+
 const {of, share} = observable;
-
+const DEFAULT_PROPERTIES = [
+  'environmentVariables',
+  'header',
+  'userLimits',
+  'sharedObjects'
+];
 const debug = createDebugPipe('cli', 'commands', 'diff');
 
 const OP_COLORS = {
@@ -34,7 +39,7 @@ export const desc = 'Diff two reports';
 export const builder = yargs =>
   yargs.options({
     prop: {
-      default: DEFAULT_DIFF_OPTIONS.properties,
+      default: DEFAULT_PROPERTIES,
       description: 'Filter by property name',
       group: GROUPS.FILTER,
       nargs: 1,
@@ -52,58 +57,52 @@ export const builder = yargs =>
  * @param {*} argv
  */
 export const handler = argv => {
-  const {file1, file2, prop: properties} = argv;
+  const {file1, file2} = argv;
+  const DEFAULT_DIFF_CONFIG = {
+    properties: DEFAULT_PROPERTIES,
+    showSecretsUnsafe: false,
+    disableSort: true,
+    fields: [
+      {
+        color: row => OP_COLORS[row.op],
+        label: 'Op',
+        value: row => OP_CODE[row.op],
+        widthPct: 4
+      },
+      {
+        color: row => OP_COLORS[row.op],
+        label: 'Path',
+        value: 'path',
+        widthPct: 24
+      },
+      {
+        label: file1,
+        value: 'value',
+        widthPct: 36
+      },
+      {
+        label: file2,
+        value: 'oldValue',
+        widthPct: 36
+      }
+    ],
+    outputHeader: `Diff: ${file1} <=> ${file2}`,
+    maxWidth: terminalColumns
+  };
+  const config = commandConfig('diff', argv, DEFAULT_DIFF_CONFIG);
+
   const source = of(file1, file2).pipe(
     toObjectFromFilepath(),
-    debug(
-      () =>
-        argv.config.diff && `using diff-specific options: ${argv.config.diff}`
-    ),
-    toReportFromObject({
-      ...argv.config.diff,
-      disableSort: true,
-      showSecretsUnsafe: argv.showSecretsUnsafe
-    }),
+    toReportFromObject(config),
     debug(report => `created Report from ${report.filepath}`),
-    toReportDiff({...argv.config.diff, properties}),
+    toReportDiff(config),
     share()
   );
 
-  fromTransformers(source, argv.transform, {
-    beginWith: 'object',
-    config: _.mergeAll([
-      _.getOr({}, 'config', argv),
-      {
-        fields: [
-          {
-            color: row => OP_COLORS[row.op],
-            label: 'Op',
-            value: row => OP_CODE[row.op],
-            widthPct: 4
-          },
-          {
-            color: row => OP_COLORS[row.op],
-            label: 'Path',
-            value: 'path',
-            widthPct: 24
-          },
-          {
-            label: file1,
-            value: 'value',
-            widthPct: 36
-          },
-          {
-            label: file2,
-            value: 'oldValue',
-            widthPct: 36
-          }
-        ],
-        outputHeader: `Diff: ${file1} <=> ${file2}`,
-        maxWidth: terminalColumns
-      }
-    ]),
-    overrides: argv
-  })
-    .pipe(toOutput(argv.output, {color: argv.color}))
+  fromTransformerChain(argv.transform, config)
+    .pipe(
+      transform(source, {beginWith: 'object'}),
+      toOutput(argv.output, {color: argv.color})
+    )
     .subscribe();
 };

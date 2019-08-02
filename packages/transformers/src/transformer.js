@@ -10,7 +10,7 @@ const DEFAULT_TRANSFORMER_META = Object.freeze({
   input: ['report']
 });
 
-const optionMap = new WeakMap();
+const configMap = new WeakMap();
 
 /**
  * Represents a Transformer having a transform() function and
@@ -22,8 +22,9 @@ class Transformer {
    * Sets defaults and instance props
    * @param {TransformFunction<T,U>} transform
    * @param {TransformerMeta} meta - Transformer metdata
+   * @param {object} [config] - Transformer config
    */
-  constructor(transform, meta) {
+  constructor(transform, meta, config = {}) {
     /**
      * @type {TransformerMeta}
      */
@@ -32,6 +33,11 @@ class Transformer {
      * @type {TransformFunction<T,U>}
      */
     this._transform = transform;
+
+    if (config.fields) {
+      config.fields = Transformer.normalizeFields(config.fields);
+    }
+    configMap.set(this, config);
   }
 
   get id() {
@@ -65,20 +71,16 @@ class Transformer {
     return transformer.pipeFrom(this);
   }
 
-  transform(opts = {}) {
+  transform() {
     const defaults = [this.defaults];
-    if (this._source && optionMap.has(this._source)) {
-      const sourceOpts = optionMap.get(this._source);
+    if (this._source && configMap.has(this._source)) {
+      const sourceOpts = configMap.get(this._source);
       defaults.push({fields: sourceOpts.fields});
     }
     // NOTE: _.defaultsDeepAll applies defaults the same way _.assignAll does
     // which is the same way non-fp lodash does!
-    opts = _.defaultsDeepAll([opts, ...defaults]);
-    if (opts.fields) {
-      opts = {...opts, fields: Transformer.normalizeFields(opts.fields)};
-    }
-    optionMap.set(this, opts);
-    return this._transform(opts);
+    const config = configMap.get(this);
+    return this._transform(_.defaultsDeepAll([...defaults, config]));
   }
 
   /**
@@ -111,11 +113,12 @@ class Transformer {
    * Creates a Transformer
    * @template T,U
    * @param {TransformFunction<T,U>} transform - Transformer function
-   * @param {TransformerMeta} opts - Transformer options
+   * @param {TransformerMeta} meta - Transformer meta
+   * @param {object} [config] - Transformer config
    * @returns {Transformer<T,U>}
    */
-  static create(transform, opts) {
-    return new Transformer(transform, opts);
+  static create(transform, meta, config = {}) {
+    return new Transformer(transform, meta, config);
   }
 }
 

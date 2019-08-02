@@ -14,7 +14,11 @@ import {
   createRuleConfig,
   inspectReports
 } from '@report-toolkit/inspector';
-import {loadTransforms, runTransforms} from '@report-toolkit/transformers';
+import {
+  runTransformer,
+  toTransformer,
+  validateTransformerChain
+} from '@report-toolkit/transformers';
 
 const {DEFAULT_DIFF_OPTIONS, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
 
@@ -22,6 +26,7 @@ const {RTKERR_INVALID_PARAMETER} = error;
 const {
   defer,
   filter,
+  from,
   fromAny,
   isObservable,
   map,
@@ -142,15 +147,25 @@ export const toRuleConfig = (config = {}) => {
 export {createRule};
 export {parseConfig} from '@report-toolkit/config';
 
+export const fromTransformerChain = (transformerIds, config = {}) =>
+  from(transformerIds).pipe(
+    map(id => ({
+      id,
+      config: _.merge(config, _.getOr({}, `transformers.${id}`, config))
+    }))
+  );
+
 /**
  * Run `Observable` `source` through chain of transformers
  * @param {Observable<any>} source
- * @param {string[]} transformerChain
  * @param {FromTransformersOptions} [options]
+ * @returns {OperatorFunction<TransformerConfig,any>} Result of transforms
  */
-export const fromTransformers = (source, transformerChain, options = {}) =>
-  loadTransforms(transformerChain, options).pipe(
-    runTransforms(source, options.config, options.overrides)
+export const transform = (source, options = {}) => observable =>
+  observable.pipe(
+    toTransformer(),
+    validateTransformerChain(options),
+    runTransformer(source)
   );
 
 /**
@@ -163,6 +178,11 @@ export const fromTransformers = (source, transformerChain, options = {}) =>
  * @property {string} [beginWith] - Begin transformer chain with this type
  * @property {string} [endWith] - End transformer chain with this type
  * @property {string} [defaultTransformer] - Default transformer
- * @property {object} [config] - Complete transformer configuration object
- * @property {object} [overrides] - User-supplied overrides
+ */
+/**
+ * @typedef {import('@report-toolkit/transformers').TransformerConfig} TransformerConfig
+ */
+/**
+ * @template T,U
+ * @typedef {import('rxjs/internal/types').OperatorFunction<T,U>} OperatorFunction
  */

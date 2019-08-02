@@ -8,12 +8,18 @@ import {stream} from '@report-toolkit/core';
 import {rules} from '@report-toolkit/rules';
 
 import {fail, ok, toOutput} from '../console-utils.js';
-import {fromFilepathToReport, GROUPS, OPTIONS} from './common.js';
+import {
+  commandConfig,
+  fromFilepathToReport,
+  GROUPS,
+  OPTIONS
+} from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {toInspection, toRuleConfig, fromTransformers} = stream;
+const {toInspection, toRuleConfig, transform, fromTransformerChain} = stream;
 const {share, from} = observable;
 const debug = createDebugPipe('cli', 'commands', 'inspect');
+
 export const command = 'inspect <file..>';
 
 export const desc = 'Inspect diagnostic report JSON against rules';
@@ -38,55 +44,54 @@ export const builder = yargs =>
     });
 
 export const handler = argv => {
-  const {file: filepaths, severity = ERROR, config, showSecretsUnsafe} = argv;
+  const {file, severity = ERROR} = argv;
+
+  const DEFAULT_INSPECT_CONFIG = {
+    inspect: {
+      fields: [
+        {
+          label: 'File',
+          value: 'filepath',
+          widthPct: 30
+        },
+        {
+          label: 'Rule',
+          value: 'id',
+          widthPct: 20
+        },
+        {
+          label: 'Message',
+          value: 'message',
+          widthPct: 50
+        }
+      ]
+    },
+    transformer: {
+      table: {
+        outputFooter: t =>
+          t.length
+            ? fail(`Found ${t.length} issue(s) in ${file.length} file(s)`)
+            : ok(`No issues found in ${file.length} file(s)`),
+        outputHeader: 'diagnostic Report Inspection'
+      }
+    }
+  };
+
+  const config = commandConfig('inspect', argv, DEFAULT_INSPECT_CONFIG);
 
   const source = from(
     _.map(([id, ruleDef]) => ({id, ruleDef}), _.toPairs(rules))
   ).pipe(
     debug(rule => [`loading rule: %O`, rule]),
     toRuleConfig(config),
-    toInspection(
-      fromFilepathToReport(filepaths, {
-        ...config.inspect,
-        showSecretsUnsafe
-      }),
-      {severity}
-    ),
+    toInspection(fromFilepathToReport(file, config), {severity}),
     share()
   );
 
-  fromTransformers(source, argv.transform, {
-    beginWith: 'object',
-    config: _.mergeAll([
-      config,
-      _.getOr({}, 'inspect', config),
-      {
-        fields: [
-          {
-            label: 'File',
-            value: 'filepath',
-            widthPct: 30
-          },
-          {
-            label: 'Rule',
-            value: 'id',
-            widthPct: 20
-          },
-          {
-            label: 'Message',
-            value: 'message',
-            widthPct: 50
-          }
-        ],
-        outputFooter: t =>
-          t.length
-            ? fail(`Found ${t.length} issue(s) in ${filepaths.length} file(s)`)
-            : ok(`No issues found in ${filepaths.length} file(s)`),
-        outputHeader: 'diagnostic Report Inspection'
-      }
-    ]),
-    overrides: argv
-  })
-    .pipe(toOutput(argv.output, {color: argv.color}))
+  fromTransformerChain(argv.transform, config)
+    .pipe(
+      transform(source, {beginWith: 'object'}),
+      toOutput(argv.output, {color: argv.color})
+    )
     .subscribe();
 };

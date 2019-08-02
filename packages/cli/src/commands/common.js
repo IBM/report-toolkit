@@ -115,3 +115,24 @@ export const fromFilepathToReport = (filepaths, opts = {}) =>
     toReportFromObject(opts),
     share()
   );
+
+/**
+ * Compute a configuration for a particular command.  Command-specific
+ * config overrides whatever the top-level config is.
+ * @param {string} commandName - Name of command
+ * @param {object} [argv] - Command-line args
+ * @param {object} [defaultConfig] - Default command configuration
+ * @returns {object} Resulting config with command-specific stuff on top
+ */
+export const commandConfig = (commandName, argv = {}, defaultConfig = {}) =>
+  _.omit(
+    commandName,
+    _.mergeAll([
+      _.defaultsDeep(defaultConfig, _.getOr({}, commandName, defaultConfig)),
+      _.defaultsDeep(
+        _.getOr({}, 'config', argv),
+        _.getOr({}, `config.${commandName}`, argv)
+      ),
+      _.omit(['$0', 'config', '_'], argv)
+    ])
+  );
