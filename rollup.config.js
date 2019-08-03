@@ -12,7 +12,8 @@ import visualizer from 'rollup-plugin-visualizer';
 const makeConfigs = pkgpath => {
   const pkg = require(`${pkgpath}/package.json`);
   const configs = [];
-  if (pkg.browser) {
+  // eslint-disable-next-line no-constant-condition
+  if (pkg.browser && false) {
     configs.push({
       input: require.resolve(`${pkgpath}/${pkg.module}`),
       onwarn(warning, warn) {
