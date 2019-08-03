@@ -1,6 +1,11 @@
 import {ERROR, INFO, WARNING} from '@report-toolkit/common/src/constants.js';
 
-import {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN} from '../src/cpu-usage.js';
+import {
+  MODE_ALL,
+  MODE_MAX,
+  MODE_MEAN,
+  MODE_MIN
+} from '../../src/rules/cpu-usage.js';
 import {createInspect} from './rules-helper.js';
 
 const REPORT_001_FILEPATH = require.resolve(
@@ -24,7 +29,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
   describe('when "header.cpus" prop missing', function() {
     beforeEach(function() {
-      inspect = createInspect('../src/cpu-usage.js');
+      inspect = createInspect('../../src/rules/cpu-usage.js');
     });
 
     describe('when run against a single file', function() {
@@ -74,7 +79,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
   describe(`mode: ${MODE_MEAN} (defaults)`, function() {
     beforeEach(function() {
-      inspect = createInspect('../src/cpu-usage.js');
+      inspect = createInspect('../../src/rules/cpu-usage.js');
     });
 
     describe('when run against a single file', function() {
@@ -152,7 +157,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
       describe('when cpu usage not within allowed limits', function() {
         beforeEach(function() {
-          inspect = createInspect('../src/cpu-usage.js', {max: 30});
+          inspect = createInspect('../../src/rules/cpu-usage.js', {max: 30});
         });
 
         it('should report "error" message', function() {
@@ -175,7 +180,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
   describe(`mode: ${MODE_MIN}`, function() {
     beforeEach(function() {
-      inspect = createInspect('../src/cpu-usage.js', {mode: MODE_MIN});
+      inspect = createInspect('../../src/rules/cpu-usage.js', {mode: MODE_MIN});
     });
 
     describe('when run against a single file', function() {
@@ -236,7 +241,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
       describe('when cpu usage not within allowed limits', function() {
         beforeEach(function() {
-          inspect = createInspect('../src/cpu-usage.js', {
+          inspect = createInspect('../../src/rules/cpu-usage.js', {
             min: 10,
             mode: MODE_MIN
           });
@@ -262,7 +267,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
   describe(`mode: ${MODE_MAX}`, function() {
     beforeEach(function() {
-      inspect = createInspect('../src/cpu-usage.js', {mode: MODE_MAX});
+      inspect = createInspect('../../src/rules/cpu-usage.js', {mode: MODE_MAX});
     });
 
     describe('when run against a single file', function() {
@@ -323,7 +328,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
       describe('when cpu usage not within allowed limits', function() {
         beforeEach(function() {
-          inspect = createInspect('../src/cpu-usage.js', {
+          inspect = createInspect('../../src/rules/cpu-usage.js', {
             mode: MODE_MAX
           });
         });
@@ -348,7 +353,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
 
   describe(`mode: ${MODE_ALL}`, function() {
     beforeEach(function() {
-      inspect = createInspect('../src/cpu-usage.js', {mode: MODE_ALL});
+      inspect = createInspect('../../src/rules/cpu-usage.js', {mode: MODE_ALL});
     });
 
     describe('when run against a single file', function() {

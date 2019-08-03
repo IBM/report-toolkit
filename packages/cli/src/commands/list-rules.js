@@ -1,12 +1,11 @@
 import {_, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
-import {ruleDefs} from '@report-toolkit/rules';
 
 import {toOutput} from '../console-utils.js';
 import {commandConfig, getOptions, OPTIONS} from './common.js';
 
-const {from, share} = observable;
-const {transform, fromTransformerChain} = stream;
+const {map, share} = observable;
+const {transform, fromTransformerChain, fromBuiltinRules} = stream;
 
 const DEFAULT_LIST_RULES_CONFIG = {
   fields: [
@@ -35,7 +34,17 @@ export const builder = yargs =>
   });
 
 export const handler = argv => {
-  const source = from(ruleDefs).pipe(share());
+  const source = fromBuiltinRules().pipe(
+    map(({id, ruleDefinition}) => ({
+      id,
+      description: _.getOr(
+        '(no description)',
+        'meta.docs.description',
+        ruleDefinition
+      )
+    })),
+    share()
+  );
   fromTransformerChain(
     argv.transform,
     commandConfig('list-rules', argv, DEFAULT_LIST_RULES_CONFIG)

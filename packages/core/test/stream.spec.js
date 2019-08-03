@@ -1,7 +1,8 @@
 import {ERROR} from '@report-toolkit/common/src/constants.js';
-import {RTKERR_INVALID_PARAMETER} from '@report-toolkit/common/src/error.js';
 import {of} from '@report-toolkit/common/src/observable.js';
+// @ts-ignore
 import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
+// @ts-ignore
 import REPORT_002 from '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json';
 
 const REPORT_001_FILEPATH = require.resolve(
@@ -46,47 +47,6 @@ describe('@report-toolkit/core:stream', function() {
   });
 
   describe('function', function() {
-    describe('toInspection()', function() {
-      let toInspection;
-
-      beforeEach(function() {
-        toInspection = subject.toInspection;
-      });
-
-      describe('when called without an Observable of reports', function() {
-        it('should emit an error', function() {
-          return expect(
-            of({}).pipe(toInspection()),
-            'to emit error satisfying',
-            {
-              code: RTKERR_INVALID_PARAMETER
-            }
-          );
-        });
-      });
-
-      describe('when called with an Observable of Reports', function() {
-        it('should delegate to @report-toolkit/inspector.inspectReports()', function() {
-          return expect(
-            of({}).pipe(toInspection(of(REPORT_001))),
-            'to complete with value',
-            msg001
-          );
-        });
-      });
-
-      describe('when called with two (2) report files', function() {
-        it('should emit a message for each enabled rule', function() {
-          return expect(
-            of({}).pipe(toInspection(of(REPORT_001, REPORT_002))),
-            'to complete with values',
-            msg001,
-            msg002
-          );
-        });
-      });
-    });
-
     describe('toReportDiff()', function() {
       let toReportDiff;
 

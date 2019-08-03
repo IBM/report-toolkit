@@ -79,17 +79,6 @@ describe('@report-toolkit/inspector:rule', function() {
         });
       });
 
-      describe('filepath', function() {
-        it('should return the filepath', function() {
-          expect(
-            new Rule({filepath: __filename, inspect: _.noop}),
-            'to have property',
-            'filepath',
-            __filename
-          );
-        });
-      });
-
       describe('meta', function() {
         it('should return the metadata', function() {
           expect(

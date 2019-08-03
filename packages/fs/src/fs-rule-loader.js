@@ -1,7 +1,8 @@
-import {observable} from '@report-toolkit/common';
+import {createDebugPipe, observable} from '@report-toolkit/common';
 import {readdir as readdirNodeback} from 'fs';
 import {basename, extname, join} from 'path';
 
+const debug = createDebugPipe('fs', 'rule-loader');
 const {bindNodeCallback, filter, fromAny, map, mergeAll} = observable;
 
 const readdir = bindNodeCallback(readdirNodeback);
@@ -9,10 +10,10 @@ const readdir = bindNodeCallback(readdirNodeback);
 const toRuleDefinitionFromFilepath = (extension = '.js') => observable =>
   observable.pipe(
     map(filepath => ({
-      filepath,
-      id: basename(filepath, extension),
-      ruleDef: require(filepath)
-    }))
+      ...require(filepath),
+      id: basename(filepath, extension)
+    })),
+    debug(result => [`loaded rule from fs: %O`, result])
   );
 
 /**

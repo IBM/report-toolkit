@@ -1,20 +1,23 @@
 import {_, constants, observable} from '@report-toolkit/common';
-import {stream} from '@report-toolkit/core';
 import {
   fromFilepathToRuleDefinition,
   toObjectFromFilepath
 } from '@report-toolkit/fs';
 
+import {inspectReports, toReportFromObject} from '../../src/index.js';
+import {createRule} from '../../src/rule.js';
+
 const {INFO} = constants;
 const {fromAny, map} = observable;
-const {createRule, toInspection, toReportFromObject} = stream;
 
 export const createInspect = (ruleFilepath, config = {}) => {
   const ruleConfigs = fromFilepathToRuleDefinition(
     require.resolve(ruleFilepath)
   ).pipe(
-    map(({filepath, id, ruleDef}) =>
-      createRule(ruleDef, {filepath, id}).toRuleConfig({rules: {[id]: config}})
+    map(ruleDefinition =>
+      createRule(ruleDefinition).toRuleConfig({
+        rules: {[ruleDefinition.id]: config}
+      })
     )
   );
   return (filepaths, opts = {}) => {
@@ -24,7 +27,7 @@ export const createInspect = (ruleFilepath, config = {}) => {
       toReportFromObject()
     );
 
-    return ruleConfigs.pipe(toInspection(reports, {severity: INFO, ...opts}));
+    return ruleConfigs.pipe(inspectReports(reports, {severity: INFO, ...opts}));
   };
 };
 

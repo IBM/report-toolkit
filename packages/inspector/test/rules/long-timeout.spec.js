@@ -2,7 +2,7 @@ import {ERROR} from '@report-toolkit/common/src/constants.js';
 
 import {createInspect, getDefaultConfigValue} from './rules-helper.js';
 
-const RULE_PATH = '../src/long-timeout.js';
+const RULE_PATH = '../../src/rules/long-timeout.js';
 
 describe('@report-toolkit/rules:long-timeout', function() {
   let inspect;

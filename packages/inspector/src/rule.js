@@ -32,7 +32,7 @@ const {
   tap,
   throwError
 } = observable;
-const {kRuleFilepath, kRuleId, kRuleInspect, kRuleMeta} = symbols;
+const {kRuleId, kRuleInspect, kRuleMeta} = symbols;
 
 const debug = createDebugger('inspector', 'rule');
 
@@ -68,7 +68,7 @@ const catchHandlerError = (severity = WARNING) => observable =>
 export class Rule {
   /**
    * Applies defaults, assigns some metadata.
-   * @param {Partial<RuleOptions>} ruleDef
+   * @param {RuleDefinition} ruleDef
    */
   constructor(ruleDef) {
     ruleDef = Rule.applyDefaults(ruleDef);
@@ -76,12 +76,10 @@ export class Rule {
     if (!_.isFunction(ruleDef.inspect)) {
       throw RTkError.create(
         RTKERR_INVALID_RULE_DEFINITION,
-        `Definition for rule ${ruleDef.id ||
-          ruleDef.filepath} must export an "inspect" function`
+        `Definition for rule "${ruleDef.id}" must export an "inspect" function`
       );
     }
     Object.assign(this, {
-      [kRuleFilepath]: ruleDef.filepath,
       [kRuleId]: ruleDef.id,
       [kRuleInspect]: ruleDef.inspect,
       [kRuleMeta]: ruleDef.meta
@@ -102,10 +100,6 @@ export class Rule {
 
   get schema() {
     return _.get('schema', this.meta);
-  }
-
-  get filepath() {
-    return this[kRuleFilepath];
   }
 
   get meta() {
@@ -298,18 +292,10 @@ export class Rule {
    * Creates a `Rule` from a user-defined (or builtin) `RuleDefinition`, which
    * is the exports of a rule definition file.
    * @param {RuleDefinition} ruleDefinition - Rule definition
-   * @param {Object} [opts] - Options
-   * @param {string} [opts.filepath] - Filepath to rule definition, if available
-   * @param {string} [opts.id] - ID of rule definition (derived from filepath), if available
    * @returns {Rule} New rule
    */
-  static create(ruleDefinition, {filepath, id} = {}) {
-    return new Rule({
-      filepath,
-      id,
-      inspect: ruleDefinition.inspect,
-      meta: ruleDefinition.meta
-    });
+  static create(ruleDefinition) {
+    return new Rule(ruleDefinition);
   }
 
   toRuleConfig(config) {
@@ -324,10 +310,5 @@ export const createRule = Rule.create;
  * @property {Object} meta - (schema for `meta` prop)
  * @property {Function} inspect - Async function which receives `Context` object
  * and optional configuration
- */
-
-/**
- * @typedef {RuleDefinition} RuleOptions
- * @property {string} filepath - Filepath of rule, if present
  * @property {string} id - Unique rule ID
  */

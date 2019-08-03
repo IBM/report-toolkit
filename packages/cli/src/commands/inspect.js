@@ -5,7 +5,6 @@ import {
   observable
 } from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
-import {rules} from '@report-toolkit/rules';
 
 import {fail, ok, toOutput} from '../console-utils.js';
 import {
@@ -16,8 +15,14 @@ import {
 } from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {toInspection, toRuleConfig, transform, fromTransformerChain} = stream;
-const {share, from} = observable;
+const {
+  fromBuiltinRules,
+  inspectReports,
+  toRuleConfig,
+  transform,
+  fromTransformerChain
+} = stream;
+const {share} = observable;
 const debug = createDebugPipe('cli', 'commands', 'inspect');
 
 export const command = 'inspect <file..>';
@@ -79,12 +84,10 @@ export const handler = argv => {
 
   const config = commandConfig('inspect', argv, DEFAULT_INSPECT_CONFIG);
 
-  const source = from(
-    _.map(([id, ruleDef]) => ({id, ruleDef}), _.toPairs(rules))
-  ).pipe(
+  const source = fromBuiltinRules().pipe(
     debug(rule => [`loading rule: %O`, rule]),
     toRuleConfig(config),
-    toInspection(fromFilepathToReport(file, config), {severity}),
+    inspectReports(fromFilepathToReport(file, config), {severity}),
     share()
   );
 

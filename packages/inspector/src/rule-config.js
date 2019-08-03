@@ -8,7 +8,6 @@ export class RuleConfig {
    *
    * @param {Rule} rule
    * @param {Object} [rawConfig]
-   * @throws RTKERR_INVALID_RULE_CONFIG
    */
   constructor(rule, rawConfig = {}) {
     ruleMap.set(this, rule);
@@ -55,3 +54,7 @@ export class RuleConfig {
 }
 
 export const createRuleConfig = _.curryN(2, _.flip(RuleConfig.create));
+
+/**
+ * @typedef {import('./rule').Rule} Rule
+ */

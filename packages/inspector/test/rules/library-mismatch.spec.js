@@ -6,7 +6,7 @@ describe('@report-toolkit/rules:library-mismatch', function() {
   let inspect;
 
   beforeEach(function() {
-    inspect = createInspect('../src/library-mismatch');
+    inspect = createInspect('../../src/rules/library-mismatch');
   });
 
   describe('when the report contains a shared lib with a mismatched version', function() {
