@@ -9,6 +9,7 @@ import curryN from 'lodash/fp/curryN.js';
 import defaults from 'lodash/fp/defaults.js';
 import defaultsDeep from 'lodash/fp/defaultsDeep.js';
 import defaultsDeepAll from 'lodash/fp/defaultsDeepAll.js';
+import every from 'lodash/fp/every.js';
 import filter from 'lodash/fp/filter.js';
 import flip from 'lodash/fp/flip.js';
 import forEach from 'lodash/fp/forEach.js';
@@ -74,6 +75,7 @@ export const _ = {
   defaults,
   defaultsDeep,
   defaultsDeepAll,
+  every,
   filter,
   flip,
   forEach,

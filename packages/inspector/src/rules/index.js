@@ -12,7 +12,12 @@ const ruleDefinitionsByID = {
   'memory-usage': memoryUsage
 };
 
-export const builtinRuleDefinitions = _.map(
-  ([id, ruleDefinition]) => ({id, ruleDefinition}),
-  _.toPairs(ruleDefinitionsByID)
+/**
+ * @type {{id: string, ruleDefinition: import('../rule.js').RuleDefinition}}
+ */
+export const builtinRuleDefinitions = Object.freeze(
+  _.map(
+    ([id, ruleDefinition]) => ({id, ruleDefinition}),
+    _.toPairs(ruleDefinitionsByID)
+  )
 );

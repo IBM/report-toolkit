@@ -76,22 +76,25 @@ export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
 /**
  * Recursively explodes any value, an Array, a Promise, a Promise of Arrays, a
  * Promise of Arrays of Promises, etc., into a single Observable.
+ * If the value is an Observable, returns the value.
  * Returns `EMPTY` if value is undefined.
- * @todo This can probably be done more efficiently using a loop.
+ * @todo This can probably be done more efficiently using a loop?
  * @param {any} value - Probably anything
  * @returns {Observable<any>}
  */
 export const fromAny = value =>
-  defer(() =>
-    _.overSome([_.isPromise, _.isArray])(value)
-      ? from(value).pipe(mergeMap(fromAny))
-      : _.isUndefined(value)
-      ? EMPTY
-      : of(value)
-  );
+  isObservable(value)
+    ? value
+    : defer(() =>
+        _.overSome([_.isPromise, _.isArray])(value)
+          ? from(value).pipe(mergeMap(fromAny))
+          : _.isUndefined(value)
+          ? EMPTY
+          : of(value)
+      );
 
 /**
- * Creates an Observable
+ * Creates an Observable that emits an RTkError
  * @param {string} code - Error code
  * @param {string} message - Error message
  * @param {Object} [opts] - Extra info

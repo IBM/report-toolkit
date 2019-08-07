@@ -47,4 +47,4 @@ export const runAsCSV = async (...flags) => {
  * @returns {Promise<execa.ExecaReturnValue>} Result
  */
 export const runWithOptions = (flags, opts = {}) =>
-  execa(BIN_PATH, [...flags, '--verbose'], opts);
+  execa(process.execPath, [BIN_PATH, ...flags, '--verbose'], opts);

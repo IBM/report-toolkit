@@ -2,7 +2,7 @@ import {_} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
-import {commandConfig, fromFilepathToReport, OPTIONS} from './common.js';
+import {commandConfig, fromFilepathsToReports, OPTIONS} from './common.js';
 
 const {transform, fromTransformerChain} = stream;
 
@@ -49,7 +49,7 @@ export const handler = argv => {
   /**
    * @type {Observable<Report>}
    */
-  const source = fromFilepathToReport(
+  const source = fromFilepathsToReports(
     argv.file,
     _.getOr(
       _.get('config.transform.showSecretsUnsafe', argv),

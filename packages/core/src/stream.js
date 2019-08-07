@@ -1,17 +1,29 @@
-import {_, createDebugPipe, isReport, observable} from '@report-toolkit/common';
+import {
+  _,
+  constants,
+  createDebugPipe,
+  error,
+  isReport,
+  observable
+} from '@report-toolkit/common';
+import {parseConfig} from '@report-toolkit/config';
 import {diffReports} from '@report-toolkit/diff';
 import {
+  builtinRuleDefinitions,
   createRule,
   fromBuiltinRules,
   inspectReports,
   toReportFromObject
 } from '@report-toolkit/inspector';
 import {
+  builtinTransformerIds,
+  compatibleTransforms,
   runTransformer,
   toTransformer,
   validateTransformerChain
 } from '@report-toolkit/transformers';
 
+const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
 const {
   defer,
   filter,
@@ -21,86 +33,22 @@ const {
   mergeMap,
   of,
   pipeIf,
+  share,
   take,
+  tap,
   toArray,
   toObjectFromJSON
 } = observable;
 
+const {ERROR} = constants;
 const debug = createDebugPipe('core', 'stream');
-
-/**
- *
- * @param {object} [opts]
- * @returns {OperatorFunction<Report[],object>}
- */
-export const toReportDiff = (opts = {}) => reports =>
-  reports.pipe(
-    take(2),
-    pipeIf(
-      /** @param {any} value */
-      value => !isReport(value),
-      mergeMap(report => reportFrom(report, opts))
-    ),
-    toArray(),
-    diffReports(opts)
-  );
-
-/**
- *
- * @param {object|object[]|Promise<object>|Promise<object[]>} reports
- * @param {*} [opts]
- */
-export const diff = (reports, opts = {}) =>
-  fromAny(reports).pipe(
-    take(2),
-    toReport(opts),
-    toArray(),
-    toReportDiff(opts)
-  );
-
-/**
- *
- * @param {string|object} value - Report as JSON string or parsed report
- * @param {*} [opts]
- */
-export const reportFrom = (value, opts = {}) =>
-  defer(() =>
-    (_.isString(value) ? reportFromJSON : reportFromObject)(value, opts)
-  );
-
-/**
- *
- * @param {string} json - Report as JSON string
- * @param {*} [opts]
- */
-export const reportFromJSON = (json, opts = {}) =>
-  of(json).pipe(
-    toObjectFromJSON(),
-    toReportFromObject(opts)
-  );
-
-/**
- *
- * @param {object} obj - Raw parsed report object
- * @param {*} [opts]
- */
-export const reportFromObject = (obj, opts = {}) =>
-  of(obj).pipe(toReportFromObject(opts));
-
-/**
- *
- * @param {object} [opts]
- * @returns {OperatorFunction<any,Report>}
- */
-export const toReport = (opts = {}) => observable =>
-  observable.pipe(mergeMap(value => reportFrom(value, opts)));
 
 /**
  *
  * @param {object} [config] - Raw rule configuration
  * @returns {OperatorFunction<RuleDefinition,RuleConfig>}
  */
-export const toRuleConfig = (config = {}) => {
+const toRuleConfig = (config = {}) => {
   const ruleIdsCount = _.getOr(0, 'rules.length', config);
   return ruleDefs =>
     ruleDefs.pipe(
@@ -111,8 +59,103 @@ export const toRuleConfig = (config = {}) => {
       )
     );
 };
+/**
+ *
+ * @param {object} [opts]
+ * @returns {OperatorFunction<Report[],object>}
+ */
+const toReportDiff = (opts = {}) => reports =>
+  reports.pipe(
+    take(2),
+    pipeIf(
+      /** @param {any} value */
+      value => !isReport(value),
+      mergeMap(report => reportFrom(report, opts))
+    ),
+    toArray(),
+    tap(reports => {
+      if (reports.length < 2) {
+        throw createRTkError(
+          RTKERR_INVALID_PARAMETER,
+          'Two reports are required!'
+        );
+      }
+    }),
+    diffReports(opts)
+  );
 
-export {parseConfig} from '@report-toolkit/config';
+/**
+ *
+ * @param {string|object} value - Report as JSON string or parsed report
+ * @param {*} [opts]
+ */
+const reportFrom = (value, opts = {}) =>
+  defer(() =>
+    (_.isString(value) ? reportFromJSON : reportFromObject)(value, opts)
+  );
+/**
+ *
+ * @param {string} json - Report as JSON string
+ * @param {*} [opts]
+ */
+const reportFromJSON = (json, opts = {}) =>
+  of(json).pipe(
+    toObjectFromJSON(),
+    toReportFromObject(opts)
+  );
+
+/**
+ *
+ * @param {object} obj - Raw parsed report object
+ * @param {*} [opts]
+ */
+const reportFromObject = (obj, opts = {}) =>
+  of(obj).pipe(toReportFromObject(opts));
+
+/**
+ *
+ * @param {object} [opts]
+ * @returns {OperatorFunction<string|object,Report>}
+ */
+const toReport = (opts = {}) => observable =>
+  observable.pipe(
+    pipeIf(
+      value => !isReport(value),
+      mergeMap(value => reportFrom(value, opts))
+    )
+  );
+
+/**
+ * Diff two reports
+ * @param {ReportLike} report1 - First report
+ * @param {ReportLike} report2 - Second report
+ * @param {*} [opts]
+ * @todo `opts` needs typings & distillation
+ */
+export const diff = (report1, report2, opts = {}) =>
+  fromAny([report1, report2]).pipe(toReportDiff(opts));
+
+/**
+ *
+ * @param {ReportLike} reports - One or more Reports
+ * @param {Partial<CoreInspectOptions>} [opts] - Options
+ */
+export const inspect = (
+  reports,
+  {ruleConfig: rules = [], severity = ERROR} = {}
+) =>
+  fromBuiltinRules().pipe(
+    toRuleConfig({rules}),
+    inspectReports(
+      fromAny(reports).pipe(
+        toReport(),
+        share()
+      ),
+      {severity}
+    )
+  );
+
+export const loadConfig = config => fromAny(config).pipe(parseConfig());
 
 /**
  *
@@ -140,8 +183,13 @@ export const transform = (source, options = {}) => observable =>
     runTransformer(source)
   );
 
-export {fromBuiltinRules};
-export {toReportFromObject, inspectReports};
+export {
+  toReportFromObject,
+  fromBuiltinRules,
+  builtinRuleDefinitions,
+  compatibleTransforms,
+  builtinTransformerIds
+};
 
 /**
  * @template T
@@ -162,4 +210,13 @@ export {toReportFromObject, inspectReports};
 /**
  * @template T,U
  * @typedef {import('rxjs/internal/types').OperatorFunction<T,U>} OperatorFunction
+ */
+/**
+ * @typedef {string|object|Report|Promise<string|object|Report>|Observable<string|object|Report>} ReportLike
+ */
+/**
+ * @typedef {object} CoreInspectOptions
+ * @property {object} ruleConfig - Per-rule configuration object
+ * @property {string} severity - Severity threshold
+ * @todo severity needs to be an enum
  */

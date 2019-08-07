@@ -1,16 +1,11 @@
-import {createDebugPipe, observable} from '@report-toolkit/common';
+import {observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
 import {commandConfig, getOptions, GROUPS, OPTIONS} from './common.js';
 
-const {
-  toReportDiff,
-  toReportFromObject,
-  transform,
-  fromTransformerChain
-} = stream;
+const {diff, transform, fromTransformerChain} = stream;
 
 const {of, share} = observable;
 const DEFAULT_PROPERTIES = [
@@ -19,7 +14,6 @@ const DEFAULT_PROPERTIES = [
   'userLimits',
   'sharedObjects'
 ];
-const debug = createDebugPipe('cli', 'commands', 'diff');
 
 const OP_COLORS = {
   add: 'green',
@@ -91,12 +85,12 @@ export const handler = argv => {
   };
   const config = commandConfig('diff', argv, DEFAULT_DIFF_CONFIG);
 
-  const source = of(file1, file2).pipe(
-    toObjectFromFilepath(),
-    toReportFromObject(config),
-    debug(report => `created Report from ${report.filepath}`),
-    toReportDiff(config),
-    share()
+  const source = diff(
+    of(file1, file2).pipe(
+      toObjectFromFilepath(),
+      share()
+    ),
+    config
   );
 
   fromTransformerChain(argv.transform, config)

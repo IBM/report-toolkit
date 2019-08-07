@@ -1,14 +1,14 @@
 import {_, constants, observable} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
-import {
-  compatibleTransforms,
-  knownTransformerIds
-} from '@report-toolkit/transformers';
 
 import {terminalColumns} from '../console-utils.js';
 
-const {toReportFromObject} = stream;
+const {
+  compatibleTransforms,
+  builtinTransformerIds,
+  toReportFromObject
+} = stream;
 
 const {fromAny, share} = observable;
 
@@ -67,7 +67,7 @@ export const OPTIONS = {
     transform: {
       // @todo list transform aliases
       alias: 't',
-      choices: knownTransformerIds,
+      choices: builtinTransformerIds,
       coerce: _.castArray,
       default: constants.DEFAULT_TRANSFORMER,
       description: 'Transform(s) to apply',
@@ -109,7 +109,7 @@ export const getOptions = (
       }
     : group;
 
-export const fromFilepathToReport = (filepaths, opts = {}) =>
+export const fromFilepathsToReports = (filepaths, opts = {}) =>
   fromAny(filepaths).pipe(
     toObjectFromFilepath(),
     toReportFromObject(opts),

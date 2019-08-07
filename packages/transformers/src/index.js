@@ -10,7 +10,7 @@ import * as stackHash from './stack-hash.js';
 import * as table from './table.js';
 import {createTransformer, Transformer} from './transformer.js';
 
-const knownTransformers = [
+const builtinTransformers = [
   csv,
   filter,
   json,
@@ -22,7 +22,7 @@ const knownTransformers = [
 ];
 
 const transformerModules = _.fromPairs(
-  _.map(transformer => [transformer.meta.id, transformer], knownTransformers)
+  _.map(transformer => [transformer.meta.id, transformer], builtinTransformers)
 );
 
 const DEFAULT_TRANSFORMER = 'table';
@@ -31,10 +31,10 @@ const {
   RTKERR_UNKNOWN_TRANSFORMER,
   createRTkError
 } = error;
-const {concatMap, map, mergeAll, pipeIf, tap, toArray} = observable;
+const {concatMap, map, mergeAll, pipeIf, share, tap, toArray} = observable;
 const debug = createDebugPipe('transformers');
 
-export const knownTransformerIds = _.map('meta.id', knownTransformers);
+export const builtinTransformerIds = _.map('meta.id', builtinTransformers);
 
 /**
  * @param {string} id - Transformer ID
@@ -138,8 +138,9 @@ export const runTransformer = source => /**
         `running transform(s): ${_.map('id', transformers).join(' => ')}`
     ),
     concatMap(transformers =>
+      // @ts-ignore
       source.pipe(
-        // @ts-ignore
+        share(),
         ..._.map(transformer => transformer.transform(), transformers)
       )
     )

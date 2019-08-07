@@ -3,14 +3,26 @@ import {
   constants,
   createDebugPipe,
   createReport,
+  error,
+  isReportLike,
   observable,
   redact
 } from '@report-toolkit/common';
 
 import {builtinRuleDefinitions} from './rules/index.js';
 
+const {RTKERR_INVALID_REPORT} = error;
 const {ERROR, INFO, WARNING, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
-const {filter, from, mergeMap, pipeIf, map, sort} = observable;
+const {
+  filter,
+  from,
+  mergeMap,
+  pipeIf,
+  map,
+  sort,
+  switchMapTo,
+  throwRTkError
+} = observable;
 const debug = createDebugPipe('inspector');
 
 const SEVERITIES = {
@@ -20,7 +32,7 @@ const SEVERITIES = {
 };
 
 export const BUILTIN_RULES_DIR = 'rules';
-
+export {builtinRuleDefinitions};
 /**
  * Pipes `Report` objects into each `RuleConfig`, then filters on severity level.
  * @param {Observable<Report>} reports - Stream of Report objects
@@ -56,11 +68,20 @@ export const toReportFromObject = (opts = {}) => {
   return observable =>
     observable.pipe(
       pipeIf(
-        !showSecretsUnsafe,
+        showSecretsUnsafe !== true,
         map(obj =>
           obj.rawReport
             ? {...obj, rawReport: redact(obj.rawReport)}
             : {rawReport: redact(obj)}
+        )
+      ),
+      pipeIf(
+        ({rawReport}) => !isReportLike(rawReport),
+        switchMapTo(
+          throwRTkError(
+            RTKERR_INVALID_REPORT,
+            'Encountered a thing that does not look like a report!'
+          )
         )
       ),
       pipeIf(!disableSort, sort(`rawReport.${sortField}`, sortDirection)),

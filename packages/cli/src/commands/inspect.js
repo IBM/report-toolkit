@@ -1,29 +1,16 @@
-import {
-  _,
-  constants,
-  createDebugPipe,
-  observable
-} from '@report-toolkit/common';
+import {_, constants} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 
 import {fail, ok, toOutput} from '../console-utils.js';
 import {
   commandConfig,
-  fromFilepathToReport,
+  fromFilepathsToReports,
   GROUPS,
   OPTIONS
 } from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {
-  fromBuiltinRules,
-  inspectReports,
-  toRuleConfig,
-  transform,
-  fromTransformerChain
-} = stream;
-const {share} = observable;
-const debug = createDebugPipe('cli', 'commands', 'inspect');
+const {inspect, transform, fromTransformerChain} = stream;
 
 export const command = 'inspect <file..>';
 
@@ -83,13 +70,11 @@ export const handler = argv => {
   };
 
   const config = commandConfig('inspect', argv, DEFAULT_INSPECT_CONFIG);
-
-  const source = fromBuiltinRules().pipe(
-    debug(rule => [`loading rule: %O`, rule]),
-    toRuleConfig(config),
-    inspectReports(fromFilepathToReport(file, config), {severity}),
-    share()
-  );
+  const reports = fromFilepathsToReports(file, config);
+  const source = inspect(reports, {
+    ruleConfig: config.rules,
+    severity
+  });
 
   fromTransformerChain(argv.transform, config)
     .pipe(

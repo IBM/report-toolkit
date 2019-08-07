@@ -42,7 +42,13 @@ export class Report {
   static isReport(value) {
     return _.isObject(value) && _.has(kReportFilepath, value);
   }
+
+  static isReportLike(value) {
+    return _.isObject(value) && _.every(key => _.has(key, value), KNOWN_PROPS);
+  }
 }
 
 export const createReport = Report.create;
 export const isReport = Report.isReport;
+
+export const isReportLike = _.memoize(Report.isReportLike);
