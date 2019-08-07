@@ -16,7 +16,7 @@ export const meta = {
 
 /**
  * @param {FilterTransformerOptions} opts
- * @returns {TransformFunction<object,object>}
+ * @type {TransformFunction<object,object>}
  */
 export const transform = ({include = [], exclude = []} = {}) => {
   /**

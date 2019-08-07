@@ -22,7 +22,7 @@ export const meta = {
 /**
  * Newline parser; given whatever, output a string ending with newline (or `newline` of your choice)
  * @param {Partial<NewlineTransformOptions>} [opts]
- * @returns {TransformFunction<any,string>}
+ * @type {TransformFunction<any,string>}
  */
 export const transform = ({json, newline} = {}) => observable =>
   observable.pipe(

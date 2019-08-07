@@ -21,7 +21,7 @@ export const meta = {
 /**
  * Emits a single JSON blob.
  * @param {Partial<JSONTransformOptions>} [opts]
- * @returns {TransformFunction<object,string>}
+ * @type {TransformFunction<object,string>}
  */
 export const transform = ({pretty = false} = {}) => observable =>
   observable.pipe(

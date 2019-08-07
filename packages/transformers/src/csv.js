@@ -25,7 +25,7 @@ export const meta = {
  * CSV transformer; accepts whatever json2csv can handle
  * @see https://npm.im/json2csv
  * @param {CSVTransformOptions} [parserOpts]
- * @returns {TransformFunction<string|object,CSVTransformResult>}
+ * @type {TransformFunction<string|object,CSVTransformResult>}
  */
 export const transform = (parserOpts = {}) => observable => {
   // XXX: the parser wants to add a newline to everything we push to it for

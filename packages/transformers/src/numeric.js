@@ -1,6 +1,6 @@
-import {_, observable} from '@report-toolkit/common';
-
+import {_, createDebugger, observable} from '@report-toolkit/common';
 const {mergeMap} = observable;
+const debug = createDebugger('transformers', 'numeric');
 
 const NUMERIC_KEYPATHS = [
   'javascriptHeap.totalMemory',
@@ -71,25 +71,33 @@ export const meta = {
   }),
   description: 'Filter on numeric fields',
   id: 'numeric',
-  input: ['report'],
+  input: ['report', 'object'],
   output: 'object'
 };
 
 /**
- * Transforms a Report into Transform
+ * Transforms a Report (by default) or generic object (w/ appropriate keys)
+ * to keypaths and numeric values
  * @param {Partial<NumericTransformOptions>} [opts] - Options
- * @returns {TransformFunction<Report,NumericTransformResult>}
+ * @type {TransformFunction<Report|object,NumericTransformResult>}
  */
 export const transform = ({keys} = {}) => {
   return observable =>
     observable.pipe(
       mergeMap(report => {
-        const tuple = key => [key, _.get(key, report)];
-        const transform = _.pipe(
+        const tuple = key => [key, parseFloat(_.get(key, report))];
+        const makeArray = _.pipe(
           _.map(tuple),
+          _.filter(([key, value]) => {
+            if (isNaN(value)) {
+              debug(`skipping NaN value at key ${key}`);
+              return false;
+            }
+            return true;
+          }),
           _.map(([key, value]) => ({key, value}))
         );
-        return transform(keys);
+        return makeArray(keys);
       })
     );
 };

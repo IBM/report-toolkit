@@ -35,7 +35,7 @@ export const meta = {
  * Given a report, generate a SHA1 hash of the stack trace. Useful when
  * determining whether a stack trace is new or already known.
  * @param {Partial<StackHashTransformOptions>} [opts] - Options
- * @returns {TransformFunction<Report,StackHashTransformResult>}
+ * @type {TransformFunction<Report,StackHashTransformResult>}
  */
 export const transform = ({strip} = {}) => observable =>
   observable.pipe(
