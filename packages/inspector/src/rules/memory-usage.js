@@ -1,7 +1,7 @@
-const MODE_ALL = (exports.MODE_ALL = 'all');
-const MODE_MEAN = (exports.MODE_MEAN = 'mean');
-const MODE_MIN = (exports.MODE_MIN = 'min');
-const MODE_MAX = (exports.MODE_MAX = 'max');
+const MODE_ALL = 'all';
+const MODE_MEAN = 'mean';
+const MODE_MIN = 'min';
+const MODE_MAX = 'max';
 
 const hrMap = {
   [MODE_ALL]: 'Report',
@@ -79,12 +79,15 @@ export const inspect = ({max, min, mode} = {}) => {
   };
 };
 
+export const id = 'memory-usage';
+
 export const meta = {
   docs: {
     category: 'resource',
     description: 'Assert memory usage % is within a range',
     url: 'https://more-information-for-this-rule'
   },
+  constants: {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN},
   schema: {
     additionalProperties: false,
     properties: {

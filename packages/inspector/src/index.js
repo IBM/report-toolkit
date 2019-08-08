@@ -9,13 +9,10 @@ import {
   redact
 } from '@report-toolkit/common';
 
-import {builtinRuleDefinitions} from './rules/index.js';
-
 const {RTKERR_INVALID_REPORT} = error;
 const {ERROR, INFO, WARNING, DEFAULT_LOAD_REPORT_OPTIONS} = constants;
 const {
   filter,
-  from,
   mergeMap,
   pipeIf,
   map,
@@ -31,8 +28,8 @@ const SEVERITIES = {
   [WARNING]: 20
 };
 
-export const BUILTIN_RULES_DIR = 'rules';
-export {builtinRuleDefinitions};
+export {rules} from './rules/index.js';
+
 /**
  * Pipes `Report` objects into each `RuleConfig`, then filters on severity level.
  * @param {Observable<Report>} reports - Stream of Report objects
@@ -57,8 +54,6 @@ export const inspectReports = (
 
 export {createRule} from './rule.js';
 export {createRuleConfig} from './rule-config.js';
-
-export const fromBuiltinRules = () => from(builtinRuleDefinitions);
 
 export const toReportFromObject = (opts = {}) => {
   const {disableSort, showSecretsUnsafe, sortDirection, sortField} = _.defaults(

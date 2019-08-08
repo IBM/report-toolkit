@@ -37,28 +37,20 @@ export const createDebugPipe = (...args) => {
   return (
     /**
      * @param {(...args: any[]) => string|any[]} fn
+     * @returns {import('rxjs').OperatorFunction<any,any>}
      */
-    fn =>
-      /**
-       * @param {Observable} observable
-       * @returns {Observable}
-       */
-      observable =>
-        observable.pipe(
-          tap(value => {
-            /**
-             * @type {any[]}
-             */
-            const msg = _.castArray(fn(value));
-            if (msg.length) {
-              // @ts-ignore
-              debug(...msg);
-            }
-          })
-        )
+    fn => observable =>
+      observable.pipe(
+        tap(value => {
+          /**
+           * @type {any[]}
+           */
+          const msg = _.castArray(fn(value));
+          if (msg.length) {
+            // @ts-ignore
+            debug(...msg);
+          }
+        })
+      )
   );
 };
-
-/**
- * @typedef {import('rxjs').Observable} Observable
- */

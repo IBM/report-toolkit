@@ -61,6 +61,7 @@ import toPairs from 'lodash/fp/toPairs.js';
 import trim from 'lodash/fp/trim.js';
 import unary from 'lodash/fp/unary.js';
 import uniq from 'lodash/fp/uniq.js';
+import values from 'lodash/fp/values.js';
 import isPromise from 'p-is-promise';
 import traverse from 'traverse';
 
@@ -127,5 +128,6 @@ export const _ = {
   traverse,
   trim,
   unary,
-  uniq
+  uniq,
+  values
 };

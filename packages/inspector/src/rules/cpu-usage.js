@@ -54,13 +54,14 @@ const fail = ({max, min, mode}, usage) => {
     message: `${hrMap[mode]} CPU consumption percent (${usage}%) is outside the allowed range of ${min}-${max}%`
   };
 };
-
+export const id = 'cpu-usage';
 export const meta = {
   docs: {
     category: 'resource',
     description: 'Assert CPU usage % is within a range',
     url: 'https://more-information-for-this-rule'
   },
+  constants: {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN},
   schema: {
     additionalProperties: false,
     properties: {
@@ -121,5 +122,3 @@ export const inspect = (config = {}) => {
     }
   };
 };
-
-export {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN};

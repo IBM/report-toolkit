@@ -24,6 +24,4 @@ export const toReportFromObject = async (value, opts = {}) =>
     .pipe(stream.toReportFromObject(opts))
     .toPromise();
 
-export const builtinRuleDefinitions = stream.builtinRuleDefinitions;
-
 export {compatibleTransforms, builtinTransformerIds};

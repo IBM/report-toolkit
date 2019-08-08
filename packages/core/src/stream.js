@@ -9,9 +9,7 @@ import {
 import {parseConfig} from '@report-toolkit/config';
 import {diffReports} from '@report-toolkit/diff';
 import {
-  builtinRuleDefinitions,
   createRule,
-  fromBuiltinRules,
   inspectReports,
   toReportFromObject
 } from '@report-toolkit/inspector';
@@ -23,25 +21,105 @@ import {
   validateTransformerChain
 } from '@report-toolkit/transformers';
 
-const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
+const {
+  createRTkError,
+  RTKERR_INVALID_PARAMETER,
+  RTKERR_RULE_NAME_COLLISION
+} = error;
 const {
   defer,
   filter,
   from,
   fromAny,
+  iif,
   map,
+  mergeAll,
   mergeMap,
   of,
   pipeIf,
+  pluck,
   share,
+  switchMap,
   take,
   tap,
   toArray,
-  toObjectFromJSON
+  toObjectFromJSON,
+  throwRTkError
 } = observable;
 
 const {ERROR} = constants;
 const debug = createDebugPipe('core', 'stream');
+
+/**
+ * @type {Map<string,Plugin>}
+ */
+const registeredPlugins = new Map();
+
+/**
+ * @type {Map<string,RuleDefinition>}
+ */
+const registeredRuleDefinitions = new Map();
+
+/**
+ *
+ * @param {string} id - Plugin ID (module name or path to module)
+ * @returns {Observable<RuleDefinition>}
+ */
+const fromPluginRules = id =>
+  use(id).pipe(
+    pipeIf(
+      _.has('rules'),
+      pluck('rules'),
+      mergeAll(),
+      pipeIf(
+        /**
+         * @param {RuleDefinition} ruleDef
+         */
+        ruleDef =>
+          registeredRuleDefinitions.has(ruleDef.id) &&
+          registeredRuleDefinitions.get(ruleDef.id) !== ruleDef,
+        switchMap(ruleDef =>
+          throwRTkError(
+            RTKERR_RULE_NAME_COLLISION,
+            `rule name collision! "${ruleDef.id}" already registered`
+          )
+        )
+      ),
+      pipeIf(
+        /**
+         * @param {RuleDefinition} ruleDef
+         */
+        ruleDef => !registeredRuleDefinitions.has(ruleDef.id),
+        tap(ruleDef => registeredRuleDefinitions.set(ruleDef.id, ruleDef)),
+        debug(({id}) => `registered rule "${id}"`)
+      )
+    )
+  );
+
+/**
+ *
+ * @param {string} id - plugin id (module name) to register
+ * @returns {Observable<Plugin>}
+ */
+const use = id =>
+  iif(
+    () => registeredPlugins.has(id),
+    of(registeredPlugins.get(id)),
+    of(id).pipe(
+      map(id => [
+        id,
+        require.resolve(id, {
+          paths: [...module.paths, process.cwd()]
+        })
+      ]),
+      debug(([id, pluginPath]) => `resolved plugin "${id}" to ${pluginPath}`),
+      map(([id, pluginPath]) => [id, require(pluginPath)]),
+      map(([id, plugin]) => {
+        registeredPlugins.set(id, plugin);
+        return plugin;
+      })
+    )
+  );
 
 /**
  *
@@ -54,9 +132,7 @@ const toRuleConfig = (config = {}) => {
     ruleDefs.pipe(
       pipeIf(!ruleIdsCount, debug(() => 'whitelisting rules by default')),
       pipeIf(ruleIdsCount, filter(({id}) => Boolean(_.get(id, config.rules)))),
-      map(({id, ruleDefinition}) =>
-        createRule({...ruleDefinition, id}).toRuleConfig(config)
-      )
+      map(ruleDefinition => createRule(ruleDefinition).toRuleConfig(config))
     );
 };
 /**
@@ -144,7 +220,7 @@ export const inspect = (
   reports,
   {ruleConfig: rules = [], severity = ERROR} = {}
 ) =>
-  fromBuiltinRules().pipe(
+  fromRegisteredRuleDefinitions().pipe(
     toRuleConfig({rules}),
     inspectReports(
       fromAny(reports).pipe(
@@ -183,17 +259,25 @@ export const transform = (source, options = {}) => observable =>
     runTransformer(source)
   );
 
-export {
-  toReportFromObject,
-  fromBuiltinRules,
-  builtinRuleDefinitions,
-  compatibleTransforms,
-  builtinTransformerIds
+export {toReportFromObject, compatibleTransforms, builtinTransformerIds};
+
+/**
+ * @returns {Observable<RuleDefinition>}
+ */
+export const fromRegisteredRuleDefinitions = () => {
+  return registeredRuleDefinitions.size
+    ? _.pipe(
+        _.toPairs,
+        _.fromPairs,
+        _.values,
+        from
+      )(registeredRuleDefinitions)
+    : fromPluginRules('@report-toolkit/inspector');
 };
 
 /**
  * @template T
- * @typedef {import('rxjs').Observable} Observable
+ * @typedef {import('rxjs').Observable<T>} Observable
  */
 /**
  * @typedef {Object} FromTransformersOptions
@@ -219,4 +303,7 @@ export {
  * @property {object} ruleConfig - Per-rule configuration object
  * @property {string} severity - Severity threshold
  * @todo severity needs to be an enum
+ */
+/**
+ * @typedef {{rules?: RuleDefinition[]}} Plugin
  */

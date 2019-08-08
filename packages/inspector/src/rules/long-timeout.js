@@ -1,5 +1,7 @@
 import ms from 'ms';
 
+export const id = 'long-timeout';
+
 export const meta = {
   docs: {
     category: 'event-queue',

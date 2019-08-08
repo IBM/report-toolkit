@@ -5,7 +5,7 @@ import {toOutput} from '../console-utils.js';
 import {commandConfig, getOptions, OPTIONS} from './common.js';
 
 const {map, share} = observable;
-const {transform, fromTransformerChain, fromBuiltinRules} = stream;
+const {fromRegisteredRuleDefinitions, transform, fromTransformerChain} = stream;
 
 const DEFAULT_LIST_RULES_CONFIG = {
   fields: [
@@ -25,6 +25,10 @@ export const command = 'list-rules';
 
 export const desc = 'Lists built-in rules';
 
+/**
+ *
+ * @param {import('yargs').Argv} yargs
+ */
 export const builder = yargs =>
   yargs.options({
     ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
@@ -33,15 +37,15 @@ export const builder = yargs =>
     ...OPTIONS.FILTER_TRANSFORM
   });
 
+/**
+ * This handler lists rules.
+ * @param {CLIArguments<*>} argv - yargs' argv
+ */
 export const handler = argv => {
-  const source = fromBuiltinRules().pipe(
-    map(({id, ruleDefinition}) => ({
+  const source = fromRegisteredRuleDefinitions().pipe(
+    map(({id, meta}) => ({
       id,
-      description: _.getOr(
-        '(no description)',
-        'meta.docs.description',
-        ruleDefinition
-      )
+      description: _.getOr('(no description)', 'docs.description', meta)
     })),
     share()
   );
@@ -57,3 +61,8 @@ export const handler = argv => {
     )
     .subscribe();
 };
+
+/**
+ * @template T
+ * @typedef {import('../index.js').CLIArguments<T>} CLIArguments
+ */

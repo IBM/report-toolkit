@@ -1,12 +1,9 @@
 import {ERROR, INFO, WARNING} from '@report-toolkit/common/src/constants.js';
 
-import {
-  MODE_ALL,
-  MODE_MAX,
-  MODE_MEAN,
-  MODE_MIN
-} from '../../src/rules/cpu-usage.js';
+import {meta} from '../../src/rules/cpu-usage.js';
 import {createInspect} from './rules-helper.js';
+
+const {MODE_ALL, MODE_MAX, MODE_MEAN, MODE_MIN} = meta.constants;
 
 const REPORT_001_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-001.json'

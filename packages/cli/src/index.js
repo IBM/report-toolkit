@@ -78,3 +78,15 @@ if (require.main === module) {
 }
 
 export {main};
+
+/**
+ * @template T
+ * @typedef {import('yargs').Arguments<T>} CLIBaseArguments
+ */
+/**
+ * @typedef {{debug?: boolean, rc?: string, config: object}} CLIGlobalArguments
+ */
+/**
+ * @template T
+ * @typedef {CLIBaseArguments<CLIGlobalArguments & T>} CLIArguments<T>
+ */
