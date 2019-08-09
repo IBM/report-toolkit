@@ -1,11 +1,11 @@
 declare namespace NodeJS {
   interface Global {
-    expect: Function;
-    proxyquire: Function;
-    sinon: Sinon;
+    expect: any;
+    proxyquire: any;
+    sinon: any;
   }
 }
 
-declare var expect: Function;
-declare var proxyquire: Function;
-declare var sinon: Sinon;
+declare var expect: any;
+declare var proxyquire: any;
+declare var sinon: any;
