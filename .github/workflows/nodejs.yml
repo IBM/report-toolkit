@@ -1,0 +1,29 @@
+name: Node CI
+
+on: [push]
+
+jobs:
+  build:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [8, 10, 12]
+        os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@master
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        version: ${{ matrix.node_version }}
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm test
+  mirror:
+    uses: ./.github/mirror-action
+    with:
+      args: "https://github.ibm.com/Christopher-Hiller/report-toolkit.git"
+      secrets: ["GIT_PASSWORD"]
+      env:
+        GIT_USERNAME: "Christopher-Hiller"
