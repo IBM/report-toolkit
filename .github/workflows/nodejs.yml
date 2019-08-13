@@ -24,7 +24,7 @@ jobs:
     name: Mirror to GHE
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/mirror-action
+      - uses: boneskull/mirror-action@mirror-mode
         with:
           args: 'https://github.ibm.com/Christopher-Hiller/report-toolkit.git'
           secrets: GIT_PASSWORD
