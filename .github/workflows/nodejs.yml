@@ -21,7 +21,7 @@ jobs:
           npm test
   mirror:
     name: Mirror to GHE
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: ./.github/mirror-action
         with:
