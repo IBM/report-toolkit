@@ -20,12 +20,9 @@ import {
   toTransformer,
   validateTransformerChain
 } from '@report-toolkit/transformers';
+import resolveFrom from 'resolve-from';
 
-const {
-  createRTkError,
-  RTKERR_INVALID_PARAMETER,
-  RTKERR_RULE_NAME_COLLISION
-} = error;
+const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
 const {
   defer,
   filter,
@@ -33,32 +30,29 @@ const {
   fromAny,
   iif,
   map,
+  mapTo,
   mergeAll,
   mergeMap,
   of,
   pipeIf,
-  pluck,
   share,
-  switchMap,
+  switchMapTo,
+  pluck,
   take,
   tap,
   toArray,
-  toObjectFromJSON,
-  throwRTkError
+  toObjectFromJSON
 } = observable;
 
 const {ERROR} = constants;
 const debug = createDebugPipe('core', 'stream');
 
+const BUILTIN_PLUGINS = ['@report-toolkit/inspector'];
+
 /**
  * @type {Map<string,Plugin>}
  */
 const registeredPlugins = new Map();
-
-/**
- * @type {Map<string,RuleDefinition>}
- */
-const registeredRuleDefinitions = new Map();
 
 /**
  *
@@ -67,58 +61,8 @@ const registeredRuleDefinitions = new Map();
  */
 const fromPluginRules = id =>
   use(id).pipe(
-    pipeIf(
-      _.has('rules'),
-      pluck('rules'),
-      mergeAll(),
-      pipeIf(
-        /**
-         * @param {RuleDefinition} ruleDef
-         */
-        ruleDef =>
-          registeredRuleDefinitions.has(ruleDef.id) &&
-          registeredRuleDefinitions.get(ruleDef.id) !== ruleDef,
-        switchMap(ruleDef =>
-          throwRTkError(
-            RTKERR_RULE_NAME_COLLISION,
-            `rule name collision! "${ruleDef.id}" already registered`
-          )
-        )
-      ),
-      pipeIf(
-        /**
-         * @param {RuleDefinition} ruleDef
-         */
-        ruleDef => !registeredRuleDefinitions.has(ruleDef.id),
-        tap(ruleDef => registeredRuleDefinitions.set(ruleDef.id, ruleDef)),
-        debug(({id}) => `registered rule "${id}"`)
-      )
-    )
-  );
-
-/**
- *
- * @param {string} id - plugin id (module name) to register
- * @returns {Observable<Plugin>}
- */
-const use = id =>
-  iif(
-    () => registeredPlugins.has(id),
-    of(registeredPlugins.get(id)),
-    of(id).pipe(
-      map(id => [
-        id,
-        require.resolve(id, {
-          paths: [...module.paths, process.cwd()]
-        })
-      ]),
-      debug(([id, pluginPath]) => `resolved plugin "${id}" to ${pluginPath}`),
-      map(([id, pluginPath]) => [id, require(pluginPath)]),
-      map(([id, plugin]) => {
-        registeredPlugins.set(id, plugin);
-        return plugin;
-      })
-    )
+    pluck('rules'),
+    mergeAll()
   );
 
 /**
@@ -231,7 +175,16 @@ export const inspect = (
     )
   );
 
-export const loadConfig = config => fromAny(config).pipe(parseConfig());
+export const loadConfig = config =>
+  fromAny(config).pipe(
+    parseConfig(),
+    pipeIf(
+      config => _.isEmpty(config.plugins),
+      map(config => ({...config, plugins: BUILTIN_PLUGINS}))
+    ),
+    mergeMap(config => from(config.plugins).pipe(mergeMap(use))),
+    mapTo(config)
+  );
 
 /**
  *
@@ -264,16 +217,70 @@ export {toReportFromObject, compatibleTransforms, builtinTransformerIds};
 /**
  * @returns {Observable<RuleDefinition>}
  */
-export const fromRegisteredRuleDefinitions = () => {
-  return registeredRuleDefinitions.size
-    ? _.pipe(
-        _.toPairs,
-        _.fromPairs,
-        _.values,
-        from
-      )(registeredRuleDefinitions)
-    : fromPluginRules('@report-toolkit/inspector');
+export const fromRegisteredRuleDefinitions = () =>
+  iif(
+    () => Boolean(registeredPlugins.size),
+    _.pipe(
+      _.toPairs,
+      _.fromPairs,
+      _.values,
+      from
+    )(registeredPlugins),
+    from(BUILTIN_PLUGINS).pipe(mergeMap(use))
+  ).pipe(
+    pluck('rules'),
+    mergeAll()
+  );
+
+/**
+ *
+ * @param {string} id - plugin id (module id/path) to register, or plugin itself
+ * @returns {Observable<Plugin>}
+ */
+export const use = id =>
+  iif(
+    () => isPluginRegistered(id),
+    of(registeredPlugins.get(id)),
+    of(id).pipe(
+      debug(id => `trying to resolve plugin "${id}"`),
+      map(id => {
+        try {
+          return require.resolve(id);
+        } catch (ignored) {
+          return resolveFrom(process.cwd(), id);
+        }
+      }),
+      debug(pluginPath => `resolved plugin "${id}" to ${pluginPath}`),
+      map(require),
+      tap(plugin => {
+        registeredPlugins.set(id, plugin);
+      }),
+      pipeIf(
+        _.has('rules'),
+        debug(
+          plugin => `found ${plugin.rules.length} rules within plugin "${id}"`
+        ),
+        mergeMap(plugin => fromPluginRules(id).pipe(switchMapTo(of(plugin))))
+      )
+    )
+  );
+
+/**
+ * @returns {boolean} `true` if plugins were cleared; `false` if none registered
+ */
+export const deregisterPlugins = () => {
+  if (registeredPlugins.size) {
+    registeredPlugins.clear();
+    return true;
+  }
+  return false;
 };
+
+/**
+ * Returns `true` if plugin with id `id` has already been registered.
+ * @param {string} pluginId - Unique module id
+ */
+export const isPluginRegistered = pluginId => registeredPlugins.has(pluginId);
 
 /**
  * @template T

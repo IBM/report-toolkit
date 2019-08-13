@@ -22,6 +22,7 @@ export const createInspect = (ruleFilepath, config = {}) => {
   );
   return (filepaths, opts = {}) => {
     const reports = fromAny(filepaths).pipe(
+      // @ts-ignore
       map(require.resolve),
       toObjectFromFilepath(),
       toReportFromObject()

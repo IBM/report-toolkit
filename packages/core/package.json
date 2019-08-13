@@ -9,7 +9,8 @@
     "@report-toolkit/config": "^0.0.0",
     "@report-toolkit/diff": "^0.0.0",
     "@report-toolkit/inspector": "^0.0.0",
-    "@report-toolkit/transformers": "^0.0.0"
+    "@report-toolkit/transformers": "^0.0.0",
+    "resolve-from": "^5.0.0"
   },
   "engines": {
     "node": ">=8"

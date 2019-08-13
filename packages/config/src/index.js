@@ -21,7 +21,8 @@ const DEFAULT_CONFIG_SHAPE = {
   inspect: {},
   redact: {},
   rules: {},
-  transform: {}
+  transform: {},
+  plugins: []
 };
 
 const normalizeBooleans = obj =>

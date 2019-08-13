@@ -21,6 +21,7 @@ const getExplorer = _.memoize(opts =>
     RC_NAMESPACE,
     _.defaultsDeep(
       {
+        // @ts-ignore
         loaders: {noExt: cosmiconfig.loadJs}
       },
       opts
@@ -41,6 +42,11 @@ const toConfigFromSearchPath = (opts = {}) => {
     );
 };
 
+/**
+ *
+ * @param {cosmiconfig.ExplorerOptions} [opts] - Extra opts for cosmiconfig
+ * @returns {import('rxjs').OperatorFunction<string,object>}
+ */
 const toConfigFromFilepath = (opts = {}) => {
   const explorer = getExplorer(opts);
   return observable =>
