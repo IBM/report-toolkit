@@ -4,7 +4,7 @@ workflow "Mirror to GHE" {
 }
 
 action "Mirror Repository" {
-  uses = "spyoungtech/mirror-action@v0.1.1"
+  uses = "mirror-action"
   args = "https://github.ibm.com/Christopher-Hiller/report-toolkit.git"
   secrets = ["GIT_PASSWORD"],
   env = {
