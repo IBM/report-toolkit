@@ -27,5 +27,4 @@ jobs:
         with:
           args: 'https://github.ibm.com/Christopher-Hiller/report-toolkit.git'
           secrets: GIT_PASSWORD
-          env:
-            GIT_USERNAME: 'Christopher-Hiller'
+          env: "GIT_USERNAME='Christopher-Hiller'"
