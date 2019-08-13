@@ -2,17 +2,10 @@ import {
   _,
   constants,
   createDebugPipe,
-  error,
-  isReport,
   observable
 } from '@report-toolkit/common';
 import {parseConfig} from '@report-toolkit/config';
-import {diffReports} from '@report-toolkit/diff';
-import {
-  createRule,
-  inspectReports,
-  toReportFromObject
-} from '@report-toolkit/inspector';
+import {inspectReports, toReportFromObject} from '@report-toolkit/inspector';
 import {
   builtinTransformerIds,
   compatibleTransforms,
@@ -22,10 +15,9 @@ import {
 } from '@report-toolkit/transformers';
 import resolveFrom from 'resolve-from';
 
-const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
+import {toReport, toReportDiff, toRuleConfig} from './internal.js';
+
 const {
-  defer,
-  filter,
   from,
   fromAny,
   iif,
@@ -36,12 +28,8 @@ const {
   of,
   pipeIf,
   share,
-  switchMapTo,
   pluck,
-  take,
-  tap,
-  toArray,
-  toObjectFromJSON
+  tap
 } = observable;
 
 const {ERROR} = constants;
@@ -53,97 +41,6 @@ const BUILTIN_PLUGINS = ['@report-toolkit/inspector'];
  * @type {Map<string,Plugin>}
  */
 const registeredPlugins = new Map();
-
-/**
- *
- * @param {string} id - Plugin ID (module name or path to module)
- * @returns {Observable<RuleDefinition>}
- */
-const fromPluginRules = id =>
-  use(id).pipe(
-    pluck('rules'),
-    mergeAll()
-  );
-
-/**
- *
- * @param {object} [config] - Raw rule configuration
- * @returns {OperatorFunction<RuleDefinition,RuleConfig>}
- */
-const toRuleConfig = (config = {}) => {
-  const ruleIdsCount = _.getOr(0, 'rules.length', config);
-  return ruleDefs =>
-    ruleDefs.pipe(
-      pipeIf(!ruleIdsCount, debug(() => 'whitelisting rules by default')),
-      pipeIf(ruleIdsCount, filter(({id}) => Boolean(_.get(id, config.rules)))),
-      map(ruleDefinition => createRule(ruleDefinition).toRuleConfig(config))
-    );
-};
-/**
- *
- * @param {object} [opts]
- * @returns {OperatorFunction<Report[],object>}
- */
-const toReportDiff = (opts = {}) => reports =>
-  reports.pipe(
-    take(2),
-    pipeIf(
-      /** @param {any} value */
-      value => !isReport(value),
-      mergeMap(report => reportFrom(report, opts))
-    ),
-    toArray(),
-    tap(reports => {
-      if (reports.length < 2) {
-        throw createRTkError(
-          RTKERR_INVALID_PARAMETER,
-          'Two reports are required!'
-        );
-      }
-    }),
-    diffReports(opts)
-  );
-
-/**
- *
- * @param {string|object} value - Report as JSON string or parsed report
- * @param {*} [opts]
- */
-const reportFrom = (value, opts = {}) =>
-  defer(() =>
-    (_.isString(value) ? reportFromJSON : reportFromObject)(value, opts)
-  );
-/**
- *
- * @param {string} json - Report as JSON string
- * @param {*} [opts]
- */
-const reportFromJSON = (json, opts = {}) =>
-  of(json).pipe(
-    toObjectFromJSON(),
-    toReportFromObject(opts)
-  );
-
-/**
- *
- * @param {object} obj - Raw parsed report object
- * @param {*} [opts]
- */
-const reportFromObject = (obj, opts = {}) =>
-  of(obj).pipe(toReportFromObject(opts));
-
-/**
- *
- * @param {object} [opts]
- * @returns {OperatorFunction<string|object,Report>}
- */
-const toReport = (opts = {}) => observable =>
-  observable.pipe(
-    pipeIf(
-      value => !isReport(value),
-      mergeMap(value => reportFrom(value, opts))
-    )
-  );
 
 /**
  * Diff two reports
@@ -259,8 +156,7 @@ export const use = id =>
         _.has('rules'),
         debug(
           plugin => `found ${plugin.rules.length} rules within plugin "${id}"`
-        ),
-        mergeMap(plugin => fromPluginRules(id).pipe(switchMapTo(of(plugin))))
+        )
       )
     )
   );
