@@ -31,7 +31,17 @@ const {
   RTKERR_UNKNOWN_TRANSFORMER,
   createRTkError
 } = error;
-const {concatMap, map, mergeAll, pipeIf, share, tap, toArray} = observable;
+const {
+  concatMap,
+  map,
+  mergeAll,
+  pipeIf,
+  share,
+  switchMap,
+  tap,
+  toArray,
+  throwRTkError
+} = observable;
 const debug = createDebugPipe('transformers');
 
 export const builtinTransformerIds = _.map('meta.id', builtinTransformers);
@@ -68,9 +78,12 @@ export {Transformer};
 export const toTransformer = () => observable =>
   observable.pipe(
     pipeIf(
-      ({id}) => isKnownTransformer(id),
-      map(({id, config}) => loadTransformer(id, config))
-    )
+      ({id}) => !isKnownTransformer(id),
+      switchMap(({id}) =>
+        throwRTkError(RTKERR_UNKNOWN_TRANSFORMER, `Unknown transformer "${id}"`)
+      )
+    ),
+    map(({id, config}) => loadTransformer(id, config))
   );
 
 /**
@@ -88,6 +101,10 @@ export const validateTransformerChain = ({
 } = {}) => observable =>
   observable.pipe(
     toArray(),
+    debug(transformers => [
+      `validating chain of transformers: %O`,
+      _.map('id', transformers)
+    ]),
     tap(
       /**
        * @param {Transformer[]} transformers

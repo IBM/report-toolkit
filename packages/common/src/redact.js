@@ -10,7 +10,12 @@ const QUOTE_STR = '("|\')';
 const CONNECT_STR = 's*(:|=>|=)s*';
 const OPT_QUOTE_STR = `${QUOTE_STR}?`;
 
-const DEFAULT_WHITELIST = new Set(['sharedObjects']);
+const DEFAULT_WHITELIST = [/^sharedObjects/];
+const DEFAULT_REDACT_OPTIONS = {
+  force: false,
+  match: [],
+  whitelist: DEFAULT_WHITELIST
+};
 const SECRETS = [
   /passw(or)?d/i,
   /^pw$/,
@@ -48,25 +53,15 @@ const isSecret = (secrets, value, key) =>
  * `true`. Unless option `force` is `true`, any `obj` having this root property
  * will be returned w/o modification.
  * @param {object} obj - Object whose string values may be redacted
- * @param {object} [opts] - Options
- * @param {string|string[]|RegExp|RegExp[]} [opts.match] - Also redact these
- * keypaths (e.g., `header.cwd`) or matching values. A matching keypath will
- * redact all children; if the value of `match` is `header`, _everything_ in the
- * report's `header` prop will be redacted.
- * @param {Set<string>} [opts.whitelist=['sharedObjects']] - Whitelist these keypaths from redaction
- * @param {boolean} [opts.force] - If `true`, redact an already-redacted object
- * (one which has `[kRedacted]: true` root prop)
+ * @param {RedactOptions} [opts] - Options
  * @returns {object} `obj` with potentially redacted values
  * @see https://npm.im/traverse
  */
 export const redact = (obj, opts = {}) => {
-  let {force, match, whitelist} = _.defaults(
-    {force: false, match: [], whitelist: DEFAULT_WHITELIST},
-    opts
-  );
+  let {force, match, whitelist} = _.defaults(DEFAULT_REDACT_OPTIONS, opts);
 
   if (!force && kRedacted in obj) {
-    debug('encountered previously-redacted obj');
+    debug('encountered previously-redacted object; skipping');
     return obj;
   }
 
@@ -85,7 +80,7 @@ export const redact = (obj, opts = {}) => {
       const keypath = this.path.join('.');
       if (
         keypath &&
-        !whitelist.has(keypath) &&
+        _.every(regex => !regex.test(keypath), whitelist) &&
         isSecret(secrets, value, keypath)
       ) {
         this.update(REDACTED_TOKEN);
@@ -101,3 +96,14 @@ export const redact = (obj, opts = {}) => {
 };
 
 export {SECRETS};
+
+/**
+ * @typedef {Object} RedactOptions
+ * @property {string|string[]|RegExp|RegExp[]} [match] - Also redact these
+ * keypaths (e.g., `header.cwd`) or matching values. A matching keypath will
+ * redact all children; if the value of `match` is `header`, _everything_ in the
+ * report's `header` prop will be redacted.
+ * @property {RegExp[]} [whitelist=[/^sharedObjects/]] - Whitelist these keypaths from redaction
+ * @property {boolean} [force] - If `true`, redact an already-redacted object
+ * (one which has `[kRedacted]: true` root prop)
+ */

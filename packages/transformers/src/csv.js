@@ -17,7 +17,7 @@ const {
 export const meta = {
   description: 'Comma-separated values',
   id: 'csv',
-  input: ['string', 'object', 'report'],
+  input: ['object', 'report'],
   output: 'string'
 };
 

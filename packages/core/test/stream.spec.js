@@ -271,5 +271,71 @@ describe('@report-toolkit/core:stream', function() {
         );
       });
     });
+
+    describe('fromTransformerChain()', function() {
+      let subject;
+
+      beforeEach(function() {
+        subject = core.fromTransformerChain;
+      });
+
+      it('should emit a stream of transformer ID / config pairs', function() {
+        const config = {
+          transformers: {
+            foo: {a: 'b'},
+            bar: {b: 'c'},
+            baz: {c: 'd'}
+          }
+        };
+        return expect(
+          subject(['foo', 'bar', 'baz'], config),
+          'to complete with values',
+          {
+            id: 'foo',
+            config: {...config, ...config.transformers.foo}
+          },
+          {
+            id: 'bar',
+            config: {...config, ...config.transformers.bar}
+          },
+          {
+            id: 'baz',
+            config: {...config, ...config.transformers.baz}
+          }
+        );
+      });
+
+      it('should override root config with transformer-specific config', function() {
+        const config = {
+          a: 'b',
+          transformers: {
+            foo: {a: 'c'}
+          }
+        };
+        return expect(subject('foo', config), 'to complete with value', {
+          id: 'foo',
+          config: {
+            ...config.transformers.foo,
+            transformers: config.transformers
+          }
+        });
+      });
+    });
+
+    describe('transform()', function() {
+      let subject;
+
+      beforeEach(function() {
+        subject = core.transform;
+      });
+
+      it('should reject unknown transformers', function() {
+        return expect(
+          of({id: 'foo', config: {}}).pipe(subject(of('some-data'))),
+          'to emit error satisfying',
+          {code: 'RTKERR_UNKNOWN_TRANSFORMER'}
+        );
+      });
+    });
   });
 });

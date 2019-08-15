@@ -68,7 +68,10 @@ export const OPTIONS = {
       // @todo list transform aliases
       alias: 't',
       choices: builtinTransformerIds,
-      coerce: _.castArray,
+      coerce: _.pipe(
+        _.castArray,
+        _.uniq
+      ),
       default: constants.DEFAULT_TRANSFORMER,
       description: 'Transform(s) to apply',
       group: GROUPS.OUTPUT,

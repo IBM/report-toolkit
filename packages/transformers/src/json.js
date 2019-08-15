@@ -1,7 +1,7 @@
 import {createDebugPipe, observable} from '@report-toolkit/common';
 import stringify from 'fast-safe-stringify';
 
-const {map, toArray} = observable;
+const {map, toArray, pipeIf, mergeAll} = observable;
 const debug = createDebugPipe('transformers', 'json');
 /**
  * @type {TransformerMeta}
@@ -26,10 +26,8 @@ export const meta = {
 export const transform = ({pretty = false} = {}) => observable =>
   observable.pipe(
     toArray(),
-    debug(values => [
-      `transforming value %O to JSON with pretty = ${pretty}`,
-      values
-    ]),
+    pipeIf(result => result.length === 1, mergeAll()),
+    debug(values => [`transforming to JSON with pretty = ${pretty}`, values]),
     map(
       pretty
         ? values => stringify(values, null, 2)

@@ -1,6 +1,8 @@
-import {_, colors, error} from '@report-toolkit/common';
+import {_, colors, createDebugger, error} from '@report-toolkit/common';
 const {RTKERR_INVALID_TRANSFORMER_PIPE, createRTkError} = error;
 const FIELD_COLORS = Object.freeze(['cyan', 'magenta', 'blue', 'green']);
+
+const debug = createDebugger('transformers', 'transformer');
 
 /**
  * @type {Partial<TransformerMeta>}
@@ -38,6 +40,8 @@ class Transformer {
       config.fields = Transformer.normalizeFields(config.fields);
     }
     configMap.set(this, config);
+
+    debug(`created Transform with id "${meta.id}" and config %O`, config);
   }
 
   get id() {
@@ -72,15 +76,12 @@ class Transformer {
   }
 
   transform() {
-    const defaults = [this.defaults];
+    let defaults = [this.defaults];
     if (this._source && configMap.has(this._source)) {
       const sourceOpts = configMap.get(this._source);
-      defaults.push({fields: sourceOpts.fields});
+      defaults = _.defaults({fields: sourceOpts.fields}, defaults);
     }
-    // NOTE: _.defaultsDeepAll applies defaults the same way _.assignAll does
-    // which is the same way non-fp lodash does!
-    const config = configMap.get(this);
-    return this._transform(_.defaultsDeepAll([...defaults, config]));
+    return this._transform(_.defaultsDeep(defaults, configMap.get(this)));
   }
 
   /**

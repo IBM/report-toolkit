@@ -28,6 +28,7 @@ const {
   of,
   pipeIf,
   share,
+
   pluck,
   tap
 } = observable;
@@ -79,17 +80,21 @@ export const loadConfig = config =>
       config => _.isEmpty(config.plugins),
       map(config => ({...config, plugins: BUILTIN_PLUGINS}))
     ),
-    mergeMap(config => from(config.plugins).pipe(mergeMap(use))),
-    mapTo(config)
+    mergeMap(config =>
+      from(config.plugins).pipe(
+        mergeMap(use),
+        mapTo(config)
+      )
+    )
   );
 
 /**
  *
- * @param {string[]} transformerIds - List of Transformer IDs
+ * @param {string[]|string} transformerIds - List of Transformer IDs
  * @param {*} [config]
  */
 export const fromTransformerChain = (transformerIds, config = {}) =>
-  from(transformerIds).pipe(
+  fromAny(transformerIds).pipe(
     map(id => ({
       id,
       config: _.merge(config, _.getOr({}, `transformers.${id}`, config))

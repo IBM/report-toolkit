@@ -1,4 +1,4 @@
-import {_} from '@report-toolkit/common';
+import {_, createDebugger} from '@report-toolkit/common';
 import {stream} from '@report-toolkit/core';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
@@ -15,6 +15,8 @@ const DEFAULT_TRANSFORM_CONFIG = {
     }
   }
 };
+
+const debug = createDebugger('cli', 'commands', 'transform');
 
 export const command = 'transform <file..>';
 
@@ -59,7 +61,7 @@ export const handler = argv => {
   );
 
   const config = commandConfig('transform', argv, DEFAULT_TRANSFORM_CONFIG);
-
+  debug('complete command config: %O', config);
   fromTransformerChain(argv.transform, config)
     .pipe(
       transform(source, {defaultTransformer: DEFAULT_TRANSFORMER}),
