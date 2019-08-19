@@ -49,6 +49,7 @@ const fail = ({max, min, mode}, usage) => {
   };
 };
 
+// @ts-ignore
 export const inspect = ({max, min, mode} = {}) => {
   const usages = [];
   return {

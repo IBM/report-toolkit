@@ -34,6 +34,7 @@ export class Report {
     this[kReportFilepath] = filepath;
     this[kReport] = true;
     debug(
+      // @ts-ignore
       `created Report generated on ${this.header.dumpEventTime} w/ filepath ${this[kReportFilepath]}`
     );
   }

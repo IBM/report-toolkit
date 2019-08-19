@@ -23,7 +23,7 @@ const debug = createDebugger('cli', 'main');
  * @todo support color JSON output if TTY
  */
 const main = () => {
-  Object.values(commands)
+  _.values(commands)
     .reduce(
       (parser, command) => parser.command(command),
       yargs()

@@ -41,8 +41,8 @@ const pushToConfigList = list => value =>
 
 /**
  * Recursively parses a user-supplied config Object into a usable format.
- * @param {Object} config - A config object
- * @param {Object[]} configObjects - Flattened config objects
+ * @param {any} config - A config object
+ * @param {any[]} configObjects - Flattened config objects
  * @todo Configs must be validated against a config schema in a depth-first
  * manner.
  * @todo This might make sense to implement as an Object.
@@ -69,7 +69,11 @@ const flattenConfig = (config, configObjects = []) => {
     } else if (_.isObject(value)) {
       push(
         _.has('config', value)
-          ? flattenConfig(value.config, configObjects)
+          ? flattenConfig(
+              // @ts-ignore
+              value.config,
+              configObjects
+            )
           : value
       );
     } else {

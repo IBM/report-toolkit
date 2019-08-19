@@ -53,6 +53,9 @@ export class RuleConfig {
   }
 }
 
+/**
+ * @type {(rawConfig: object, rule: Rule) => RuleConfig}
+ */
 export const createRuleConfig = _.curryN(2, _.flip(RuleConfig.create));
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * @module @report-toolkit/core
+ */
+
 import * as stream from './stream.js';
 
 export * from './promise.js';

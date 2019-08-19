@@ -110,8 +110,6 @@ export class Rule {
    * Lazily-created function which validates the schema itself when first
    * referenced, creates a config-validation function, caches it, then asserts
    * any user-supplied config is valid using said function.
-   * @function
-   * @param {Object} [config] - User-supplied config to validate
    * @throws If user-supplied config is invalid.
    */
   get validate() {
@@ -191,8 +189,7 @@ export class Rule {
    *    actual `string` `message` props), and normalize the `Message` by adding
    *    relevant metadata (`Rule` ID, user-supplied config used, default
    *    severity, etc.)
-   * @param {Observable<Report>} reports - Report objects
-   * @param {Object} [config] - Optional rule-specific config
+   * @param {{reports: Observable<Report>, config?: object}} opts
    * @returns {Observable<Message>}
    */
   inspect({reports, config = {}}) {
@@ -311,4 +308,13 @@ export const createRule = Rule.create;
  * @property {Function} inspect - Async function which receives `Context` object
  * and optional configuration
  * @property {string} id - Unique rule ID
+ */
+
+/**
+ * @template T
+ * @typedef {import('rxjs').Observable<T>} Observable
+ */
+/**
+ * @typedef {import('@report-toolkit/common').Report} Report
+ * @typedef {import('./message').Message} Message
  */

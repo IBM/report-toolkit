@@ -21,6 +21,7 @@ export const meta = {
   }
 };
 
+// @ts-ignore
 export const inspect = ({timeout} = {}) => {
   timeout = typeof timeout === 'string' ? ms(timeout) : timeout;
   return context => {
