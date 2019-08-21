@@ -1,8 +1,20 @@
 export const ERROR = 'error';
 export const WARNING = 'warning';
 export const INFO = 'info';
+
+/**
+ * Project namespace
+ */
 export const NAMESPACE = 'report-toolkit';
+
+/**
+ * Short project namespace
+ */
 export const SHORT_NAMESPACE = 'rtk';
+
+/**
+ * Text to use in display if no filepath found
+ */
 export const NO_FILEPATH = '(no filepath)';
 export const MULTIPLE_FILEPATHS = '(multiple files)';
 export const DEFAULT_TRANSFORMER = 'table';
