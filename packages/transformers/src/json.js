@@ -7,11 +7,9 @@ const debug = createDebugPipe('transformers', 'json');
  * @type {TransformerMeta}
  */
 export const meta = {
-  defaults: /**
-   * @type {Partial<JSONTransformOptions>}
-   */ ({
+  defaults: {
     pretty: false
-  }),
+  },
   description: 'JSON',
   id: 'json',
   input: ['string', 'object', 'number', 'report'],
@@ -21,7 +19,7 @@ export const meta = {
 /**
  * Emits a single JSON blob.
  * @param {Partial<JSONTransformOptions>} [opts]
- * @type {TransformFunction<object,string>}
+ * @returns {TransformFunction<object,string>}
  */
 export const transform = ({pretty = false} = {}) => observable =>
   observable.pipe(
