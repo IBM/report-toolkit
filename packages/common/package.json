@@ -7,9 +7,9 @@
   "dependencies": {
     "debug": "^4.1.1",
     "kleur": "^3.0.3",
-    "lodash": "^4.17.11",
-    "p-is-promise": "^2.1.0",
-    "rxjs": "^6.5.2",
+    "lodash": "^4.17.15",
+    "p-is-promise": "^3.0.0",
+    "rxjs": "^6.5.3",
     "traverse": "^0.6.6"
   },
   "engines": {
