@@ -1,10 +1,10 @@
+import {_} from '@report-toolkit/common';
 import {ERROR} from '@report-toolkit/common/src/constants.js';
 import {
   RTKERR_INVALID_PARAMETER,
   RTKERR_INVALID_REPORT
 } from '@report-toolkit/common/src/error.js';
 import {of, switchMapTo} from '@report-toolkit/common/src/observable.js';
-import {isReportLike} from '@report-toolkit/common/src/report.js';
 // @ts-ignore
 import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.json';
 // @ts-ignore
@@ -19,10 +19,10 @@ const REPORT_002_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('@report-toolkit/core:stream', function() {
+describe('@report-toolkit/core:observable', function() {
   let sandbox;
   /**
-   * @type {import('../src/stream')}
+   * @type {import('../src/observable')}
    */
   let core;
   let subject;
@@ -76,7 +76,7 @@ describe('@report-toolkit/core:stream', function() {
       }
     };
 
-    core = proxyquire(require.resolve('../src/stream'), stubs);
+    core = proxyquire(require.resolve('../src/observable'), stubs);
   });
 
   afterEach(function() {
@@ -86,7 +86,7 @@ describe('@report-toolkit/core:stream', function() {
   describe('function', function() {
     describe('diff()', function() {
       /**
-       * @type {import('../src/stream').diff}
+       * @type {import('../src/observable').diff}
        */
       let diff;
 
@@ -132,7 +132,6 @@ describe('@report-toolkit/core:stream', function() {
     describe('inspect()', function() {
       beforeEach(function() {
         subject = core.inspect;
-        isReportLike.cache.clear();
       });
 
       describe('when passed raw report objects', function() {
@@ -281,7 +280,7 @@ describe('@report-toolkit/core:stream', function() {
 
       it('should emit a stream of transformer ID / config pairs', function() {
         const config = {
-          transformers: {
+          transformer: {
             foo: {a: 'b'},
             bar: {b: 'c'},
             baz: {c: 'd'}
@@ -292,15 +291,24 @@ describe('@report-toolkit/core:stream', function() {
           'to complete with values',
           {
             id: 'foo',
-            config: {...config, ...config.transformers.foo}
+            config: {
+              ..._.omit('transformer', config),
+              ...config.transformer.foo
+            }
           },
           {
             id: 'bar',
-            config: {...config, ...config.transformers.bar}
+            config: {
+              ..._.omit('transformer', config),
+              ...config.transformer.bar
+            }
           },
           {
             id: 'baz',
-            config: {...config, ...config.transformers.baz}
+            config: {
+              ..._.omit('transformer', config),
+              ...config.transformer.baz
+            }
           }
         );
       });
@@ -308,15 +316,14 @@ describe('@report-toolkit/core:stream', function() {
       it('should override root config with transformer-specific config', function() {
         const config = {
           a: 'b',
-          transformers: {
+          transformer: {
             foo: {a: 'c'}
           }
         };
         return expect(subject('foo', config), 'to complete with value', {
           id: 'foo',
           config: {
-            ...config.transformers.foo,
-            transformers: config.transformers
+            ...config.transformer.foo
           }
         });
       });

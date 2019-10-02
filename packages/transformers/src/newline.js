@@ -1,3 +1,11 @@
+/**
+ * A transformer which outputs newline-delimited output.  Can be used to output
+ * newline-delimited JSON ("ndjson").
+ * @module @report-toolkit/transformers.newline
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {_, observable} from '@report-toolkit/common';
 import stringify from 'fast-safe-stringify';
 

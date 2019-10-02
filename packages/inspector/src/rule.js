@@ -56,7 +56,7 @@ const catchHandlerError = (severity = WARNING) => observable =>
         message: _.isError(originalError)
           ? originalError.message
           : originalError.toString().trim(),
-        originalError,
+        error: originalError,
         severity
       })
     )
@@ -189,8 +189,8 @@ export class Rule {
    *    actual `string` `message` props), and normalize the `Message` by adding
    *    relevant metadata (`Rule` ID, user-supplied config used, default
    *    severity, etc.)
-   * @param {{reports: Observable<Report>, config?: object}} opts
-   * @returns {Observable<Message>}
+   * @param {{reports: import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').Report>, config?: object}} opts
+   * @returns {import('@report-toolkit/common/src/observable').Observable<import('./message').Message>}
    */
   inspect({reports, config = {}}) {
     return from(this.handlers(config)).pipe(
@@ -308,13 +308,4 @@ export const createRule = Rule.create;
  * @property {Function} inspect - Async function which receives `Context` object
  * and optional configuration
  * @property {string} id - Unique rule ID
- */
-
-/**
- * @template T
- * @typedef {import('rxjs').Observable<T>} Observable
- */
-/**
- * @typedef {import('@report-toolkit/common').Report} Report
- * @typedef {import('./message').Message} Message
  */

@@ -19,7 +19,7 @@ describe('@report-toolkit/cli:command:transform', function() {
   describe('when no --transform specified', function() {
     it('should redact and output JSON', function() {
       // report-005 is the same as report-001, except it is not completely redacted.
-      // when it's redacted, it's equial to report-001.
+      // when it's redacted, it's equal to report-001.
       return expect(
         run('transform', REPORT_005_FILEPATH, '--pretty'),
         'to be fulfilled with value satisfying',

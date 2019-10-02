@@ -6,7 +6,7 @@ const ruleMap = new WeakMap();
 export class RuleConfig {
   /**
    *
-   * @param {Rule} rule
+   * @param {import('./rule').Rule} rule
    * @param {Object} [rawConfig]
    */
   constructor(rule, rawConfig = {}) {
@@ -44,6 +44,11 @@ export class RuleConfig {
     return config;
   }
 
+  /**
+   *
+   * @param {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').Report>} reports
+   * @returns {import('@report-toolkit/common/src/observable').Observable<import('./message').Message>}
+   */
   inspect(reports) {
     return this.rule.inspect({config: this.config, reports});
   }
@@ -54,10 +59,6 @@ export class RuleConfig {
 }
 
 /**
- * @type {(rawConfig: object, rule: Rule) => RuleConfig}
+ * @type {(rawConfig: object, rule: import('./rule').Rule) => RuleConfig}
  */
 export const createRuleConfig = _.curryN(2, _.flip(RuleConfig.create));
-
-/**
- * @typedef {import('./rule').Rule} Rule
- */

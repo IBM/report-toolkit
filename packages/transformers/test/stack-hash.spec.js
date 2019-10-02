@@ -24,12 +24,13 @@ describe('@report-toolkit/transformers:stack-hash', function() {
   it('should emit an object containing a unique hash', function() {
     return expect(
       of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(transform()),
-      'to complete with value',
+      'to complete with value satisfying',
       {
         dumpEventTime: '2019-04-29T12:31:35Z',
         filepath: REPORT_001_FILEPATH,
         message: 'Error [ERR_SYNTHETIC]: JavaScript Callstack',
-        sha1: 'a87a1ecedf547e5f223fe47ae4fefb4e86637397'
+        sha1: 'a87a1ecedf547e5f223fe47ae4fefb4e86637397',
+        stack: expect.it('to be an', 'array')
       }
     );
   });
@@ -41,12 +42,13 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         .toPromise();
       return expect(
         of(createReport(REPORT_004, REPORT_004_FILEPATH)).pipe(transform()),
-        'to complete with value',
+        'to complete with value satisfying',
         {
           dumpEventTime: '2019-04-16T15:46:19Z',
           filepath: REPORT_004_FILEPATH,
           message: 'Error [ERR_SYNTHETIC]: JavaScript Callstack',
-          sha1
+          sha1,
+          stack: expect.it('to be an', 'array')
         }
       );
     });
@@ -58,12 +60,13 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(
           transform({strip: msg => msg.slice(6)})
         ),
-        'to complete with value',
+        'to complete with value satisfying',
         {
           dumpEventTime: '2019-04-29T12:31:35Z',
           filepath: REPORT_001_FILEPATH,
           message: '[ERR_SYNTHETIC]: JavaScript Callstack',
-          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564'
+          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564',
+          stack: expect.it('to be an', 'array')
         }
       );
     });
@@ -75,12 +78,13 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(
           transform({strip: 'Error '})
         ),
-        'to complete with value',
+        'to complete with value satisfying',
         {
           dumpEventTime: '2019-04-29T12:31:35Z',
           filepath: REPORT_001_FILEPATH,
           message: '[ERR_SYNTHETIC]: JavaScript Callstack',
-          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564'
+          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564',
+          stack: expect.it('to be an', 'array')
         }
       );
     });
@@ -92,12 +96,13 @@ describe('@report-toolkit/transformers:stack-hash', function() {
         of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(
           transform({strip: /^Error\s/})
         ),
-        'to complete with value',
+        'to complete with value satisfying',
         {
           dumpEventTime: '2019-04-29T12:31:35Z',
           filepath: REPORT_001_FILEPATH,
           message: '[ERR_SYNTHETIC]: JavaScript Callstack',
-          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564'
+          sha1: 'a1c25c242fa4e8b157c79b71224b529d6d922564',
+          stack: expect.it('to be an', 'array')
         }
       );
     });

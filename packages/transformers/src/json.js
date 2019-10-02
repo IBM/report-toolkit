@@ -1,3 +1,10 @@
+/**
+ * JSON transformer; outputs JSON.
+ * @module @report-toolkit/transformers.json
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {createDebugPipe, observable} from '@report-toolkit/common';
 import stringify from 'fast-safe-stringify';
 
@@ -7,9 +14,11 @@ const debug = createDebugPipe('transformers', 'json');
  * @type {TransformerMeta}
  */
 export const meta = {
-  defaults: {
+  defaults: /**
+   * @type {Partial<JSONTransformOptions>}
+   */ ({
     pretty: false
-  },
+  }),
   description: 'JSON',
   id: 'json',
   input: ['string', 'object', 'number', 'report'],
@@ -19,7 +28,7 @@ export const meta = {
 /**
  * Emits a single JSON blob.
  * @param {Partial<JSONTransformOptions>} [opts]
- * @returns {TransformFunction<object,string>}
+ * @type {TransformFunction<object,string>}
  */
 export const transform = ({pretty = false} = {}) => observable =>
   observable.pipe(

@@ -2,6 +2,7 @@
 
 import castArray from 'lodash/fp/castArray.js';
 import clamp from 'lodash/fp/clamp.js';
+import compact from 'lodash/fp/compact.js';
 import concat from 'lodash/fp/concat.js';
 import constant from 'lodash/fp/constant.js';
 import curry from 'lodash/fp/curry.js';
@@ -11,6 +12,7 @@ import defaultsDeep from 'lodash/fp/defaultsDeep.js';
 import defaultsDeepAll from 'lodash/fp/defaultsDeepAll.js';
 import every from 'lodash/fp/every.js';
 import filter from 'lodash/fp/filter.js';
+import flatMap from 'lodash/fp/flatMap.js';
 import flip from 'lodash/fp/flip.js';
 import forEach from 'lodash/fp/forEach.js';
 import fromPairs from 'lodash/fp/fromPairs.js';
@@ -20,6 +22,7 @@ import gte from 'lodash/fp/gte.js';
 import has from 'lodash/fp/has.js';
 import identity from 'lodash/fp/identity.js';
 import includes from 'lodash/fp/includes.js';
+import intersection from 'lodash/fp/intersection.js';
 import invokeArgs from 'lodash/fp/invokeArgs.js';
 import isArray from 'lodash/fp/isArray.js';
 import isBoolean from 'lodash/fp/isBoolean.js';
@@ -55,9 +58,11 @@ import reverse from 'lodash/fp/reverse.js';
 import size from 'lodash/fp/size.js';
 import some from 'lodash/fp/some.js';
 import split from 'lodash/fp/split.js';
+import startsWith from 'lodash/fp/startsWith.js';
 import sum from 'lodash/fp/sum.js';
 import tap from 'lodash/fp/tap.js';
 import toPairs from 'lodash/fp/toPairs.js';
+import toUpper from 'lodash/fp/toUpper.js';
 import trim from 'lodash/fp/trim.js';
 import unary from 'lodash/fp/unary.js';
 import uniq from 'lodash/fp/uniq.js';
@@ -65,10 +70,30 @@ import values from 'lodash/fp/values.js';
 import isPromise from 'p-is-promise';
 import traverse from 'traverse';
 
+/**
+ * @param {object} arg - Object to turn into a map
+ * @returns {Map<string,any>}
+ */
+const toMap = pipe(
+  toPairs,
+  pairs => new Map(pairs)
+);
+
+/**
+ * @param {object} arg - Object to turn into a frozen map
+ */
+const toFrozenMap = pipe(
+  toMap,
+  /**
+   * @param {Map<string,any>} map
+   */ map => Object.freeze(map)
+);
+
 export const _ = {
   __,
   castArray,
   clamp,
+  compact,
   concat,
   constant,
   curry,
@@ -78,6 +103,7 @@ export const _ = {
   defaultsDeepAll,
   every,
   filter,
+  flatMap,
   flip,
   forEach,
   fromPairs,
@@ -88,6 +114,7 @@ export const _ = {
   identity,
   includes,
   invokeArgs,
+  intersection,
   isArray,
   isBoolean,
   isEmpty,
@@ -122,9 +149,13 @@ export const _ = {
   size,
   some,
   split,
+  startsWith,
   sum,
   tap,
+  toFrozenMap,
+  toMap,
   toPairs,
+  toUpper,
   traverse,
   trim,
   unary,

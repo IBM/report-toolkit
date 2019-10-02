@@ -1,3 +1,9 @@
+/**
+ * @module @report-toolkit/transformers.stack-hash
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {_, observable} from '@report-toolkit/common';
 import hashjs from 'hash.js';
 
@@ -21,7 +27,8 @@ export const meta = {
         label: 'File',
         value: 'filepath'
       },
-      {label: 'Error', value: 'message'}
+      {label: 'Error', value: 'message'},
+      {label: 'Stack', value: 'stack'}
     ],
     strip: /[0-9]+/g
   }),
@@ -46,7 +53,7 @@ export const transform = ({strip} = {}) => observable =>
       // @ts-ignore
       const {message, stack} = report.javascriptStack;
       const strippedMessage = _.isFunction(strip)
-        ? strip(message)
+        ? /** @type {((arg: string) => string)} */ (strip)(message)
         : message.replace(strip, '');
       return {
         dumpEventTime,
@@ -55,7 +62,8 @@ export const transform = ({strip} = {}) => observable =>
         sha1: hashjs
           .sha1()
           .update(`${strippedMessage}${stack.join(',')}`)
-          .digest('hex')
+          .digest('hex'),
+        stack
       };
     })
   );

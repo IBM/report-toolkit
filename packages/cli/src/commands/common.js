@@ -1,14 +1,22 @@
-import {_, constants, observable} from '@report-toolkit/common';
-import {stream} from '@report-toolkit/core';
+import {
+  _,
+  constants,
+  createDebugger,
+  createDebugPipe,
+  observable
+} from '@report-toolkit/common';
+import {observable as observableAPI} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {terminalColumns} from '../console-utils.js';
+
+const debug = createDebugPipe('cli', 'commands', 'common');
 
 const {
   compatibleTransforms,
   builtinTransformerIds,
   toReportFromObject
-} = stream;
+} = observableAPI;
 
 const {fromAny, share} = observable;
 
@@ -21,27 +29,27 @@ export const GROUPS = {
 };
 
 export const OPTIONS = {
+  FILTER_TRANSFORM: {
+    exclude: {
+      coerce: _.castArray,
+      description: 'Exclude properties (keypaths allowed)',
+      group: GROUPS.FILTER_TRANSFORM,
+      type: 'array',
+      default: []
+    },
+    include: {
+      coerce: _.castArray,
+      description: 'Include properties (keypaths allowed)',
+      group: GROUPS.FILTER_TRANSFORM,
+      type: 'array',
+      default: []
+    }
+  },
   JSON_TRANSFORM: {
     pretty: {
       description: 'Pretty-print JSON output',
       group: GROUPS.JSON_TRANSFORM,
       type: 'boolean'
-    }
-  },
-  FILTER_TRANSFORM: {
-    include: {
-      alias: 'i',
-      description: 'Include properties (keypaths allowed)',
-      group: GROUPS.FILTER_TRANSFORM,
-      type: 'array',
-      coerce: _.castArray
-    },
-    exclude: {
-      alias: 'x',
-      description: 'Exclude properties (keypaths allowed)',
-      group: GROUPS.FILTER_TRANSFORM,
-      type: 'array',
-      coerce: _.castArray
     }
   },
   OUTPUT: {
@@ -112,12 +120,20 @@ export const getOptions = (
       }
     : group;
 
-export const fromFilepathsToReports = (filepaths, opts = {}) =>
-  fromAny(filepaths).pipe(
+/**
+ *
+ * @param {string[]|string} filepaths
+ * @param {*} opts
+ */
+export function fromFilepathsToReports(filepaths, opts = {}) {
+  return fromAny(filepaths).pipe(
+    debug(() => `attempting to load filepath(s): ${filepaths}`),
     toObjectFromFilepath(),
     toReportFromObject(opts),
+    debug(() => `loaded filepath(s): ${filepaths}`),
     share()
   );
+}
 
 /**
  * Compute a configuration for a particular command.  Command-specific
@@ -127,8 +143,12 @@ export const fromFilepathsToReports = (filepaths, opts = {}) =>
  * @param {object} [defaultConfig] - Default command configuration
  * @returns {object} Resulting config with command-specific stuff on top
  */
-export const commandConfig = (commandName, argv = {}, defaultConfig = {}) =>
-  _.omit(
+export const mergeCommandConfig = (
+  commandName,
+  argv = {},
+  defaultConfig = {}
+) => {
+  const config = _.omit(
     commandName,
     _.mergeAll([
       _.defaultsDeep(defaultConfig, _.getOr({}, commandName, defaultConfig)),
@@ -139,3 +159,9 @@ export const commandConfig = (commandName, argv = {}, defaultConfig = {}) =>
       _.omit(['$0', 'config', '_'], argv)
     ])
   );
+  createDebugger('cli', 'commands', 'common')(
+    `computed config for command "${commandName}": %O`,
+    config
+  );
+  return config;
+};

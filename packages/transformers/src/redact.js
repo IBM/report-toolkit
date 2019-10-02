@@ -1,3 +1,11 @@
+/**
+ * Transformer which redacts secrets from a {@link Report}. This transformer is
+ * _always_ run unless the user explicitly disables it.
+ * @module @report-toolkit/transformers.redact
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {observable, redact} from '@report-toolkit/common';
 
 const {map} = observable;

@@ -82,6 +82,9 @@ export const inspect = ({max, min, mode} = {}) => {
 
 export const id = 'memory-usage';
 
+/**
+ * @type {any}
+ */
 export const meta = {
   docs: {
     category: 'resource',

@@ -1,30 +1,36 @@
-import {observable} from '@report-toolkit/common';
-import {stream} from '@report-toolkit/core';
+import {_, observable} from '@report-toolkit/common';
+import {observable as observableAPI} from '@report-toolkit/core';
 import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
-import {commandConfig, getOptions, GROUPS, OPTIONS} from './common.js';
+import {getOptions, GROUPS, mergeCommandConfig, OPTIONS} from './common.js';
 
-const {diff, transform, fromTransformerChain} = stream;
-
+const {diff, transform, fromTransformerChain} = observableAPI;
 const {of, share} = observable;
-const DEFAULT_PROPERTIES = [
-  'environmentVariables',
-  'header',
-  'userLimits',
-  'sharedObjects'
-];
 
-const OP_COLORS = {
+const OP_COLORS = _.toFrozenMap({
   add: 'green',
   remove: 'red',
   replace: 'yellow'
-};
-const OP_CODE = {
+});
+
+const OP_CODE = _.toFrozenMap({
   add: 'A',
   remove: 'D',
   replace: 'M'
-};
+});
+
+/**
+ * Best-effort reformatting RFC6902-style paths to something more familiar.
+ * This will break if the key contains a `/`, which is "unlikely" (possible in the environment flag names)
+ * @param {string} path - RFC6902-style path, e.g., `/header/foo/3/bar`
+ * @returns Lodash-style keypath; e.g., `header.foo[3].bar`
+ */
+const formatKeypath = path =>
+  path
+    .replace('/', '')
+    .replace(/\/(\d+?)(\/)?/g, '[$1]$2')
+    .replace(/\//g, '.');
 
 export const command = 'diff <file1> <file2>';
 
@@ -32,12 +38,26 @@ export const desc = 'Diff two reports';
 
 export const builder = yargs =>
   yargs.options({
-    prop: {
-      default: DEFAULT_PROPERTIES,
-      description: 'Filter by property name',
+    includeProp: {
+      description: 'Include only properties (filter)',
       group: GROUPS.FILTER,
       nargs: 1,
-      type: 'array'
+      type: 'array',
+      alias: 'i',
+      coerce: _.castArray
+    },
+    excludeProp: {
+      description: 'Exclude properties (reject)',
+      group: GROUPS.FILTER,
+      nargs: 1,
+      type: 'array',
+      alias: 'x',
+      coerce: _.castArray
+    },
+    all: {
+      description: 'Include everything in diff',
+      group: GROUPS.FILTER,
+      type: 'boolean'
     },
     ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
     ...OPTIONS.JSON_TRANSFORM,
@@ -51,42 +71,55 @@ export const builder = yargs =>
  * @param {*} argv
  */
 export const handler = argv => {
-  const {file1, file2} = argv;
-  const DEFAULT_DIFF_CONFIG = {
-    properties: DEFAULT_PROPERTIES,
+  const {
+    file1,
+    file2,
+    includeProp: includeProperties,
+    excludeProp: excludeProperties,
+    all: includeAll
+  } = argv;
+
+  const config = mergeCommandConfig('diff', argv, {
+    includeAll,
+    includeProperties,
+    excludeProperties,
     showSecretsUnsafe: false,
-    disableSort: true,
-    fields: [
-      {
-        color: row => OP_COLORS[row.op],
-        label: 'Op',
-        value: row => OP_CODE[row.op],
-        widthPct: 4
-      },
-      {
-        color: row => OP_COLORS[row.op],
-        label: 'Path',
-        value: 'path',
-        widthPct: 24
-      },
-      {
-        label: file1,
-        value: 'value',
-        widthPct: 36
-      },
-      {
-        label: file2,
-        value: 'oldValue',
-        widthPct: 36
+    sort: false,
+    transformer: {
+      table: {
+        outputHeader: `Diff: ${file1} <=> ${file2}`,
+        maxWidth: terminalColumns,
+        colWidths: [4],
+        fields: [
+          {
+            color: ({op}) => OP_COLORS.get(op),
+            label: 'Op',
+            value: ({op}) => OP_CODE.get(op)
+          },
+          {
+            color: ({op}) => OP_COLORS.get(op),
+            label: 'Path',
+            value: ({path}) => formatKeypath(path)
+          },
+          {
+            label: file1,
+            value: 'value'
+          },
+          {
+            label: file2,
+            value: 'oldValue'
+          }
+        ]
       }
-    ],
-    outputHeader: `Diff: ${file1} <=> ${file2}`,
-    maxWidth: terminalColumns
-  };
-  const config = commandConfig('diff', argv, DEFAULT_DIFF_CONFIG);
+    }
+  });
 
   const source = diff(
-    of(file1, file2).pipe(
+    of(file1).pipe(
+      toObjectFromFilepath(),
+      share()
+    ),
+    of(file2).pipe(
       toObjectFromFilepath(),
       share()
     ),

@@ -114,9 +114,18 @@ export const filterEnabledRules = _.pipe(
   })
 );
 
-export const parseConfig = () => observable =>
-  observable.pipe(
-    // XXX: unary used because flattenConfig is a bad algorithm
-    map(_.unary(flattenConfig)),
-    map(_.defaults(DEFAULT_CONFIG_SHAPE))
-  );
+export const parseConfig = () =>
+  /**
+   * @param {Observable<object>} observable
+   */
+  observable =>
+    observable.pipe(
+      // XXX: unary used because flattenConfig is a bad algorithm
+      map(_.unary(flattenConfig)),
+      map(_.defaults(DEFAULT_CONFIG_SHAPE))
+    );
+
+/**
+ * @template T
+ * @typedef {import('@report-toolkit/common/src/observable').Observable<T>} Observable
+ */

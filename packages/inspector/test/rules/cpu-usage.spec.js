@@ -38,7 +38,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
             filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
             id: 'cpu-usage',
             message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./,
-            originalError: {
+            error: {
               message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./
             },
             severity: WARNING
@@ -56,7 +56,7 @@ describe('@report-toolkit/rules:cpu-usage', function() {
             filepath: /fixture\/reports\/report-008-cpu-usage-no-cpus\.json/,
             id: 'cpu-usage',
             message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./,
-            originalError: {
+            error: {
               message: /Property "header.cpus" missing in report at .+\/fixture\/reports\/report-008-cpu-usage-no-cpus\.json; cannot compute CPU usage\./
             },
             severity: WARNING

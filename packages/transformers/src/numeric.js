@@ -1,3 +1,10 @@
+/**
+ * Extracts only numeric data from a Report. Useful combined with the {@link @report-toolkit/transformers.newline} Transformer to pipe output on the command-line.
+ * @module @report-toolkit/transformers.numeric
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {_, createDebugger, observable} from '@report-toolkit/common';
 const {mergeMap} = observable;
 const debug = createDebugger('transformers', 'numeric');
@@ -79,7 +86,7 @@ export const meta = {
  * Transforms a Report (by default) or generic object (w/ appropriate keys)
  * to keypaths and numeric values
  * @param {Partial<NumericTransformOptions>} [opts] - Options
- * @type {TransformFunction<Report|object,NumericTransformResult>}
+ * @returns {TransformFunction<Report|object,NumericTransformResult>}
  */
 export const transform = ({keys} = {}) => {
   return observable =>

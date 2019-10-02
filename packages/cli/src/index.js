@@ -15,7 +15,7 @@ import yargs from 'yargs/yargs.js';
 
 import * as commands from './commands/index.js';
 
-const {DEFAULT_TRANSFORMER, NAMESPACE} = commonConstants;
+const {DEFAULT_TRANSFORMER, NAMESPACE, SHORT_NAMESPACE} = commonConstants;
 
 const debug = createDebugger('cli', 'main');
 
@@ -27,7 +27,7 @@ const main = () => {
     .reduce(
       (parser, command) => parser.command(command),
       yargs()
-        .scriptName(NAMESPACE)
+        .scriptName(SHORT_NAMESPACE)
         .demandCommand()
         .options({
           debug: {

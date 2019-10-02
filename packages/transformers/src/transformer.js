@@ -1,3 +1,9 @@
+/**
+ * @module @report-toolkit/transformers
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {_, colors, createDebugger, error} from '@report-toolkit/common';
 const {RTKERR_INVALID_TRANSFORMER_PIPE, createRTkError} = error;
 const FIELD_COLORS = Object.freeze(['cyan', 'magenta', 'blue', 'green']);
@@ -137,7 +143,9 @@ Transformer.normalizeFields = _.pipe(
       const colorFn = _.isFunction(fieldColor)
         ? (row, value) => {
             // the function might not return a color
-            const result = fieldColor(row);
+            const result = /** @type {((arg0: any) => string)} */ (fieldColor)(
+              row
+            );
             const color = colors[result]
               ? result
               : FIELD_COLORS[idx % FIELD_COLORS.length];

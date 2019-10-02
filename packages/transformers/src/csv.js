@@ -1,3 +1,11 @@
+/**
+ * CSV transformer.  Accepts an object or {@link Report}, and outputs CSV.
+ * @module @report-toolkit/transformers.csv
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
+
 import {_, observable} from '@report-toolkit/common';
 import {AsyncParser} from 'json2csv';
 import stripAnsi from 'strip-ansi';
@@ -31,7 +39,7 @@ export const transform = (parserOpts = {}) => observable => {
   // XXX: the parser wants to add a newline to everything we push to it for
   // some reason. likely "user error"
   const parser = new AsyncParser(
-    {...parserOpts, eol: ''},
+    {...parserOpts, eol: '', flatten: true},
     {
       objectMode: true
     }

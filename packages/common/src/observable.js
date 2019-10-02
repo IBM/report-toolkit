@@ -100,7 +100,7 @@ export const fromAny = value =>
  * @param {Object} [opts] - Extra info
  * @param {*} [opts.data] - Extra data
  * @param {string} [opts.url] - URL for more info
- * @returns {import('rxjs').Observable} An Observable emitting a single error
+ * @returns {Observable<never>} An Observable emitting a single error
  */
 export const throwRTkError = (code, message, opts = {}) =>
   throwError(createRTkError(code, message, opts));

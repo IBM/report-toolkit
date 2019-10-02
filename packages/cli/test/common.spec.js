@@ -1,10 +1,10 @@
-import {commandConfig} from '../src/commands/common.js';
+import {mergeCommandConfig} from '../src/commands/common.js';
 
 describe('@report-toolkit/cli:commands:common', function() {
-  describe('commandConfig()', function() {
+  describe('mergeCommandConfig()', function() {
     describe('when no parameters supplied', function() {
       it('should not throw', function() {
-        expect(commandConfig, 'not to throw');
+        expect(mergeCommandConfig, 'not to throw');
       });
     });
 
@@ -13,7 +13,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         const argv = {config: {foo: {bar: 'baz'}}};
         const defaultConfig = {foo: {bar: 'quux'}};
         expect(
-          commandConfig('commandName', argv, defaultConfig),
+          mergeCommandConfig('commandName', argv, defaultConfig),
           'to equal',
           argv.config
         );
@@ -26,7 +26,7 @@ describe('@report-toolkit/cli:commands:common', function() {
           commandName: {foo: {bar: 'spam'}}
         };
         expect(
-          commandConfig('commandName', argv, defaultConfig),
+          mergeCommandConfig('commandName', argv, defaultConfig),
           'to equal',
           argv.config
         );
@@ -44,7 +44,7 @@ describe('@report-toolkit/cli:commands:common', function() {
           commandName: {foo: {bar: 'spam'}}
         };
         expect(
-          commandConfig('commandName', argv, defaultConfig),
+          mergeCommandConfig('commandName', argv, defaultConfig),
           'to equal',
           argv.config.commandName
         );
@@ -57,7 +57,7 @@ describe('@report-toolkit/cli:commands:common', function() {
           commandName: {foo: {bar: 'spam'}}
         };
         expect(
-          commandConfig('commandName', argv, defaultConfig),
+          mergeCommandConfig('commandName', argv, defaultConfig),
           'not to have key',
           'commandName'
         );
@@ -69,7 +69,7 @@ describe('@report-toolkit/cli:commands:common', function() {
           commandName: {foo: {bar: 'spam'}}
         };
         expect(
-          commandConfig('commandName', {}, defaultConfig),
+          mergeCommandConfig('commandName', {}, defaultConfig),
           'to equal',
           defaultConfig.commandName
         );
@@ -84,9 +84,13 @@ describe('@report-toolkit/cli:commands:common', function() {
           foo: 'quux',
           commandName: {foo: 'spam'}
         };
-        expect(commandConfig('commandName', argv, defaultConfig), 'to equal', {
-          foo: 'rubberduck'
-        });
+        expect(
+          mergeCommandConfig('commandName', argv, defaultConfig),
+          'to equal',
+          {
+            foo: 'rubberduck'
+          }
+        );
       });
 
       it('should omit "_" and "$0" from argv', function() {
@@ -103,9 +107,13 @@ describe('@report-toolkit/cli:commands:common', function() {
           foo: 'quux',
           commandName: {foo: 'spam'}
         };
-        expect(commandConfig('commandName', argv, defaultConfig), 'to equal', {
-          foo: 'rubberduck'
-        });
+        expect(
+          mergeCommandConfig('commandName', argv, defaultConfig),
+          'to equal',
+          {
+            foo: 'rubberduck'
+          }
+        );
       });
     });
   });

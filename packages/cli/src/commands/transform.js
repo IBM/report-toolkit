@@ -1,10 +1,10 @@
 import {_, createDebugger} from '@report-toolkit/common';
-import {stream} from '@report-toolkit/core';
+import {observable} from '@report-toolkit/core';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
-import {commandConfig, fromFilepathsToReports, OPTIONS} from './common.js';
+import {fromFilepathsToReports, mergeCommandConfig, OPTIONS} from './common.js';
 
-const {transform, fromTransformerChain} = stream;
+const {transform, fromTransformerChain} = observable;
 
 const DEFAULT_TRANSFORMER = 'json';
 const DEFAULT_TRANSFORM_CONFIG = {
@@ -60,7 +60,11 @@ export const handler = argv => {
     )
   );
 
-  const config = commandConfig('transform', argv, DEFAULT_TRANSFORM_CONFIG);
+  const config = mergeCommandConfig(
+    'transform',
+    argv,
+    DEFAULT_TRANSFORM_CONFIG
+  );
   debug('complete command config: %O', config);
   fromTransformerChain(argv.transform, config)
     .pipe(
@@ -76,7 +80,7 @@ export const handler = argv => {
  */
 /**
  * @template T
- * @typedef {import('rxjs').Observable<T>} Observable
+ * @typedef {import('@report-toolkit/common/src/observable').Observable<T>} Observable
  */
 /**
  * @typedef {import('@report-toolkit/common').Report} Report

@@ -55,6 +55,10 @@ const fail = ({max, min, mode}, usage) => {
   };
 };
 export const id = 'cpu-usage';
+
+/**
+ * @type {any}
+ */
 export const meta = {
   docs: {
     category: 'resource',

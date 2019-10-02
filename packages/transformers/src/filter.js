@@ -1,3 +1,12 @@
+/**
+ * A general-purpose filtering Transformer, which allows whitelisting or
+ * blacklisting of properties from output.
+ * @module @report-toolkit/transformers.filter
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
+
 import {_, createDebugPipe, observable} from '@report-toolkit/common';
 
 const {map} = observable;
@@ -29,8 +38,7 @@ export const transform = ({include = [], exclude = []} = {}) => {
   if (exclude.length) {
     filterFns.push(_.omit(exclude));
   }
-  // @ts-ignore
-  const filterFn = _.pipe(...filterFns);
+  const filterFn = _.pipe.apply(null, filterFns);
   return observable =>
     observable.pipe(
       map(filterFn),

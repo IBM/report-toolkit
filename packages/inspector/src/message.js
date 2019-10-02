@@ -1,7 +1,17 @@
-import {_, constants} from '@report-toolkit/common';
+import {_, constants, createDebugger} from '@report-toolkit/common';
+
+const debug = createDebugger('inspector', 'message');
 const {ERROR, MULTIPLE_FILEPATHS} = constants;
 
+const compactMessageOptions = _.omitBy(
+  _.overEvery([_.negate(_.isError), _.negate(_.isBoolean), _.isEmpty])
+);
+
 export class Message {
+  /**
+   *
+   * @param {Partial<MessageOptions>} opts
+   */
   constructor(opts = {}) {
     const {
       data,
@@ -9,15 +19,16 @@ export class Message {
       id,
       isAggregate,
       message,
-      originalError,
+      error,
       config,
       severity = ERROR
-    } = _.omitBy(
-      _.overEvery([_.negate(_.isError), _.negate(_.isBoolean), _.isEmpty]),
-      opts
-    );
+    } = compactMessageOptions(opts);
 
-    this.message = message.toString();
+    if (message) {
+      this.message = message.toString();
+    } else {
+      debug('creating empty Message from opts:', opts);
+    }
     this.severity = severity;
     this.id = id;
 
@@ -31,8 +42,8 @@ export class Message {
       this.filepath = filepath;
     }
 
-    if (originalError) {
-      this.originalError = originalError;
+    if (error) {
+      this.error = error;
     }
 
     if (data) {
@@ -41,7 +52,7 @@ export class Message {
   }
 
   isNonEmpty() {
-    return Boolean(this.message.trim());
+    return Boolean(this.message && this.message.trim());
   }
 
   toString() {
@@ -49,16 +60,28 @@ export class Message {
   }
 }
 
-export const createMessage = (
-  message,
-  {filepath, id, isAggregate = false, config = {}}
-) => {
+/**
+ * Create a {@link Message} to be displayed to the user. Used by Rule implementations. Calls without either `message` or a `message` prop on a provided {@link MessageOptions} object will be result in a {@link Message} which will be ignored.}
+ * @param {string|Partial<MessageOptions>} message - Message to display to user, or {@link MessageOptions} object with `message` prop
+ * @param {Partial<MessageOptions>} [opts] - Options
+ */
+export const createMessage = (message, opts = {}) => {
   message = _.isString(message) ? {message} : message;
   return new Message({
     ...message,
-    config,
-    filepath,
-    id,
-    isAggregate
+    ...opts
   });
 };
+
+/**
+ * Allowed extra options when creating a {@link Message}
+ * @typedef {object} MessageOptions
+ * @property {object} data - Extra data
+ * @property {string} filepath - Filepath of associated report, if applicable. Ignored if `isAggregate` is `true`
+ * @property {string} id - ID of Rule which created the {@link Message}
+ * @property {boolean} isAggregate - `true` if {@link Message} references multiple files
+ * @property {Error} error - If present, an `Error` which was thrown by the Rule
+ * @property {object} config - Rule configuration
+ * @property {import('@report-toolkit/common/src/constants').ERROR|import('@report-toolkit/common/src/constants').WARNING|import('@report-toolkit/common/src/constants').INFO} severity - The severity of the {@link Message}
+ * @property {string} message - The message text itself, if first param not passed to {@link Message.createMessage}.
+ */

@@ -1,16 +1,55 @@
-import {_, constants} from '@report-toolkit/common';
-import {stream} from '@report-toolkit/core';
+import {_, constants, observable} from '@report-toolkit/common';
+import {observable as core} from '@report-toolkit/core';
 
-import {fail, ok, toOutput} from '../console-utils.js';
+import {terminalColumns, toOutput} from '../console-utils.js';
 import {
-  commandConfig,
   fromFilepathsToReports,
   GROUPS,
+  mergeCommandConfig,
   OPTIONS
 } from './common.js';
 
 const {ERROR, INFO, WARNING} = constants;
-const {inspect, transform, fromTransformerChain} = stream;
+const {inspect, transform, fromTransformerChain} = core;
+const {filter, take} = observable;
+
+const DEFAULT_INSPECT_CONFIG = {
+  inspect: {
+    severity: ERROR
+  },
+  transformer: {
+    table: {
+      colWidths: [12, 20, 15],
+      fields: [
+        {
+          color: ({severity}) => SEVERITY_COLOR_MAP.get(severity),
+          label: 'Severity',
+          value: ({severity}) => _.toUpper(severity)
+        },
+        {
+          label: 'File',
+          value: 'filepath'
+        },
+        {
+          label: 'Rule',
+          value: 'id'
+        },
+        {
+          label: 'Message',
+          value: 'message'
+        }
+      ],
+      maxWidth: terminalColumns,
+      outputHeader: 'Diagnostic Report Inspection'
+    }
+  }
+};
+
+const SEVERITY_COLOR_MAP = _.toFrozenMap({
+  error: 'red',
+  warning: 'yellow',
+  info: 'blue'
+});
 
 export const command = 'inspect <file..>';
 
@@ -26,7 +65,7 @@ export const builder = yargs =>
       severity: {
         choices: [INFO, WARNING, ERROR],
         default: ERROR,
-        description: 'Minimum severity level for messages',
+        description: 'Minimum threshold for message severity',
         group: GROUPS.FILTER
       },
       ...OPTIONS.OUTPUT,
@@ -36,50 +75,29 @@ export const builder = yargs =>
     });
 
 export const handler = argv => {
-  const {file, severity = ERROR} = argv;
+  const config = mergeCommandConfig('inspect', argv, DEFAULT_INSPECT_CONFIG);
+  const {file, severity, output, transform: transformer, color} = config;
 
-  const DEFAULT_INSPECT_CONFIG = {
-    inspect: {
-      fields: [
-        {
-          label: 'File',
-          value: 'filepath',
-          widthPct: 30
-        },
-        {
-          label: 'Rule',
-          value: 'id',
-          widthPct: 20
-        },
-        {
-          label: 'Message',
-          value: 'message',
-          widthPct: 50
-        }
-      ]
-    },
-    transformer: {
-      table: {
-        outputFooter: t =>
-          t.length
-            ? fail(`Found ${t.length} issue(s) in ${file.length} file(s)`)
-            : ok(`No issues found in ${file.length} file(s)`),
-        outputHeader: 'diagnostic Report Inspection'
-      }
-    }
-  };
-
-  const config = commandConfig('inspect', argv, DEFAULT_INSPECT_CONFIG);
-  const reports = fromFilepathsToReports(file, config);
-  const source = inspect(reports, {
+  const source = inspect(fromFilepathsToReports(file, config), {
     ruleConfig: config.rules,
     severity
   });
 
-  fromTransformerChain(argv.transform, config)
+  // if any of the messages have a severity of `error`, then
+  // exit with code 1.
+  source
+    .pipe(
+      filter(({severity}) => severity === ERROR),
+      take(1)
+    )
+    .subscribe(() => {
+      process.exitCode = 1;
+    });
+
+  fromTransformerChain(transformer, config)
     .pipe(
       transform(source, {beginWith: 'object'}),
-      toOutput(argv.output, {color: argv.color})
+      toOutput(output, {color})
     )
     .subscribe();
 };

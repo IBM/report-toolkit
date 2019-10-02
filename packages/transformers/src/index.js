@@ -43,8 +43,12 @@ const {
   throwRTkError
 } = observable;
 const debug = createDebugPipe('transformers');
-
-export const builtinTransformerIds = _.map('meta.id', builtinTransformers);
+/**
+ * @type {Readonly<string[]>}
+ */
+export const builtinTransformerIds = Object.freeze(
+  _.map('meta.id', builtinTransformers)
+);
 
 /**
  * @param {string} id - Transformer ID
@@ -184,11 +188,11 @@ export const compatibleTransforms = sourceType =>
  */
 /**
  * @template T
- * @typedef {import('rxjs').Observable<T>} Observable
+ * @typedef {import('@report-toolkit/common/src/observable').Observable<T>} Observable
  */
 /**
  * @template T,U
- * @typedef {import('rxjs/internal/types').OperatorFunction<T,U>} OperatorFunction
+ * @typedef {import('rxjs').OperatorFunction<T,U>} OperatorFunction
  */
 /**
  * @typedef {{id: string, config: object}} TransformerConfig

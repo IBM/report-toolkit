@@ -1,11 +1,15 @@
 import {_, observable} from '@report-toolkit/common';
-import {stream} from '@report-toolkit/core';
+import {observable as observableAPI} from '@report-toolkit/core';
 
 import {toOutput} from '../console-utils.js';
-import {commandConfig, getOptions, OPTIONS} from './common.js';
+import {getOptions, mergeCommandConfig, OPTIONS} from './common.js';
 
 const {map, share} = observable;
-const {fromRegisteredRuleDefinitions, transform, fromTransformerChain} = stream;
+const {
+  fromRegisteredRuleDefinitions,
+  transform,
+  fromTransformerChain
+} = observableAPI;
 
 const DEFAULT_LIST_RULES_CONFIG = {
   fields: [
@@ -51,7 +55,7 @@ export const handler = argv => {
   );
   fromTransformerChain(
     argv.transform,
-    commandConfig('list-rules', argv, DEFAULT_LIST_RULES_CONFIG)
+    mergeCommandConfig('list-rules', argv, DEFAULT_LIST_RULES_CONFIG)
   )
     .pipe(
       transform(source, {
@@ -64,5 +68,5 @@ export const handler = argv => {
 
 /**
  * @template T
- * @typedef {import('../index.js').CLIArguments<T>} CLIArguments
+ * @typedef {import('..').CLIArguments<T>} CLIArguments
  */

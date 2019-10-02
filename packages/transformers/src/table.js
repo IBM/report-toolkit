@@ -1,3 +1,9 @@
+/**
+ * @module @report-toolkit/transformers.table
+ */
+/**
+ * do not remove this comment (for typedoc)
+ */
 import {_, colors, createDebugPipe, observable} from '@report-toolkit/common';
 import CLITable3 from 'cli-table3';
 import wrapAnsi from 'wrap-ansi';
@@ -85,37 +91,63 @@ const withFooter = (footer, value) => {
 ${footer(value)}`;
 };
 
+const safeSum = _.reduce((sum, pct) => (_.isNaN(pct) ? sum : sum + pct), 0);
+
 /**
  * This little nasty accepts a list of field objects with `widthPct`
- * props.  In case of bad weirdnessjust count the fields and return
- * a list of equal column widths.
+ * props and a `colWidths` array.  It prefers the `colWidths` array.
+ * It calculates column widths _as a percentage_ of maxWidth.
  * @todo "Infinity" should be a problem
+ * @param {Field[]} fields
+ * @param {number[]} colWidths
+ * @param {number} maxWidth
+ * @returns {number[]}
  */
-const normalizeColWidthPcts = _.pipe(
-  /**
-   * @param {Field[]} fields
-   * @returns {number[]}
-   */
-  fields => {
-    const fieldsCount = _.size(fields);
-    const colWidthPcts = fieldWidthPcts(fields);
-    return _.some(_.isNaN, colWidthPcts) || _.sum(colWidthPcts) > 100
-      ? new Array(fieldsCount).fill(Math.floor(100 / fieldsCount))
-      : colWidthPcts;
-  },
-  _.map(_.clamp(0, 100))
-);
+const normalizeColWidthPcts = (fields, colWidths, maxWidth) => {
+  if (!_.isEmpty(colWidths)) {
+    const maxPct = 100 - (safeSum(colWidths) / maxWidth) * 100;
+    const fieldsCount =
+      _.size(fields) - _.size(_.filter(_.isNumber, colWidths));
+    return _.map(
+      width =>
+        typeof width === 'number'
+          ? Math.floor((width / maxWidth) * 100)
+          : Math.floor(maxPct / fieldsCount),
+      [...colWidths, ...new Array(fields.length - colWidths.length).fill(null)]
+    );
+  }
+  const colWidthPcts = fieldWidthPcts(fields);
+  if (_.some(_.isNaN, colWidthPcts)) {
+    const maxPct = 100 - safeSum(colWidthPcts);
+    if (maxPct <= 100) {
+      const fieldsCount =
+        _.size(fields) - _.size(_.filter(_.isNumber, colWidthPcts));
+      return _.map(
+        pct => (_.isNaN(pct) ? Math.floor(maxPct / fieldsCount) : pct),
+        colWidthPcts
+      );
+    } else {
+      const fieldsCount = _.size(fields);
+      return new Array(fieldsCount).fill(Math.floor(100 / fieldsCount));
+    }
+  }
+  return colWidthPcts;
+};
 
 /**
  *
- * @param {number} [maxWidth] - Maximum column width
  * @param {Field[]} [fields] - Field settings
+ * @param {number[]} [colWidths] - Fixed column widths
+ * @param {number} [maxWidth] - Maximum column width
  * @returns {number[]}
  */
-const calculateColumnWidths = (maxWidth = 80, fields = []) =>
+const calculateColumnWidths = (fields = [], colWidths = [], maxWidth = 80) =>
   _.map(
+    // normalize column widths to total max width
     pct => Math.floor((pct / 100) * maxWidth),
-    normalizeColWidthPcts(fields)
+
+    // normalize column widths based on explicit colWidths option
+    normalizeColWidthPcts(fields, colWidths, maxWidth)
   );
 
 /**
@@ -124,7 +156,7 @@ const calculateColumnWidths = (maxWidth = 80, fields = []) =>
  */
 const formatTableHeaders = _.pipe(
   _.map('label'),
-  _.map(colors.underline)
+  _.map(v => colors.underline(v))
 );
 
 /**
@@ -134,14 +166,13 @@ const formatTableHeaders = _.pipe(
  */
 const createTable = (opts = {}) => {
   opts = _.defaultsDeep(DEFAULT_TABLE_OPTS, opts);
-  const {fields, maxWidth, truncate} = opts;
+  const {fields, maxWidth, truncate, colWidths} = opts;
   if (truncate) {
-    opts.colWidths = calculateColumnWidths(maxWidth, fields);
+    opts.colWidths = calculateColumnWidths(fields, colWidths, maxWidth);
   }
   return new CLITable3({
     // "truncate" is used by CLITable3 for the truncation symbol.
     ..._.omit('truncate', opts),
-    // @ts-ignore
     head: formatTableHeaders(fields),
     truncate: '…'
   });
@@ -167,7 +198,7 @@ export const meta = {
 };
 
 /**
- * @type {TransformFunction<object,string>}
+ * @returns {TransformFunction<object,string>}
  */
 export const transform = (opts = {}) => {
   const table = createTable(opts);
@@ -209,15 +240,18 @@ export const transform = (opts = {}) => {
         return table;
       }, table),
       concatMap(table => {
+        const isTableEmpty = _.isEmpty(table);
         /**
          * @type {Array<string|CLITable3.Table>}
          */
-        const output = table.length ? [table] : [];
-        if (outputHeader) {
-          output.unshift(withHeader(outputHeader, table));
-        }
-        if (outputFooter) {
-          output.push(withFooter(outputFooter, table));
+        const output = isTableEmpty ? [] : [table];
+        if (!isTableEmpty) {
+          if (outputHeader) {
+            output.unshift(withHeader(outputHeader, table));
+          }
+          if (outputFooter) {
+            output.push(withFooter(outputFooter, table));
+          }
         }
         return from(output);
       }),

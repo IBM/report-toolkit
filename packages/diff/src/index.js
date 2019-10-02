@@ -1,22 +1,50 @@
-import {_, observable} from '@report-toolkit/common';
+import {_, constants, createDebugger, observable} from '@report-toolkit/common';
 import ptr from 'json-ptr';
 import {createPatch} from 'rfc6902';
 const {Observable, filter, mergeMap, pipeIf} = observable;
 
+const {DEFAULT_DIFF_EXCLUDE, DEFAULT_DIFF_INCLUDE} = constants;
+const debug = createDebugger('diff');
+
 /**
- * snooze-inducing paths to omit from the diff
+ * Given an array of Lodash-style keypaths, convert each to an RFC6902-style path.
+ * @param {string[]} value - Keypaths
+ * @returns {string[]} Paths
  */
-export const DIFF_OMIT_PATHS = Object.freeze(
-  new Set([
-    '/header/filename',
-    '/header/dumpEventTime',
-    '/header/dumpEventTimeStamp'
-  ])
+const formatPaths = _.map(
+  keypath => '/' + keypath.replace(/\[(\d+)\]/g, '.$1').replace(/\./g, '/')
 );
 
-export const pathToProperty = path => path.split('/')[1];
+/**
+ * @param {DiffOptions} [opts]
+ * @returns {import('rxjs').OperatorFunction<import('@report-toolkit/common/src/report').Report[],DiffResult>}
+ */
+export function diff(opts = {}) {
+  const {
+    includeProperties = DEFAULT_DIFF_INCLUDE,
+    excludeProperties = DEFAULT_DIFF_EXCLUDE,
+    includeAll = false
+  } = opts;
 
-export const diffReports = ({properties: filterProperties = []} = {}) => {
+  let includePaths = [];
+  let excludePaths = [];
+
+  if (!includeAll) {
+    includePaths = formatPaths(includeProperties);
+    excludePaths = formatPaths(excludeProperties);
+    // since exclude is intended to operate on post-included paths, we need to
+    // remove any identical props from the former.
+    excludePaths = _.omit(
+      _.intersection(includePaths, excludePaths),
+      excludePaths
+    );
+
+    debug('including paths matching %O', includePaths);
+    debug('excluding paths matching %O', excludePaths);
+  } else {
+    debug('running complete diff');
+  }
+
   return observable =>
     observable.pipe(
       mergeMap(
@@ -41,6 +69,9 @@ export const diffReports = ({properties: filterProperties = []} = {}) => {
                   patchObj.path === lastPatchObj.path &&
                   patchObj.op === lastPatchObj.op
                 ) {
+                  /**
+                   * @type {Array<number|string>}
+                   */
                   const nextPathParts = patchObj.path.split('/');
                   const nextPathIdx = Number(nextPathParts.pop()) + offset;
                   const nextPath = nextPathParts.concat(nextPathIdx).join('/');
@@ -59,7 +90,7 @@ export const diffReports = ({properties: filterProperties = []} = {}) => {
                 }
                 lastPatchObj = patchObj;
                 observer.next(nextValue);
-              }, _.filter(patchObj => !DIFF_OMIT_PATHS.has(patchObj.path), patch));
+              }, patch);
             } catch (err) {
               observer.error(err);
             }
@@ -67,8 +98,26 @@ export const diffReports = ({properties: filterProperties = []} = {}) => {
           })
       ),
       pipeIf(
-        !_.isEmpty(filterProperties),
-        filter(({path}) => _.includes(pathToProperty(path), filterProperties))
+        !includeAll && !_.isEmpty(includeProperties),
+        filter(({path}) => _.some(_.startsWith(_.__, path), includePaths))
+      ),
+      pipeIf(
+        !includeAll && !_.isEmpty(excludeProperties),
+        filter(({path}) => !_.some(_.startsWith(_.__, path), excludePaths))
       )
     );
-};
+}
+
+/**
+ * Options for {@link diff}.
+ * @typedef {{includeProperties?: string[], excludeProperties?: string[], includeAll?: boolean}} DiffOptions
+ */
+
+/**
+ * A single difference between two reports.
+ * @typedef {object} DiffResult
+ * @property {"add"|"remove"|"replace"} op - Operation
+ * @property {string} path - [RFC6902](https://tools.ietf.org/html/rfc6902)-style keypath
+ * @property {string|boolean|number|null?} value - Value from second report (where applicable)
+ * @property {string|boolean|number|null?} oldValue - Value from first report (where applicable)
+ */

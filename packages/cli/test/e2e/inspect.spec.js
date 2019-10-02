@@ -17,11 +17,11 @@ describe('@report-toolkit/cli:command:inspect', function() {
   });
 
   describe('when it cannot find a config file', function() {
-    it('should enable all rules and succeed', function() {
+    it('should enable all rules', function() {
       return expect(
         runWithOptions(['inspect', REPORT_002_FILEPATH, '-t', 'json'], {
           cwd: tmpdir()
-        }).then(
+        }).catch(
           _.pipe(
             _.get('stdout'),
             JSON.parse

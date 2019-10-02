@@ -1,4 +1,4 @@
-import {NO_FILEPATH} from './constants.js';
+import {NO_FILEPATH, REPORT_KNOWN_ROOT_PROPERTIES} from './constants.js';
 import {createDebugger} from './debug.js';
 import {createRTkError, RTKERR_INVALID_REPORT} from './error.js';
 import {kReport, kReportFilepath} from './symbols.js';
@@ -6,32 +6,24 @@ import {_} from './util.js';
 
 const debug = createDebugger('common', 'report');
 
-const KNOWN_PROPS = [
-  'header',
-  'javascriptStack',
-  'nativeStack',
-  'javascriptHeap',
-  'resourceUsage',
-  'libuv',
-  'environmentVariables',
-  'userLimits',
-  'sharedObjects'
-];
-
 /**
- * Represents a Diagnostic Report
- * @todo Need to add type defs or a schema or something
+ * Represents a [Diagnostic Report](https://nodejs.org/api/process.html#process_process_report_getreport_err).
+ * @todo Need to create a JSON schema or typedef for raw Report object
  */
-export class Report {
+class Report {
   /**
-   * @param {ReportLike} report
+   * Asserts `report` is a {@link ReportLike} value. Removes any unknown properties. Assigns internally-used `Symbol`s.
+   * @param {ReportLike} report - Raw object
+   * @param {string?} filepath - Original filepath of report, if available. Defaults to {@link NO_FILEPATH}
    */
   constructor(report, filepath = NO_FILEPATH) {
     if (!Report.isReportLike(report)) {
       throw createRTkError(RTKERR_INVALID_REPORT, `Invalid report!`);
     }
-    Object.assign(this, _.pick(KNOWN_PROPS, report));
+    Object.assign(this, _.pick(REPORT_KNOWN_ROOT_PROPERTIES, report));
+
     this[kReportFilepath] = filepath;
+
     this[kReport] = true;
     debug(
       // @ts-ignore
@@ -39,11 +31,16 @@ export class Report {
     );
   }
 
+  /**
+   * Original filepath of report, if available. Defaults to {@link NO_FILEPATH}.
+   */
   get filepath() {
-    return this[kReportFilepath];
+    return /** @type {string} */ (this[kReportFilepath]);
   }
 
   /**
+   * Creates a read-only {@link Report} from a {@link ReportLike} value.
+   * Use this instead of `new Report()`!
    * @param {ReportLike} rawReport
    * @param {string} filepath
    */
@@ -52,25 +49,39 @@ export class Report {
   }
 
   /**
+   * Returns `true` if the value is an object having a property `report-toolkit-report` `Symbol` with value `true`.
    * @param {any} value
    */
   static isReport(value) {
-    return _.isObject(value) && _.has(kReportFilepath, value);
+    return _.isObject(value) && value[kReport] === true;
   }
 
   /**
-   * @param {object} value
+   * Returns `true` if `value` has all expected root properties of a Diagnostic Report (as returned by [process.report.getReport()](https://nodejs.org/api/process.html#process_process_report_getreport_err)), or is a {@link Report}.
+   * @param {any} value
    */
   static isReportLike(value) {
-    return _.isObject(value) && _.every(key => _.has(key, value), KNOWN_PROPS);
+    return (
+      Report.isReport(value) ||
+      (_.isObject(value) &&
+        _.every(key => {
+          const hasValue = _.has(key, value);
+          if (!hasValue) {
+            debug(`report is missing prop "${key}"`);
+          }
+          return hasValue;
+        }, REPORT_KNOWN_ROOT_PROPERTIES))
+    );
   }
 }
 
 export const createReport = Report.create;
 export const isReport = Report.isReport;
+export const isReportLike = Report.isReportLike;
 
-export const isReportLike = _.memoize(Report.isReportLike);
+export {Report};
 
 /**
- * @typedef {import('packages/core/src/stream.js').ReportLike} ReportLike
+ * Either a {@link Report} or an object with all of the required props.  See {@link Report.isReportLike}
+ * @typedef {object|import('@report-toolkit/common').Report} ReportLike
  */

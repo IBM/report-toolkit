@@ -1,14 +1,23 @@
 import {_, constants, observable} from '@report-toolkit/common';
-import {
-  fromFilepathToRuleDefinition,
-  toObjectFromFilepath
-} from '@report-toolkit/fs';
+import {toObjectFromFilepath} from '@report-toolkit/fs';
+import {basename} from 'path';
 
 import {inspectReports, toReportFromObject} from '../../src/index.js';
 import {createRule} from '../../src/rule.js';
 
 const {INFO} = constants;
 const {fromAny, map} = observable;
+
+const toRuleDefinitionFromFilepath = (extension = '.js') => observable =>
+  observable.pipe(
+    map(filepath => ({
+      ...require(filepath),
+      id: basename(filepath, extension)
+    }))
+  );
+
+const fromFilepathToRuleDefinition = filepath =>
+  fromAny(filepath).pipe(toRuleDefinitionFromFilepath());
 
 export const createInspect = (ruleFilepath, config = {}) => {
   const ruleConfigs = fromFilepathToRuleDefinition(
