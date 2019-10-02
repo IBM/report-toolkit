@@ -66,10 +66,16 @@ typings/
 report-toolkit*.yml
 
 # generated reports
-report.*.json
+report*.json
 
 *.disabled
 *_scan-results
 
 dist/
 .rollup
+packages/**/*.d.ts
+packages/docs/src/pages/api
+packages/docs/.cache
+packages/docs/public
+packages/docs/src/pages/cli-output.txt
+

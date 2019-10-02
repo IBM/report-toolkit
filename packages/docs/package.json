@@ -1,0 +1,22 @@
+{
+  "name": "@report-toolkit/docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "consumes Node.js diagnostic reports, outputs useful information",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "gatsby build",
+    "dev": "gatsby develop",
+    "dev:clean": "gatsby clean && gatsby develop",
+    "serve": "gatsby serve"
+  },
+  "devDependencies": {
+    "@report-toolkit/common": "^0.0.0",
+    "gatsby": "^2.14.0",
+    "gatsby-theme-carbon": "^1.14.2",
+    "lodash": "^4.17.15",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "remark-plain-text": "^0.2.0"
+  }
+}

@@ -1,0 +1,13 @@
+[report-toolkit v0.0.0] Diagnostic Report Inspection
+
+ Severity   File               Rule          Message
+──────────────────────────────────────────────────────────────────────
+ INFO       report-1.json      cpu-usage     Mean CPU consumption
+                                             percent (0.47%) is
+                                             within the allowed range
+                                             of 0-50%
+──────────────────────────────────────────────────────────────────────
+ INFO       report-1.json      memory-usage  Mean memory usage
+                                             percent (0.19%) is
+                                             within the allowed range
+                                             0-50%

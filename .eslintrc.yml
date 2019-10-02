@@ -1,13 +1,16 @@
-extends:
-  - semistandard
+'extends':
+  - 'semistandard'
   - 'plugin:prettier/recommended'
   - 'plugin:import/errors'
   - 'plugin:monorepo/recommended'
+  - 'prettier/react'
+  - 'plugin:react/recommended'
+  - 'plugin:jsx-a11y/recommended'
 overrides:
   - files:
-      - .mocharc.js
+      - '.mocharc.js'
     parserOptions:
-      sourceType: script
+      sourceType: 'script'
   - env:
       mocha: true
     files:
@@ -18,28 +21,39 @@ overrides:
       sinon: false
     rules:
       no-restricted-syntax:
-        - error
+        - 'error'
         - selector: "Program > ExpressionStatement > CallExpression[callee.name=describe] > Literal:not([raw=/^'@report-toolkit\\u002F\\S+?(:\\S+)*'/])"
           message: 'Top-level describe() must be of format "@report-toolkit/<package>" or "@report-toolkit/<package>:<module>[:module...]"'
       monorepo/no-internal-import: 0
-parser: babel-eslint
+  - files:
+      - 'packages/docs/**/*'
+    rules:
+      import/extensions: 0
+parser: 'babel-eslint'
 plugins:
-  - simple-import-sort
+  - 'simple-import-sort'
+  - 'react-hooks'
 root: true
 rules:
   import/exports-last: error
   import/extensions:
-    - error
-    - always
-    - ignorePackages: true
+    - 'error'
+    - 'always'
+    - 'ignorePackages': true
   import/order: 0
   no-restricted-syntax:
-    - error
+    - 'error'
     - selector: 'CallExpression[callee.name=Symbol] > Literal:not([value=/^report-toolkit-[a-z-]+$/])'
       message: 'Symbol() must be called with a kebab-case description beginning with  "report-toolkit-"'
-  simple-import-sort/sort: error
+  react/prop-types: 0
+  react/destructuring-assignment: 0
+  react/no-access-state-in-setstate: 0
+  simple-import-sort/sort: 'error'
   sort-imports: 0
   standard/computed-property-even-spacing: 0
   strict:
     - error
     - safe
+settings:
+  react:
+    version: 'latest'

@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "extends": "./tsconfig.base",
+  "files": [
+    "packages/core/src/index.d.ts",
+    "packages/core/src/observable.d.ts",
+    "packages/common/src/constants.d.ts",
+    "packages/common/src/report.d.ts",
+    "packages/inspector/src/index.d.ts",
+    "packages/inspector/src/rule.d.ts",
+    "packages/inspector/src/rule-config.d.ts",
+    "packages/inspector/src/message.d.ts"
+  ],
+  "typedocOptions": {
+    "exclude": [
+      "packages/common/src/error*",
+      "packages/common/src/debug*",
+      "packages/common/src/index*",
+      "packages/common/src/observable*",
+      "packages/common/src/redact*",
+      "packages/common/src/symbols*",
+      "packages/common/src/util*",
+      "packages/{transformers,diff,cli,fs,report-toolkit,config}/src/**/*",
+      "packages/inspector/src/rules/*",
+      "packages/inspector/src/ajv*",
+      "packages/inspector/src/index*",
+      "packages/inspector/src/plugin*",
+      "**/node_modules/**/*"
+    ],
+    "excludePrivate": true,
+    "includeDeclarations": true,
+    "listInvalidSymbolLinks": true,
+    "mode": "modules",
+    "name": "report-toolkit",
+    "out": "packages/docs/src/pages/api",
+    "theme": "scripts/typedoc-plugin-markdown-gatsby-theme"
+  }
+}

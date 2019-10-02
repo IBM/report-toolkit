@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "paths": {
+      "@report-toolkit/cli": ["packages/cli/src/index.js"],
+      "@report-toolkit/common": ["packages/common/src/index.js"],
+      "@report-toolkit/config": ["packages/config/src/index.js"],
+      "@report-toolkit/core": ["packages/core/src/index.js"],
+      "@report-toolkit/diff": ["packages/diff/src/index.js"],
+      "@report-toolkit/fs": ["packages/fs/src/index.js"],
+      "@report-toolkit/inspector": ["packages/inspector/src/index.js"],
+      "@report-toolkit/transformers": ["packages/transformers/src/index.js"],
+      "report-toolkit": ["packages/report-toolkit/src/index.js"]
+    },
+    "target": "es6"
+  },
+  "exclude": [
+    "**/node_modules/**/*",
+    "**/dist/**/*",
+    "**/coverage",
+    "rollup.config.js",
+    "**/.*.js",
+    "packages/*/test/**/*",
+    "**/.history/**/*",
+    "packages/docs/**/*",
+    "**/build/**/*"
+  ]
+}

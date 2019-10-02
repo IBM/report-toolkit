@@ -1,0 +1,14 @@
+.callout-link {
+  @include carbon--type-style('body-long-02');
+  margin-top: $spacing-06;
+  display: block;
+}
+
+.image-card {
+  [class*='image-card__title'] {
+    color: white;
+  }
+  [class*='image-card__icon--action'] {
+    display: none;
+  }
+}

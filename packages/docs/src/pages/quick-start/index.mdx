@@ -1,0 +1,447 @@
+---
+title: report-toolkit Quick Start
+---
+
+import {Metadata, EmbedCode} from '../../components';
+import {reportExample} from './index.module.scss';
+
+<PageDescription>
+
+This "quick start" guide will get you up & running with **<Metadata prop="packageName"/>** in two (2) shakes of a lamb's tail.
+
+</PageDescription>
+
+<AnchorLinks>
+  <AnchorLink>Install</AnchorLink>
+  <AnchorLink>Generate a Diagnostic Report</AnchorLink>
+  <AnchorLink>Redact Secrets From a Report</AnchorLink>
+  <AnchorLink>Compare Two Reports</AnchorLink>
+  <AnchorLink>Detect Problems within a Report</AnchorLink>
+  <AnchorLink>Transforming a Report</AnchorLink>
+  <AnchorLink>Further Reading</AnchorLink>
+</AnchorLinks>
+
+## Install
+
+Unsurprisingly, to use <Metadata prop="packageName"/>, you must install it.
+
+### Prerequisite: Node.js v11.8.0 or newer
+
+For the purposes of this guide, _you must be running Node.js version v11.8.0 or newer_; the [Diagnostic Reports](https://nodejs.org/api/report.html) API referenced in this guide will reflect its state at version v11.8.0.
+
+Here are some options for installation.
+
+- **Recommended:** An official package from [nodejs.org](https://nodejs.org)
+- **macOS**: [Homebrew](https://brew.sh) (`brew install node`)
+- **Linux**: [NodeSource Binary Distributions](https://github.com/nodesource/distributions)
+- **Windows**: [Chocolatey](https://chocolatey.org/)
+- **Linux/macOS**: A version manager like [nvm](https://github.com/nvm-sh/nvm)
+
+### Package Installation
+
+<Row>
+<Column colMd={5} colLg={8}>
+
+Use your favorite Node.js package manager to install; [`npm`](https://docs.npmjs.com/cli-documentation/) comes packaged with most Node.js distributions.
+
+For this guide, it's recommended to install <Metadata prop="packageName"/> _globally_:
+
+```bash
+$ npm install report-toolkit --global
+```
+
+</Column>
+<Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
+  <Aside>
+
+See npm's guide on [installing packages globally](https://docs.npmjs.com/downloading-and-installing-packages-globally) for other options and troubleshooting.
+
+  </Aside>
+</Column>
+</Row>
+
+## Generate a Diagnostic Report
+
+First things first: to do much of anything with <Metadata prop="packageName"/>, we must generate a report.
+
+<InlineNotification kind="info">
+  If you already have a diagnostic report file you intend to use, you can skip
+  ahead to the <a href="#redact-secrets-from-a-report">next section</a>.
+</InlineNotification>
+
+At the time of this writing (2019-09-23), the diagnostic report functionality is "hidden" behind a flag to the `node` executable: `--experimental-report`. The `process.report` object will not be available unless this flag is present!
+
+The quickest way to generate a report is to "eval" an inline script, like so:
+
+```bash
+node --experimental-report --report-filename report.json --eval "process.report.writeReport()"
+```
+
+You'll see this:
+
+```
+Writing Node.js report to file: report.json
+Node.js report completed
+(node:18881) ExperimentalWarning: report is an experimental feature. This feature could change at any time
+```
+
+Breaking down the arguments to `node`, we have:
+
+1. `--experimental-report` -- enables diagnostic report functionality
+1. `--report-filename report.json` -- whenever a diagnostic report is written to disk, use this filename
+1. `--eval "process.report.writeReport()"` -- instead of a script file, execute the double-quoted string as a script, then exit; the script calls [process.report.writeReport()](https://nodejs.org/api/process.html#process_process_report_writereport_filename_err), which writes a report file to disk.
+
+<p>Next, you'll see how <Metadata prop="packageName"/> enables safer storage and transmission of report files.</p>
+
+## Redact Secrets From a Report
+
+Open `report.json` in your favorite editor (or use `cat` or `less` or whathaveyou). Scroll down to--or search for--the `environmentVariables` property.
+
+`environmentVariables` is a top-level property of a report file. It contains a complete dump of the environment at the time the report was created. You might notice API keys, cloud provider tokens, credentials, or other session identifiers; in other words, _secrets_.
+
+Depending on your filesystem permissions, `report.json` might even be readable by other users who couldn't otherwise see your environment. This is a potential leak, and we should plug it. <Metadata prop="packageName"/> to the rescue!
+
+<p><Metadata prop="packageName"/> provides command-line utility named{' '}
+
+<Metadata prop="executable"/>.</p>
+
+Assuming <Metadata prop="packageName"/> is installed globally, run:
+
+```bash
+rtk --help
+```
+
+You should see:
+
+<EmbedCode name="cli-output" />
+
+We see <Metadata prop="executable"/> provides _commands_; the command we want is `redact`.
+
+By default, the `redact` command will print its output to `STDOUT` (the terminal). Instead, let's use the `--output` option to write to a new file (smarties may also ask their shell to redirect the output to a file):
+
+```bash
+rtk redact --output report-redacted.json report.json
+```
+
+<Row>
+<Column colMd={5} colLg={8}>
+
+Now, open `report-redacted.json` in your editor (or otherwise display it). Search for the `environmentVariables` property. Within this object, you will see `[REDACTED]` wherever <Metadata prop="packageName"/> found a secret.
+
+Here's an example _excerpt_ from `report-redacted.json`:
+
+</Column>
+<Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
+  <Aside>
+
+If <Metadata prop="packageName"/> _didn't_ catch all your secrets, fear not; you can customize its behavior to suit your environment. See the [Configuration Guide](/configuration-guide) for more information.
+
+  </Aside>
+</Column>
+</Row>
+
+```json path=report-redacted.json
+{
+ "environmentVariables": {
+    "TERM_SESSION_ID": "[REDACTED]",
+    "SSH_AUTH_SOCK": "[REDACTED]",
+    "Apple_PubSub_Socket_Render": "[REDACTED]",
+    "COLORFGBG": "15;0",
+    "ITERM_PROFILE": "yoyodyne"
+ }
+```
+
+If you wish, delete your original `report.json`; `report-redacted.json` is now safe to share or send across the wire.
+
+A design goal of <Metadata prop="packageName"/> is _strong security defaults_. It will _always_ automatically redact _all_ reports which it ingests. You can disable this via a flag--see the detailed [CLI Guide](/cli-guide) for more information.
+
+Next, you'll see how <Metadata prop="executable"/> can provide a quick comparison of two reports using its `diff` command.
+
+## Compare Two Reports
+
+If you're having trouble tracking down the difference between two running `node` processes--say, on two machines that _should_ have identical environments--diagnostic reports and <Metadata prop="packageName"/> can help.
+
+As you may have deduced, we'll need two (2) reports to proceed.
+
+<InlineNotification>
+
+If you've completed the [previous section](#redact-secrets-from-a-report), you can re-use `report-redacted.json`; use this filename whenever this section refers to `report-1.json`. Skip ahead to [creating the second report](#create-the-second-report).
+
+</InlineNotification>
+
+### Create the First Report
+
+To create the first report, named `report-1.json`, execute:
+
+```bash
+node --experimental-report --report-filename report-1.json --eval "process.report.writeReport()"
+```
+
+You'll see:
+
+```
+Writing Node.js report to file: report-1.json
+Node.js report completed
+(node:18881) ExperimentalWarning: report is an experimental feature. This feature could change at any time
+```
+
+### Create the Second Report
+
+To create a _second_ report, repeat the command with the filename changed to `report-2.json`:
+
+```bash
+node --experimental-report --report-filename report-2.json --eval "process.report.writeReport()"
+```
+
+And you will see:
+
+```
+Writing Node.js report to file: report-2.json
+Node.js report completed
+(node:18881) ExperimentalWarning: report is an experimental feature. This feature could change at any time
+```
+
+<InlineNotification kind="warning">
+  Remember, report files may contain secrets; be deliberate about what you do
+  with these files!
+</InlineNotification>
+
+With our two reports in-hand, we can use the `diff` command to see what's changed between these two files.
+
+### Running a Diff
+
+A "diff" between two reports is _not_ a POSIX diff like you'd see between two versions of the same file. If you want that, you can use the [diff utility](https://en.wikipedia.org/wiki/Diff)!
+
+Instead, <Metadata prop="packageName"/> attempts to disregard typically-irrelevant information, and provide output tailored to the data structure of a report file, which is JSON.
+
+Let's see what we get. Execute:
+
+```bash
+rtk diff report-1.json report-2.json
+```
+
+You'll see something like the below (except in technicolor, where available):
+
+<EmbedCode name="diff-output" />
+
+By default, <Metadata prop="executable"/> will display a diff in a tabular format, intended for human consumption.
+
+In the table above, we have four (4) columns. Breaking them down:
+
+1. **Op**: This is the _type_ of change. In this case, all changes are _modifications_, denoted by `M`. This means that the field exists in both reports, but the value is different. You may also see `A` for "added" (when a field is present in the second report and not the first) and `D` for "deleted" (when a field is present in the first but not the second).
+1. **Path**: This is the JSON "keypath" of the field. If you were to reference the field like the report is a regular JavaScript object, this is how you would do it. `[]` indicates the presence of an _array_. `header.commandLine[3]`, for example, 4th element of the `commandLine` prop of the root `header` prop.
+1. **report-1.json**: The value at **Path** in `report-1.json` (if present).
+1. **report-2.json**: The corresponding value at **Path** in `report-2.json` (if present).
+
+Note the difference within the `header.commandLine` array. This reflects the different commands we used to generate each report. We could use that information to determine if the same application generated both reports. Likewise, by comparing `header.processId`, we could tell if the same _process_ created both reports.
+
+<Row>
+<Column colMd={5} colLg={8}>
+
+To squelch noise, by default, the `diff` command shows differences _only_ within these properties:
+
+1. `header`, omitting properties:
+   1. `filename`
+   1. `dumpEventTime`
+   1. `dumpEventTimeStamp`
+   1. `cpus`
+1. `environmentVariables`
+1. `userLimits`
+1. `sharedObjects`
+
+</Column>
+<Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
+  <Aside>
+
+You can control which fields appear in the diff by providing the `--includeProp/-i` and/or `--excludeProp/-x` arguments, or use `--all` to show everything. See the [CLI Guide]() for more in-depth information.
+
+  </Aside>
+</Column>
+</Row>
+
+Next, we'll see how <Metadata prop="packageName"/> can detect problems using its `inspect` command.
+
+## Detect Problems within a Report
+
+A diagnostic report is raw data about a `node` process. If you're familiar with diagnostic reports--or happen to know precisely what you're looking for--you can interpret that data yourself.
+
+But much like a radiologist reading an X-ray, <Metadata prop="packageName"/> can interpret the raw data in a report and provide akin to a _diagnosis_--or warn about something you may have otherwise overlooked.
+
+Given a diagnostic report, <Metadata prop="packageName"/> can run a set of _rules_ (heuristics) against it, providing further information if a "check" fails. This is similar--and, in fact, patterned on--how [ESLint](http://eslint.org) runs rules against your codebase. Also akin to ESLint, <Metadata prop="packageName"/> ships with a set of built-in rules, which we'll use next.
+
+Let's take one of the reports we've already created (it doesn't matter which). Execute:
+
+```bash
+rtk inspect report-1.json
+```
+
+Most likely, this command will result in _no output_--in other words, success. <Metadata prop="executable"/> didn't find anything worth your attention.
+
+Each _message_ emitted by a rule has an associated _severity_. These severities, from "most severe" to "least severe", are:
+
+- `error`
+- `warning`
+- `info`
+
+The default behavior of <Metadata prop="executable"/> is to exclusively show messages with a severity of _error_.
+
+But you, the user, can control this. Let's change the severity threshold to `info`, and see what happens:
+
+```bash
+rtk inspect report-1.json --severity info
+```
+
+The output should now look _something_ like this (and in color):
+
+<EmbedCode name="inspect-output-1" />
+
+Above, we see that two rules (`cpu-usage` and `memory-usage`) each output a message. Reading the message, we see that the allowed CPU usage and memory usage, respectively, are within the default thresholds for each rule.
+
+If, for example, the CPU usage was greater than 50%, then instead of a message with severity `INFO`, the severity would be displayed as `ERROR`.
+
+<InlineNotification>
+
+When a message with severity `ERROR` is encountered during inspection, <Metadata prop="executable"/>'s process with exit with a nonzero code (1).
+
+</InlineNotification>
+
+Instead of printing a fibonacci sequence in another process, we can use an example "problem" report file to see what an _actual_ error looks like. <a href="/raw/report-high-cpu-usage.example.json" download>Download <inlineCode>report-high-cpu-usage.example.json</inlineCode></a>; we'll hand this file to `inspect`:
+
+```bash
+rtk inspect report-high-cpu-usage.example.json
+```
+
+Note that the above command _does not_ include `--severity info`. Now, we should see an error:
+
+<EmbedCode name="inspect-output-2" />
+
+In `report-high-cpu-usage.example.json`, the reported CPU usage (precisely, the _mean_ across all CPUs) is greater than the default threshold of 50%.
+
+You could use this information to verify that the process isn't taking up too much CPU--or change the range (via a configuration file) to assert the process remains active--or even verify that utilization is high enough to justify paying for the compute!
+
+<InlineNotification>
+
+To get the most out of the built-in rules--all of which are independently configurable--see the [Configuration Guide](). If you want to make your _own_ custom rules, see the [Plugin Developer's Guide]();
+
+</InlineNotification>
+
+Finally, let's see how <Metadata prop="executable"/>'s `transform` command can help convert a report to a more useful format.
+
+## Transforming a Report
+
+The `transform` command allows you to apply _one or more_ "transformers" to a diagnostic report.
+
+<Row>
+<Column colMd={5} colLg={8}>
+
+The list of built-in transformers is as follows:
+
+- `csv`: Converts to CSV format
+- `filter`: Pick or omit certain properties
+- `json`: Converts to JSON format (the default)
+- `newline`: Converts to newline-delimited format, suitable for piping via shell, consumption via Node.js streams, etc.
+- `numeric`: A special filter which picks only _numeric_ fields; good for metrics
+- `redact`: Redacts secrets
+- `stack-hash`: Computes a hash of the exception for metrics; helps answer "have we seen this exception before?"
+- `table`: The default transform for the `diff` and `inspect` commands, among others
+
+Since this _is_ supposed to be a quick-start guide, we'll pick two of these as examples: [`filter`](#the-filter-transformer) and [`stack-hash`](#the-stack-hash-transformer).
+
+</Column>
+<Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
+  <Aside>
+
+Transformers aren't limited to just the `transform` command; you can use transformers _combined with_ any other command (like `diff` or `inspect`) via the `--transform/-t` argument, as applicable. For example, converting the output of `inspect` to JSON for machine consumption. See the [CLI Guide]() for details.
+
+  </Aside>
+</Column>
+</Row>
+
+### The `filter` Transformer
+
+The `filter` transformer allows you to essentially "whitelist" or "blacklist" some portion of a report (or both at once; the blacklist takes preference).
+
+For example, if you'd like to retrieve _only_ the version of `node` used to generate the report, you can use:
+
+```bash
+rtk transform -t filter --include header.componentVersions.node \
+report-1.json
+```
+
+Which will result in something like this (depending on the version of `node` you used to generate the report):
+
+<EmbedCode name="transform-output-1" language="json" />
+
+Likewise, the `--exclude` argument would allow you to, say, omit the entirety the `environmentVariables` and `sharedObjects` properties:
+
+```bash
+rtk transform -t filter --exclude environmentVariables --exclude \
+sharedObjects report-1.json
+```
+
+As you can see from the above, `--include` and `--exclude` can be specified multiple times.
+
+For something more practical, let's try `stack-hash`.
+
+### The `stack-hash` Transformer
+
+The intent of this transformer is to facilitate the gathering of _metrics_ around exceptions (or more specifically, the stack traces thereof).
+
+`node` can be configured to automatically generate a diagnostic report when it encounters an uncaught exception or a user signal (e.g., `SIGUSR1`). We can then use the `stack-hash` transformer to associate the stack (present in all reports) with a reasonably unique SHA1 hash.
+
+Here's an example of configuring `node` to automatically output a report file upon an uncaught exception (and summarily throwing one via `--eval`):
+
+```bash
+node --experimental-report --report-filename \
+report-3.json --report-uncaught-exception --eval "throw new Error('oh no')"
+```
+
+We can then use the `stack-hash` transformer on `report-3.json`:
+
+```bash
+rtk transform -t stack-hash report-3.json
+```
+
+Which will result in something akin to:
+
+<EmbedCode name="transform-output-2" language="json" />
+
+If we repeat the command using a different filename (`report-4.json`):
+
+```bash
+node --experimental-report --report-filename \
+report-4.json --report-uncaught-exception --eval "throw new Error('oh no')"
+```
+
+And run the transformer:
+
+```bash
+rtk transform -t stack-hash report-4.json
+```
+
+We'll get the _same_ hash, even though the `dumpEventTime` (when the report file was created) and `filepath` differ:
+
+<EmbedCode name="transform-output-3" language="json" />
+
+But _not_ if the message is different:
+
+```bash
+node --experimental-report --report-filename \
+report-5.json --report-uncaught-exception --eval "throw new Error('pizza party')"
+```
+
+And:
+
+```bash
+rtk transform -t stack-hash report-5.json
+```
+
+Results in:
+
+<EmbedCode name="transform-output-4" language="json" />
+
+You can see that the `sha` property is different, because the exception thrown has a different message.
+
+That wraps up the <Metadata prop="packageName"/> quick start guide! See below for more detailed documentation.
+
+## Further Reading

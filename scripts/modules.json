@@ -1,0 +1,47 @@
+[
+  {
+    "description": "Core `Promise`-based API for use by consumers.",
+    "name": "@report-toolkit/core",
+    "source": "packages/core/src/index"
+  },
+  {
+    "description": "Cross-cutting classes, functions, and values.",
+    "name": "@report-toolkit/common",
+    "source": "packages/common/src/index"
+  },
+  {
+    "description": "[RxJS](https://rxjs.dev) `Observable`-based API. Used interally, but can also be used by consumers.",
+    "name": "@report-toolkit/core.observable",
+    "source": "packages/core/src/observable"
+  },
+  {
+    "description": "A grip of constants used throughout the project.",
+    "name": "@report-toolkit/common.constants",
+    "source": "packages/common/src/constants"
+  },
+  {
+    "description": "A representation of a Diagnostic Report",
+    "name": "@report-toolkit/common.report",
+    "source": "packages/common/src/report"
+  },
+  {
+    "description": "Provides functionality which checks [Node.js Diagnostic Reports]() for potential issues.",
+    "name": "@report-toolkit/inspector",
+    "source": "packages/inspector/src/index"
+  },
+  {
+    "description": "Output of inspector",
+    "name": "@report-toolkit/inspector.message",
+    "source": "packages/inspector/src/message"
+  },
+  {
+    "description": "Describes a Rule",
+    "name": "@report-toolkit/inspector.rule",
+    "source": "packages/inspector/src/rule"
+  },
+  {
+    "description": "Describes a configuration of a Rule",
+    "name": "@report-toolkit/inspector.rule-config",
+    "source": "packages/inspector/src/rule-config"
+  }
+]

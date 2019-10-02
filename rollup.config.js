@@ -87,9 +87,9 @@ export default readdirSync(path.join(__dirname, 'packages'), {
   .filter(dirent => dirent.isDirectory())
   // this should be a flatmap
   .reduce(
-    (acc, {name}) => [
-      ...acc,
-      ...makeConfigs(path.join(__dirname, 'packages', name))
-    ],
+    (acc, {name}) =>
+      name !== 'docs'
+        ? [...acc, ...makeConfigs(path.join(__dirname, 'packages', name))]
+        : acc,
     []
   );

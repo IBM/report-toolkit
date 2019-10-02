@@ -1,0 +1,8 @@
+[report-toolkit v0.0.0] Diagnostic Report Inspection
+
+ Severity   File               Rule          Message
+──────────────────────────────────────────────────────────────────────
+ ERROR      report-high-cpu-…  cpu-usage     Mean CPU consumption
+                                             percent (70.12%) is
+                                             outside the allowed
+                                             range of 0-50%

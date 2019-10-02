@@ -1,0 +1,6 @@
+- title: 'Documentation'
+  pages:
+    - path: '/quick-start'
+      title: 'Quick Start'
+    - path: '/api/globals'
+      title: 'API Documentation'

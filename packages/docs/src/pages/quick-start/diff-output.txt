@@ -1,0 +1,7 @@
+[report-toolkit v0.0.0] Diff: report-1.json <=> report-2.json
+
+ Op  Path                     report-1.json            report-2.json
+───────────────────────────────────────────────────────────────────────────────
+ M   header.processId         64217                    64166
+───────────────────────────────────────────────────────────────────────────────
+ M   header.commandLine[3]    report-2.json            report-1.json
