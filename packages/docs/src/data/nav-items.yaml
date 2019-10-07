@@ -2,5 +2,5 @@
   pages:
     - path: '/quick-start'
       title: 'Quick Start'
-    - path: '/api/globals'
+    - path: '/api/home'
       title: 'API Documentation'
