@@ -5,10 +5,13 @@ import {useTextFile} from '../util/hooks';
 
 const EmbedCode = ({name, language, path, src}) => {
   const data = useTextFile();
-  const wrap = data[name].content.trim().split('\n').length === 1;
+  const shouldWrap =
+    String(data[name].content)
+      .trim()
+      .split('\n').length === 1;
 
   return (
-    <Code className={language} path={path} src={src} wrap={wrap}>
+    <Code className={language} path={path} src={src} wrap={shouldWrap}>
       {data[name].content}
     </Code>
   );
