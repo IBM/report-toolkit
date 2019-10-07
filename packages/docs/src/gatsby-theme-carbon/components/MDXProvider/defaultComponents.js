@@ -1,3 +1,4 @@
+import {Breadcrumb, BreadcrumbItem} from 'carbon-components-react';
 import {
   Accordion,
   AccordionItem
@@ -37,7 +38,7 @@ import {Tab, Tabs} from 'gatsby-theme-carbon/src/components/Tabs';
 import Video from 'gatsby-theme-carbon/src/components/Video';
 import React from 'react';
 
-import {InlineCode} from '../../../components';
+import {EmbedCode, InlineCode, Metadata} from '../../../components';
 import Code from '../Code';
 
 const components = {
@@ -79,7 +80,11 @@ const components = {
   AnchorLinks,
   Tab,
   Tabs,
-  InlineNotification
+  InlineNotification,
+  Metadata,
+  EmbedCode,
+  Breadcrumb,
+  BreadcrumbItem
 };
 
 export default components;
