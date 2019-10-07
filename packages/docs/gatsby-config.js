@@ -1,4 +1,5 @@
 const path = require('path');
+// @ts-ignore
 const {description, keywords} = require('./package.json');
 const {
   NAMESPACE,
@@ -6,30 +7,31 @@ const {
 } = require('@report-toolkit/common').constants;
 
 module.exports = {
-  siteMetadata: {
-    title: `${NAMESPACE} for Node.js`,
-    description,
-    keywords,
-    packageName: NAMESPACE,
-    executable: SHORT_NAMESPACE
-  },
+  pathPrefix: '/report-toolkit',
   plugins: [
     {
-      resolve: 'gatsby-source-filesystem',
       options: {
         name: 'raw',
         path: path.join(__dirname, 'src', 'pages', 'raw')
-      }
+      },
+      resolve: 'gatsby-source-filesystem'
     },
     {
-      resolve: 'gatsby-theme-carbon',
       options: {
-        titleType: 'append',
         repository: {
           baseUrl: 'https://github.com/ibm/report-toolkit',
           subDirectory: 'packages/docs'
-        }
-      }
+        },
+        titleType: 'append'
+      },
+      resolve: 'gatsby-theme-carbon'
     }
-  ]
+  ],
+  siteMetadata: {
+    description,
+    executable: SHORT_NAMESPACE,
+    keywords,
+    packageName: NAMESPACE,
+    title: `${NAMESPACE} for Node.js`
+  }
 };
