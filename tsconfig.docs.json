@@ -33,8 +33,11 @@
     "includeDeclarations": true,
     "listInvalidSymbolLinks": true,
     "mode": "modules",
-    "name": "report-toolkit",
+    "name": "report-toolkit API",
     "out": "packages/docs/src/pages/api",
-    "theme": "scripts/typedoc-plugin-markdown-gatsby-theme"
+    "readme": "packages/docs/src/api.mdx",
+    "theme": "scripts/typedoc-plugin-markdown-gatsby-theme",
+    "disableOutputCheck": true,
+    "hideSources": true
   }
 }
