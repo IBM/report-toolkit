@@ -24,7 +24,7 @@
     "build:docs:cli-output": "node scripts/build-cli-output.js",
     "clean": "git clean -fdx packages",
     "clean:declarations": "del-cli \"packages/*/src/**/*.d.ts\"",
-    "clean:docs": "del-cli packages/docs/src/pages/api",
+    "clean:docs": "del-cli \"packages/docs/src/pages/api/**/*.mdx\" \"packages/docs/src/pages/api/{classes,modules}\"",
     "clean:docs:cli-output": "del-cli packages/docs/src/pages/cli-output.txt",
     "dev": "rollup -c -w",
     "fix": "eslint --fix .",
