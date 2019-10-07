@@ -9,8 +9,6 @@
     "**/coverage",
     "rollup.config.js",
     "**/.*.js",
-    "packages/*/test/**/*",
     "**/.history/**/*"
-  ],
-  "include": ["packages/*/src/**"]
+  ]
 }
