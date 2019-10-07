@@ -7,7 +7,9 @@ import {reportExample} from './index.module.scss';
 
 <PageDescription>
 
-This "quick start" guide will get you up & running with **<Metadata prop="packageName"/>** in two (2) shakes of a lamb's tail.
+This "quick start" guide will provide an overview of <Metadata prop="packageName"/>'s capabilities.
+
+Use the links below to jump to a section, or just <a href="#install">install <Metadata prop="packageName"/></a> and get moving!
 
 </PageDescription>
 
@@ -29,7 +31,7 @@ Unsurprisingly, to use <Metadata prop="packageName"/>, you must install it.
 
 For the purposes of this guide, _you must be running Node.js version v11.8.0 or newer_; the [Diagnostic Reports](https://nodejs.org/api/report.html) API referenced in this guide will reflect its state at version v11.8.0.
 
-Here are some options for installation.
+Here are some options for installation:
 
 - **Recommended:** An official package from [nodejs.org](https://nodejs.org)
 - **macOS**: [Homebrew](https://brew.sh) (`brew install node`)
@@ -62,16 +64,18 @@ See npm's guide on [installing packages globally](https://docs.npmjs.com/downloa
 
 ## Generate a Diagnostic Report
 
-First things first: to do much of anything with <Metadata prop="packageName"/>, we must generate a report.
+To do much of anything with <Metadata prop="packageName"/>, you must generate a diagnostic report.
 
 <InlineNotification kind="info">
-  If you already have a diagnostic report file you intend to use, you can skip
-  ahead to the <a href="#redact-secrets-from-a-report">next section</a>.
+
+If you already have a diagnostic report file you intend to use, you can skip
+ahead to the [next section](#redact-secrets-from-a-report).
+
 </InlineNotification>
 
-At the time of this writing (2019-09-23), the diagnostic report functionality is "hidden" behind a flag to the `node` executable: `--experimental-report`. The `process.report` object will not be available unless this flag is present!
+At the time of this writing (2019-09-23), the diagnostic report functionality is "hidden" behind a flag to the `node` executable; `--experimental-report`.
 
-The quickest way to generate a report is to "eval" an inline script, like so:
+The quickest way to generate a report is to evaluate an inline script, like so:
 
 ```bash
 node --experimental-report --report-filename report.json --eval "process.report.writeReport()"
@@ -87,11 +91,11 @@ Node.js report completed
 
 Breaking down the arguments to `node`, we have:
 
-1. `--experimental-report` -- enables diagnostic report functionality
-1. `--report-filename report.json` -- whenever a diagnostic report is written to disk, use this filename
-1. `--eval "process.report.writeReport()"` -- instead of a script file, execute the double-quoted string as a script, then exit; the script calls [process.report.writeReport()](https://nodejs.org/api/process.html#process_process_report_writereport_filename_err), which writes a report file to disk.
+1. `--experimental-report`; enables diagnostic report functionality
+1. `--report-filename report.json`; whenever a diagnostic report is written to disk, use this filename
+1. `--eval "process.report.writeReport()"`; instead of a `.js` file, execute the double-quoted string as a script, then exit. The script calls [process.report.writeReport()](https://nodejs.org/api/process.html#process_process_report_writereport_filename_err), which writes a report file to disk.
 
-<p>Next, you'll see how <Metadata prop="packageName"/> enables safer storage and transmission of report files.</p>
+<p>Next, you'll see how <Metadata prop="packageName"/> enables safe storage and transmission of report files.</p>
 
 ## Redact Secrets From a Report
 
@@ -101,9 +105,7 @@ Open `report.json` in your favorite editor (or use `cat` or `less` or whathaveyo
 
 Depending on your filesystem permissions, `report.json` might even be readable by other users who couldn't otherwise see your environment. This is a potential leak, and we should plug it. <Metadata prop="packageName"/> to the rescue!
 
-<p><Metadata prop="packageName"/> provides command-line utility named{' '}
-
-<Metadata prop="executable"/>.</p>
+The <Metadata prop="packageName"/> package provides command-line utility, <Metadata prop="executable"/>.
 
 Assuming <Metadata prop="packageName"/> is installed globally, run:
 
@@ -174,12 +176,13 @@ If you've completed the [previous section](#redact-secrets-from-a-report), you c
 To create the first report, named `report-1.json`, execute:
 
 ```bash
-node --experimental-report --report-filename report-1.json --eval "process.report.writeReport()"
+node --experimental-report --report-filename report-1.json \
+  --eval "process.report.writeReport()"
 ```
 
 You'll see:
 
-```
+```plain wrap=true
 Writing Node.js report to file: report-1.json
 Node.js report completed
 (node:18881) ExperimentalWarning: report is an experimental feature. This feature could change at any time
@@ -190,12 +193,13 @@ Node.js report completed
 To create a _second_ report, repeat the command with the filename changed to `report-2.json`:
 
 ```bash
-node --experimental-report --report-filename report-2.json --eval "process.report.writeReport()"
+node --experimental-report --report-filename report-2.json \
+  --eval "process.report.writeReport()"
 ```
 
 And you will see:
 
-```
+```plain wrap=true
 Writing Node.js report to file: report-2.json
 Node.js report completed
 (node:18881) ExperimentalWarning: report is an experimental feature. This feature could change at any time
@@ -214,13 +218,13 @@ A "diff" between two reports is _not_ a POSIX diff like you'd see between two ve
 
 Instead, <Metadata prop="packageName"/> attempts to disregard typically-irrelevant information, and provide output tailored to the data structure of a report file, which is JSON.
 
-Let's see what we get. Execute:
+To display a diff, execute:
 
 ```bash
 rtk diff report-1.json report-2.json
 ```
 
-You'll see something like the below (except in technicolor, where available):
+You'll get something like the below (but probably with fancy colors):
 
 <EmbedCode name="diff-output" />
 
@@ -331,9 +335,6 @@ Finally, let's see how <Metadata prop="executable"/>'s `transform` command can h
 
 The `transform` command allows you to apply _one or more_ "transformers" to a diagnostic report.
 
-<Row>
-<Column colMd={5} colLg={8}>
-
 The list of built-in transformers is as follows:
 
 - `csv`: Converts to CSV format
@@ -347,16 +348,6 @@ The list of built-in transformers is as follows:
 
 Since this _is_ supposed to be a quick-start guide, we'll pick two of these as examples: [`filter`](#the-filter-transformer) and [`stack-hash`](#the-stack-hash-transformer).
 
-</Column>
-<Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
-  <Aside>
-
-Transformers aren't limited to just the `transform` command; you can use transformers _combined with_ any other command (like `diff` or `inspect`) via the `--transform/-t` argument, as applicable. For example, converting the output of `inspect` to JSON for machine consumption. See the [CLI Guide]() for details.
-
-  </Aside>
-</Column>
-</Row>
-
 ### The `filter` Transformer
 
 The `filter` transformer allows you to essentially "whitelist" or "blacklist" some portion of a report (or both at once; the blacklist takes preference).
@@ -365,7 +356,7 @@ For example, if you'd like to retrieve _only_ the version of `node` used to gene
 
 ```bash
 rtk transform -t filter --include header.componentVersions.node \
-report-1.json
+  report-1.json
 ```
 
 Which will result in something like this (depending on the version of `node` you used to generate the report):
@@ -376,7 +367,7 @@ Likewise, the `--exclude` argument would allow you to, say, omit the entirety th
 
 ```bash
 rtk transform -t filter --exclude environmentVariables --exclude \
-sharedObjects report-1.json
+  sharedObjects report-1.json
 ```
 
 As you can see from the above, `--include` and `--exclude` can be specified multiple times.
@@ -392,8 +383,8 @@ The intent of this transformer is to facilitate the gathering of _metrics_ aroun
 Here's an example of configuring `node` to automatically output a report file upon an uncaught exception (and summarily throwing one via `--eval`):
 
 ```bash
-node --experimental-report --report-filename \
-report-3.json --report-uncaught-exception --eval "throw new Error('oh no')"
+node --experimental-report --report-filename report-3.json \
+  --report-uncaught-exception --eval "throw new Error('oh no')"
 ```
 
 We can then use the `stack-hash` transformer on `report-3.json`:
@@ -409,8 +400,8 @@ Which will result in something akin to:
 If we repeat the command using a different filename (`report-4.json`):
 
 ```bash
-node --experimental-report --report-filename \
-report-4.json --report-uncaught-exception --eval "throw new Error('oh no')"
+node --experimental-report --report-filename report-4.json \
+  --report-uncaught-exception --eval "throw new Error('oh no')"
 ```
 
 And run the transformer:
@@ -426,8 +417,8 @@ We'll get the _same_ hash, even though the `dumpEventTime` (when the report file
 But _not_ if the message is different:
 
 ```bash
-node --experimental-report --report-filename \
-report-5.json --report-uncaught-exception --eval "throw new Error('pizza party')"
+node --experimental-report --report-filename report-5.json \
+  --report-uncaught-exception --eval "throw new Error('pizza party')"
 ```
 
 And:
@@ -442,6 +433,21 @@ Results in:
 
 You can see that the `sha` property is different, because the exception thrown has a different message.
 
-That wraps up the <Metadata prop="packageName"/> quick start guide! See below for more detailed documentation.
+<InlineNotification>
+
+Transformers aren't limited to just the `transform` command; you can use transformers _combined with_ any other command (like `diff` or `inspect`) via the `--transform/-t` argument, as applicable. For example, converting the output of `inspect` to JSON for machine consumption. See the [CLI Guide]() for details.
+
+</InlineNotification>
+
+## Conclusion
+
+That wraps up the <Metadata prop="packageName"/> quick start guide! We've learned how to use <Metadata prop="packageName"/> to:
+
+- Redact secrets from a diagnostic report
+- Diff two diagnostic reports
+- Check a diagnostic report for potential problems
+- Transform a diagnostic report to another format
+
+See [below](#further-reading) for links to detailed documentation on all of the above topics.
 
 ## Further Reading
