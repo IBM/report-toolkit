@@ -1,14 +1,15 @@
 import {_, createDebugger} from '@report-toolkit/common';
 import {observable} from '@report-toolkit/core';
 
-import {terminalColumns, toOutput} from '../console-utils.js';
+import {toOutput} from '../console-utils.js';
 import {fromFilepathsToReports, mergeCommandConfig, OPTIONS} from './common.js';
 
 const {transform, fromTransformerChain} = observable;
 
 const DEFAULT_TRANSFORMER = 'json';
+
+// in the case that `table` is chosen, use this output header.
 const DEFAULT_TRANSFORM_CONFIG = {
-  maxWidth: terminalColumns,
   transform: {
     table: {
       outputHeader: 'Transformation Result'
@@ -30,19 +31,11 @@ export const builder = yargs =>
     })
     .options({
       ...OPTIONS.OUTPUT,
-      ...{
-        transform: {
-          ...OPTIONS.OUTPUT.transform,
-          default: DEFAULT_TRANSFORMER
-        }
+      transform: {
+        ...OPTIONS.OUTPUT.transform,
+        default: DEFAULT_TRANSFORMER
       },
       ...OPTIONS.JSON_TRANSFORM,
-      ...{
-        pretty: {
-          ...OPTIONS.JSON_TRANSFORM.pretty,
-          default: false
-        }
-      },
       ...OPTIONS.FILTER_TRANSFORM,
       ...OPTIONS.TABLE_TRANSFORM
     });

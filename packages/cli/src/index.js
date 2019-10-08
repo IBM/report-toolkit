@@ -70,6 +70,12 @@ const main = () => {
           return argv;
         })
     )
+    .check(argv => {
+      if (argv.output && _.castArray(argv.file).length > 1) {
+        throw new Error('--output cannot be combined with multiple files');
+      }
+      return true;
+    })
     .parse(process.argv.slice(2));
 };
 

@@ -88,10 +88,11 @@ export const OPTIONS = {
   },
   TABLE_TRANSFORM: {
     'max-width': {
-      defaultDescription: `terminal width (${terminalColumns})`,
+      defaultDescription: 'terminal width',
       description: 'Set maximum output width; ignored if --no-truncate used',
       group: GROUPS.TABLE_TRANSFORM,
-      type: 'number'
+      type: 'number',
+      default: terminalColumns
     },
     truncate: {
       default: true,
@@ -123,7 +124,7 @@ export const getOptions = (
 /**
  *
  * @param {string[]|string} filepaths
- * @param {*} opts
+ * @param {Partial<import('@report-toolkit/core/src/observable').ToReportFromObjectOptions>} opts
  */
 export function fromFilepathsToReports(filepaths, opts = {}) {
   return fromAny(filepaths).pipe(
