@@ -38,16 +38,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.{yml,md,mdx}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "prettier": {
     "bracketSpacing": false,
     "endOfLine": "auto",
@@ -107,6 +97,7 @@
     "rollup-plugin-visualizer": "^2.6.0",
     "rxjs": "^6.5.3",
     "sinon": "^7.5.0",
+    "syncpack": "^4.5.4",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^2.2.10",
     "typescript": "^3.7.0-dev.20191006",
