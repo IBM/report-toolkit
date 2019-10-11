@@ -10,8 +10,6 @@
   },
   "license": "Apache-2.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "main": "packages/core/dist/report-toolkit-core.cjs.js",
-  "module": "packages/core/src/index.js",
   "scripts": {
     "bootstrap": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap",
     "build": "rollup -c",
