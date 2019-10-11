@@ -8,7 +8,7 @@ module.exports = {
      * @param {string[]} filepaths
      */
     filepaths => [
-      'syncpack',
+      'syncpack format',
       ...filepaths.map(filepath => `git add "${filepath}"`)
     ]
 };
