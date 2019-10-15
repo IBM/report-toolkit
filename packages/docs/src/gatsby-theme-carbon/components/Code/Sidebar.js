@@ -4,6 +4,7 @@ import cx from 'classnames';
 import copy from 'copy-to-clipboard';
 import React from 'react';
 
+// @ts-ignore
 import {button, copyButton, sidebar, sidebarWrapped} from './Code.module.scss';
 
 // If there is a src url, but no path name, both icons appear in the sidebar.

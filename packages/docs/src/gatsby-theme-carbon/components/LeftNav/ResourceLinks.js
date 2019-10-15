@@ -4,15 +4,16 @@ import React from 'react';
 const links = [
   {
     title: 'Github',
-    href: 'https://github.com/carbon-design-system/gatsby-theme-carbon'
+    href: 'https://github.com/IBM/report-toolkit'
   },
   {
-    title: 'Carbon',
-    href: 'https://www.carbondesignsystem.com'
+    title: 'Code of Conduct',
+    href:
+      'https://github.com/IBM/report-toolkit/blob/master/.github/CODE_OF_CONDUCT.md'
   },
   {
-    title: 'Configuration guide',
-    href: '/guides/configuration'
+    title: 'Diagnostic Reports API',
+    href: 'https://nodejs.org/api/report.html'
   }
 ];
 

@@ -1,6 +1,7 @@
-- title: 'Documentation'
+
+- title: 'Quick Start'
   pages:
     - path: '/quick-start'
-      title: 'Quick Start'
+- title: 'API Docs'
+  pages:
     - path: '/api/home'
-      title: 'API Documentation'

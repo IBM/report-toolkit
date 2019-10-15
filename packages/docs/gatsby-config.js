@@ -1,4 +1,3 @@
-const path = require('path');
 // @ts-ignore
 const {description, keywords} = require('./package.json');
 const {
@@ -11,15 +10,8 @@ module.exports = {
   plugins: [
     {
       options: {
-        name: 'raw',
-        path: path.join(__dirname, 'src', 'pages', 'raw')
-      },
-      resolve: 'gatsby-source-filesystem'
-    },
-    {
-      options: {
         repository: {
-          baseUrl: 'https://github.com/ibm/report-toolkit',
+          baseUrl: 'https://github.com/IBM/report-toolkit',
           subDirectory: 'packages/docs'
         },
         titleType: 'append'
