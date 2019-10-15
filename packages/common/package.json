@@ -3,7 +3,6 @@
   "description": "",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
-  "browser": "dist/report-toolkit-common.umd.js",
   "dependencies": {
     "debug": "^4.1.1",
     "kleur": "^3.0.3",
