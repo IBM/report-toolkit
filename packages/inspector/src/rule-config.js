@@ -21,7 +21,7 @@ export class RuleConfig {
 
     debug(`found raw config %O`, rawConfig);
 
-    this.config = Object.freeze(this.validate(rawConfig));
+    this.config = this.validate(rawConfig);
   }
 
   get rule() {
@@ -54,7 +54,7 @@ export class RuleConfig {
   }
 
   static create(rule, rawConfig) {
-    return new RuleConfig(rule, rawConfig);
+    return Object.freeze(new RuleConfig(rule, rawConfig));
   }
 }
 

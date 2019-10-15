@@ -67,10 +67,12 @@ export class Message {
  */
 export const createMessage = (message, opts = {}) => {
   message = _.isString(message) ? {message} : message;
-  return new Message({
-    ...message,
-    ...opts
-  });
+  return Object.freeze(
+    new Message({
+      ...message,
+      ...opts
+    })
+  );
 };
 
 /**
