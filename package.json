@@ -31,7 +31,8 @@
     "prerelease": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run clean && npm run build",
     "pretest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run build",
     "test": "mocha \"./packages/*/test/**/*.spec.js\"",
-    "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint"
+    "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint",
+    "publish:docs": "gh-pages -d packages/docs/public"
   },
   "husky": {
     "hooks": {
@@ -72,6 +73,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "esm": "^3.2.25",
     "execa": "^2.1.0",
+    "gh-pages": "^2.1.1",
     "handlebars": "^4.4.3",
     "husky": "^3.0.8",
     "lerna": "^3.17.0",
