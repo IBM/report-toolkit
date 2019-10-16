@@ -16,7 +16,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "build": "gatsby build",
+    "build": "gatsby build --prefix-paths",
     "dev": "gatsby develop",
     "dev:clean": "gatsby clean && gatsby develop",
     "serve": "gatsby serve"
