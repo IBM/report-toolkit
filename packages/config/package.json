@@ -1,10 +1,10 @@
 {
   "name": "@report-toolkit/config",
   "description": "",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.1.0"
+    "@report-toolkit/common": "^0.1.2"
   },
   "engines": {
     "node": ">=8"
