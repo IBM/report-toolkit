@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/ibm/report-toolkit/compare/v0.1.2...v0.1.3) (2019-10-17)
+
+### Bug Fixes
+
+- add missing publishConfig to transformers ([353a04f](https://github.com/ibm/report-toolkit/commit/353a04f3e64f62a308fbede756fc40efa4a39a8e))
+- missing shebang ([77f8c1f](https://github.com/ibm/report-toolkit/commit/77f8c1f2287ec8b4d4cbfefe446305592f6e7fde))
+
 ## [0.1.2](https://github.com/ibm/report-toolkit/compare/v0.1.1...v0.1.2) (2019-10-17)
 
 **Note:** Version bump only for package report-toolkit-monorepo
