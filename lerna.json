@@ -4,10 +4,15 @@
   "version": "0.0.0",
   "command": {
     "publish": {
-      "allowBranch": "latest",
+      "allowBranch": "master",
       "conventionalCommits": true,
       "message": "chore(release): %s"
     }
   },
-  "ignoreChanges": ["**/test/**", "*.spec.js", "*.md"]
+  "ignoreChanges": [
+    "**/test/**",
+    "*.spec.js",
+    "*.md",
+    "*.mdx"
+  ]
 }
