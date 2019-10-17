@@ -1,20 +1,20 @@
 {
   "name": "report-toolkit",
   "description": "A multitool for processing & analyzing Node.js Diagnostic Reports",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "bin": {
     "rtk": "dist/report-toolkit.cjs.js"
   },
   "dependencies": {
-    "@report-toolkit/cli": "^0.0.0",
-    "@report-toolkit/common": "^0.0.0",
-    "@report-toolkit/config": "^0.0.0",
-    "@report-toolkit/core": "^0.0.0",
-    "@report-toolkit/diff": "^0.0.0",
-    "@report-toolkit/fs": "^0.0.0",
-    "@report-toolkit/inspector": "^0.0.0",
-    "@report-toolkit/transformers": "^0.0.0"
+    "@report-toolkit/cli": "^0.1.0",
+    "@report-toolkit/common": "^0.1.0",
+    "@report-toolkit/config": "^0.1.0",
+    "@report-toolkit/core": "^0.1.0",
+    "@report-toolkit/diff": "^0.1.0",
+    "@report-toolkit/fs": "^0.1.0",
+    "@report-toolkit/inspector": "^0.1.0",
+    "@report-toolkit/transformers": "^0.1.0"
   },
   "engines": {
     "node": ">=8"

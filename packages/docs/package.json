@@ -1,9 +1,9 @@
 {
   "name": "@report-toolkit/docs",
   "description": "consumes Node.js diagnostic reports, outputs useful information",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "dependencies": {
-    "@report-toolkit/common": "^0.0.0"
+    "@report-toolkit/common": "^0.1.0"
   },
   "devDependencies": {
     "gatsby": "^2.15.36",
