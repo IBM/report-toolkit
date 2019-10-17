@@ -1,1 +1,1 @@
-{"data":{"allNavItemsYaml":{"edges":[{"node":{"title":"Quick Start","pages":[{"title":"Quick Start","path":"/quick-start"}]}},{"node":{"title":"API Docs","pages":[{"title":"API Docs","path":"/api/home"}]}}]},"site":{"pathPrefix":"/report-toolkit"}}}
+{"data":{"allNavItemsYaml":{"edges":[{"node":{"title":"Quick Start","pages":[{"title":"Quick Start","path":"/quick-start"}]}},{"node":{"title":"API Docs","pages":[{"title":"Home","path":"/api/home"}]}}]},"site":{"pathPrefix":"/report-toolkit"}}}
