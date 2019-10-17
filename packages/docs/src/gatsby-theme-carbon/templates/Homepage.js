@@ -29,21 +29,6 @@ const FirstRightText = () => (
   </p>
 );
 
-const SecondLeftText = () => <></>;
-
-const SecondRightText = () => (
-  <p>
-    You can also not use these components at all by not providing the callout
-    props to the template or writing your own template.
-    <a
-      className={calloutLink}
-      href="https://github.com/carbon-design-system/gatsby-theme-carbon/blob/master/packages/example/src/gatsby-theme-carbon/templates/Homepage.js"
-    >
-      Homepage source →
-    </a>
-  </p>
-);
-
 const customProps = {
   Banner: (
     <HomepageBanner
@@ -60,14 +45,7 @@ const customProps = {
       rightText={FirstRightText}
     />
   ),
-  SecondCallout: (
-    <HomepageCallout
-      leftText={SecondLeftText}
-      rightText={SecondRightText}
-      color="white"
-      backgroundColor="#061f80"
-    />
-  )
+  SecondCallout: <></>
 };
 
 // spreading the original props gives us props.children (mdx content)
