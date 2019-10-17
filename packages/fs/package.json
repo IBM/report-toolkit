@@ -1,7 +1,7 @@
 {
   "name": "@report-toolkit/fs",
   "description": "",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "@report-toolkit/common": "^0.1.0",
