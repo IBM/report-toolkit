@@ -1,8 +1,11 @@
 {
   "name": "report-toolkit",
-  "description": "",
+  "description": "A multitool for processing & analyzing Node.js Diagnostic Reports",
   "version": "0.0.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
+  "bin": {
+    "rtk": "dist/report-toolkit.cjs.js"
+  },
   "dependencies": {
     "@report-toolkit/cli": "^0.0.0",
     "@report-toolkit/common": "^0.0.0",

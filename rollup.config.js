@@ -34,7 +34,7 @@ const makeConfigs = pkgpath => {
       })
     ]
   };
-  if (pkgpath.endsWith('cli')) {
+  if (pkgpath.endsWith('cli') || pkgpath.endsWith('report-toolkit')) {
     cjsConfig.plugins.unshift(hashbang());
   }
   return [...configs, cjsConfig];

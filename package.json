@@ -2,7 +2,7 @@
   "name": "report-toolkit-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "consumes Node.js diagnostic reports, outputs useful information",
+  "description": "A multitool for processing & analyzing Node.js Diagnostic Reports",
   "keywords": [],
   "repository": {
     "type": "git",
