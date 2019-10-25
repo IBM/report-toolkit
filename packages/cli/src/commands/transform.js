@@ -27,7 +27,9 @@ export const desc = 'Transform a report';
 export const builder = yargs =>
   yargs
     .positional('file', {
-      coerce: _.castArray
+      coerce: _.castArray,
+      type: 'string',
+      nargs: 1
     })
     .options({
       ...OPTIONS.OUTPUT,

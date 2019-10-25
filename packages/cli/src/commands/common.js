@@ -20,6 +20,11 @@ const {
 
 const {fromAny, share} = observable;
 
+const toUniqueArray = _.pipe(
+  _.castArray,
+  _.uniq
+);
+
 export const GROUPS = {
   FILTER: 'Filter:',
   FILTER_TRANSFORM: '"filter" Transform Options:',
@@ -31,18 +36,20 @@ export const GROUPS = {
 export const OPTIONS = {
   FILTER_TRANSFORM: {
     exclude: {
-      coerce: _.castArray,
+      coerce: toUniqueArray,
+      default: [],
       description: 'Exclude properties (keypaths allowed)',
       group: GROUPS.FILTER_TRANSFORM,
-      type: 'array',
-      default: []
+      nargs: 1,
+      type: 'string'
     },
     include: {
-      coerce: _.castArray,
+      coerce: toUniqueArray,
+      default: [],
       description: 'Include properties (keypaths allowed)',
       group: GROUPS.FILTER_TRANSFORM,
-      type: 'array',
-      default: []
+      nargs: 1,
+      type: 'string'
     }
   },
   JSON_TRANSFORM: {
@@ -76,23 +83,21 @@ export const OPTIONS = {
       // @todo list transform aliases
       alias: 't',
       choices: builtinTransformerIds,
-      coerce: _.pipe(
-        _.castArray,
-        _.uniq
-      ),
+      coerce: toUniqueArray,
       default: constants.DEFAULT_TRANSFORMER,
       description: 'Transform(s) to apply',
       group: GROUPS.OUTPUT,
-      type: 'array'
+      nargs: 1,
+      type: 'string'
     }
   },
   TABLE_TRANSFORM: {
     'max-width': {
+      default: terminalColumns,
       defaultDescription: 'terminal width',
       description: 'Set maximum output width; ignored if --no-truncate used',
       group: GROUPS.TABLE_TRANSFORM,
-      type: 'number',
-      default: terminalColumns
+      type: 'number'
     },
     truncate: {
       default: true,
