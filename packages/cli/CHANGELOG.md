@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/ibm/report-toolkit/compare/v0.1.3...v0.2.0) (2019-10-25)
+
+### Bug Fixes
+
+- do not use array-type cli options; closes [#59](https://github.com/ibm/report-toolkit/issues/59) ([e86ee5c](https://github.com/ibm/report-toolkit/commit/e86ee5cf73e97ce052be23d771c3a5e20a1ed911))
+
 ## [0.1.3](https://github.com/ibm/report-toolkit/compare/v0.1.2...v0.1.3) (2019-10-17)
 
 **Note:** Version bump only for package @report-toolkit/cli

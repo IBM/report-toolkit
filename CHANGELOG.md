@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/ibm/report-toolkit/compare/v0.1.3...v0.2.0) (2019-10-25)
+
+### Bug Fixes
+
+- do not use array-type cli options; closes [#59](https://github.com/ibm/report-toolkit/issues/59) ([e86ee5c](https://github.com/ibm/report-toolkit/commit/e86ee5cf73e97ce052be23d771c3a5e20a1ed911))
+
+### Features
+
+- **inspect:** add "memory-usage" rule to recommended config ([c11a2ff](https://github.com/ibm/report-toolkit/commit/c11a2ff83552025d8493bd7ad6d163a941f15c30))
+
 ## [0.1.3](https://github.com/ibm/report-toolkit/compare/v0.1.2...v0.1.3) (2019-10-17)
 
 ### Bug Fixes
