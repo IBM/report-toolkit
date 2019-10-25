@@ -48,7 +48,8 @@
     "pretest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run build",
     "test": "mocha \"./packages/*/test/**/*.spec.js\"",
     "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint",
-    "publish:docs": "gh-pages -d packages/docs/public"
+    "publish:docs": "gh-pages -d packages/docs/public",
+    "prepublishOnly": "npm run build:docs"
   },
   "husky": {
     "hooks": {
