@@ -3,7 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "description": "A multitool for processing & analyzing Node.js Diagnostic Reports",
-  "keywords": [],
+  "keywords": [
+    "diagnostic",
+    "report",
+    "node-report",
+    "redact",
+    "secrets",
+    "diagnose",
+    "debug",
+    "toolkit",
+    "tool",
+    "inspect",
+    "diff",
+    "json",
+    "sanitize",
+    "transform",
+    "convert"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/ibm/report-toolkit.git"
@@ -97,6 +113,7 @@
     "rollup-plugin-subpath-externals": "^3.4.0",
     "rxjs": "^6.5.3",
     "sinon": "^7.5.0",
+    "sync-monorepo-packages": "^0.1.0",
     "syncpack": "^4.5.4",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^2.2.10",
@@ -107,5 +124,8 @@
   },
   "engines": {
     "node": ">=8"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
