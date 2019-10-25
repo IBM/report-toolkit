@@ -44,10 +44,10 @@
     "fix": "eslint --fix .",
     "postinstall": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap --no-ci",
     "lint": "eslint .",
-    "prerelease": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run clean && npm run build",
-    "pretest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run build",
+    "prerelease": "npm test",
+    "pretest": "npm run clean && npm run build",
     "test": "mocha \"./packages/*/test/**/*.spec.js\"",
-    "posttest": "cross-env NPM_CONFIG_LOGLEVEL=silent npm run lint",
+    "posttest": "npm run lint",
     "publish:docs": "gh-pages -d packages/docs/public",
     "prepublishOnly": "npm run build:docs"
   },
