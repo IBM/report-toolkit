@@ -44,12 +44,11 @@
     "fix": "eslint --fix .",
     "postinstall": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap --no-ci",
     "lint": "eslint .",
-    "prerelease": "npm test",
     "pretest": "npm run build",
     "test": "mocha \"./packages/*/test/**/*.spec.js\"",
     "posttest": "npm run lint",
     "publish:docs": "gh-pages -d packages/docs/public",
-    "prepublishOnly": "npm run build:docs"
+    "prepublishOnly": "npm run build && npm run build:docs"
   },
   "husky": {
     "hooks": {
