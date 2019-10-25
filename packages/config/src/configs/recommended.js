@@ -3,6 +3,7 @@ export const config = {
   rules: {
     'cpu-usage': 'on',
     'library-mismatch': 'on',
-    'long-timeout': 'on'
+    'long-timeout': 'on',
+    'memory-usage': 'on'
   }
 };
