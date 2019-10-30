@@ -2,6 +2,7 @@
   "name": "@report-toolkit/docs",
   "description": "consumes Node.js diagnostic reports, outputs useful information",
   "version": "0.2.0",
+  "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "@report-toolkit/common": "^0.2.0"
   },
@@ -13,8 +14,32 @@
     "react-dom": "^16.10.2",
     "remark-plain-text": "^0.2.0"
   },
+  "engines": {
+    "node": ">=8"
+  },
+  "keywords": [
+    "convert",
+    "debug",
+    "diagnose",
+    "diagnostic",
+    "diff",
+    "inspect",
+    "json",
+    "node-report",
+    "redact",
+    "report",
+    "sanitize",
+    "secrets",
+    "tool",
+    "toolkit",
+    "transform"
+  ],
   "license": "Apache-2.0",
   "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "ibm/report-toolkit.git",
   "scripts": {
     "build": "gatsby build --prefix-paths",
     "dev": "gatsby develop",
