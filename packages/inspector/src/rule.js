@@ -11,7 +11,7 @@ import {AJV} from './ajv.js';
 import {createMessage} from './message.js';
 import {createRuleConfig} from './rule-config.js';
 
-const {WARNING} = constants;
+const {WARNING, SEVERITIES} = constants;
 const {
   RTKERR_INVALID_RULE_CONFIG,
   RTKERR_INVALID_RULE_DEFINITION,
@@ -47,17 +47,24 @@ let ajv;
 /**
  * Operator that catches an Error emitted from a handler function and emits a
  * partial `Message` containing the error message, original error, and severity.
+ * If the `Error` object has a valid `severity` prop, this severity is used;
+ * otherwise `WARNING` is used.
  * @todo WARNING may not be the right default.
+ * @returns
+ * {import('rxjs').MonoTypeOperatorFunction<import('./message').RawMessage>}
  */
-const catchHandlerError = (severity = WARNING) => observable =>
+const catchHandlerError = () => observable =>
   observable.pipe(
-    catchError(originalError =>
+    catchError(error =>
       of({
-        message: _.isError(originalError)
-          ? originalError.message
-          : originalError.toString().trim(),
-        error: originalError,
-        severity
+        message: _.isError(error) ? error.message : String(error),
+        error,
+        severity:
+          _.isError(error) &&
+          _.has('severity', error) &&
+          _.has(/** @type {any} */ (error).severity, SEVERITIES)
+            ? /** @type {any} */ (error).severity
+            : WARNING
       })
     )
   );

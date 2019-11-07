@@ -101,3 +101,8 @@ export const DEFAULT_DIFF_INCLUDE = Object.freeze([
   'userLimits',
   'sharedObjects'
 ]);
+
+/**
+ * Default severity across system
+ */
+export const DEFAULT_SEVERITY = WARNING;

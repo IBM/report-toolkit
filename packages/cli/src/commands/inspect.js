@@ -9,14 +9,11 @@ import {
   OPTIONS
 } from './common.js';
 
-const {ERROR, INFO, WARNING} = constants;
+const {ERROR, WARNING, INFO, DEFAULT_SEVERITY} = constants;
 const {inspect, transform, fromTransformerChain} = core;
 const {filter, take} = observable;
 
 const DEFAULT_INSPECT_CONFIG = {
-  inspect: {
-    severity: ERROR
-  },
   transformer: {
     table: {
       colWidths: [12, 20, 15],
@@ -64,7 +61,7 @@ export const builder = yargs =>
     .options({
       severity: {
         choices: [INFO, WARNING, ERROR],
-        default: ERROR,
+        default: DEFAULT_SEVERITY,
         description: 'Minimum threshold for message severity',
         group: GROUPS.FILTER
       },

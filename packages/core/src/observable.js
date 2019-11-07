@@ -40,7 +40,7 @@ const {
   toObjectFromJSON
 } = observable;
 
-const {SEVERITIES, ERROR} = constants;
+const {SEVERITIES, DEFAULT_SEVERITY} = constants;
 const debug = createDebugPipe('core', 'observable');
 
 const BUILTIN_PLUGINS = ['@report-toolkit/inspector'];
@@ -58,7 +58,7 @@ const getRuleDefinitions = _.pipe(
  */
 const DEFAULT_INSPECT_OPTIONS = Object.freeze({
   sort: true,
-  severity: ERROR,
+  severity: DEFAULT_SEVERITY,
   showSecretsUnsafe: false,
   sortDirection: 'asc',
   sortField: 'header.dumpEventTimestamp'

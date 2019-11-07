@@ -123,6 +123,7 @@ describe('@report-toolkit/core:observable', function() {
       });
 
       it('should fail if the second parameter is not a report-like object', function() {
+        // @ts-ignore
         return expect(diff(REPORT_001, {}), 'to emit error satisfying', {
           code: RTKERR_INVALID_REPORT
         });
