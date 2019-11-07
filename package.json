@@ -90,7 +90,7 @@
     "esm": "^3.2.25",
     "execa": "^2.1.0",
     "gh-pages": "^2.1.1",
-    "handlebars": "^4.4.3",
+    "handlebars": "^4.5.1",
     "husky": "^3.0.8",
     "lerna": "^3.17.0",
     "lint-staged": "^9.4.2",
