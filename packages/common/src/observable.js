@@ -87,7 +87,7 @@ export const fromAny = value =>
     ? value
     : defer(() =>
         _.overSome([_.isPromise, _.isArray])(value)
-          ? from(value).pipe(mergeMap(fromAny))
+          ? from(value).pipe(concatMap(fromAny))
           : _.isUndefined(value)
           ? EMPTY
           : of(value)
