@@ -42,7 +42,7 @@
     "clean:docs:cli-output": "del-cli packages/docs/src/pages/cli-output.txt",
     "dev": "rollup -c -w",
     "fix": "eslint --fix .",
-    "postinstall": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap --no-ci",
+    "postinstall": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap",
     "lint": "eslint .",
     "pretest": "npm run build",
     "test": "mocha \"./packages/*/test/**/*.spec.js\"",
