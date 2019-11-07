@@ -5,3 +5,5 @@ ul-indent:
 commands-show-output: false
 no-bare-urls: false
 line-length: false
+single-title: false
+header-increment: false
