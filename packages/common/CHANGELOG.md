@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/ibm/report-toolkit/compare/v0.2.0...v0.2.1) (2019-11-07)
+
+### Bug Fixes
+
+- **common:** ensure fromAny emits in order ([34d5a6a](https://github.com/ibm/report-toolkit/commit/34d5a6a2fbdcaed74a3c14a9e58eb90b67e68009))
+- **inspect:** reduce default severity to WARNING; closes [#60](https://github.com/ibm/report-toolkit/issues/60) ([1d85bd5](https://github.com/ibm/report-toolkit/commit/1d85bd5b311d694f1724489054ddd30e342d9eac))
+
 # [0.2.0](https://github.com/ibm/report-toolkit/compare/v0.1.3...v0.2.0) (2019-10-25)
 
 **Note:** Version bump only for package @report-toolkit/common
