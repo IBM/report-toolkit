@@ -8,25 +8,32 @@ const debug = createDebugger('common', 'report');
 
 /**
  * Represents a [Diagnostic Report](https://nodejs.org/api/process.html#process_process_report_getreport_err).
- * @todo Need to create a JSON schema or typedef for raw Report object
  */
 class Report {
   /**
-   * Asserts `report` is a {@link ReportLike} value. Removes any unknown properties. Assigns internally-used `Symbol`s.
-   * @param {ReportLike} report - Raw object
+   * Creates shallow copies of root props in `report`; assigns internally-used `Symbol`s.
+   * @param {import('../diagnostic-report').DiagnosticReport} report - Raw object
    * @param {string?} filepath - Original filepath of report, if available. Defaults to {@link NO_FILEPATH}
    */
   constructor(report, filepath = NO_FILEPATH) {
     if (!Report.isReportLike(report)) {
       throw createRTkError(RTKERR_INVALID_REPORT, `Invalid report!`);
     }
-    Object.assign(this, _.pick(REPORT_KNOWN_ROOT_PROPERTIES, report));
+
+    this.header = {...report.header};
+    this.javascriptStack = {...report.javascriptStack};
+    this.nativeStack = [...report.nativeStack];
+    this.javascriptHeap = {...report.javascriptHeap};
+    this.resourceUsage = {...report.resourceUsage};
+    this.libuv = [...report.libuv];
+    this.environmentVariables = {...report.environmentVariables};
+    this.userLimits = {...report.userLimits};
+    this.sharedObjects = [...report.sharedObjects];
 
     this[kReportFilepath] = filepath;
-
     this[kReport] = true;
+
     debug(
-      // @ts-ignore
       `created Report generated on ${this.header.dumpEventTime} w/ filepath ${this[kReportFilepath]}`
     );
   }
@@ -83,5 +90,5 @@ export {Report};
 
 /**
  * Either a {@link Report} or an object with all of the required props.  See {@link Report.isReportLike}
- * @typedef {object|import('@report-toolkit/common').Report} ReportLike
+ * @typedef {import('../diagnostic-report').DiagnosticReport|Report} ReportLike
  */

@@ -10,11 +10,11 @@ const debug = createDebugPipe('fs', 'report-loader');
 const readFile = bindNodeCallback(readFileNodeback);
 
 /**
- * @returns {import('rxjs').OperatorFunction<string,object>}
+ * @returns {import('rxjs').OperatorFunction<string,{filepath: string,rawReport:import('@report-toolkit/common/diagnostic-report').DiagnosticReport}>}
  */
 export function toObjectFromFilepath() {
-  return observable =>
-    observable.pipe(
+  return filepath$ =>
+    filepath$.pipe(
       mergeMap(
         /**
          * @param {string} filepath

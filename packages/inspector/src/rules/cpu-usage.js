@@ -7,16 +7,17 @@ const MODE_MEAN = 'mean';
 const MODE_MIN = 'min';
 const MODE_MAX = 'max';
 
-const hrMap = {
-  [MODE_ALL]: 'Report',
-  [MODE_MAX]: 'Maximum',
-  [MODE_MEAN]: 'Mean',
-  [MODE_MIN]: 'Minimum'
-};
+const modeDescriptions = new Map([
+  [MODE_ALL, 'Report'],
+  [MODE_MAX, 'Maximum'],
+  [MODE_MEAN, 'Mean'],
+  [MODE_MIN, 'Minimum']
+]);
 
 const computations = {
-  [MODE_MAX]: usages => usages.reduce((acc, value) => Math.max(acc, value), 0),
-  [MODE_MEAN]: usages =>
+  [MODE_MAX]: /** @param {number[]} usages */ usages =>
+    usages.reduce((max, usage) => Math.max(max, usage), 0),
+  [MODE_MEAN]: /** @param {number[]} usages */ usages =>
     usages.reduce(
       (acc, value, i, arr) =>
         i === arr.length - 1
@@ -24,13 +25,19 @@ const computations = {
           : acc + value,
       0
     ),
-  [MODE_MIN]: usages =>
+  [MODE_MIN]: /** @param {number[]} usages */ usages =>
     usages.reduce((acc, value) => Math.min(acc, value), Infinity)
 };
 
+/**
+ * Returns `true` if `usage` is between `min` and `max` inclusive
+ * @param {number} min
+ * @param {number} max
+ * @param {number} usage
+ */
 const withinRange = (min, max, usage) => usage >= min && usage <= max;
 
-const ok = ({max, min, mode}, usage) => {
+const ok = ({max, min, mode, usage}) => {
   return {
     data: {
       max,
@@ -38,12 +45,14 @@ const ok = ({max, min, mode}, usage) => {
       mode,
       usage
     },
-    message: `${hrMap[mode]} CPU consumption percent (${usage}%) is within the allowed range of ${min}-${max}%`,
+    message: `${modeDescriptions.get(
+      mode
+    )} CPU consumption percent (${usage}%) is within the allowed range of ${min}-${max}%`,
     severity: INFO
   };
 };
 
-const fail = ({max, min, mode}, usage) => {
+const fail = ({max, min, mode, usage}) => {
   return {
     data: {
       max,
@@ -51,13 +60,15 @@ const fail = ({max, min, mode}, usage) => {
       mode,
       usage
     },
-    message: `${hrMap[mode]} CPU consumption percent (${usage}%) is outside the allowed range of ${min}-${max}%`
+    message: `${modeDescriptions.get(
+      mode
+    )} CPU consumption percent (${usage}%) is outside the allowed range of ${min}-${max}%`
   };
 };
 export const id = 'cpu-usage';
 
 /**
- * @type {any}
+ * @type {import('../rule').RuleDefinitionMeta}
  */
 export const meta = {
   docs: {
@@ -89,19 +100,25 @@ export const meta = {
   }
 };
 
+/**
+ * @type {import('../rule').RuleDefinitionInspectFunction}
+ */
 export const inspect = (config = {}) => {
   let {max, min, mode} = config;
   min = min || 0;
   max = max || 50;
   mode = mode || 'mean';
+  /**
+   * @type {number[]}
+   */
   const usages = [];
   return {
     complete() {
       if (mode !== MODE_ALL && usages.length) {
         const usage = computations[mode](usages);
         return withinRange(min, max, usage)
-          ? ok({max, min, mode}, usage)
-          : fail({max, min, mode}, usage);
+          ? ok({max, min, mode, usage})
+          : fail({max, min, mode, usage});
       }
     },
     next(context) {
@@ -118,11 +135,10 @@ export const inspect = (config = {}) => {
       );
       if (mode === MODE_ALL) {
         return withinRange(min, max, usage)
-          ? ok({max, min, mode}, usage)
-          : fail({max, min, mode}, usage);
-      } else {
-        usages.push(usage);
+          ? ok({max, min, mode, usage})
+          : fail({max, min, mode, usage});
       }
+      usages.push(usage);
     }
   };
 };

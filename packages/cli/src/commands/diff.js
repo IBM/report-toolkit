@@ -1,12 +1,17 @@
 import {_, observable} from '@report-toolkit/common';
 import {observable as observableAPI} from '@report-toolkit/core';
-import {toObjectFromFilepath} from '@report-toolkit/fs';
 
 import {terminalColumns, toOutput} from '../console-utils.js';
-import {getOptions, GROUPS, mergeCommandConfig, OPTIONS} from './common.js';
+import {
+  fromFilepathsToReports,
+  getOptions,
+  GROUPS,
+  mergeCommandConfig,
+  OPTIONS
+} from './common.js';
 
 const {diff, transform, fromTransformerChain} = observableAPI;
-const {of, share} = observable;
+const {share} = observable;
 
 const OP_COLORS = _.toFrozenMap({
   add: 'green',
@@ -115,15 +120,11 @@ export const handler = argv => {
   });
 
   const source = diff(
-    of(file1).pipe(
-      toObjectFromFilepath(),
-      share()
-    ),
-    of(file2).pipe(
-      toObjectFromFilepath(),
-      share()
-    ),
-    config
+    fromFilepathsToReports(file1).pipe(share()),
+    fromFilepathsToReports(file2).pipe(
+      share(),
+      config
+    )
   );
 
   fromTransformerChain(argv.transform, config)

@@ -280,14 +280,15 @@ export class Rule {
   /**
    * Operator.  Given a "handler" (returned by the rule definition's `inspect`
    * function), normalize it into an object (since it may be just a function)
+   * @returns {import('rxjs').OperatorFunction<RuleHandler,RuleHandlerObject>}
    */
   static normalizeHandler() {
-    return observable =>
-      observable.pipe(
-        map(handler =>
-          _.isFunction(handler)
-            ? {complete: _.noop, next: handler}
-            : {complete: _.noop, ...handler}
+    return ruleHandler$ =>
+      ruleHandler$.pipe(
+        map(ruleHandler =>
+          _.isFunction(ruleHandler)
+            ? {complete: _.noop, next: ruleHandler}
+            : {complete: ruleHandler.complete || _.noop, next: ruleHandler.next}
         )
       );
   }
@@ -311,8 +312,34 @@ export const createRule = Rule.create;
 
 /**
  * @typedef {Object} RuleDefinition
- * @property {Object} meta - (schema for `meta` prop)
- * @property {Function} inspect - Async function which receives `Context` object
+ * @property {object} meta - (schema for `meta` prop)
+ * @property {RuleDefinitionInspectFunction} inspect - Async function which receives `Context` object
  * and optional configuration
  * @property {string} id - Unique rule ID
+ */
+
+/**
+ * @typedef {Object} RuleDefinitionMeta
+ */
+
+/**
+ * @typedef {string} RuleDefinitionId
+ */
+
+/**
+ * @typedef {(config?: object) => Promise<RuleHandler>|RuleHandler} RuleDefinitionInspectFunction
+ */
+
+/**
+ * @typedef {RuleHandlerFunction|RuleHandlerObject} RuleHandler
+ */
+
+/**
+ * @typedef {Object} RuleHandlerObject
+ * @property {RuleHandlerFunction} next
+ * @property {(() => Promise<import('./message').RawMessage>|import('./message').RawMessage|void)?} complete
+ */
+
+/**
+ * @typedef {(report: import('@report-toolkit/common').Report) => Promise<import('./message').RawMessage>|import('./message').RawMessage|void|import('./message').RawMessage[]} RuleHandlerFunction
  */

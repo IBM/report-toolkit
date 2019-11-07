@@ -20,6 +20,7 @@ import resolveFrom from 'resolve-from';
 
 const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
 const {
+  concat,
   defer,
   filter,
   from,
@@ -74,9 +75,9 @@ const registeredPlugins = new Map();
  * @param {any} [opts]
  */
 function reportFrom(value, opts = {}) {
-  return defer(() =>
-    (_.isString(value) ? reportFromJSON : reportFromObject)(value, opts)
-  );
+  return _.isString(value)
+    ? defer(() => reportFromJSON(value, opts))
+    : defer(() => reportFromObject(value, opts));
 }
 /**
  *
@@ -175,14 +176,14 @@ function toReportDiff(opts = {}) {
  *   console.log(`[${op}] <${path}> ${oldValue} => ${newValue}`);
  * })
  * ```
- * @param {import('@report-toolkit/common/src/report').ReportLike} report1 - First report to diff
- * @param {import('@report-toolkit/common/src/report').ReportLike} report2 - Second report to diff
+ * @param {import('@report-toolkit/common/src/report').ReportLike|import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').ReportLike>} report1 - First report to diff
+ * @param {import('@report-toolkit/common/src/report').ReportLike|import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').ReportLike>} report2 - Second report to diff
  * @param {Partial<DiffOptions>} [opts] Options
  * @returns {import('@report-toolkit/common/src/observable').Observable<DiffResult>} Results, one per difference
  * @todo support JSON reports
  */
 export function diff(report1, report2, opts = {}) {
-  return fromAny([report1, report2]).pipe(toReportDiff(opts));
+  return concat(fromAny(report1), fromAny(report2)).pipe(toReportDiff(opts));
 }
 
 /**
@@ -209,7 +210,7 @@ export function diff(report1, report2, opts = {}) {
  *   console.log(`${filename}: ${message}`);
  * });
  * ```
- * @param {import('@report-toolkit/common/src/report').ReportLike} reports - One or more Reports
+ * @param {import('@report-toolkit/common/src/report').ReportLike|import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').ReportLike>} reports - One or more Reports
  * @param {Partial<InspectOptions>} [opts] - Options
  * @returns {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/inspector/src/message').Message>}
  */

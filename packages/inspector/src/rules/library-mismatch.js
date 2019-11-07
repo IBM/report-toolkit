@@ -1,11 +1,14 @@
 const VERSION_REGEXP = /(\d+(?:\.\d+)+[a-z]?)/;
 
+/**
+ * @type {import('../rule').RuleDefinitionInspectFunction}
+ */
 export const inspect = (config = {}) => {
   const ignoredComponents = new Set(config.ignore || []);
   return context => {
     const {header, sharedObjects} = context;
     return (
-      Object.keys(header.componentVersions)
+      (Object.keys(header.componentVersions)
         .filter(component => !ignoredComponents.has(component))
         // this should be a flatMap()
         .reduce((acc, component) => {
@@ -13,20 +16,24 @@ export const inspect = (config = {}) => {
           return [
             ...acc,
             sharedObjects
-              .filter(filepath => {
-                const sharedVersion = VERSION_REGEXP.exec(filepath);
-                return (
-                  filepath.includes(component) &&
-                  sharedVersion &&
-                  sharedVersion[1] !== version
-                );
-              })
+              .filter(
+                /** @param {string} filepath */
+                filepath => {
+                  const sharedVersion = VERSION_REGEXP.exec(filepath);
+                  return (
+                    filepath.includes(component) &&
+                    sharedVersion &&
+                    sharedVersion[1] !== version
+                  );
+                }
+              )
               .map(
+                /** @param {string} filepath */
                 filepath =>
                   `Custom shared library at ${filepath} in use conflicting with ${component}@${version}`
               )
           ];
-        }, [])
+        }, []))
     );
   };
 };

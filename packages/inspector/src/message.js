@@ -62,7 +62,7 @@ export class Message {
 
 /**
  * Create a {@link Message} to be displayed to the user. Used by Rule implementations. Calls without either `message` or a `message` prop on a provided {@link MessageOptions} object will be result in a {@link Message} which will be ignored.}
- * @param {string|Partial<MessageOptions>} message - Message to display to user, or {@link MessageOptions} object with `message` prop
+ * @param {RawMessage} message - Message to display to user, or {@link MessageOptions} object with `message` prop
  * @param {Partial<MessageOptions>} [opts] - Options
  */
 export const createMessage = (message, opts = {}) => {
@@ -86,4 +86,8 @@ export const createMessage = (message, opts = {}) => {
  * @property {object} config - Rule configuration
  * @property {import('@report-toolkit/common/src/constants').ERROR|import('@report-toolkit/common/src/constants').WARNING|import('@report-toolkit/common/src/constants').INFO} severity - The severity of the {@link Message}
  * @property {string} message - The message text itself, if first param not passed to {@link Message.createMessage}.
+ */
+
+/**
+ * @typedef {string|Partial<MessageOptions>} RawMessage
  */
