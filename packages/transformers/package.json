@@ -1,11 +1,11 @@
 {
   "name": "@report-toolkit/transformers",
   "description": "",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.2.1",
-    "@report-toolkit/inspector": "^0.2.1",
+    "@report-toolkit/common": "^0.2.2",
+    "@report-toolkit/inspector": "^0.2.2",
     "cli-table3": "^0.5.1",
     "fast-safe-stringify": "^2.0.6",
     "hash.js": "^1.1.7",

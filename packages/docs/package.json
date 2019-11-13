@@ -1,10 +1,10 @@
 {
   "name": "@report-toolkit/docs",
   "description": "consumes Node.js diagnostic reports, outputs useful information",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.2.1"
+    "@report-toolkit/common": "^0.2.2"
   },
   "devDependencies": {
     "gatsby": "^2.15.36",

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/ibm/report-toolkit/compare/v0.2.1...v0.2.2) (2019-11-13)
+
+### Bug Fixes
+
+- corrects exception on diff command and removes redundant share operator ([#63](https://github.com/ibm/report-toolkit/issues/63)) ([fe0d799](https://github.com/ibm/report-toolkit/commit/fe0d79949c19234fa3c9ba75c19b149713929b50)), closes [#61](https://github.com/ibm/report-toolkit/issues/61)
+
 ## [0.2.1](https://github.com/ibm/report-toolkit/compare/v0.2.0...v0.2.1) (2019-11-07)
 
 ### Bug Fixes
