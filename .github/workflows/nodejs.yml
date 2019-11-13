@@ -1,6 +1,6 @@
 name: Node CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [8, 10, 12]
+        node_version: [8, 10, 12, 13]
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@master
@@ -18,14 +18,5 @@ jobs:
           version: ${{ matrix.node_version }}
       - name: npm install, build, and test
         run: |
-          npm install
+          npm ci
           npm test
-  # mirror:
-  #   name: Mirror to GHE
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: boneskull/mirror-action@mirror-mode
-  #       with:
-  #         args: 'https://github.ibm.com/Christopher-Hiller/report-toolkit.git'
-  #         secrets: GIT_PASSWORD
-  #         env: "GIT_USERNAME='Christopher-Hiller'"
