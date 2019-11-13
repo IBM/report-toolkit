@@ -68,17 +68,23 @@ class Report {
    * @param {any} value
    */
   static isReportLike(value) {
-    return (
-      Report.isReport(value) ||
-      (_.isObject(value) &&
-        _.every(key => {
-          const hasValue = _.has(key, value);
-          if (!hasValue) {
-            debug(`report is missing prop "${key}"`);
-          }
-          return hasValue;
-        }, REPORT_KNOWN_ROOT_PROPERTIES))
-    );
+    if (Report.isReport(value)) {
+      return true;
+    }
+    if (_.isObject(value)) {
+      // win32 doesn't report 'userLimits'
+      const propsToCheck =
+        _.get('header.platform', value) === 'win32'
+          ? _.pull('userLimits', REPORT_KNOWN_ROOT_PROPERTIES)
+          : REPORT_KNOWN_ROOT_PROPERTIES;
+      return _.every(key => {
+        const hasValue = _.has(key, value);
+        if (!hasValue) {
+          debug(`report is missing prop "${key}"`);
+        }
+        return hasValue;
+      }, propsToCheck);
+    }
   }
 }
 
