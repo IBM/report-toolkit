@@ -121,10 +121,8 @@ export const handler = argv => {
 
   const source = diff(
     fromFilepathsToReports(file1).pipe(share()),
-    fromFilepathsToReports(file2).pipe(
-      share(),
-      config
-    )
+    fromFilepathsToReports(file2).pipe(share()),
+    config
   );
 
   fromTransformerChain(argv.transform, config)
