@@ -53,6 +53,7 @@ import pick from 'lodash/fp/pick.js';
 import pickBy from 'lodash/fp/pickBy.js';
 import pipe from 'lodash/fp/pipe.js';
 import __ from 'lodash/fp/placeholder.js';
+import pull from 'lodash/fp/pull.js';
 import reduce from 'lodash/fp/reduce.js';
 import reverse from 'lodash/fp/reverse.js';
 import size from 'lodash/fp/size.js';
@@ -144,6 +145,7 @@ export const _ = {
   pick,
   pickBy,
   pipe,
+  pull,
   reduce,
   reverse,
   size,
