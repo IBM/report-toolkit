@@ -1,10 +1,10 @@
 {
   "name": "@report-toolkit/fs",
   "description": "",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.2.2",
+    "@report-toolkit/common": "^0.2.3",
     "cosmiconfig": "^5.2.1"
   },
   "engines": {

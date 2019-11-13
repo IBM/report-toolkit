@@ -1,7 +1,7 @@
 {
   "name": "@report-toolkit/common",
   "description": "",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "debug": "^4.1.1",
