@@ -33,13 +33,7 @@ class Transformer {
    * @param {object} [config] - Transformer config
    */
   constructor(transform, meta, config = {}) {
-    /**
-     * @type {TransformerMeta}
-     */
     this._meta = _.defaultsDeep(DEFAULT_TRANSFORMER_META, meta);
-    /**
-     * @type {TransformFunction<T,U>}
-     */
     this._transform = transform;
 
     if (config.fields) {
@@ -47,7 +41,11 @@ class Transformer {
     }
     configMap.set(this, config);
 
-    debug(`created Transform with id "${meta.id}" and config %O`, config);
+    debug(
+      `created Transform with id "%s" and config %O`,
+      this._meta.id,
+      config
+    );
   }
 
   get id() {
