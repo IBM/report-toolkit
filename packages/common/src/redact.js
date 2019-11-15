@@ -27,6 +27,9 @@ const SECRETS = [
   /access[-._]?key/i,
   /private/i,
 
+  // cloud foundry
+  /vcap_services/i,
+
   // express
   /^connect\.sid$/,
 
