@@ -2,7 +2,12 @@ import {_, createDebugger, observable} from '@report-toolkit/common';
 import {observable as api} from '@report-toolkit/core';
 
 import {toOutput} from '../console-utils.js';
-import {fromFilepathsToReports, mergeCommandConfig, OPTIONS} from './common.js';
+import {
+  fromFilepathsToReports,
+  GROUPS,
+  mergeCommandConfig,
+  OPTIONS
+} from './common.js';
 const {transform, fromTransformerChain} = api;
 const {of, iif, concatMap} = observable;
 const debug = createDebugger('cli', 'commands', 'redact');
@@ -32,13 +37,15 @@ export const builder = yargs =>
       ...OPTIONS.FILTER_TRANSFORM,
       replace: {
         description: 'Replace file(s) in-place',
-        type: 'boolean'
+        type: 'boolean',
+        group: GROUPS.OUTPUT
       }
     });
 
 export const handler = argv => {
   const config = mergeCommandConfig('transform', argv);
   debug('complete command config: %O', config);
+  // XXX: this is a really wonky way to do it; see `files` usage below
   const files = [...argv.file];
   /**
    * @type {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common').Report>}
