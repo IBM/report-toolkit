@@ -49,6 +49,11 @@ const SECRETS = [
   )
 ];
 
+/**
+ * @param {RegExp[]} secrets
+ * @param {string} value
+ * @param {string} key
+ */
 const isSecret = (secrets, value, key) =>
   _.some(matcher => {
     return _.isString(matcher)
@@ -82,20 +87,25 @@ export const redact = (obj, opts = {}) => {
   let redactedCount = 0;
   const result = {
     // NOTE: this is NOT `Array.prototype.map`
-    ..._.traverse(obj).map(function(value) {
-      // potential optimization: keys whose keypaths are longer than the current
-      // path will never match, so we could disregard them if we pre-processed
-      // the `keys` array further
-      const keypath = this.path.join('.');
-      if (
-        keypath &&
-        _.every(regex => !regex.test(keypath), whitelist) &&
-        isSecret(secrets, value, keypath)
-      ) {
-        this.update(REDACTED_TOKEN);
-        redactedCount++;
+    ..._.traverse(obj).map(
+      /**
+       * @param {string} value
+       */
+      function(value) {
+        // potential optimization: keys whose keypaths are longer than the current
+        // path will never match, so we could disregard them if we pre-processed
+        // the `keys` array further
+        const keypath = this.path.join('.');
+        if (
+          keypath &&
+          _.every(regex => !regex.test(keypath), whitelist) &&
+          isSecret(secrets, value, keypath)
+        ) {
+          this.update(REDACTED_TOKEN);
+          redactedCount++;
+        }
       }
-    }),
+    ),
     [kRedacted]: true
   };
 

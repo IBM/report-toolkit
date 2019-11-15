@@ -99,7 +99,8 @@ export const DEFAULT_DIFF_INCLUDE = Object.freeze([
   'header',
   'environmentVariables',
   'userLimits',
-  'sharedObjects'
+  'sharedObjects',
+  'libuv'
 ]);
 
 /**
