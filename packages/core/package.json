@@ -1,14 +1,14 @@
 {
   "name": "@report-toolkit/core",
   "description": "",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.2.3",
-    "@report-toolkit/config": "^0.2.3",
-    "@report-toolkit/diff": "^0.2.3",
-    "@report-toolkit/inspector": "^0.2.3",
-    "@report-toolkit/transformers": "^0.2.3",
+    "@report-toolkit/common": "^0.3.0",
+    "@report-toolkit/config": "^0.3.0",
+    "@report-toolkit/diff": "^0.3.0",
+    "@report-toolkit/inspector": "^0.3.0",
+    "@report-toolkit/transformers": "^0.3.0",
     "resolve-from": "^5.0.0"
   },
   "engines": {

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/ibm/report-toolkit/compare/v0.2.3...v0.3.0) (2019-11-15)
+
+### Features
+
+- **redact:** redact cloud foundry env vars ([259203e](https://github.com/ibm/report-toolkit/commit/259203ea6ca0f9760291732cc36abfea27832810))
+
 ## [0.2.3](https://github.com/ibm/report-toolkit/compare/v0.2.2...v0.2.3) (2019-11-13)
 
 ### Bug Fixes
