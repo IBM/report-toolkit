@@ -11,12 +11,17 @@ jobs:
         node_version: [8, 10, 12, 13]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
           version: ${{ matrix.node_version }}
-      - name: npm install, build, and test
-        run: |
-          npm ci
-          npm test
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm test
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v1.0.3
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
