@@ -28,7 +28,13 @@ const SECRETS = [
   /private/i,
 
   // cloud foundry
-  /vcap_services/i,
+  /^vcap_services/i,
+
+  // azure
+  /^azure_/i,
+
+  // google cloud
+  /^google_application_credentials/i,
 
   // express
   /^connect\.sid$/,
