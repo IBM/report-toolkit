@@ -22,10 +22,7 @@ const getDebugNamespace = (...args) =>
  * @param {string[]} args
  */
 export const createDebugger = (...args) =>
-  _.pipe(
-    getDebugNamespace,
-    debug
-  )(...args);
+  _.pipe(getDebugNamespace, debug)(...args);
 
 /**
  * Enables entire debug namespace for this module. Calling this is just like

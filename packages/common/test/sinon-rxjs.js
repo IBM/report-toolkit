@@ -22,11 +22,6 @@ sinon.addBehavior('returnsEmptyObservable', fake => {
 sinon.addBehavior(
   'returnsOperatorFunction',
   (fake, pipe = identity, ...morePipes) => {
-    fake.returns(observable =>
-      observable.pipe(
-        pipe,
-        ...morePipes
-      )
-    );
+    fake.returns(observable => observable.pipe(pipe, ...morePipes));
   }
 );

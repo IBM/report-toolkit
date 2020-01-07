@@ -75,10 +75,7 @@ import traverse from 'traverse';
  * @param {object} arg - Object to turn into a map
  * @returns {Map<string,any>}
  */
-const toMap = pipe(
-  toPairs,
-  pairs => new Map(pairs)
-);
+const toMap = pipe(toPairs, pairs => new Map(pairs));
 
 /**
  * @param {object} arg - Object to turn into a frozen map

@@ -85,10 +85,7 @@ function reportFrom(value, opts = {}) {
  * @param {Partial<InspectOptions>} [opts]
  */
 function reportFromJSON(json, opts = {}) {
-  return of(json).pipe(
-    toObjectFromJSON(),
-    toReportFromObject(opts)
-  );
+  return of(json).pipe(toObjectFromJSON(), toReportFromObject(opts));
 }
 
 /**
@@ -127,8 +124,14 @@ function toRuleConfig(config = {}) {
   const ruleIdsCount = _.getOr(0, 'rules.length', config);
   return ruleDefs =>
     ruleDefs.pipe(
-      pipeIf(!ruleIdsCount, debug(() => 'whitelisting rules by default')),
-      pipeIf(ruleIdsCount, filter(({id}) => Boolean(_.get(id, config.rules)))),
+      pipeIf(
+        !ruleIdsCount,
+        debug(() => 'whitelisting rules by default')
+      ),
+      pipeIf(
+        ruleIdsCount,
+        filter(({id}) => Boolean(_.get(id, config.rules)))
+      ),
       map(ruleDefinition =>
         inspector.createRule(ruleDefinition).toRuleConfig(config)
       )
@@ -282,12 +285,7 @@ export function loadConfig(config) {
       config => _.isEmpty(config.plugins),
       map(config => ({...config, plugins: BUILTIN_PLUGINS}))
     ),
-    mergeMap(config =>
-      from(config.plugins).pipe(
-        mergeMap(use),
-        mapTo(config)
-      )
-    )
+    mergeMap(config => from(config.plugins).pipe(mergeMap(use), mapTo(config)))
   );
 }
 
@@ -407,17 +405,9 @@ export function registeredRuleDefinitions() {
 export function fromRegisteredRuleDefinitions() {
   return iif(
     () => Boolean(registeredPlugins.size),
-    _.pipe(
-      _.toPairs,
-      _.fromPairs,
-      _.values,
-      from
-    )(registeredPlugins),
+    _.pipe(_.toPairs, _.fromPairs, _.values, from)(registeredPlugins),
     from(BUILTIN_PLUGINS).pipe(mergeMap(use))
-  ).pipe(
-    pluck('rules'),
-    mergeAll()
-  );
+  ).pipe(pluck('rules'), mergeAll());
 }
 
 /**

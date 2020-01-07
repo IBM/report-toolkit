@@ -186,10 +186,7 @@ export async function transform(
 ) {
   return observable
     .fromTransformerChain(transformerIds, config)
-    .pipe(
-      observable.transform(fromAny(source), options),
-      toArray()
-    )
+    .pipe(observable.transform(fromAny(source), options), toArray())
     .toPromise();
 }
 

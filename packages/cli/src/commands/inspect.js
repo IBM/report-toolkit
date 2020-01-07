@@ -92,9 +92,6 @@ export const handler = argv => {
     });
 
   fromTransformerChain(transformer, config)
-    .pipe(
-      transform(source, {beginWith: 'object'}),
-      toOutput(output, {color})
-    )
+    .pipe(transform(source, {beginWith: 'object'}), toOutput(output, {color}))
     .subscribe();
 };

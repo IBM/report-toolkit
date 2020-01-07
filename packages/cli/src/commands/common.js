@@ -20,10 +20,7 @@ const {
 
 const {fromAny, share} = observable;
 
-const toUniqueArray = _.pipe(
-  _.castArray,
-  _.uniq
-);
+const toUniqueArray = _.pipe(_.castArray, _.uniq);
 
 export const GROUPS = {
   FILTER: 'Filter:',
@@ -165,9 +162,10 @@ export const mergeCommandConfig = (
       _.omit(['$0', 'config', '_'], argv)
     ])
   );
-  createDebugger('cli', 'commands', 'common')(
-    `computed config for command "${commandName}": %O`,
-    config
-  );
+  createDebugger(
+    'cli',
+    'commands',
+    'common'
+  )(`computed config for command "${commandName}": %O`, config);
   return config;
 };

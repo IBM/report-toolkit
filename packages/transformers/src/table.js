@@ -49,10 +49,7 @@ const DEFAULT_TABLE_OPTS = {
   wordWrap: true
 };
 
-const fieldWidthPcts = _.pipe(
-  _.map('widthPct'),
-  _.map(Number)
-);
+const fieldWidthPcts = _.pipe(_.map('widthPct'), _.map(Number));
 
 /**
  * @param {(...args: any[]) => string | string} v

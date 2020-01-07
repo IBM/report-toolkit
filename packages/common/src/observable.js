@@ -68,10 +68,7 @@ export const pipeIf = (predicate, ...operators) => {
  * @returns {import('rxjs').OperatorFunction<any,any>}
  */
 export const sort = (iteratee = _.identity, direction = 'asc') => observable =>
-  observable.pipe(
-    toArray(),
-    mergeMap(_.orderBy(iteratee, direction))
-  );
+  observable.pipe(toArray(), mergeMap(_.orderBy(iteratee, direction)));
 
 /**
  * Recursively explodes any value, an Array, a Promise, a Promise of Arrays, a

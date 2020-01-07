@@ -21,12 +21,7 @@ describe('@report-toolkit/cli:command:inspect', function() {
       return expect(
         runWithOptions(['inspect', REPORT_002_FILEPATH, '-t', 'json'], {
           cwd: tmpdir()
-        }).catch(
-          _.pipe(
-            _.get('stdout'),
-            JSON.parse
-          )
-        ),
+        }).catch(_.pipe(_.get('stdout'), JSON.parse)),
         'when fulfilled',
         'to have items satisfying',
         {

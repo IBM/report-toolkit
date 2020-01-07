@@ -73,7 +73,10 @@ export const meta = {
   defaults: /**
    * @type {NumericTransformOptions}
    */ ({
-    fields: [{label: 'Field', value: 'key'}, {label: 'Value', value: 'value'}],
+    fields: [
+      {label: 'Field', value: 'key'},
+      {label: 'Value', value: 'value'}
+    ],
     keys: NUMERIC_KEYPATHS
   }),
   description: 'Filter on numeric fields',

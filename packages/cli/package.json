@@ -12,10 +12,10 @@
     "@report-toolkit/fs": "^0.3.0",
     "cli-table3": "^0.5.1",
     "log-symbols": "^3.0.0",
-    "strip-ansi": "^5.2.0",
-    "term-size": "^2.1.0",
-    "wrap-ansi": "^6.0.0",
-    "yargs": "^13.2.4"
+    "strip-ansi": "^6.0.0",
+    "term-size": "^2.1.1",
+    "wrap-ansi": "^6.2.0",
+    "yargs": "^15.1.0"
   },
   "engines": {
     "node": ">=8"

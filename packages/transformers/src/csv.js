@@ -54,12 +54,7 @@ export const transform = (parserOpts = {}) => observable => {
     concatMapTo(fromEvent(parser.processor, 'data')),
     takeUntil(fromEvent(parser.processor, 'end')),
     filter(Boolean),
-    map(
-      _.pipe(
-        _.trim,
-        stripAnsi
-      )
-    )
+    map(_.pipe(_.trim, stripAnsi))
   );
 };
 
