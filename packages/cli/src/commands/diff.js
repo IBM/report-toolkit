@@ -61,7 +61,8 @@ export const builder = yargs =>
     all: {
       description: 'Include everything in diff',
       group: GROUPS.FILTER,
-      type: 'boolean'
+      type: 'boolean',
+      conflicts: ['i', 'x']
     },
     ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
     ...OPTIONS.JSON_TRANSFORM,
