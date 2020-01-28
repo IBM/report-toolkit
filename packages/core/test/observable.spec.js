@@ -58,14 +58,14 @@ describe('@report-toolkit/core:observable', function() {
             {
               oldValue: 45164,
               op: 'replace',
-              path: '/header/processId',
+              field: '/header/processId',
               value: 4658
             },
             {
               oldValue:
                 '/Users/boneskull/projects/christopher-hiller/report-toolkit',
               op: 'replace',
-              path: '/header/cwd',
+              field: '/header/cwd',
               value: '/Users/boneskull/projects/nodejs/node'
             }
           ])
@@ -101,14 +101,14 @@ describe('@report-toolkit/core:observable', function() {
           {
             oldValue: 45164,
             op: 'replace',
-            path: '/header/processId',
+            field: '/header/processId',
             value: 4658
           },
           {
             oldValue:
               '/Users/boneskull/projects/christopher-hiller/report-toolkit',
             op: 'replace',
-            path: '/header/cwd',
+            field: '/header/cwd',
             value: '/Users/boneskull/projects/nodejs/node'
           }
         );

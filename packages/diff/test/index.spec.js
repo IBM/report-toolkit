@@ -34,7 +34,7 @@ describe('@report-toolkit/diff', function() {
           source.pipe(diff()),
           'not to complete with values satisfying',
           // @ts-ignore
-          ...Array.from(DEFAULT_DIFF_EXCLUDE).map(path => ({path}))
+          ...Array.from(DEFAULT_DIFF_EXCLUDE).map(field => ({field}))
         );
       });
     });

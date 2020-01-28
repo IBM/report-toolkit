@@ -1,7 +1,7 @@
 import {_, constants, createDebugger, observable} from '@report-toolkit/common';
 import ptr from 'json-ptr';
 import {createPatch} from 'rfc6902';
-const {Observable, filter, mergeMap, pipeIf} = observable;
+const {Observable, filter, mergeMap, pipeIf, map} = observable;
 
 const {DEFAULT_DIFF_EXCLUDE, DEFAULT_DIFF_INCLUDE} = constants;
 const debug = createDebugger('diff');
@@ -104,7 +104,13 @@ export function diff(opts = {}) {
       pipeIf(
         !includeAll && !_.isEmpty(excludeProperties),
         filter(({path}) => !_.some(_.startsWith(_.__, path), excludePaths))
-      )
+      ),
+      map(({path: field, op, value, oldValue}) => ({
+        field,
+        op,
+        value,
+        oldValue
+      }))
     );
 }
 
@@ -117,7 +123,7 @@ export function diff(opts = {}) {
  * A single difference between two reports.
  * @typedef {object} DiffResult
  * @property {"add"|"remove"|"replace"} op - Operation
- * @property {string} path - [RFC6902](https://tools.ietf.org/html/rfc6902)-style keypath
+ * @property {string} field - [RFC6902](https://tools.ietf.org/html/rfc6902)-style keypath
  * @property {string|boolean|number|null?} value - Value from second report (where applicable)
  * @property {string|boolean|number|null?} oldValue - Value from first report (where applicable)
  */

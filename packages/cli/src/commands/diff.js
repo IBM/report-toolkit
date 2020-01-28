@@ -103,8 +103,8 @@ export const handler = argv => {
           },
           {
             color: ({op}) => OP_COLORS.get(op),
-            label: 'Path',
-            value: ({path}) => formatKeypath(path)
+            label: 'Field',
+            value: ({field}) => formatKeypath(field)
           },
           {
             label: file1,
