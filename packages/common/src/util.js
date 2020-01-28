@@ -30,6 +30,7 @@ import isEmpty from 'lodash/fp/isEmpty.js';
 import isError from 'lodash/fp/isError.js';
 import isFunction from 'lodash/fp/isFunction.js';
 import isNaN from 'lodash/fp/isNaN.js';
+import isNumber from 'lodash/fp/isNumber.js';
 import isObject from 'lodash/fp/isObject.js';
 import isString from 'lodash/fp/isString.js';
 import isUndefined from 'lodash/fp/isUndefined.js';
@@ -119,6 +120,7 @@ export const _ = {
   isError,
   isFunction,
   isNaN,
+  isNumber,
   isObject,
   isPromise,
   isString,
