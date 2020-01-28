@@ -92,16 +92,14 @@ export const toTransformer = () => observable =>
 
 /**
  *
- * @param {Object} [opts] - Options
- * @param {string} [opts.beginWith=report] - Begin transform pipe with this type
- * @param {string} [opts.endWith=string] - End transform pipe with this type
- * @param {string} [opts.defaultTransformer] - Default transformer
+ * @param {Partial<TransformOptions>} [opts]
  * @returns {OperatorFunction<Transformer,Transformer>}
  */
 export const validateTransformerChain = ({
   beginWith = 'report',
   endWith = 'string',
-  defaultTransformer = DEFAULT_TRANSFORMER
+  defaultTransformer = DEFAULT_TRANSFORMER,
+  defaultTransformerConfig = {}
 } = {}) => observable =>
   observable.pipe(
     toArray(),
@@ -125,7 +123,9 @@ export const validateTransformerChain = ({
         }
 
         if (!transformers[transformers.length - 1].canEndWith(endWith)) {
-          transformers.push(loadTransformer(defaultTransformer));
+          transformers.push(
+            loadTransformer(defaultTransformer, defaultTransformerConfig)
+          );
         }
 
         let nextTransformer = transformers[++idx];
@@ -196,4 +196,13 @@ export const compatibleTransforms = sourceType =>
  */
 /**
  * @typedef {{id: string, config: object}} TransformerConfig
+ */
+
+/**
+ * for {@link validateTransformerChain}
+ * @typedef {object} TransformOptions
+ * @property {string} beginWith - Begin transformer chain with this type
+ * @property {string} endWith - End transformer chain with this type
+ * @property {string} defaultTransformer - Default transformer
+ * @property {object} defaultTransformerConfig - Default transformer config
  */

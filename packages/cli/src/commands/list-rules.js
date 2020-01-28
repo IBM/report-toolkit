@@ -53,13 +53,17 @@ export const handler = argv => {
     })),
     share()
   );
-  fromTransformerChain(
-    argv.transform,
-    mergeCommandConfig('list-rules', argv, DEFAULT_LIST_RULES_CONFIG)
-  )
+
+  const config = mergeCommandConfig(
+    'list-rules',
+    argv,
+    DEFAULT_LIST_RULES_CONFIG
+  );
+  fromTransformerChain(argv.transform, config)
     .pipe(
       transform(source, {
-        beginWith: 'object'
+        beginWith: 'object',
+        defaultTransformerConfig: config.transform.table
       }),
       toOutput(argv.output, {color: argv.color})
     )

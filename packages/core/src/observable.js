@@ -493,6 +493,7 @@ export function isPluginRegistered(pluginId) {
  * @property {string} beginWith - Begin transformer chain with this type
  * @property {string} endWith - End transformer chain with this type
  * @property {string} defaultTransformer - Default transformer
+ * @property {object} defaultTransformerConfig - Default transformer config
  */
 
 /**

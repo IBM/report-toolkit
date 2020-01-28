@@ -126,7 +126,10 @@ export const handler = argv => {
 
   fromTransformerChain(argv.transform, config)
     .pipe(
-      transform(source, {beginWith: 'object'}),
+      transform(source, {
+        beginWith: 'object',
+        defaultTransformerConfig: config.transformer.table
+      }),
       toOutput(argv.output, {color: argv.color})
     )
     .subscribe();
