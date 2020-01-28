@@ -79,16 +79,27 @@ Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
 > "The report is intended for development, test and production use, to capture and preserve information for problem determination. It includes JavaScript and native stack traces, heap statistics, platform information, resource usage etc. With the report option enabled, diagnostic reports can be triggered on unhandled exceptions, fatal errors and user signals, in addition to triggering programmatically through API calls."
 
+## Contributing
+
+**report-toolkit** wants your ideas for new rules! Please [create an issue](https://github.com/IBM/report-toolkit/issues/new).
+
 ## Roadmap
 
-- More built-in Rules
-- Actual documentation:
-  - API docs
-  - Tutorials & examples
-  - Contribution guidelines, CoC
-  - Design docs & developer documentation
+- [ ] Documentation
+  - [x] Real website (https://ibm.github.io/report-toolkit)
+  - [ ] API docs
+  - [ ] Tutorials
+    - [x] Quick start guide (https://ibm.github.io/report-toolkit/quick-start)
+    - [ ] CLI usage guide
+    - [ ] Programmatic usage guide
+    - [ ] Configuration guide
+    - [ ] Plugin authoring guide
+  - [ ] Contribution guidelines
+  - [x] CoC (https://github.com/IBM/report-toolkit/blob/master/.github/CODE_OF_CONDUCT.md)
+  - [ ] Design docs & developer documentation
+- [ ] "Interactive" mode -- a "wizard" to help you solve problems (this needs more fleshing out, but the idea is to help developers that may not know "where to start" with diagnostic reports)
 
-## Future Ideas & Extension
+### Future Ideas, Extensions & Use Cases
 
 - report-toolkit-as-a-service: send reports to a service which returns inspection or diff results
 - Client-side ("in your app") wrapper for report transmission or direct invocation of report-toolkit
@@ -99,10 +110,14 @@ Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 - Adapters for frameworks
 - IDE/editor integration: generate a report from running process, view results
 
+## See Also
+
+- [Node.js Inspector Manager (NiM)](https://github.com/june07/NiM) works with report-toolkit!
+
 ## Maintainer(s)
 
 - [boneskull](https://github.com/boneskull)
 
 ## License
 
-© 2019, IBM. Licensed Apache-2.0
+Copyright © 2019-2020, IBM. Licensed Apache-2.0
