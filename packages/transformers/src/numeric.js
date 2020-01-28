@@ -89,25 +89,26 @@ export const meta = {
  * Transforms a Report (by default) or generic object (w/ appropriate keys)
  * to keypaths and numeric values
  * @param {Partial<NumericTransformOptions>} [opts] - Options
- * @returns {TransformFunction<Report|object,NumericTransformResult>}
+ * @type {TransformFunction<Report|object,NumericTransformResult>}
  */
 export const transform = ({keys} = {}) => {
   return observable =>
     observable.pipe(
       mergeMap(report => {
-        const tuple = key => [key, parseFloat(_.get(key, report))];
-        const makeArray = _.pipe(
-          _.map(tuple),
+        const tuples = _.map(
+          key => [key, parseFloat(_.get(key, report))],
+          keys
+        );
+        return _.pipe(
           _.filter(([key, value]) => {
-            if (isNaN(value)) {
+            if (_.isNaN(value)) {
               debug(`skipping NaN value at key ${key}`);
               return false;
             }
             return true;
           }),
           _.map(([key, value]) => ({key, value}))
-        );
-        return makeArray(keys);
+        )(tuples);
       })
     );
 };
