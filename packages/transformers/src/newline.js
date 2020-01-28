@@ -18,8 +18,7 @@ export const meta = {
   defaults: /**
    * @type {NewlineTransformOptions}
    */ ({
-    json: false,
-    newline: '\n'
+    json: true
   }),
   description: 'Newline-delimited output',
   id: 'newline',
@@ -32,19 +31,16 @@ export const meta = {
  * @param {Partial<NewlineTransformOptions>} [opts]
  * @type {TransformFunction<any,string>}
  */
-export const transform = ({json, newline} = {}) => observable =>
+export const transform = ({json = meta.defaults.json} = {}) => observable =>
   observable.pipe(
     concatMap(value =>
-      of(
-        (json || _.isObject(value) ? stringify(value) : String(value)) + newline
-      )
+      of(json || _.isObject(value) ? stringify(value) : String(value))
     )
   );
 
 /**
  * @typedef {object} NewlineTransformOptions
- * @property {boolean} json - If true, stringify the value
- * @property {string} newline - Whatever you consider a newline to be. Maybe \r\n?
+ * @property {boolean} json - If true, force-stringify the value. Objects will always be stringified
  */
 
 /**
