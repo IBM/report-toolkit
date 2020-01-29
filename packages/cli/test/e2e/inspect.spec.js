@@ -8,6 +8,10 @@ const REPORT_002_FILEPATH = require.resolve(
 );
 
 describe('@report-toolkit/cli:command:inspect', function() {
+  beforeEach(function() {
+    this.timeout(5000);
+  });
+
   describe('when run without parameters', function() {
     it('should exit with code 1', function() {
       return expect(run('inspect'), 'to be rejected with error satisfying', {
