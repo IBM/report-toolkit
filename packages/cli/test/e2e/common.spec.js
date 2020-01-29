@@ -1,10 +1,6 @@
 import {run} from './cli-helper.js';
 
 describe('@report-toolkit/cli', function() {
-  beforeEach(function() {
-    this.timeout(5000);
-  });
-
   describe('when run without parameters', function() {
     it('should exit with code 1', function() {
       return expect(run(), 'to be rejected with error satisfying', {

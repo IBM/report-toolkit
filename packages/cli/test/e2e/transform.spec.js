@@ -8,10 +8,6 @@ const REPORT_005_FILEPATH = require.resolve(
 );
 
 describe('@report-toolkit/cli:command:transform', function() {
-  beforeEach(function() {
-    this.timeout(5000);
-  });
-
   describe('when no file specified', function() {
     it('should fail', function() {
       return expect(run('transform'), 'to be rejected with error satisfying', {

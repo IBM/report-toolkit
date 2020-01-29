@@ -8,10 +8,6 @@ const REPORT_002_FILEPATH = require.resolve(
 );
 
 describe('@report-toolkit/cli:command:diff', function() {
-  beforeEach(function() {
-    this.timeout(5000);
-  });
-
   describe('when run with a single report file', function() {
     it('should exit with code 1', function() {
       return expect(

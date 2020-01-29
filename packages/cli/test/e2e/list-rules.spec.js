@@ -1,10 +1,6 @@
 import {runAsCSV, runAsJSON} from './cli-helper.js';
 
 describe('@report-toolkit/cli:command:list-rules', function() {
-  beforeEach(function() {
-    this.timeout(5000);
-  });
-
   it('should list available rules', function() {
     return expect(
       runAsJSON('list-rules'),
