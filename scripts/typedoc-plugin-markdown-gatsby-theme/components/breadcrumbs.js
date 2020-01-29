@@ -1,14 +1,14 @@
 const {
   ContextAwareRendererComponent
 } = require('typedoc/dist/lib/output/components');
-const Handlebars = require('handlebars');
+const {default: MarkdownTheme} = require('typedoc-plugin-markdown/dist/theme');
 
 class CarbonBreadcrumbsComponent extends ContextAwareRendererComponent {
   initialize() {
     super.initialize();
     const component = this;
     this.componentName = 'breadcrumbs';
-    Handlebars.registerHelper('breadcrumbs', function() {
+    MarkdownTheme.handlebars.registerHelper('breadcrumbs', function() {
       return component.breadcrumb(
         /**
          * @type {import('typedoc/dist/lib/output/events').PageEvent} */ (this)
@@ -34,7 +34,7 @@ class CarbonBreadcrumbsComponent extends ContextAwareRendererComponent {
     const theme = /**
      * @type {import('typedoc-plugin-markdown/dist/theme').default}
      */ (this.application.renderer.theme);
-    const relativeURL = Handlebars.helpers.relativeURL.bind(this);
+    const relativeURL = MarkdownTheme.handlebars.helpers.relativeURL.bind(this);
     if (model && model.parent) {
       this.breadcrumb({model: model.parent, project, url}, md);
       if (model.url) {
@@ -48,7 +48,7 @@ class CarbonBreadcrumbsComponent extends ContextAwareRendererComponent {
     } else if (project.readme) {
       md.push(
         CarbonBreadcrumbsComponent.makeBreadcrumbItem(
-          relativeURL(theme.indexName + theme.fileExt),
+          relativeURL(`/api/${theme.indexName}${theme.fileExt}`),
           project.name
         )
       );

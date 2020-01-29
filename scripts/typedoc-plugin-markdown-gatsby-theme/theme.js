@@ -27,8 +27,7 @@ title: "${this.escapeYAMLString(this.getTitle(pageEvent))}"
 }
 
 const relativeURL = Handlebars.helpers.relativeURL;
-Handlebars.helpers.relativeURL = /** @param {string} url */ url =>
-  relativeURL(url).replace(FILE_EXT, '');
+const {handlebars} = MarkdownTheme;
 
 module.exports = class GatsbyMarkdownTheme extends MarkdownTheme {
   /**
@@ -38,11 +37,20 @@ module.exports = class GatsbyMarkdownTheme extends MarkdownTheme {
   constructor(renderer, basePath) {
     super(renderer, basePath);
 
-    this.indexName = 'home';
+    this.indexName = 'index';
     this.fileExt = FILE_EXT;
 
+    handlebars.unregisterHelper('relativeURL');
+    handlebars.registerHelper(
+      'relativeURL',
+      /** @param {string} url */ url =>
+        relativeURL(url)
+          .replace(FILE_EXT, '')
+          .replace('/index', '')
+    );
+
     renderer.removeComponent('breadcrumbs');
-    Handlebars.unregisterHelper('breadcrumbs');
+    handlebars.unregisterHelper('breadcrumbs');
     renderer.addComponent(
       'breadcrumbs',
       new CarbonBreadcrumbsComponent(renderer)
@@ -106,5 +114,19 @@ module.exports = class GatsbyMarkdownTheme extends MarkdownTheme {
       });
     }
     return urls;
+  }
+
+  applyAnchorUrl(reflection, container) {
+    if (!reflection.url || !MarkdownTheme.URL_PREFIX.test(reflection.url)) {
+      const anchor = this.toAnchorRef(reflection);
+      reflection.url = container.url.replace(FILE_EXT, '') + '#' + anchor;
+      reflection.anchor = anchor;
+      reflection.hasOwnDocument = false;
+    }
+    reflection.traverse(child => {
+      if (child instanceof DeclarationReflection) {
+        this.applyAnchorUrl(child, container);
+      }
+    });
   }
 };

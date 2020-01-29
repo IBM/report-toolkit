@@ -5,5 +5,5 @@
       title: 'Quick Start'
 - title: 'API Docs'
   pages:
-    - path: '/api/home'
-      title: 'Home'
+    - path: '/api'
+      title: 'API Docs'

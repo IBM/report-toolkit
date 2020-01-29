@@ -31,6 +31,7 @@ moduleMap.forEach(async ({source, name, description, preferred}) => {
 
   const filePath = path.resolve(__dirname, '..', `${source}${EXTENSION}`);
   try {
+    // @ts-ignore
     await replace(filePath, {
       find: [/^/],
       replacement: banner,

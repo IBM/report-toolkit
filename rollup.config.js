@@ -10,6 +10,10 @@ import resolve from 'rollup-plugin-node-resolve';
 const IGNORED_PACKAGES = ['docs'];
 const packagesDir = path.join(__dirname, 'packages');
 
+/**
+ *
+ * @param {string} pkgpath - Path to subpackage root
+ */
 const makeConfigs = pkgpath => {
   const pkg = require(`${pkgpath}/package.json`);
   const configs = [];

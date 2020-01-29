@@ -9,6 +9,7 @@
 overrides:
   - files:
       - '.mocharc.js'
+      - 'lint-staged.config.js'
     parserOptions:
       sourceType: 'script'
   - env:
@@ -31,7 +32,6 @@ overrides:
       import/extensions: 0
 parser: 'babel-eslint'
 plugins:
-  - 'simple-import-sort'
   - 'react-hooks'
 root: true
 rules:
@@ -48,8 +48,6 @@ rules:
   react/prop-types: 0
   react/destructuring-assignment: 0
   react/no-access-state-in-setstate: 0
-  simple-import-sort/sort: 'error'
-  sort-imports: 0
   standard/computed-property-even-spacing: 0
   strict:
     - error
