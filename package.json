@@ -29,12 +29,8 @@
   "scripts": {
     "bootstrap": "cross-env NPM_CONFIG_LOGLEVEL=silent lerna bootstrap",
     "build": "rollup -c",
-    "prebuild:declarations": "npm run clean:declarations",
     "build:declarations": "tsc -p tsconfig.declarations.json",
-    "postbuild:declarations": "node scripts/post-build-declarations.js",
-    "prebuild:docs": "npm run build && concurrently npm:build:docs:cli-output npm:build:declarations \"del-cli node_modules/typedoc/node_modules/typescript\"",
     "build:docs": "typedoc --tsconfig tsconfig.docs.json --plugin typedoc-plugin-markdown,@boneskull/typedoc-plugin-external-module-name",
-    "prebuild:docs:cli-output": "npm run clean:docs:cli-output",
     "build:docs:cli-output": "node scripts/build-cli-output.js",
     "clean": "git clean -fdx packages",
     "clean:declarations": "del-cli \"packages/*/src/**/*.d.ts\"",
@@ -42,13 +38,17 @@
     "clean:docs:cli-output": "del-cli packages/docs/src/pages/cli-output.txt",
     "dev": "rollup -c -w",
     "fix": "eslint --fix .",
-    "postinstall": "npm run bootstrap",
     "lint": "eslint .",
-    "pretest": "npm run build",
-    "test": "nyc mocha \"./packages/*/test/**/*.spec.js\"",
+    "postbuild:declarations": "node scripts/post-build-declarations.js",
+    "postinstall": "npm run bootstrap",
     "posttest": "npm run lint",
+    "prebuild:declarations": "npm run clean:declarations",
+    "prebuild:docs": "npm run build && concurrently npm:build:docs:cli-output npm:build:declarations \"del-cli node_modules/typedoc/node_modules/typescript\"",
+    "prebuild:docs:cli-output": "npm run clean:docs:cli-output",
+    "prepublishOnly": "npm run build && npm run build:docs",
+    "pretest": "npm run build",
     "publish:docs": "gh-pages -d packages/docs/public",
-    "prepublishOnly": "npm run build && npm run build:docs"
+    "test": "nyc mocha \"./packages/*/test/**/*.spec.js\""
   },
   "husky": {
     "hooks": {
