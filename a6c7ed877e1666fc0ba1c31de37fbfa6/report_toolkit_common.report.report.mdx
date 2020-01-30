@@ -1,0 +1,283 @@
+---
+title: "Report"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home.mdx) › [@report-toolkit/common](../modules/report_toolkit_common.mdx) › [report](../modules/report_toolkit_common.report.mdx) › [Report](report_toolkit_common.report.report.mdx)
+
+Represents a [Diagnostic Report](https://nodejs.org/api/process.html#process_process_report_getreport_err).
+
+## Hierarchy
+
+* **Report**
+
+## Index
+
+### Constructors
+
+- [constructor](report_toolkit_common.report.report.mdx#constructor)
+
+### Properties
+
+- [[kReportFilepath]](report_toolkit_common.report.report.mdx#[kreportfilepath])
+- [[kReport]](report_toolkit_common.report.report.mdx#[kreport])
+- [environmentVariables](report_toolkit_common.report.report.mdx#environmentvariables)
+- [header](report_toolkit_common.report.report.mdx#header)
+- [javascriptHeap](report_toolkit_common.report.report.mdx#javascriptheap)
+- [javascriptStack](report_toolkit_common.report.report.mdx#javascriptstack)
+- [libuv](report_toolkit_common.report.report.mdx#libuv)
+- [nativeStack](report_toolkit_common.report.report.mdx#nativestack)
+- [resourceUsage](report_toolkit_common.report.report.mdx#resourceusage)
+- [sharedObjects](report_toolkit_common.report.report.mdx#sharedobjects)
+- [userLimits](report_toolkit_common.report.report.mdx#userlimits)
+
+### Accessors
+
+- [filepath](report_toolkit_common.report.report.mdx#filepath)
+
+### Methods
+
+- [create](report_toolkit_common.report.report.mdx#static-create)
+- [isReport](report_toolkit_common.report.report.mdx#static-isreport)
+- [isReportLike](report_toolkit_common.report.report.mdx#static-isreportlike)
+
+## Constructors
+
+### constructor
+
+\+ **new Report**(`report`: [DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx), `filepath?`: string): *[Report](report_toolkit_common.report.report.mdx)*
+
+Creates shallow copies of root props in `report`; assigns internally-used `Symbol`s.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`report` | [DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx) | Raw object |
+`filepath?` | string | Original filepath of report, if available. Defaults to [NO_FILEPATH](../modules/report_toolkit_common.constants.mdx#const-no_filepath)  |
+
+**Returns:** *[Report](report_toolkit_common.report.report.mdx)*
+
+## Properties
+
+### [kReportFilepath]
+
+• **[kReportFilepath]**: *string*
+
+___
+
+### [kReport]
+
+• **[kReport]**: *boolean*
+
+___
+
+### environmentVariables
+
+• **environmentVariables**: *object*
+
+#### Type declaration:
+
+- \[ **x**: *string*\]: string
+
+___
+
+### header
+
+• **header**: *object*
+
+#### Type declaration:
+
+* **arch**: *string*
+
+* **commandLine**: *string[]*
+
+* **componentVersions**(): *object*
+
+* **cpus**: *[ReportHeaderCpu](../interfaces/common_diagnostic_report_d_.reportheadercpu.mdx)[]*
+
+* **cwd**: *string*
+
+* **dumpEventTime**: *string*
+
+* **dumpEventTimeStamp**: *string*
+
+* **event**: *string*
+
+* **filename**: *string*
+
+* **host**: *string*
+
+* **nodejsVersion**: *string*
+
+* **osMachine**: *string*
+
+* **osName**: *string*
+
+* **osRelease**: *string*
+
+* **osVersion**: *string*
+
+* **platform**: *string*
+
+* **processId**: *number*
+
+* **release**(): *object*
+
+  * **headersUrl**: *string*
+
+  * **name**: *string*
+
+  * **sourceUrl**: *string*
+
+* **trigger**: *string*
+
+* **wordSize**: *number*
+
+___
+
+### javascriptHeap
+
+• **javascriptHeap**: *object*
+
+#### Type declaration:
+
+* **availableMemory**: *number*
+
+* **heapSpaces**(): *object*
+
+* **memoryLimit**: *number*
+
+* **totalCommittedMemory**: *number*
+
+* **totalMemory**: *number*
+
+* **usedMemory**: *number*
+
+___
+
+### javascriptStack
+
+• **javascriptStack**: *object*
+
+#### Type declaration:
+
+* **message**: *string*
+
+* **stack**: *string[]*
+
+___
+
+### libuv
+
+• **libuv**: *object[]*
+
+___
+
+### nativeStack
+
+• **nativeStack**: *[NativeStackFrame](../interfaces/common_diagnostic_report_d_.nativestackframe.mdx)[]*
+
+___
+
+### resourceUsage
+
+• **resourceUsage**: *object*
+
+#### Type declaration:
+
+* **cpuConsumptionPercent**: *number*
+
+* **fsActivity**(): *object*
+
+  * **reads**: *number*
+
+  * **writes**: *number*
+
+* **kernelCpuSeconds**: *number*
+
+* **maxRss**: *number*
+
+* **pageFaults**(): *object*
+
+  * **IONotRequired**: *number*
+
+  * **IORequired**: *number*
+
+* **userCpuSeconds**: *number*
+
+___
+
+### sharedObjects
+
+• **sharedObjects**: *string[]*
+
+___
+
+### userLimits
+
+• **userLimits**: *object*
+
+#### Type declaration:
+
+- \[ **x**: *string*\]: [ReportUserLimit](../interfaces/common_diagnostic_report_d_.reportuserlimit.mdx)
+
+## Accessors
+
+### filepath
+
+• **get filepath**(): *string*
+
+Original filepath of report, if available. Defaults to [NO_FILEPATH](../modules/report_toolkit_common.constants.mdx#const-no_filepath).
+
+**Returns:** *string*
+
+## Methods
+
+### `Static` create
+
+▸ **create**(`rawReport`: [DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx) | [Report](report_toolkit_common.report.report.mdx), `filepath`: string): *Readonly‹[Report](report_toolkit_common.report.report.mdx)›*
+
+Creates a read-only [Report](report_toolkit_common.report.report.mdx) from a [ReportLike](../modules/report_toolkit_common.report.mdx#reportlike) value.
+Use this instead of `new Report()`!
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`rawReport` | [DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx) &#124; [Report](report_toolkit_common.report.report.mdx) | - |
+`filepath` | string |   |
+
+**Returns:** *Readonly‹[Report](report_toolkit_common.report.report.mdx)›*
+
+___
+
+### `Static` isReport
+
+▸ **isReport**(`value`: any): *boolean*
+
+Returns `true` if the value is an object having a property `report-toolkit-report` `Symbol` with value `true`.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`value` | any |   |
+
+**Returns:** *boolean*
+
+___
+
+### `Static` isReportLike
+
+▸ **isReportLike**(`value`: any): *boolean*
+
+Returns `true` if `value` has all expected root properties of a Diagnostic Report (as returned by [process.report.getReport()](https://nodejs.org/api/process.html#process_process_report_getreport_err)), or is a [Report](report_toolkit_common.report.report.mdx).
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`value` | any |   |
+
+**Returns:** *boolean*
+

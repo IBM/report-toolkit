@@ -1,0 +1,261 @@
+---
+title: "Transformer"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home.mdx) › ["transformers/src/transformer.d"](../modules/transformers_src_transformer_d_.mdx) › [Transformer](transformers_src_transformer_d_.transformer.mdx)
+
+Represents a Transformer having a transform() function and
+metadata.
+
+**`template`** T,U
+
+## Type parameters
+
+▪ **T**
+
+▪ **U**
+
+## Hierarchy
+
+* **Transformer**
+
+## Index
+
+### Constructors
+
+- [constructor](transformers_src_transformer_d_.transformer#constructor)
+
+### Properties
+
+- [_meta](transformers_src_transformer_d_.transformer#_meta)
+- [_source](transformers_src_transformer_d_.transformer#_source)
+- [_transform](transformers_src_transformer_d_.transformer#_transform)
+- [normalizeFields](transformers_src_transformer_d_.transformer#static-normalizefields)
+
+### Accessors
+
+- [defaults](transformers_src_transformer_d_.transformer#defaults)
+- [id](transformers_src_transformer_d_.transformer#id)
+- [input](transformers_src_transformer_d_.transformer#input)
+- [output](transformers_src_transformer_d_.transformer#output)
+
+### Methods
+
+- [canBeginWith](transformers_src_transformer_d_.transformer#canbeginwith)
+- [canEndWith](transformers_src_transformer_d_.transformer#canendwith)
+- [canPipeTo](transformers_src_transformer_d_.transformer#canpipeto)
+- [pipe](transformers_src_transformer_d_.transformer#pipe)
+- [pipeFrom](transformers_src_transformer_d_.transformer#pipefrom)
+- [transform](transformers_src_transformer_d_.transformer#transform)
+
+## Constructors
+
+### constructor
+
+\+ **new Transformer**(`transform`: function, `meta`: object, `config?`: any): *[Transformer](transformers_src_transformer_d_.transformer)*
+
+Sets defaults and instance props
+
+**Parameters:**
+
+▪ **transform**: *function*
+
+▸ (`opts?`: any): *OperatorFunction‹T, U›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`opts?` | any |
+
+▪ **meta**: *object*
+
+Transformer metdata
+
+Name | Type |
+------ | ------ |
+`alias?` | string[] |
+`defaults?` | any |
+`description?` | string |
+`id` | string |
+`input?` | string[] |
+`output` | string |
+
+▪`Optional`  **config**: *any*
+
+**Returns:** *[Transformer](transformers_src_transformer_d_.transformer)*
+
+## Properties
+
+### _meta
+
+• **_meta**: *any*
+
+___
+
+### _source
+
+• **_source**: *[Transformer](transformers_src_transformer_d_.transformer)‹any, any›*
+
+___
+
+### _transform
+
+• **_transform**: *function*
+
+#### Type declaration:
+
+▸ (`opts?`: any): *OperatorFunction‹T, U›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`opts?` | any |
+
+___
+
+### `Static` normalizeFields
+
+▪ **normalizeFields**: *function*
+
+#### Type declaration:
+
+▸ (...`args`: any[]): *any*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`...args` | any[] |
+
+## Accessors
+
+### defaults
+
+• **get defaults**(): *any*
+
+**Returns:** *any*
+
+___
+
+### id
+
+• **get id**(): *any*
+
+**Returns:** *any*
+
+___
+
+### input
+
+• **get input**(): *any*
+
+**Returns:** *any*
+
+___
+
+### output
+
+• **get output**(): *any*
+
+**Returns:** *any*
+
+## Methods
+
+### canBeginWith
+
+▸ **canBeginWith**(`type`: any): *function*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`type` | any |
+
+**Returns:** *function*
+
+▸ (`target`: T): *boolean*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`target` | T |
+
+___
+
+### canEndWith
+
+▸ **canEndWith**(`type`: any): *boolean*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`type` | any |
+
+**Returns:** *boolean*
+
+___
+
+### canPipeTo
+
+▸ **canPipeTo**(`transformer`: [Transformer](transformers_src_transformer_d_.transformer)‹any, any›): *function*
+
+Returns `true` if this Transformer can pipe to another
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`transformer` | [Transformer](transformers_src_transformer_d_.transformer)‹any, any› | Transformer to compare  |
+
+**Returns:** *function*
+
+▸ (`target`: T): *boolean*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`target` | T |
+
+___
+
+### pipe
+
+▸ **pipe**(`transformer`: [Transformer](transformers_src_transformer_d_.transformer)‹any, any›): *[Transformer](transformers_src_transformer_d_.transformer)‹any, any›*
+
+Pipe one Transformer to another
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`transformer` | [Transformer](transformers_src_transformer_d_.transformer)‹any, any› |
+
+**Returns:** *[Transformer](transformers_src_transformer_d_.transformer)‹any, any›*
+
+___
+
+### pipeFrom
+
+▸ **pipeFrom**(`transformer`: [Transformer](transformers_src_transformer_d_.transformer)‹any, any›): *[Transformer](transformers_src_transformer_d_.transformer)‹any, any›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`transformer` | [Transformer](transformers_src_transformer_d_.transformer)‹any, any› |
+
+**Returns:** *[Transformer](transformers_src_transformer_d_.transformer)‹any, any›*
+
+___
+
+### transform
+
+▸ **transform**(): *OperatorFunction‹T, U›*
+
+**Returns:** *OperatorFunction‹T, U›*
+

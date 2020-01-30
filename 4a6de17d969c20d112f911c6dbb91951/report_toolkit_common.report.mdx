@@ -1,0 +1,82 @@
+---
+title: "report"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home.mdx) › [@report-toolkit/common](report_toolkit_common.mdx) › [report](report_toolkit_common.report.mdx)
+
+A representation of a Diagnostic Report
+
+## Index
+
+### Classes
+
+- [Report](../classes/report_toolkit_common.report.report.mdx)
+
+### Type aliases
+
+- [ReportLike](report_toolkit_common.report.mdx#reportlike)
+
+### Functions
+
+- [createReport](report_toolkit_common.report.mdx#createreport)
+- [isReport](report_toolkit_common.report.mdx#isreport)
+- [isReportLike](report_toolkit_common.report.mdx#isreportlike)
+
+## Type aliases
+
+### ReportLike
+
+Ƭ **ReportLike**: *[DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx) | [Report](../classes/report_toolkit_common.report.report.mdx)*
+
+Either a [Report](../classes/report_toolkit_common.report.report.mdx) or an object with all of the required props.  See [Report.isReportLike](../classes/report_toolkit_common.report.report.mdx#static-isreportlike)
+
+## Functions
+
+### createReport
+
+▸ **createReport**(`rawReport`: [DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx) | [Report](../classes/report_toolkit_common.report.report.mdx), `filepath`: string): *Readonly‹[Report](../classes/report_toolkit_common.report.report.mdx)›*
+
+Creates a read-only [Report](../classes/report_toolkit_common.report.report.mdx) from a [ReportLike](report_toolkit_common.report.mdx#reportlike) value.
+Use this instead of `new Report()`!
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`rawReport` | [DiagnosticReport](../interfaces/common_diagnostic_report_d_.diagnosticreport.mdx) &#124; [Report](../classes/report_toolkit_common.report.report.mdx) | - |
+`filepath` | string |   |
+
+**Returns:** *Readonly‹[Report](../classes/report_toolkit_common.report.report.mdx)›*
+
+___
+
+### isReport
+
+▸ **isReport**(`value`: any): *boolean*
+
+Returns `true` if the value is an object having a property `report-toolkit-report` `Symbol` with value `true`.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`value` | any |   |
+
+**Returns:** *boolean*
+
+___
+
+### isReportLike
+
+▸ **isReportLike**(`value`: any): *boolean*
+
+Returns `true` if `value` has all expected root properties of a Diagnostic Report (as returned by [process.report.getReport()](https://nodejs.org/api/process.html#process_process_report_getreport_err)), or is a [Report](../classes/report_toolkit_common.report.report.mdx).
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`value` | any |   |
+
+**Returns:** *boolean*
+

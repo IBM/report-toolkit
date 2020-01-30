@@ -1,0 +1,117 @@
+---
+title: "RuleConfig"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home) › [@report-toolkit/inspector](../modules/report_toolkit_inspector.mdx) › [rule-config](../modules/report_toolkit_inspector.rule_config.mdx) › [RuleConfig](report_toolkit_inspector.rule_config.ruleconfig.mdx)
+
+## Hierarchy
+
+* **RuleConfig**
+
+## Index
+
+### Constructors
+
+- [constructor](report_toolkit_inspector.rule_config.ruleconfig.mdx#constructor)
+
+### Properties
+
+- [config](report_toolkit_inspector.rule_config.ruleconfig.mdx#config)
+
+### Accessors
+
+- [id](report_toolkit_inspector.rule_config.ruleconfig.mdx#id)
+- [rule](report_toolkit_inspector.rule_config.ruleconfig.mdx#rule)
+
+### Methods
+
+- [inspect](report_toolkit_inspector.rule_config.ruleconfig.mdx#inspect)
+- [validate](report_toolkit_inspector.rule_config.ruleconfig.mdx#validate)
+- [create](report_toolkit_inspector.rule_config.ruleconfig.mdx#static-create)
+
+## Constructors
+
+### constructor
+
+\+ **new RuleConfig**(`rule`: [Rule](report_toolkit_inspector.rule.rule.mdx), `rawConfig?`: any): *[RuleConfig](report_toolkit_inspector.rule_config.ruleconfig.mdx)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`rule` | [Rule](report_toolkit_inspector.rule.rule.mdx) |
+`rawConfig?` | any |
+
+**Returns:** *[RuleConfig](report_toolkit_inspector.rule_config.ruleconfig.mdx)*
+
+## Properties
+
+### config
+
+• **config**: *any*
+
+## Accessors
+
+### id
+
+• **get id**(): *any*
+
+**Returns:** *any*
+
+___
+
+### rule
+
+• **get rule**(): *any*
+
+**Returns:** *any*
+
+## Methods
+
+### inspect
+
+▸ **inspect**(`reports`: Observable‹[Report](report_toolkit_common.report.report.mdx)›): *Observable‹[Message](report_toolkit_inspector.message.message.mdx)›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`reports` | Observable‹[Report](report_toolkit_common.report.report.mdx)› |
+
+**Returns:** *Observable‹[Message](report_toolkit_inspector.message.message.mdx)›*
+
+___
+
+### validate
+
+▸ **validate**(`rawConfig`: any): *any*
+
+validate the config against meta.schema using ajv
+
+**`todo`** 
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`rawConfig` | any |
+
+**Returns:** *any*
+
+boolean
+
+___
+
+### `Static` create
+
+▸ **create**(`rule`: any, `rawConfig`: any): *Readonly‹[RuleConfig](report_toolkit_inspector.rule_config.ruleconfig.mdx)›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`rule` | any |
+`rawConfig` | any |
+
+**Returns:** *Readonly‹[RuleConfig](report_toolkit_inspector.rule_config.ruleconfig.mdx)›*
+

@@ -1,0 +1,225 @@
+---
+title: "Rule"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home.mdx) › [@report-toolkit/inspector](../modules/report_toolkit_inspector.mdx) › [rule](../modules/report_toolkit_inspector.rule.mdx) › [Rule](report_toolkit_inspector.rule.rule.mdx)
+
+A Rule which can be matched against a Context
+
+## Hierarchy
+
+* **Rule**
+
+## Index
+
+### Constructors
+
+- [constructor](report_toolkit_inspector.rule.rule#constructor)
+
+### Accessors
+
+- [description](report_toolkit_inspector.rule.rule#description)
+- [id](report_toolkit_inspector.rule.rule#id)
+- [meta](report_toolkit_inspector.rule.rule#meta)
+- [schema](report_toolkit_inspector.rule.rule#schema)
+- [url](report_toolkit_inspector.rule.rule#url)
+- [validate](report_toolkit_inspector.rule.rule#validate)
+
+### Methods
+
+- [handlers](report_toolkit_inspector.rule.rule#handlers)
+- [inspect](report_toolkit_inspector.rule.rule#inspect)
+- [toRuleConfig](report_toolkit_inspector.rule.rule#toruleconfig)
+- [applyDefaults](report_toolkit_inspector.rule.rule#static-applydefaults)
+- [create](report_toolkit_inspector.rule.rule#static-create)
+- [normalizeHandler](report_toolkit_inspector.rule.rule#static-normalizehandler)
+
+## Constructors
+
+### constructor
+
+\+ **new Rule**(`ruleDef`: [RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition)): *[Rule](report_toolkit_inspector.rule.rule)*
+
+Applies defaults, assigns some metadata.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`ruleDef` | [RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition) |   |
+
+**Returns:** *[Rule](report_toolkit_inspector.rule.rule)*
+
+## Accessors
+
+### description
+
+• **get description**(): *any*
+
+**Returns:** *any*
+
+___
+
+### id
+
+• **get id**(): *any*
+
+**Returns:** *any*
+
+___
+
+### meta
+
+• **get meta**(): *any*
+
+**Returns:** *any*
+
+___
+
+### schema
+
+• **get schema**(): *any*
+
+**Returns:** *any*
+
+___
+
+### url
+
+• **get url**(): *any*
+
+**Returns:** *any*
+
+___
+
+### validate
+
+• **get validate**(): *Function*
+
+Lazily-created function which validates the schema itself when first
+referenced, creates a config-validation function, caches it, then asserts
+any user-supplied config is valid using said function.
+
+**`throws`** If user-supplied config is invalid.
+
+**Returns:** *Function*
+
+## Methods
+
+### handlers
+
+▸ **handlers**(`config?`: any): *Promise‹any›*
+
+Calls the `inspect()` function of a Rule impl, which will return one or
+more "handler" functions. Note `inspect()` might return a `Promise` which
+resolves to the "handler" functions.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`config?` | any |
+
+**Returns:** *Promise‹any›*
+
+___
+
+### inspect
+
+▸ **inspect**(`__namedParameters`: object): *Observable‹[Message](report_toolkit_inspector.message.message)›*
+
+Given a stream of Report objects and an optional configuration, execute the
+`inspect()` function of the rule definition, which should return a "next"
+handler function, or an object having handler function props `next` and
+`complete`.
+1. Normalize the result of the `inspect()` so we can make assumptions about
+   the shape of the returned value.
+2. For each `Report` (`report`), run the `next` handler as if it returned
+   a `Promise`. This handler is passed the `report`, and any `Error`s
+   thrown are trapped. The handler may return a string ("message"), a
+   partial `Message` object, `Array` thereof, or a `Promise` resolving to
+   any of that stuff, or just `undefined` in the case of "nothing to
+   mention"
+3. Return values are correlated with the filepath of the report. Note that
+   `Report` objects may not *have* a filepath if they were not loaded from
+   file.
+4. Once all `Report`s have passed through the `next` handler, call the
+   `complete` handler.  It receives no `report`, and can be used in tandem
+   with `next` to perform aggregation. Supports the same return values as
+   `next`
+5. Finally, filter out empty/falsy partial `Message`s (e.g., those without
+   actual `string` `message` props), and normalize the `Message` by adding
+   relevant metadata (`Rule` ID, user-supplied config used, default
+   severity, etc.)
+
+**Parameters:**
+
+▪ **__namedParameters**: *object*
+
+Name | Type |
+------ | ------ |
+`config` | any |
+`reports` | Observable‹[Report](report_toolkit_common.report.report)‹›› |
+
+**Returns:** *Observable‹[Message](report_toolkit_inspector.message.message)›*
+
+___
+
+### toRuleConfig
+
+▸ **toRuleConfig**(`config`: any): *[RuleConfig](report_toolkit_inspector.rule_config.ruleconfig)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`config` | any |
+
+**Returns:** *[RuleConfig](report_toolkit_inspector.rule_config.ruleconfig)*
+
+___
+
+### `Static` applyDefaults
+
+▸ **applyDefaults**(`ruleDef`: Partial‹[RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition)›): *[RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition)*
+
+Applies defaults to a rule definition during `Rule` construction.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`ruleDef` | Partial‹[RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition)› | Raw rule definition |
+
+**Returns:** *[RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition)*
+
+___
+
+### `Static` create
+
+▸ **create**(`ruleDefinition`: [RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition)): *[Rule](report_toolkit_inspector.rule.rule)*
+
+Creates a `Rule` from a user-defined (or builtin) `RuleDefinition`, which
+is the exports of a rule definition file.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`ruleDefinition` | [RuleDefinition](../modules/report_toolkit_inspector.rule#ruledefinition) | Rule definition |
+
+**Returns:** *[Rule](report_toolkit_inspector.rule.rule)*
+
+New rule
+
+___
+
+### `Static` normalizeHandler
+
+▸ **normalizeHandler**(): *OperatorFunction‹function | [RuleHandlerObject](../modules/report_toolkit_inspector.rule#rulehandlerobject), [RuleHandlerObject](../modules/report_toolkit_inspector.rule#rulehandlerobject)›*
+
+Operator.  Given a "handler" (returned by the rule definition's `inspect`
+function), normalize it into an object (since it may be just a function)
+
+**Returns:** *OperatorFunction‹function | [RuleHandlerObject](../modules/report_toolkit_inspector.rule#rulehandlerobject), [RuleHandlerObject](../modules/report_toolkit_inspector.rule#rulehandlerobject)›*
+

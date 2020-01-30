@@ -1,0 +1,41 @@
+---
+title: "report-toolkit API"
+---
+
+[report-toolkit API](home.mdx) › [Globals](home)
+
+<!-- this file is not directly ingested by Gatsby; it is used by TypeDoc as a partial in the index file it generates -->
+
+<PageDescription>
+
+Here, you'll find documentation for <Metadata prop="packageName"/>'s public, programmatic API.
+
+If you want to use <Metadata prop="packageName"/> as a library or otherwise embed its functionalities into an app, these docs are for you.
+
+</PageDescription>
+
+Below, you'll find an index of modules comprising the public API.
+
+<InlineNotification kind="warning">
+
+At the time of this writing, the list below _does not_ contain the _entirety_ of this API--but it's enough to get started using <Metadata prop="packageName"/> as a library.
+
+</InlineNotification>
+
+**Hint:** Start with [@report-toolkit/core](/api/modules/report_toolkit_core)!
+
+## Packages
+
+- [@report-toolkit/common](/api/modules/report_toolkit_common)
+- [@report-toolkit/core](/api/modules/report_toolkit_core)
+- [@report-toolkit/inspector](/api/modules/report-toolkit-inspector)
+
+## Index
+
+### Packages
+
+- ["common/diagnostic-report.d"](modules/common_diagnostic_report_d_.mdx)
+- [@report-toolkit/common](modules/report_toolkit_common.mdx)
+- [@report-toolkit/core](modules/report_toolkit_core.mdx)
+- [@report-toolkit/inspector](modules/report_toolkit_inspector.mdx)
+

@@ -1,0 +1,144 @@
+---
+title: "constants"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home.mdx) › [@report-toolkit/common](report_toolkit_common.mdx) › [constants](report_toolkit_common.constants.mdx)
+
+A grip of constants used throughout the project.
+
+## Index
+
+### Type aliases
+
+- [SEVERITIES](report_toolkit_common.constants#severities)
+
+### Variables
+
+- [DEFAULT_DIFF_EXCLUDE](report_toolkit_common.constants#const-default_diff_exclude)
+- [DEFAULT_DIFF_INCLUDE](report_toolkit_common.constants#const-default_diff_include)
+- [DEFAULT_SEVERITY](report_toolkit_common.constants#const-default_severity)
+- [ERROR](report_toolkit_common.constants#const-error)
+- [INFO](report_toolkit_common.constants#const-info)
+- [NAMESPACE](report_toolkit_common.constants#const-namespace)
+- [NO_FILEPATH](report_toolkit_common.constants#const-no_filepath)
+- [REDACTED_TOKEN](report_toolkit_common.constants#const-redacted_token)
+- [REPORT_KNOWN_ROOT_PROPERTIES](report_toolkit_common.constants#const-report_known_root_properties)
+- [SEVERITIES](report_toolkit_common.constants#const-severities)
+- [SHORT_NAMESPACE](report_toolkit_common.constants#const-short_namespace)
+- [WARNING](report_toolkit_common.constants#const-warning)
+
+## Type aliases
+
+### SEVERITIES
+
+Ƭ **SEVERITIES**: *number*
+
+Potential severities of Messages reported by the inspector.
+
+## Variables
+
+### `Const` DEFAULT_DIFF_EXCLUDE
+
+• **DEFAULT_DIFF_EXCLUDE**: *keyof string[]*
+
+Typically useless keypaths to explicitly omit from diffs. Anything here should be more specific than what's in [DEFAULT_DIFF_INCLUDE](report_toolkit_common.constants#const-default_diff_include).
+
+___
+
+### `Const` DEFAULT_DIFF_INCLUDE
+
+• **DEFAULT_DIFF_INCLUDE**: *keyof string[]*
+
+Things we explicitly want to show in the diffs.  Use [DEFAULT_DIFF_EXCLUDE](report_toolkit_common.constants#const-default_diff_exclude) to exclude any child properties of these.
+
+___
+
+### `Const` DEFAULT_SEVERITY
+
+• **DEFAULT_SEVERITY**: *"warning"*
+
+Default severity across system
+
+___
+
+### `Const` ERROR
+
+• **ERROR**: *"error"*
+
+"Error" severity.  The highest severity, and the default.
+
+___
+
+### `Const` INFO
+
+• **INFO**: *"info"*
+
+"Info" severity. The lowest severity.
+
+___
+
+### `Const` NAMESPACE
+
+• **NAMESPACE**: *"report-toolkit"*
+
+Project namespace
+
+___
+
+### `Const` NO_FILEPATH
+
+• **NO_FILEPATH**: *"(no filepath)"*
+
+Text to use in display if no filepath found
+
+___
+
+### `Const` REDACTED_TOKEN
+
+• **REDACTED_TOKEN**: *"[REDACTED]"*
+
+The string token used to replace secrets when redacting from a report.
+
+___
+
+### `Const` REPORT_KNOWN_ROOT_PROPERTIES
+
+• **REPORT_KNOWN_ROOT_PROPERTIES**: *keyof string[]*
+
+Known root properties of a Diagnostic Report.  To be processed, an object must have *all* of these properties.  The current list _in order_:
+- `header`
+- `javascriptStack`
+- `nativeStack`
+- `javascriptHeap`
+- `resourceUsage`
+- `libuv`
+- `environmentVariables`
+- `userLimits`
+- `sharedObjects`
+
+___
+
+### `Const` SEVERITIES
+
+• **SEVERITIES**: *Readonly‹object›*
+
+Potential severities of Messages reported by the inspector.
+
+**`enum`** {number}
+
+___
+
+### `Const` SHORT_NAMESPACE
+
+• **SHORT_NAMESPACE**: *"rtk"*
+
+Short project namespace
+
+___
+
+### `Const` WARNING
+
+• **WARNING**: *"warning"*
+
+"Warning" severity.
+

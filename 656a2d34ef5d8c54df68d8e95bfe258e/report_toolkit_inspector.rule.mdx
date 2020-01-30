@@ -1,0 +1,129 @@
+---
+title: "rule"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home.mdx) › [@report-toolkit/inspector](report_toolkit_inspector.mdx) › [rule](report_toolkit_inspector.rule.mdx)
+
+Describes a Rule
+
+## Index
+
+### Classes
+
+- [Rule](../classes/report_toolkit_inspector.rule.rule.mdx)
+
+### Type aliases
+
+- [RuleDefinition](report_toolkit_inspector.rule.mdx#ruledefinition)
+- [RuleDefinitionId](report_toolkit_inspector.rule.mdx#ruledefinitionid)
+- [RuleDefinitionInspectFunction](report_toolkit_inspector.rule.mdx#ruledefinitioninspectfunction)
+- [RuleDefinitionMeta](report_toolkit_inspector.rule.mdx#ruledefinitionmeta)
+- [RuleHandler](report_toolkit_inspector.rule.mdx#rulehandler)
+- [RuleHandlerFunction](report_toolkit_inspector.rule.mdx#rulehandlerfunction)
+- [RuleHandlerObject](report_toolkit_inspector.rule.mdx#rulehandlerobject)
+
+### Functions
+
+- [createRule](report_toolkit_inspector.rule.mdx#createrule)
+
+## Type aliases
+
+### RuleDefinition
+
+Ƭ **RuleDefinition**: *object*
+
+#### Type declaration:
+
+* **id**: *string*
+
+* **inspect**(): *function*
+
+  * (`config?`: any): *function | [RuleHandlerObject](report_toolkit_inspector.rule.mdx#rulehandlerobject) | Promise‹function | [RuleHandlerObject](report_toolkit_inspector.rule.mdx#rulehandlerobject)›*
+
+* **meta**: *any*
+
+___
+
+### RuleDefinitionId
+
+Ƭ **RuleDefinitionId**: *string*
+
+___
+
+### RuleDefinitionInspectFunction
+
+Ƭ **RuleDefinitionInspectFunction**: *function*
+
+#### Type declaration:
+
+▸ (`config?`: any): *function | [RuleHandlerObject](report_toolkit_inspector.rule.mdx#rulehandlerobject) | Promise‹function | [RuleHandlerObject](report_toolkit_inspector.rule.mdx#rulehandlerobject)›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`config?` | any |
+
+___
+
+### RuleDefinitionMeta
+
+Ƭ **RuleDefinitionMeta**: *any*
+
+___
+
+### RuleHandler
+
+Ƭ **RuleHandler**: *function | [RuleHandlerObject](report_toolkit_inspector.rule.mdx#rulehandlerobject)*
+
+___
+
+### RuleHandlerFunction
+
+Ƭ **RuleHandlerFunction**: *function*
+
+#### Type declaration:
+
+▸ (`report`: [Report](../classes/report_toolkit_common.report.report.mdx)): *string | void | Partial‹object› | Promise‹string | Partial‹object›› | string | object[]*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`report` | [Report](../classes/report_toolkit_common.report.report.mdx) |
+
+___
+
+### RuleHandlerObject
+
+Ƭ **RuleHandlerObject**: *object*
+
+#### Type declaration:
+
+* **complete**(): *function*
+
+  * (): *string | void | Partial‹object› | Promise‹string | Partial‹object››*
+
+* **next**(): *function*
+
+  * (`report`: [Report](../classes/report_toolkit_common.report.report.mdx)): *string | void | Partial‹object› | Promise‹string | Partial‹object›› | string | object[]*
+
+## Functions
+
+### createRule
+
+▸ **createRule**(`ruleDefinition`: [RuleDefinition](report_toolkit_inspector.rule.mdx#ruledefinition)): *[Rule](../classes/report_toolkit_inspector.rule.rule.mdx)*
+
+Creates a `Rule` from a user-defined (or builtin) `RuleDefinition`, which
+is the exports of a rule definition file.
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`ruleDefinition` | [RuleDefinition](report_toolkit_inspector.rule.mdx#ruledefinition) | Rule definition |
+
+**Returns:** *[Rule](../classes/report_toolkit_inspector.rule.rule.mdx)*
+
+New rule
+

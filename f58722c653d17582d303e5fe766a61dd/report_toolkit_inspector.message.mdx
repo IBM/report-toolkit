@@ -1,0 +1,70 @@
+---
+title: "message"
+---
+
+[report-toolkit API](../home.mdx) › [Globals](../home) › [@report-toolkit/inspector](report_toolkit_inspector.mdx) › [message](report_toolkit_inspector.message.mdx)
+
+Output of inspector
+
+## Index
+
+### Classes
+
+- [Message](../classes/report_toolkit_inspector.message.message.mdx)
+
+### Type aliases
+
+- [MessageOptions](report_toolkit_inspector.message.mdx#messageoptions)
+- [RawMessage](report_toolkit_inspector.message.mdx#rawmessage)
+
+### Functions
+
+- [createMessage](report_toolkit_inspector.message.mdx#createmessage)
+
+## Type aliases
+
+### MessageOptions
+
+Ƭ **MessageOptions**: *object*
+
+Allowed extra options when creating a [Message](../classes/report_toolkit_inspector.message.message.mdx)
+
+#### Type declaration:
+
+* **config**: *any*
+
+* **data**: *any*
+
+* **error**: *Error*
+
+* **filepath**: *string*
+
+* **id**: *string*
+
+* **isAggregate**: *boolean*
+
+* **message**: *string*
+
+* **severity**: *"error" | "warning" | "info"*
+
+___
+
+### RawMessage
+
+Ƭ **RawMessage**: *string | Partial‹[MessageOptions](report_toolkit_inspector.message.mdx#messageoptions)›*
+
+## Functions
+
+### createMessage
+
+▸ **createMessage**(`message`: string | Partial‹[MessageOptions](report_toolkit_inspector.message.mdx#messageoptions)›, `opts?`: Partial‹[MessageOptions](report_toolkit_inspector.message.mdx#messageoptions)›): *Readonly‹[Message](../classes/report_toolkit_inspector.message.message.mdx)›*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`message` | string &#124; Partial‹[MessageOptions](report_toolkit_inspector.message.mdx#messageoptions)› |
+`opts?` | Partial‹[MessageOptions](report_toolkit_inspector.message.mdx#messageoptions)› |
+
+**Returns:** *Readonly‹[Message](../classes/report_toolkit_inspector.message.message.mdx)›*
+
