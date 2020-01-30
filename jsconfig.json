@@ -8,8 +8,6 @@
     "**/node_modules/**/*",
     "**/dist/**/*",
     "**/coverage",
-    "rollup.config.js",
-    "**/.*.js",
     "**/.history/**/*"
   ]
 }
