@@ -118,7 +118,7 @@
     "rollup-plugin-subpath-externals": "^3.4.0",
     "rxjs": "^6.5.4",
     "sinon": "^8.1.1",
-    "sync-monorepo-packages": "^0.3.1",
+    "sync-monorepo-packages": "^0.3.2",
     "syncpack": "^4.5.5",
     "typedoc": "^0.16.9",
     "typedoc-plugin-markdown": "^2.2.16",
