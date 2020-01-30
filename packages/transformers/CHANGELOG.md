@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/ibm/report-toolkit/compare/v0.3.0...v0.4.0) (2020-01-30)
+
+### Bug Fixes
+
+- **transformers:** fix bad newline unit test ([0ef74ae](https://github.com/ibm/report-toolkit/commit/0ef74aecfb7534fcbde44fa7dc9e77edb84c0639))
+- **transformers:** fix filter transformer when used with diff ([077ce49](https://github.com/ibm/report-toolkit/commit/077ce49c90f978b9e53ee60599baca0102ff60e6))
+- **transformers:** fix newline-delimited output ([8fcd836](https://github.com/ibm/report-toolkit/commit/8fcd836838ea4ca97dbdb1bfb4a95ae3c92ec6ef))
+- **transformers:** type fixes for numeric transformer ([bbc9ceb](https://github.com/ibm/report-toolkit/commit/bbc9ceb624586fe1ee6b4e07ff20be5b80f9f1b1))
+
 # [0.3.0](https://github.com/ibm/report-toolkit/compare/v0.2.3...v0.3.0) (2019-11-15)
 
 **Note:** Version bump only for package @report-toolkit/transformers

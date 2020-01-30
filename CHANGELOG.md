@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/ibm/report-toolkit/compare/v0.3.0...v0.4.0) (2020-01-30)
+
+### Bug Fixes
+
+- **cli:** Indicate that diff --all is mutually exclusive from -i and -x ([#72](https://github.com/ibm/report-toolkit/issues/72)) ([a5b5470](https://github.com/ibm/report-toolkit/commit/a5b54702340f5cf07d18f44ca775eb4d4b39cb99)), closes [#71](https://github.com/ibm/report-toolkit/issues/71)
+- **cli:** more timeout fixes ([57f9017](https://github.com/ibm/report-toolkit/commit/57f901707357797b945bbe49b5635d2c15e8d6cf))
+- **common:** add missing \_.isNumber ([1edf4cc](https://github.com/ibm/report-toolkit/commit/1edf4ccca3879a24334fde5b84935eb95cea776d))
+- **common:** re-add libuv to default diff ([1204418](https://github.com/ibm/report-toolkit/commit/12044180c115e1f823fdfa2cc863aa0ec66bd55a))
+- **diff:** rename 'path' to 'field' for consistency ([834ab9f](https://github.com/ibm/report-toolkit/commit/834ab9f7d8f4d4ea771e99b9d7eb1f3773c7e96f))
+- **transformers:** fix bad newline unit test ([0ef74ae](https://github.com/ibm/report-toolkit/commit/0ef74aecfb7534fcbde44fa7dc9e77edb84c0639))
+- **transformers:** fix filter transformer when used with diff ([077ce49](https://github.com/ibm/report-toolkit/commit/077ce49c90f978b9e53ee60599baca0102ff60e6))
+- **transformers:** fix newline-delimited output ([8fcd836](https://github.com/ibm/report-toolkit/commit/8fcd836838ea4ca97dbdb1bfb4a95ae3c92ec6ef))
+- **transformers:** type fixes for numeric transformer ([bbc9ceb](https://github.com/ibm/report-toolkit/commit/bbc9ceb624586fe1ee6b4e07ff20be5b80f9f1b1))
+
+### Features
+
+- **common:** redact Google Cloud and MS Azure secrets ([d2e7579](https://github.com/ibm/report-toolkit/commit/d2e757989ba6d581e1c348d91850261dcda3d543))
+
 # [0.3.0](https://github.com/ibm/report-toolkit/compare/v0.2.3...v0.3.0) (2019-11-15)
 
 ### Features

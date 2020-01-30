@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/ibm/report-toolkit/compare/v0.3.0...v0.4.0) (2020-01-30)
+
+### Bug Fixes
+
+- **common:** add missing \_.isNumber ([1edf4cc](https://github.com/ibm/report-toolkit/commit/1edf4ccca3879a24334fde5b84935eb95cea776d))
+- **common:** re-add libuv to default diff ([1204418](https://github.com/ibm/report-toolkit/commit/12044180c115e1f823fdfa2cc863aa0ec66bd55a))
+- **diff:** rename 'path' to 'field' for consistency ([834ab9f](https://github.com/ibm/report-toolkit/commit/834ab9f7d8f4d4ea771e99b9d7eb1f3773c7e96f))
+
+### Features
+
+- **common:** redact Google Cloud and MS Azure secrets ([d2e7579](https://github.com/ibm/report-toolkit/commit/d2e757989ba6d581e1c348d91850261dcda3d543))
+
 # [0.3.0](https://github.com/ibm/report-toolkit/compare/v0.2.3...v0.3.0) (2019-11-15)
 
 ### Features

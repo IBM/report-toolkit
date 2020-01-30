@@ -1,14 +1,14 @@
 {
   "name": "@report-toolkit/inspector",
   "description": "",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.3.0",
+    "@report-toolkit/common": "^0.4.0",
     "ajv": "^6.10.0"
   },
   "devDependencies": {
-    "@report-toolkit/fs": "^0.3.0"
+    "@report-toolkit/fs": "^0.4.0"
   },
   "engines": {
     "node": ">=8"
