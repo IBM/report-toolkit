@@ -95,7 +95,10 @@ Breaking down the arguments to `node`, we have:
 1. `--report-filename report.json`; whenever a diagnostic report is written to disk, use this filename
 1. `--eval "process.report.writeReport()"`; instead of a `.js` file, execute the double-quoted string as a script, then exit. The script calls [process.report.writeReport()](https://nodejs.org/api/process.html#process_process_report_writereport_filename_err), which writes a report file to disk.
 
-<p>Next, you'll see how <Metadata prop="packageName"/> enables safe storage and transmission of report files.</p>
+<p>
+  Next, you'll see how <Metadata prop="packageName" /> enables safe storage and
+  transmission of report files.
+</p>
 
 ## Redact Secrets From a Report
 
@@ -341,7 +344,6 @@ The list of built-in transformers is as follows:
 - `filter`: Pick or omit certain properties
 - `json`: Converts to JSON format (the default)
 - `newline`: Converts to newline-delimited format, suitable for piping via shell, consumption via Node.js streams, etc.
-- `numeric`: A special filter which picks only _numeric_ fields; good for metrics
 - `redact`: Redacts secrets
 - `stack-hash`: Computes a hash of the exception for metrics; helps answer "have we seen this exception before?"
 - `table`: The default transform for the `diff` and `inspect` commands, among others

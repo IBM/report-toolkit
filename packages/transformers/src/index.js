@@ -4,7 +4,6 @@ import * as csv from './csv.js';
 import * as filter from './filter.js';
 import * as json from './json.js';
 import * as newline from './newline.js';
-import * as numeric from './numeric.js';
 import * as redact from './redact.js';
 import * as stackHash from './stack-hash.js';
 import * as table from './table.js';
@@ -15,7 +14,6 @@ const builtinTransformers = [
   filter,
   json,
   newline,
-  numeric,
   redact,
   stackHash,
   table
