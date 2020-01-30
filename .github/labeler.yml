@@ -1,0 +1,28 @@
+package-cli:
+  - 'packages/cli/**/*'
+package-diff:
+  - 'packages/diff/**/*'
+package-common:
+  - 'packages/common/**/*'
+  - 'packages/config/**/*'
+package-core:
+  - 'packages/core/**/*'
+package-fs:
+  - 'packages/fs/**/*'
+package-inspector:
+  - 'packages/inspector/**/*'
+package-transformers:
+  - 'packages/transformers/**/*'
+documentation:
+  - 'packages/docs/**/*'
+  - '**/*.md'
+  - '**/*.mdx'
+chore:
+  - '.github/**/*'
+  - 'scripts/**/*'
+  - '**/test/**/*'
+  - '**/*.d.ts'
+  - 'tsconfig*.json'
+  - 'jsconfig.json'
+  - '.*'
+  - '*.config.json'
