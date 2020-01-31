@@ -173,7 +173,7 @@ export async function use(pluginId) {
  *   }
  * });
  * ```
- * @param {string | string[]} transformerIds - Unique transformer identifier(s), in order.  Can be one of `csv`, `filter`, `json`, `newline`, `numeric`, `redact`, `stack-hash`, `table`.
+ * @param {string | string[]} transformerIds - Unique transformer identifier(s), in order.  Can be one of `csv`, `filter`, `json`, `newline`,  `redact`, `stack-hash`, `table`.
  * @param {object} source - Source, typically one or more {@link @report-toolkit/common.report.Report|Reports}.
  * @param {Partial<import('./observable').Config>} config - As returned by {@link loadConfig}; can contain transformer-specific settings.
  * @param {Partial<import('./observable').TransformOptions>} options - Optional constraints & default behavior; overrides settings in `config`, if present.
