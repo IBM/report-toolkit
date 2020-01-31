@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/ibm/report-toolkit/compare/v0.4.1...v0.5.0) (2020-01-31)
+
+### Features
+
+- **transformers:** numeric transformer dropped ([c81b6b0](https://github.com/ibm/report-toolkit/commit/c81b6b0c9c330fbe98991249769a93e96b559235)), closes [#74](https://github.com/ibm/report-toolkit/issues/74) [#75](https://github.com/ibm/report-toolkit/issues/75) [#75](https://github.com/ibm/report-toolkit/issues/75)
+
 ## [0.4.1](https://github.com/ibm/report-toolkit/compare/v0.4.0...v0.4.1) (2020-01-31)
 
 **Note:** Version bump only for package @report-toolkit/transformers
