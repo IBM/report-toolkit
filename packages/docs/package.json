@@ -42,6 +42,7 @@
   "repository": "ibm/report-toolkit.git",
   "scripts": {
     "build": "gatsby build --prefix-paths",
+    "build:netlify": "gatsby build",
     "dev": "gatsby develop",
     "dev:clean": "gatsby clean && gatsby develop",
     "serve": "gatsby serve"

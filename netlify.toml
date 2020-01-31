@@ -1,0 +1,3 @@
+[build]
+  publish = "packages/docs/public"
+  command = "npm run build:docs:netlify"
