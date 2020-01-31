@@ -1,7 +1,7 @@
 {
   "name": "@report-toolkit/transformers",
   "description": "",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "@report-toolkit/common": "^0.4.0",
