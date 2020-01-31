@@ -8,13 +8,14 @@
     "publish": {
       "allowBranch": "master",
       "conventionalCommits": true,
-      "message": "chore(release): %s"
+      "message": "chore(release): %s",
+      "createRelease": "github"
     }
   },
   "ignoreChanges": [
     "**/test/**",
-    "*.spec.js",
-    "*.md",
-    "*.mdx"
+    "**/**.spec.js",
+    "**/*.md",
+    "**/*.mdx"
   ]
 }
