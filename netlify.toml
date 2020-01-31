@@ -1,8 +1,12 @@
 [build]
 publish = "packages/docs/public"
+# 1. bust the node_modules cache
+# 2. run `npm ci` (which calls `lerna-bootstrap`)
+# 3. build gatsby for production (without `--prefix-paths`)
 command = """
   rm -rf $NETLIFY_CACHE_DIR/node_modules && \
   npm ci && \
   npm run build:docs:netlify \
   """
+# this, I think, tells netlify's built-in `npm install` to do nothing
 environment = { NPM_FLAGS = "--dry-run" }
