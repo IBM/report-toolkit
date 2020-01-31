@@ -1,3 +1,4 @@
 [build]
   publish = "packages/docs/public"
-  command = "npm run build:docs:netlify"
+  command = "rm -rf $NETLIFY_CACHE_DIR/node_modules && npm ci && npm run build:docs:netlify"
+  environment = { NPM_FLAGS = "--dry-run" }
