@@ -1,0 +1,363 @@
+---
+title: report-toolkit Command-Line Usage
+---
+
+import {panel} from 'gatsby-theme-carbon/src/components/Tabs/Tabs.module.scss';
+import {InlineCode} from '../../components';
+import {doDontCode, mono} from './index.module.scss';
+import {Examples, Example} from '../../components/examples.js';
+
+<!-- note: if your paragraph contains markdown, it must start with markdown; this is
+why we see strong (`**`) in some places where otherwise it would not be needed -->
+
+<PageDescription>
+
+**<Metadata prop="packageName"/>** provides a command-line utility, <Metadata prop="executable"/>. This usage documentation provides detailed descriptions of all _commands_ and options for <Metadata prop="executable"/>.
+
+</PageDescription>
+
+<AnchorLinks>
+  <AnchorLink>General Usage Guidelines</AnchorLink>
+  <AnchorLink>Global Options</AnchorLink>
+  <AnchorLink to="#the-diff-command">
+    The <InlineCode>diff</InlineCode> Command
+  </AnchorLink>
+  <AnchorLink to="#the-inspect-command">
+    The <InlineCode>inspect</InlineCode> Command
+  </AnchorLink>
+  <AnchorLink to="#the-list-rules-command">
+    The <InlineCode>list-rules</InlineCode> Command
+  </AnchorLink>
+  <AnchorLink to="#the-redact-command">
+    The <InlineCode>redact</InlineCode> Command
+  </AnchorLink>
+  <AnchorLink to="#the-transform-command">
+    The <InlineCode>transform</InlineCode> Command
+  </AnchorLink>
+</AnchorLinks>
+
+## General Usage Guidelines
+
+### <Metadata prop="executable"/> Requires a Command
+
+You must supply a _command_ to <Metadata prop="executable"/>. A _single_ command must immediately follow the <Metadata prop="executable"/> executable.
+
+<DoDontRow>
+  <DoDont
+    type="do"
+    color="dark"
+    captionTitle="Correct Usage"
+    caption="Command is first argument"
+    text="rtk redact report-file.json"
+    className={doDontCode}
+  />
+  <DoDont
+    type="dont"
+    color="dark"
+    captionTitle="Incorrect Usage"
+    caption="Command in wrong position"
+    text="rtk report-file.json redact"
+    className={doDontCode}
+  />
+</DoDontRow>
+
+### Available Commands
+
+The command must be one of the following:
+
+- [`diff`](#the-diff-command)
+- [`inspect`](#the-inspect-command)
+- [`list-rules`](#the-list-rules-command)
+- [`redact`](#the-redact-command)
+- [`transform`](#the-transform-command)
+
+## Global Options
+
+_Global options_ can be used by themselves, or in tandem with _any_ command.
+
+### `--rc </path/to/.rtkrc.js>`
+
+Supply an explicit path to a <Metadata prop="packageName"/> config file.
+
+By default, <Metadata prop="executable"/> will search for an `.rtkrc.js` (or `rtk.config.js`) in the current working directory, then search parent directories to the filesystem root or home directory, whichever comes first.
+
+<InlineNotification kind="warning">
+
+As of _v0.3.0_, <Metadata prop="packageName"/> only supports `.js` scripts using CommonJS exports (`module.exports = ...`). JSON and YAML are explicitly _not_ supported (for reasons).
+
+</InlineNotification>
+
+<Examples>
+  <Example title={"Run `inspect` Using a Specific Config File"}>
+
+```bash
+rtk --rc my-config.js inspect report-A.json
+```
+
+  </Example>
+</Examples>
+
+Read more about [configuration (TODO)]().
+
+### `--debug` / `--verbose`
+
+Enables debug output. `--verbose` is an alias of `--debug`; their behavior is identical.
+
+This can be noisy.
+
+Using `--debug` is equivalent to setting the environment variable `DEBUG=rtk*`. Further granularity can be achieved by appending package or module name(s) separated by colons, e.g., `DEBUG=rtk:cli*` will show all debug output from the [CLI package](https://github.com/IBM/report-toolkit/tree/master/packages/cli). Package names follow a pattern of `rtk:<package name>[:..submodule name or path]`.
+
+<InlineNotification kind="info">
+
+See the documentation of the [debug](https://github.com/visionmedia/debug#readme) package for more about controlling its behavior via the `DEBUG` environment variable.
+
+</InlineNotification>
+
+### `--help`
+
+<p>
+  Displays help text then exits. `--help` can be used by itself (to see global
+  options and the list of commands), or combined with any command. For example:{' '}
+  <InlineCode>
+    <Metadata prop="executable" /> diff --help
+  </InlineCode>
+  .
+</p>
+
+### `--version`
+
+Outputs the version of <Metadata prop="executable"/> to `STDOUT` then exits.
+
+## The `diff` Command
+
+The `diff` command outputs the _difference_ between two (2) Diagnostic Report files. This is a purpose-built "diff".
+
+### Basic Usage of `diff`
+
+To use `diff` with the [defaults](#defaults-of-diff):
+
+```bash
+rtk diff report-a.json report-b.json
+```
+
+### Defaults of `diff`
+
+<p>
+  This section describes the default behavior of{' '}
+  <InlineCode>
+    <Metadata prop="executable" /> diff
+  </InlineCode>
+  .
+</p>
+
+- Output: a human-readable, **tabular view** (in color, where available)
+- Secrets are **redacted** from Diagnostic Reports _before_ comparison
+- To increase the signal-to-noise ratio, `diff` **includes only this following set of fields**:
+  - `header`
+  - `environmentVariables`
+  - `userLimits`
+  - `sharedObejcts`
+  - `libuv`
+- Furthermore, these nested fields are **excluded from the `header` field**:
+  - `header.filename`
+  - `header.dumpEventTime`
+  - `header.dumpEventTimeStamp`
+  - `header.cpus`
+
+### Filtering with `diff`
+
+<p>
+  This group of options allows the user to fine-tune which fields (properties){' '}
+  <InlineCode>
+    <Metadata prop="executable" /> diff
+  </InlineCode>{' '}
+  considers when comparing Diagnostic Reports.
+</p>
+
+<InlineNotification kind="warning">
+
+When using these options, please note that _exclusion_ of fields **takes precedence** over _inclusion_ of fields. In other words: include fields _first_, _then_ exclude from your list. In this way, you can include a top level field (like `header`), then exclude a nested field (like `header.processId`).
+
+</InlineNotification>
+
+#### `--includeProp <field>, -i <field>`
+
+Explicitly _include_ one or more fields in the comparison. If this option is used, <Metadata prop="executable"/> will _only_ consider the field(s) specified (and any nested fields or array items).
+
+This option can be used multiple times.
+
+##### Example: Include a Single Field
+
+To _only_ compare field `header` (and its nested fields) when comparing `report-A.json` and `report-B.json`:
+
+```bash
+rtk diff --includeProp header report-A.json report-B.json
+```
+
+##### Example: Include Multiple fields
+
+To _only_ compare fields `header.commandLine` (and its items) and `header.cwd` when comparing `report-A.json` and `report-B.json`:
+
+```bash
+rtk diff -i header.commandLine -i header.cwd report-A.json report-B.json
+```
+
+#### `--excludeProp <field>, -x <field>`
+
+Explicitly _exclude_ one or more fields in the comparison. If this option is used, <Metadata prop="executable"/> will consider the [defaults](#defaults-of-diff), then further exclude the specified fields.
+
+This option can be used multiple times.
+
+##### Example: Exclude a Single Field
+
+To exclude field `header` (and its nested fields) when comparing `report-A.json` and `report-B.json` (but otherwise use [the defaults](#defaults-of-diff)):
+
+```bash
+rtk diff --excludeProp header report-A.json report-B.json
+```
+
+##### Example: Exclude Multiple Fields
+
+To exclude fields `header.commandLine` (and its items) and `header.cwd` when comparing `report-A.json` and `report-B.json` (but otherwise use [the defaults](#defaults-of-diff)):
+
+```bash
+rtk diff -x header.commandLine -x header.cwd report-A.json report-B.json
+```
+
+#### `--all`
+
+By default, <Metadata prop="executable"/> [excludes certain properties](#defaults-of-diff) to reduce noise. Use `--all` if you would like to include the _entire_ Diagnostic Report when comparing.
+
+`--all` cannot be used with `--includeProp/-i` or `--excludeProp/-x`.
+
+##### Example: Compare All Fields
+
+To compare the entirety of `report-A.json` and `report-B.json`:
+
+```bash
+rtk diff --all report-A.json report-B.json
+```
+
+---
+
+#### Controlling the Output of `diff`
+
+<p>
+  This section describes options for controlling{' '}
+  <InlineCode>
+    <Metadata prop="executable" /> diff
+  </InlineCode>
+  's output.
+</p>
+
+While the [section on filtering](#filtering-with-diff) shows how to choose what goes "in" to the comparison, this section shows how to choose what comes "out"--and where it goes.
+
+#### `--color` / `--no-color`
+
+Color output is enabled [by default](#defaults-of-diff) when a TTY is available. If there is no TTY (like in a subprocess, or when piped), specify `--color` to force color.
+
+<InlineNotification kind="warning">
+
+Some transformations do not support color output (e.g., `csv`), and `--color` will be ignored. In <Metadata prop="executable"/>, color is intended for human-readable output.
+
+</InlineNotification>
+
+##### Example: Force Color Output
+
+To **force color** output when comparing `report-A.json` and `report-B.json`:
+
+```bash
+rtk diff --color report-A.json report-B.json
+```
+
+##### Example: Disable Color Output
+
+To **disable color** output when comparing `report-A.json` and `report-B.json`:
+
+```bash
+rtk diff --no-color report-A.json report-B.json
+```
+
+#### `--show-secrets-unsafe`
+
+This will disable automatic redaction of secrets from the `environmentVariables` field.
+
+<InlineNotification kind="error">
+
+The `--show-secrets-unsafe` option is--as you may have guessed--_unsafe_. Don't use it.
+
+</InlineNotification>
+
+##### Example: Disable Redacting of Secrets
+
+To **dangerously inhibit redaction of environment variables** when comparing `report-A.json` and `report-B.json`:
+
+```bash
+rtk diff --show-secrets-unsafe report-A.json report-B.json
+```
+
+#### `--transform <transformer>, -t <transformer>`
+
+Transforms `diff` output into various formats.
+
+This option can be repeated, creating a _transformer chain_. This works when the output of a transformer is valid input for a subsequent transformer. Note that each transformer can only be used _once_.
+
+Allowed values of `transformer`:
+
+<dl className={mono}>
+  <dt>csv</dt>
+  <dd>CSV output; nested fields are expanded, so each field has its own column</dd>
+  <dt>filter</dt>
+  <dd>
+
+Output a set of fields (see [`filter` transformer options]() for more information)
+
+  </dd>
+  <dt>json</dt>
+  <dd>
+
+Output in JSON format (see [`json` transformer options]() for more information)
+
+  </dd>
+  <dt>newline</dt>
+  <dd>
+
+Output in newline-delimited JSON format (otherwise known as `ndjson`); useful for streaming
+
+</dd>
+  <dt>table</dt>
+  <dd>Output in colorful, human-readable tabular format <em>(default behavior)</em></dd>
+</dl>
+
+##### Example: Output Diff of `report-A.json` and `report-B.json` as CSV
+
+```bash
+rtk diff -t csv report-A.json report-B.json
+```
+
+##### Example: Output Diff of `report-A.json` and `report-B.json` as CSV, Containing Only Fields Which Differ
+
+```bash
+rtk diff -t filter --include field -t csv report-A.json \
+report-B.json
+```
+
+##### Example: Output Diff of `report-A.json` and `report-B.json` as JSON
+
+```bash
+rtk diff -t json report-A.json report-B.json
+```
+
+##### Example: Output Diff of `report-A.json` and `report-B.json` as Pretty-Printed JSON
+
+```bash
+rtk diff -t json --pretty report-A.json report-B.json
+```
+
+##### Example: Output Diff of `report-A.json` and `report-B.json` as Newline-Delimited JSON
+
+```bash
+rtk diff -t newline --pretty report-A.json report-B.json
+```
+
+##### Example: Output Diff of `report-A.json` and `report-B.json` as
