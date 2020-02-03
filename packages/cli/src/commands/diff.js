@@ -93,7 +93,7 @@ export const handler = argv => {
       table: {
         outputHeader: `Diff: ${file1} <=> ${file2}`,
         maxWidth: terminalColumns,
-        colWidths: [4],
+        colWidths: [5],
         fields: [
           {
             color: ({op}) => OP_COLORS.get(op),
