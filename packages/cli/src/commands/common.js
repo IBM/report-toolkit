@@ -155,6 +155,16 @@ export const mergeCommandConfig = (
     commandName,
     _.mergeAll([
       _.defaultsDeep(defaultConfig, _.getOr({}, commandName, defaultConfig)),
+      {
+        transformer: _.mapValues(
+          transformerConfig =>
+            _.defaultsDeep(
+              transformerConfig,
+              _.omit(['$0', 'config', '_'], argv)
+            ),
+          _.getOr({}, 'transformer', defaultConfig)
+        )
+      },
       _.defaultsDeep(
         _.getOr({}, 'config', argv),
         _.getOr({}, `config.${commandName}`, argv)
@@ -162,6 +172,11 @@ export const mergeCommandConfig = (
       _.omit(['$0', 'config', '_'], argv)
     ])
   );
+  // @ts-ignore
+  if (_.isEmpty(config.transformer)) {
+    // @ts-ignore
+    delete config.transformer;
+  }
   createDebugger(
     'cli',
     'commands',

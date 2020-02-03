@@ -39,6 +39,7 @@ import keys from 'lodash/fp/keys.js';
 import lowerCase from 'lodash/fp/lowerCase.js';
 import map from 'lodash/fp/map.js';
 import mapKeys from 'lodash/fp/mapKeys.js';
+import mapValues from 'lodash/fp/mapValues.js';
 import memoize from 'lodash/fp/memoize.js';
 import merge from 'lodash/fp/merge.js';
 import mergeAll from 'lodash/fp/mergeAll.js';
@@ -130,6 +131,7 @@ export const _ = {
   lowerCase,
   map,
   mapKeys,
+  mapValues,
   memoize,
   merge,
   mergeAll,

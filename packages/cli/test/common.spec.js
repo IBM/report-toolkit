@@ -115,6 +115,37 @@ describe('@report-toolkit/cli:commands:common', function() {
           }
         );
       });
+
+      it('should prefer argv over transform-specific config', function() {
+        const argv = {
+          config: {
+            foo: 'baz',
+            commandName: {foo: 'butts'}
+          },
+          _: ['some', 'positional', 'args'],
+          'max-width': 72,
+          $0: 'report-toolkit',
+          foo: 'rubberduck'
+        };
+        const defaultConfig = {
+          foo: 'quux',
+          commandName: {foo: 'spam'},
+          transformer: {
+            foo: {
+              'max-width': 80
+            }
+          }
+        };
+        expect(
+          mergeCommandConfig('commandName', argv, defaultConfig),
+          'to equal',
+          {
+            foo: 'rubberduck',
+            transformer: {foo: {'max-width': 72, foo: 'rubberduck'}},
+            'max-width': 72
+          }
+        );
+      });
     });
   });
 });
