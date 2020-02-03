@@ -2,9 +2,9 @@
 
 > A toolkit for consumers of Node.js diagnostic Reports
 
-## Features
+![Build Status](https://github.com/IBM/report-toolkit/workflows/Build/badge.svg) [![Latest Version](https://img.shields.io/npm/v/report-toolkit)](https://npm.im/report-toolkit) [![Licensed Apache-2.0](https://img.shields.io/npm/l/report-toolkit)](https://github.com/IBM/report-toolkit/blob/master/LICENSE.md)
 
-### Main Features
+## Features
 
 - Run heuristics ("Rules") against diagnostic reports to uncover issues needing attention
   - Comes with a set of built-in Rules and a "recommended" configuration
@@ -18,7 +18,7 @@
 - A friendly, colorful command-line interface
 - Two public APIs: `Promise`-based and [`Observable`](https://rxjs.dev)-based
 
-### Not-Main Features (But Worth Mentioning)
+### Other Stuff Worth Mentioning
 
 - A choice of output formats:
   - Tabular, human-readable output
@@ -81,7 +81,8 @@ Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
 ## Contributing
 
-**report-toolkit** wants your ideas for new rules! Please [create an issue](https://github.com/IBM/report-toolkit/issues/new).
+- Please see the list of [issues labeled `help wanted`](https://github.com/IBM/report-toolkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+- **report-toolkit** wants your ideas for new rules! Please [create an issue](https://github.com/IBM/report-toolkit/issues/new).
 
 ## Roadmap
 
