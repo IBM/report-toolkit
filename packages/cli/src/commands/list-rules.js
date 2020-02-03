@@ -37,8 +37,7 @@ export const builder = yargs =>
   yargs.options({
     ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
     ...OPTIONS.JSON_TRANSFORM,
-    ...OPTIONS.TABLE_TRANSFORM,
-    ...OPTIONS.FILTER_TRANSFORM
+    ...OPTIONS.TABLE_TRANSFORM
   });
 
 /**

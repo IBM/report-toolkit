@@ -19,7 +19,7 @@ const debug = createDebugPipe('transformer', 'filter');
 export const meta = {
   description: 'Filters properties',
   id: 'filter',
-  input: ['report', 'object'],
+  input: ['report'],
   output: 'object'
 };
 
