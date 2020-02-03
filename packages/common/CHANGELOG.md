@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/ibm/report-toolkit/compare/v0.5.0...v0.5.1) (2020-02-03)
+
+### Bug Fixes
+
+- **cli:** ensure user-supplied args override default transformer config ([a3e3d6a](https://github.com/ibm/report-toolkit/commit/a3e3d6ab2a70729c42e9c3c84ac708a80937d034))
+
 # [0.5.0](https://github.com/ibm/report-toolkit/compare/v0.4.1...v0.5.0) (2020-01-31)
 
 **Note:** Version bump only for package @report-toolkit/common
