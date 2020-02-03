@@ -1,6 +1,8 @@
 name: Deploy Site on Release
 
-on: [release]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
