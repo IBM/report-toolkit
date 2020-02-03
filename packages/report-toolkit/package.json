@@ -17,7 +17,7 @@
     "@report-toolkit/transformers": "^0.5.1"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "files": [
     "dist",

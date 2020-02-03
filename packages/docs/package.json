@@ -15,7 +15,7 @@
     "remark-plain-text": "^0.2.0"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "keywords": [
     "convert",

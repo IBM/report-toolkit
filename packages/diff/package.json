@@ -9,7 +9,7 @@
     "rfc6902": "^3.0.2"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "files": [
     "dist",

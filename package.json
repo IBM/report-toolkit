@@ -132,7 +132,7 @@
     "unexpected-sinon": "^10.11.2"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "publishConfig": {
     "access": "public"
