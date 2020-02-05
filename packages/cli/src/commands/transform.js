@@ -2,7 +2,12 @@ import {_, createDebugger} from '@report-toolkit/common';
 import {observable} from '@report-toolkit/core';
 
 import {toOutput} from '../console-utils.js';
-import {fromFilepathsToReports, mergeCommandConfig, OPTIONS} from './common.js';
+import {
+  fromFilepathsToReports,
+  mergeCommandConfig,
+  OPTIONS,
+  getTransformerOptions
+} from './common.js';
 
 const {transform, fromTransformerChain} = observable;
 
@@ -23,7 +28,6 @@ export const command = 'transform <file..>';
 
 export const desc = 'Transform a report';
 
-// TODO: getOptions() should probably handle all of this merging
 export const builder = yargs =>
   yargs
     .positional('file', {
@@ -33,13 +37,10 @@ export const builder = yargs =>
     })
     .options({
       ...OPTIONS.OUTPUT,
-      transform: {
-        ...OPTIONS.OUTPUT.transform,
-        default: DEFAULT_TRANSFORMER
-      },
-      ...OPTIONS.JSON_TRANSFORM,
-      ...OPTIONS.FILTER_TRANSFORM,
-      ...OPTIONS.TABLE_TRANSFORM
+      ...getTransformerOptions({
+        sourceType: 'report',
+        defaultTransformer: DEFAULT_TRANSFORMER
+      })
     });
 
 export const handler = argv => {

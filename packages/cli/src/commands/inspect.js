@@ -6,7 +6,8 @@ import {
   fromFilepathsToReports,
   GROUPS,
   mergeCommandConfig,
-  OPTIONS
+  OPTIONS,
+  getTransformerOptions
 } from './common.js';
 
 const {ERROR, WARNING, INFO, DEFAULT_SEVERITY} = constants;
@@ -50,7 +51,7 @@ const SEVERITY_COLOR_MAP = _.toFrozenMap({
 
 export const command = 'inspect <file..>';
 
-export const desc = 'Inspect diagnostic report JSON against rules';
+export const desc = 'Inspect Diagnostic Report file(s) for problems';
 
 export const builder = yargs =>
   yargs
@@ -60,15 +61,13 @@ export const builder = yargs =>
     })
     .options({
       severity: {
-        choices: [INFO, WARNING, ERROR],
+        choices: [ERROR, WARNING, INFO],
         default: DEFAULT_SEVERITY,
         description: 'Minimum threshold for message severity',
         group: GROUPS.FILTER
       },
       ...OPTIONS.OUTPUT,
-      ...OPTIONS.TABLE_TRANSFORM,
-      ...OPTIONS.JSON_TRANSFORM,
-      ...OPTIONS.FILTER_TRANSFORM
+      ...getTransformerOptions({sourceType: 'object'})
     });
 
 export const handler = argv => {

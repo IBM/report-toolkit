@@ -2,7 +2,7 @@ import {_, observable} from '@report-toolkit/common';
 import {observable as observableAPI} from '@report-toolkit/core';
 
 import {toOutput} from '../console-utils.js';
-import {getOptions, mergeCommandConfig, OPTIONS} from './common.js';
+import {getTransformerOptions, mergeCommandConfig, OPTIONS} from './common.js';
 
 const {map, share} = observable;
 const {
@@ -35,9 +35,8 @@ export const desc = 'Lists built-in rules';
  */
 export const builder = yargs =>
   yargs.options({
-    ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
-    ...OPTIONS.JSON_TRANSFORM,
-    ...OPTIONS.TABLE_TRANSFORM
+    ..._.omit(['show-secrets-unsafe'], OPTIONS.OUTPUT),
+    ...getTransformerOptions({sourceType: 'object'})
   });
 
 /**

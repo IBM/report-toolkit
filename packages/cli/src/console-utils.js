@@ -20,6 +20,7 @@ export const fail = text => colors.red(error) + ' ' + colors.red().bold(text);
  * @param {string} [filepath] - If present, will write to file
  * @param {Object} [opts]
  * @param {boolean} [opts.color=true]
+ * @returns {import('rxjs').OperatorFunction<any,string>}
  */
 export const toOutput = (filepath, {color = true} = {}) => observable =>
   observable.pipe(

@@ -165,7 +165,13 @@ export const runTransformer = source => /**
     )
   );
 
-export const compatibleTransforms = sourceType =>
+/**
+ * Returns a list of transformers which can accept data of type `sourceType`
+ * @todo memoize
+ * @todo constants for source types
+ * @param {string} sourceType
+ */
+export const compatibleTransformers = sourceType =>
   _.keys(
     _.fromPairs(
       _.filter(

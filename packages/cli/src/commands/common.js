@@ -13,7 +13,7 @@ import {terminalColumns} from '../console-utils.js';
 const debug = createDebugPipe('cli', 'commands', 'common');
 
 const {
-  compatibleTransforms,
+  compatibleTransformers,
   builtinTransformerIds,
   toReportFromObject
 } = observableAPI;
@@ -75,17 +75,6 @@ export const OPTIONS = {
       description: 'Live dangerously & do not automatically redact secrets',
       group: GROUPS.OUTPUT,
       type: 'boolean'
-    },
-    transform: {
-      // @todo list transform aliases
-      alias: 't',
-      choices: builtinTransformerIds,
-      coerce: toUniqueArray,
-      default: constants.DEFAULT_TRANSFORMER,
-      description: 'Transform(s) to apply',
-      group: GROUPS.OUTPUT,
-      nargs: 1,
-      type: 'string'
     }
   },
   TABLE_TRANSFORM: {
@@ -102,26 +91,66 @@ export const OPTIONS = {
       group: GROUPS.TABLE_TRANSFORM,
       type: 'boolean'
     }
+  },
+  TRANSFORM: {
+    // @todo list transform aliases
+    alias: 't',
+    choices: builtinTransformerIds,
+    coerce: toUniqueArray,
+    default: constants.DEFAULT_TRANSFORMER,
+    description: 'Transform(s) to apply',
+    group: GROUPS.OUTPUT,
+    nargs: 1,
+    type: 'string'
   }
 };
 
-export const getOptions = (
-  group,
-  {
-    sourceType = 'report',
-    defaultTransformer = constants.DEFAULT_TRANSFORMER
-  } = {}
-) =>
-  group.transform
-    ? {
-        ...group,
+/**
+ * Yes, yes, I know.
+ * @typedef {Object} GetTransformerOptionsOptions
+ * @property {'report'|'object'} sourceType - Whether the transformer source is a report or an object
+ * @property {string} defaultTransformer - Name of default transformer
+ * @property {object} extra - Merge these into the result; use this to override specific values (e.g., default behavior of a transformer)
+ * @property {string[]} omit - List of transformers to explicitly omit, if any
+ */
+
+/**
+ * Get all transformer options for a command
+ * @param {Partial<GetTransformerOptionsOptions>} opts - Options
+ */
+export const getTransformerOptions = ({
+  sourceType = 'report',
+  defaultTransformer = constants.DEFAULT_TRANSFORMER,
+  omit = [],
+  extra = {}
+} = {}) => {
+  const transformerNames = _.filter(
+    transformerName => !omit.includes(transformerName),
+    compatibleTransformers(sourceType)
+  );
+
+  return _.defaultsDeep(
+    _.reduce(
+      (acc, transformName) => {
+        const transformSpecificOptions =
+          OPTIONS[`${transformName.toUpperCase()}_TRANSFORM`];
+        if (transformSpecificOptions) {
+          acc = {...acc, ...transformSpecificOptions};
+        }
+        return acc;
+      },
+      {
         transform: {
-          ...group.transform,
-          choices: compatibleTransforms(sourceType),
+          ...OPTIONS.TRANSFORM,
+          choices: transformerNames,
           default: defaultTransformer
         }
-      }
-    : group;
+      },
+      transformerNames
+    ),
+    extra
+  );
+};
 
 /**
  *

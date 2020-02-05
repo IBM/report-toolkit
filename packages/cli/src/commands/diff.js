@@ -4,7 +4,7 @@ import {observable as observableAPI} from '@report-toolkit/core';
 import {terminalColumns, toOutput} from '../console-utils.js';
 import {
   fromFilepathsToReports,
-  getOptions,
+  getTransformerOptions,
   GROUPS,
   mergeCommandConfig,
   OPTIONS
@@ -64,9 +64,8 @@ export const builder = yargs =>
       type: 'boolean',
       conflicts: ['i', 'x']
     },
-    ...getOptions(OPTIONS.OUTPUT, {sourceType: 'object'}),
-    ...OPTIONS.JSON_TRANSFORM,
-    ...OPTIONS.TABLE_TRANSFORM
+    ...OPTIONS.OUTPUT,
+    ...getTransformerOptions({sourceType: 'object'})
   });
 
 /**

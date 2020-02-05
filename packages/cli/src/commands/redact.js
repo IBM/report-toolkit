@@ -6,7 +6,8 @@ import {
   fromFilepathsToReports,
   GROUPS,
   mergeCommandConfig,
-  OPTIONS
+  OPTIONS,
+  getTransformerOptions
 } from './common.js';
 const {transform, fromTransformerChain} = api;
 const {of, iif, concatMap} = observable;
@@ -23,23 +24,22 @@ export const builder = yargs =>
       coerce: _.castArray
     })
     .options({
-      ..._.omit(['output', 'show-secrets-unsafe'], OPTIONS.OUTPUT),
-      transform: {
-        ...OPTIONS.OUTPUT.transform,
-        default: DEFAULT_TRANSFORMER
-      },
-      ...OPTIONS.TABLE_TRANSFORM,
-      ...OPTIONS.JSON_TRANSFORM,
-      pretty: {
-        ...OPTIONS.JSON_TRANSFORM.pretty,
-        default: true
-      },
-      ...OPTIONS.FILTER_TRANSFORM,
       replace: {
         description: 'Replace file(s) in-place',
         type: 'boolean',
         group: GROUPS.OUTPUT
-      }
+      },
+      ..._.omit(['output', 'show-secrets-unsafe'], OPTIONS.OUTPUT),
+      ...getTransformerOptions({
+        sourceType: 'report',
+        defaultTransformer: DEFAULT_TRANSFORMER,
+        omit: ['redact'],
+        extra: {
+          pretty: {
+            default: true
+          }
+        }
+      })
     });
 
 export const handler = argv => {

@@ -11,7 +11,7 @@ import {diff as diffReports} from '@report-toolkit/diff';
 import * as inspector from '@report-toolkit/inspector';
 import {
   builtinTransformerIds,
-  compatibleTransforms,
+  compatibleTransformers,
   runTransformer,
   toTransformer,
   validateTransformerChain
@@ -355,7 +355,7 @@ export function transform(source, opts = {}) {
     );
 }
 
-export {compatibleTransforms, builtinTransformerIds};
+export {compatibleTransformers, builtinTransformerIds};
 
 /**
  * Creates a target `Observable` of {@link @report-toolkit/common.report.Report|Report} objects from a source `Observable` of plain objects (usually parsed from a JSON report).

@@ -6,7 +6,7 @@ const {fromAny, of, toArray} = obs;
 
 export {
   registeredRuleDefinitions,
-  compatibleTransforms,
+  compatibleTransformers,
   builtinTransformerIds,
   isPluginRegistered,
   deregisterPlugins
