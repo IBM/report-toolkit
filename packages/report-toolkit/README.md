@@ -29,23 +29,29 @@
 
 ## Installation & Usage
 
+:rotating_light: **WARNING!** :rotating_light:
+
+As per [semantic versioning](https://semver.org), `report-toolkit` should be considered _experimental_ until it reaches v1.0.0. Until then, the command-line options, programmatic API or output could change _at any time._
+
+`report-toolkit` is unlikely to reach v1.0.0 until Diagnostic Reports become a stable Node.js API.
+
 ### For CLI Usage
 
 ```shell
-$ npx report-toolkit --help
+npx report-toolkit --help
 ```
 
 or install globally:
 
 ```shell
-$ npm install -g report-toolkit
-$ report-toolkit --help
+npm install -g report-toolkit && \
+report-toolkit --help
 ```
 
 ### For Usage as a Library
 
 ```shell
-$ npm install report-toolkit
+npm install report-toolkit
 ```
 
 and:
@@ -71,7 +77,7 @@ async function main() {
 main();
 ```
 
-## About diagnostic Reports
+## About Diagnostic Reports
 
 Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
