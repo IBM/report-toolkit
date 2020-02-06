@@ -6,8 +6,7 @@ import {
   fromFilepathsToReports,
   GROUPS,
   mergeCommandConfig,
-  OPTIONS,
-  getTransformerOptions
+  OPTIONS
 } from './common.js';
 const {transform, fromTransformerChain} = api;
 const {of, iif, concatMap} = observable;
@@ -16,7 +15,7 @@ const DEFAULT_TRANSFORMER = 'json';
 
 export const command = 'redact <file..>';
 
-export const desc = 'Redact secrets from report file(s)';
+export const desc = 'Redact secrets from report file(s) and output JSON';
 
 export const builder = yargs =>
   yargs
@@ -30,16 +29,7 @@ export const builder = yargs =>
         group: GROUPS.OUTPUT
       },
       ..._.omit(['output', 'show-secrets-unsafe'], OPTIONS.OUTPUT),
-      ...getTransformerOptions({
-        sourceType: 'report',
-        defaultTransformer: DEFAULT_TRANSFORMER,
-        omit: ['redact'],
-        extra: {
-          pretty: {
-            default: true
-          }
-        }
-      })
+      ..._.defaultsDeep(OPTIONS.JSON_TRANSFORM, {pretty: {default: true}})
     });
 
 export const handler = argv => {
