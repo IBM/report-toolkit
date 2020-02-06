@@ -28,8 +28,18 @@ const main = () => {
       (parser, command) => parser.command(command),
       yargs()
         .scriptName(SHORT_NAMESPACE)
-        .demandCommand()
+        .demandCommand(
+          1,
+          1,
+          'A command is required! See list above.',
+          'Use only one command, please!'
+        )
         .options({
+          color: {
+            default: true,
+            desc: 'Use color output if possible',
+            type: 'boolean'
+          },
           debug: {
             alias: ['verbose'],
             desc: 'Enable debug output',

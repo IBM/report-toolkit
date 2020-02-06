@@ -10,7 +10,7 @@ describe('@report-toolkit/cli', function() {
 
     it('should complain about non-option arguments', function() {
       return expect(run(), 'to be rejected with error satisfying', {
-        stderr: /Not enough non-option arguments: got 0, need at least 1/
+        stderr: /A command is required/
       });
     });
   });

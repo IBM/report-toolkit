@@ -57,12 +57,6 @@ export const OPTIONS = {
     }
   },
   OUTPUT: {
-    color: {
-      default: true,
-      description: 'Use color output where applicable',
-      group: GROUPS.OUTPUT,
-      type: 'boolean'
-    },
     output: {
       alias: 'o',
       description: 'Output to file instead of STDOUT',
