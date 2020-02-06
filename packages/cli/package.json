@@ -13,7 +13,7 @@
     "cli-table3": "^0.5.1",
     "log-symbols": "^3.0.0",
     "strip-ansi": "^6.0.0",
-    "term-size": "^2.1.1",
+    "term-size": "^2.2.0",
     "wrap-ansi": "^6.2.0",
     "yargs": "^15.1.0"
   },
