@@ -3,6 +3,10 @@
   pages:
     - path: '/quick-start'
       title: 'Quick Start'
+- title: 'Command-Line Usage'
+  pages:
+    - path: '/cli'
+      title: 'Command-Line Usage'
 - title: 'API Docs'
   pages:
     - path: '/api'

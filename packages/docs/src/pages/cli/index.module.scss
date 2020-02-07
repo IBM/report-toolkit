@@ -1,0 +1,40 @@
+$code-font-family: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono',
+'Bitstream Vera Sans Mono', Courier, monospace;
+
+.doDontCode p[class*='DoDontRow-module--text'] {
+  font-family: $code-font-family;
+  padding-top: $spacing-09;
+  padding-bottom: $spacing-09;
+  font-size: 1rem;
+}
+
+ul[class*='Markdown-module--list'] {
+  margin-top: $spacing-06;
+
+  // nested lists
+  ul[class*='Markdown-module--list'] {
+    margin-top: 0;
+  }
+}
+
+h4[class*='Markdown-module--h4'] {
+  margin-bottom: $spacing-05;
+}
+
+h5[class*='Markdown-module--h5'] {
+  margin-top: $spacing-07;
+}
+
+dl.mono {
+  dt {
+    font-family: $code-font-family;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: $spacing-04;
+  }
+
+  dd {
+    margin-left: $spacing-04;
+    margin-bottom: $spacing-06;
+  }
+}
