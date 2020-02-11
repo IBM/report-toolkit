@@ -25,7 +25,7 @@
   - JSON
   - CSV
 - Handles one or more report files
-- Written using ES modules to faciliate bundling as library for the web
+- Written using ES modules to facilitate bundling as library for the web
 
 ## Installation & Usage
 
@@ -62,7 +62,7 @@ const {inspect} = require('report-toolkit');
 
 async function main() {
   const report = JSON.parse(process.report.getReport());
-  // configuration automatically loaded from `.report-toolkitrc.js` in CWD
+  // configuration automatically loaded from `.rtkrc.js` in CWD
   const results = await inspect(report);
   if (results.length) {
     results.forEach(result => {
