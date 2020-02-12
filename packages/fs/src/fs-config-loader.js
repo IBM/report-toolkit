@@ -10,7 +10,6 @@ import {RC_NAMESPACE} from './constants.js';
 const {RTKERR_MISSING_CONFIG} = error;
 const {
   map,
-  mapTo,
   mergeMap,
   filter,
   concatMap,
@@ -110,7 +109,6 @@ export const fromFilesystemToConfig = ({
           `No config file found at ${rawConfigOrFilepath}`
         )
       )
-    ),
-    pipeIf(_.isEmpty, mapTo({}))
+    )
   );
 };

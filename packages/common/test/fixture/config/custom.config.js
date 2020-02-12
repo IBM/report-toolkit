@@ -1,5 +1,5 @@
 exports.config = [
-  'report-toolkit:recommended',
+  'rtk:recommended',
   {
     name: 'CUSTOM',
     rules: {

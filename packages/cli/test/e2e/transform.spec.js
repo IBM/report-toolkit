@@ -40,7 +40,7 @@ describe('@report-toolkit/cli:command:transform', function() {
     it('should succeed', function() {
       return expect(
         // filters contrived, as -i header.release.name would work
-        runAsJSON(
+        runAsJSON([
           'transform',
           REPORT_005_FILEPATH,
           '-t',
@@ -51,7 +51,7 @@ describe('@report-toolkit/cli:command:transform', function() {
           'header.release.headersUrl',
           '-x',
           'header.release.sourceUrl'
-        ),
+        ]),
         'to be fulfilled with',
         {
           header: {

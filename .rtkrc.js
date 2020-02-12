@@ -1,5 +1,5 @@
 exports.config = [
-  'report-toolkit:recommended',
+  'rtk:recommended',
   {
     rules: {
       'long-timeout': ['on', {timeout: 5000}]

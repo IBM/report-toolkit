@@ -6,7 +6,11 @@ import {
   isReport,
   observable
 } from '@report-toolkit/common';
-import {parseConfig} from '@report-toolkit/config';
+import {
+  parseConfig,
+  BUILTIN_CONFIGS,
+  RECOMMENDED_CONFIG_NAME
+} from '@report-toolkit/config';
 import {diff as diffReports} from '@report-toolkit/diff';
 import * as inspector from '@report-toolkit/inspector';
 import {
@@ -20,6 +24,7 @@ import resolveFrom from 'resolve-from';
 
 const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
 const {
+  defaultIfEmpty,
   concat,
   defer,
   filter,
@@ -126,7 +131,7 @@ function toRuleConfig(config = {}) {
     ruleDefs.pipe(
       pipeIf(
         !ruleIdsCount,
-        debug(() => 'whitelisting rules by default')
+        debug(() => 'enabling all rules by default')
       ),
       pipeIf(
         ruleIdsCount,
@@ -277,15 +282,19 @@ export function inspect(reports, opts = {}) {
  */
 export function loadConfig(config) {
   return fromAny(config).pipe(
+    defaultIfEmpty(BUILTIN_CONFIGS.get(RECOMMENDED_CONFIG_NAME)),
+    debug(config => ['received raw config %O', config]),
     parseConfig(),
     pipeIf(
       /**
        @param {object} config
        */
       config => _.isEmpty(config.plugins),
+      debug(() => 'no plugins specified; using default set'),
       map(config => ({...config, plugins: BUILTIN_PLUGINS}))
     ),
-    mergeMap(config => from(config.plugins).pipe(mergeMap(use), mapTo(config)))
+    mergeMap(config => from(config.plugins).pipe(mergeMap(use), mapTo(config))),
+    debug(config => ['final rtk config: %O', config])
   );
 }
 
