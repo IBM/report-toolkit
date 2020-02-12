@@ -5,7 +5,9 @@
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "@report-toolkit/common": "^0.5.1",
-    "cosmiconfig": "^5.2.1"
+    "cosmiconfig": "^5.2.1",
+    "global-dirs": "^2.0.1",
+    "xdg-basedir": "^4.0.0"
   },
   "engines": {
     "node": ">=10"

@@ -10,6 +10,15 @@ const defaultConfig = [
   }
 ];
 
+const etcConfig = [
+  'report-toolkit:recommended',
+  {
+    rules: {
+      'long-timeout': ['on', {timeout: 1000}]
+    }
+  }
+];
+
 describe('@report-toolkit/fs:fs-config-loader', function() {
   let sandbox;
 
@@ -27,15 +36,17 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
         let subject;
 
         beforeEach(function() {
+          const searchStub = sandbox.stub();
+          searchStub
+            .withArgs(process.cwd())
+            .resolves({config: {config: defaultConfig}});
+          searchStub
+            .withArgs(join(__dirname, 'fixture', 'config'))
+            .resolves({config: {config: customConfig}});
+          searchStub.withArgs('/etc').resolves({config: {config: etcConfig}});
           subject = proxyquire(require.resolve('../src/fs-config-loader.js'), {
             cosmiconfig: () => ({
-              search: sandbox
-                .stub()
-                .callsFake(searchPath =>
-                  searchPath === process.cwd()
-                    ? Promise.resolve({config: {config: defaultConfig}})
-                    : Promise.resolve({config: {config: customConfig}})
-                )
+              search: searchStub
             })
           }).fromFilesystemToConfig;
         });
@@ -47,6 +58,30 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
               'to complete with value',
               defaultConfig
             ).and('to emit once');
+          });
+
+          describe('when not found at default directory', function() {
+            beforeEach(function() {
+              const searchStub = sandbox.stub();
+              searchStub.resolves();
+              searchStub
+                .withArgs('/etc')
+                .resolves({config: {config: etcConfig}});
+              subject = proxyquire(
+                require.resolve('../src/fs-config-loader.js'),
+                {
+                  cosmiconfig: () => ({
+                    search: searchStub
+                  })
+                }
+              ).fromFilesystemToConfig;
+            });
+
+            it('should try other directories', function() {
+              return expect(subject(), 'to complete with value', etcConfig).and(
+                'to emit once'
+              );
+            });
           });
         });
 
