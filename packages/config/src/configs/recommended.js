@@ -1,5 +1,5 @@
 export const config = {
-  name: 'recommended',
+  name: 'rtk:recommended',
   rules: {
     'cpu-usage': 'on',
     'library-mismatch': 'on',

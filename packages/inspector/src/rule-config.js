@@ -19,7 +19,9 @@ export class RuleConfig {
       rawConfig = {};
     }
 
-    debug(`found raw config %O`, rawConfig);
+    if (!_.isEmpty(rawConfig)) {
+      debug('found raw config %O', rawConfig);
+    }
 
     this.config = this.validate(rawConfig);
   }

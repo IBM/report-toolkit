@@ -2,7 +2,7 @@ import customConfig from '@report-toolkit/common/test/fixture/config/custom.conf
 import {join} from 'path';
 
 const defaultConfig = [
-  'report-toolkit:recommended',
+  'rtk:recommended',
   {
     rules: {
       'long-timeout': ['on', {timeout: 5000}]
@@ -11,7 +11,7 @@ const defaultConfig = [
 ];
 
 const etcConfig = [
-  'report-toolkit:recommended',
+  'rtk:recommended',
   {
     rules: {
       'long-timeout': ['on', {timeout: 1000}]

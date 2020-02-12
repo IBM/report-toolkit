@@ -1,6 +1,5 @@
 import {
   _,
-  constants,
   createDebugger,
   error,
   observable,
@@ -9,7 +8,6 @@ import {
 
 import {config as recommended} from './configs/recommended.js';
 
-const {NAMESPACE} = constants;
 const {map} = observable;
 const {kFlattenedConfig} = symbols;
 const debug = createDebugger('config');
@@ -36,7 +34,10 @@ const normalizeBooleans = obj =>
     }
   });
 
-const pushToConfigList = list => value =>
+/**
+ * @param {object[]} list
+ */
+const pushToConfigList = list => /** @param {object} value */ value =>
   list.push(normalizeBooleans(_.omit('name', value)));
 
 /**
@@ -96,9 +97,11 @@ const flattenConfig = (config, configObjects = []) => {
   return retval;
 };
 
+export const RECOMMENDED_CONFIG_NAME = recommended.name;
+
 // XXX: move this
 export const BUILTIN_CONFIGS = new Map([
-  [`${NAMESPACE}:${recommended.name}`, recommended]
+  [RECOMMENDED_CONFIG_NAME, recommended]
 ]);
 
 export const filterEnabledRules = _.pipe(

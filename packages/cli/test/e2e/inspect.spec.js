@@ -1,7 +1,6 @@
-import {_} from '@report-toolkit/common';
 import {tmpdir} from 'os';
 
-import {run, runWithOptions} from './cli-helper.js';
+import {run, runAsJSON} from './cli-helper.js';
 
 const REPORT_002_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
@@ -19,9 +18,9 @@ describe('@report-toolkit/cli:command:inspect', function() {
   describe('when it cannot find a config file', function() {
     it('should enable all rules', function() {
       return expect(
-        runWithOptions(['inspect', REPORT_002_FILEPATH, '-t', 'json'], {
+        runAsJSON(['inspect', REPORT_002_FILEPATH], {
           cwd: tmpdir()
-        }).catch(_.pipe(_.get('stdout'), JSON.parse)),
+        }),
         'when fulfilled',
         'to have items satisfying',
         {
