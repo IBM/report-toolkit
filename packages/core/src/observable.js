@@ -9,7 +9,7 @@ import {
 import {
   parseConfig,
   BUILTIN_CONFIGS,
-  RECOMMENDED_CONFIG_NAME
+  RECOMMENDED_CONFIG_ALIAS
 } from '@report-toolkit/config';
 import {diff as diffReports} from '@report-toolkit/diff';
 import * as inspector from '@report-toolkit/inspector';
@@ -282,7 +282,7 @@ export function inspect(reports, opts = {}) {
  */
 export function loadConfig(config) {
   return fromAny(config).pipe(
-    defaultIfEmpty(BUILTIN_CONFIGS.get(RECOMMENDED_CONFIG_NAME)),
+    defaultIfEmpty(BUILTIN_CONFIGS.get(RECOMMENDED_CONFIG_ALIAS)),
     debug(config => ['received raw config %O', config]),
     parseConfig(),
     pipeIf(
