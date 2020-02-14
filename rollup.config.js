@@ -30,7 +30,10 @@ const makeConfigs = pkgpath => {
         preferBuiltins: true
       }),
       commonjs({
-        include: /node_modules/
+        include: [
+          /node_modules/,
+          /packages\/config\/src\/configs\/recommended\.js/
+        ]
       }),
       json(),
       babel({

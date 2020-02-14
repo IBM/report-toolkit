@@ -6,7 +6,8 @@ import {
   symbols
 } from '@report-toolkit/common';
 
-import {config as recommended} from './configs/recommended.js';
+import recommendedConfig from './configs/recommended.js';
+const recommended = recommendedConfig.config;
 
 const {map} = observable;
 const {kFlattenedConfig} = symbols;
@@ -23,6 +24,9 @@ const DEFAULT_CONFIG_SHAPE = {
   plugins: []
 };
 
+/**
+ * @param {Pick<any, string | number | symbol>} obj
+ */
 const normalizeBooleans = obj =>
   _.traverse(obj).map(function(value) {
     if (_.isString(value)) {
@@ -57,6 +61,9 @@ const flattenConfig = (config, configObjects = []) => {
   }
 
   const push = pushToConfigList(configObjects);
+  /**
+   * @param {string | object} value
+   */
   const flatten = value => {
     if (_.isString(value)) {
       if (BUILTIN_CONFIGS.has(value)) {
@@ -97,11 +104,11 @@ const flattenConfig = (config, configObjects = []) => {
   return retval;
 };
 
-export const RECOMMENDED_CONFIG_NAME = recommended.name;
+export const RECOMMENDED_CONFIG_ALIAS = recommendedConfig.alias;
 
 // XXX: move this
 export const BUILTIN_CONFIGS = new Map([
-  [RECOMMENDED_CONFIG_NAME, recommended]
+  [RECOMMENDED_CONFIG_ALIAS, recommended]
 ]);
 
 export const filterEnabledRules = _.pipe(
