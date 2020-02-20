@@ -42,6 +42,9 @@ const debug = createDebugger('inspector', 'rule');
  */
 const validatorMap = new WeakMap();
 
+/**
+ * @type {import('ajv').Ajv}
+ */
 let ajv;
 
 /**
@@ -86,6 +89,7 @@ export class Rule {
         `Definition for rule "${ruleDef.id}" must export an "inspect" function`
       );
     }
+
     Object.assign(this, {
       [kRuleId]: ruleDef.id,
       [kRuleInspect]: ruleDef.inspect,
@@ -93,7 +97,11 @@ export class Rule {
     });
   }
 
+  /**
+   * @type {string}
+   */
   get id() {
+    // @ts-ignore
     return this[kRuleId];
   }
 
@@ -109,7 +117,12 @@ export class Rule {
     return _.get('schema', this.meta);
   }
 
+  /**
+   * @type {object}
+   * @todo update with schema for 'meta' prop
+   */
   get meta() {
+    // @ts-ignore
     return this[kRuleMeta];
   }
 
@@ -142,21 +155,24 @@ export class Rule {
       );
     }
 
-    validatorMap.set(this, config => {
-      debug(`validating ${this.id} with config`, config);
-      validate(config);
-      if (validate.errors) {
-        const errors = ajv.errorsText(validate.errors, {
-          dataVar: 'config'
-        });
-        throw RTkError.create(
-          RTKERR_INVALID_RULE_CONFIG,
-          `Invalid configuration for rule "${this.id}": ${errors}`,
-          {url: this.url}
-        );
+    validatorMap.set(
+      this,
+      /** @param {object} config */ config => {
+        debug(`validating ${this.id} with config`, config);
+        validate(config);
+        if (validate.errors) {
+          const errors = ajv.errorsText(validate.errors, {
+            dataVar: 'config'
+          });
+          throw RTkError.create(
+            RTKERR_INVALID_RULE_CONFIG,
+            `Invalid configuration for rule "${this.id}": ${errors}`,
+            {url: this.url}
+          );
+        }
+        return config;
       }
-      return config;
-    });
+    );
 
     return validatorMap.get(this);
   }
@@ -169,6 +185,7 @@ export class Rule {
    * @returns {Promise<Object|Function>}
    */
   async handlers(config = {}) {
+    // @ts-ignore
     return this[kRuleInspect].call(null, config);
   }
 
@@ -203,7 +220,10 @@ export class Rule {
     return from(this.handlers(config)).pipe(
       Rule.normalizeHandler(),
       mergeMap(handler => {
-        // smite Zalgo by normalizing the return values to Promises
+        /**
+         * smite Zalgo by normalizing the return values to Promises
+         * @param {import('@report-toolkit/common/src/report').Report} report
+         */
         const next = async report => handler.next(report);
         const complete = async () => handler.complete();
 
@@ -217,6 +237,7 @@ export class Rule {
         // ultimately, if the count of non-error-throwing filepaths is equal to
         // one (1), we only have a single report file ("aggregated" or not),
         // and can then cross-reference it when providing output to the user.
+        /** @type {string[]} */
         const nonThrowingReportFilepaths = [];
         const id = this.id;
         return concat(
@@ -303,6 +324,10 @@ export class Rule {
     return new Rule(ruleDefinition);
   }
 
+  /**
+   * Given a {@link Config}, get associated rule config and create a `RuleConfig`.
+   * @param {import('@report-toolkit/common/src/config').Config} config
+   */
   toRuleConfig(config) {
     return createRuleConfig(_.get(this.id, _.get('rules', config)), this);
   }
