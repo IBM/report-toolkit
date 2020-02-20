@@ -4,5 +4,11 @@
     "jsx": "react",
     "checkJs": true,
     "noImplicitAny": true
-  }
+  },
+  "exclude": [
+    "**/node_modules/**/*",
+    "**/dist/**/*",
+    "**/coverage",
+    "**/.history/**/*"
+  ]
 }
