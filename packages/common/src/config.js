@@ -43,9 +43,15 @@ const flattenConfig = (config, configObjects = []) => {
   /**
    * This dumb recursive function flattens a config.
    * @todo rewrite this as a loop.
+   * @todo deeper object validation; use AJV probably
    * @param {ConfigListItem} value
    */
   const flatten = value => {
+    if (_.has(kFlattenedConfig, value)) {
+      debug('Config already processed');
+      return configObjects.push(value);
+    }
+
     if (_.isString(value) && BUILTIN_CONFIGS.has(value)) {
       const builtin = BUILTIN_CONFIGS.get(value);
       if (_.isArray(builtin) || _.isString(builtin)) {
@@ -59,7 +65,7 @@ const flattenConfig = (config, configObjects = []) => {
         RTKERR_UNKNOWN_BUILTIN_CONFIG,
         `Unknown builtin config: "${value}".`
       );
-    } else if (_.isObject(value)) {
+    } else if (!Array.isArray(value) && _.isObject(value)) {
       if (_.has('config', value)) {
         configObjects.push(
           flattenConfig(
@@ -68,6 +74,17 @@ const flattenConfig = (config, configObjects = []) => {
           )
         );
       } else {
+        _.pipe(
+          _.keys,
+          _.forEach(k => {
+            if (!_.has(k, DEFAULT_CONFIG_SHAPE)) {
+              throw RTkError.create(
+                RTKERR_INVALID_CONFIG,
+                `Invalid config key found: "${k}"`
+              );
+            }
+          })
+        )(value);
         configObjects.push(value);
       }
     } else {
@@ -133,11 +150,10 @@ export function filterEnabledRules(config) {
  * @returns {Config} The "final" config
  */
 export function normalizeFlattenedConfig(config) {
-  return _.defaultsDeepAll([
-    DEFAULT_CONFIG_SHAPE,
-    config,
-    {[kFlattenedConfig]: true}
-  ]);
+  return /** @type {Config} */ ({
+    ..._.merge(DEFAULT_CONFIG_SHAPE, config),
+    [kFlattenedConfig]: true
+  });
 }
 
 /**
@@ -145,7 +161,7 @@ export function normalizeFlattenedConfig(config) {
  * flattened {@link Config} object.  Config object will have a
  * `kFlattenedConfig` `Symbol` property set to `true`.
  * @todo Eliminate extra empty properties
- * @returns {import('rxjs').OperatorFunction<ExportedConfig, Config>}
+ * @returns {import('rxjs').OperatorFunction<ExportedConfig|ConfigListItem, Config>}
  */
 export function parseConfig() {
   return observable =>
