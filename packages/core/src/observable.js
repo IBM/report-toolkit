@@ -4,13 +4,9 @@ import {
   createDebugPipe,
   error,
   isReport,
-  observable
+  observable,
+  config
 } from '@report-toolkit/common';
-import {
-  parseConfig,
-  BUILTIN_CONFIGS,
-  RECOMMENDED_CONFIG_ALIAS
-} from '@report-toolkit/config';
 import {diff as diffReports} from '@report-toolkit/diff';
 import * as inspector from '@report-toolkit/inspector';
 import {
@@ -22,6 +18,7 @@ import {
 } from '@report-toolkit/transformers';
 import resolveFrom from 'resolve-from';
 
+const {parseConfig, BUILTIN_CONFIGS, RECOMMENDED_CONFIG_ALIAS} = config;
 const {createRTkError, RTKERR_INVALID_PARAMETER} = error;
 const {
   defaultIfEmpty,

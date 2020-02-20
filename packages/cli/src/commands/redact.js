@@ -17,6 +17,7 @@ export const command = 'redact <file..>';
 
 export const desc = 'Redact secrets from report file(s) and output JSON';
 
+// @ts-ignore
 export const builder = yargs =>
   yargs
     .positional('file', {
@@ -32,6 +33,7 @@ export const builder = yargs =>
       ..._.defaultsDeep(OPTIONS.JSON_TRANSFORM, {pretty: {default: true}})
     });
 
+// @ts-ignore
 export const handler = argv => {
   const config = mergeCommandConfig('transform', argv);
   debug('complete command config: %O', config);

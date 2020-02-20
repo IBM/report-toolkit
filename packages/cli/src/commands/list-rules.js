@@ -22,27 +22,21 @@ const DEFAULT_LIST_RULES_CONFIG = {
       value: _.getOr('(no description)', 'description')
     }
   ],
-  transform: {table: {outputHeader: 'Available Rules'}}
+  transformers: {table: {outputHeader: 'Available Rules'}}
 };
 
 export const command = 'list-rules';
 
 export const desc = 'Lists built-in rules';
 
-/**
- *
- * @param {import('yargs').Argv} yargs
- */
+// @ts-ignore
 export const builder = yargs =>
   yargs.options({
     ..._.omit(['show-secrets-unsafe'], OPTIONS.OUTPUT),
     ...getTransformerOptions({sourceType: 'object'})
   });
 
-/**
- * This handler lists rules.
- * @param {CLIArguments<*>} argv - yargs' argv
- */
+// @ts-ignore
 export const handler = argv => {
   const source = fromRegisteredRuleDefinitions().pipe(
     map(({id, meta}) => ({
@@ -61,7 +55,7 @@ export const handler = argv => {
     .pipe(
       transform(source, {
         beginWith: 'object',
-        defaultTransformerConfig: config.transform.table
+        defaultTransformerConfig: config.transformers.table
       }),
       toOutput(argv.output, {color: argv.color})
     )

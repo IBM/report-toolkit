@@ -2,12 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react",
-    "checkJs": true
-  },
-  "exclude": [
-    "**/node_modules/**/*",
-    "**/dist/**/*",
-    "**/coverage",
-    "**/.history/**/*"
-  ]
+    "checkJs": true,
+    "noImplicitAny": true
+  }
 }

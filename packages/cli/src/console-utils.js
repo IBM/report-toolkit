@@ -7,10 +7,15 @@ import termsize from 'term-size';
 const {bindNodeCallback, iif, map, mergeMap, of, pipeIf, tap} = observable;
 const {DEFAULT_TERMINAL_WIDTH} = constants;
 const writeFile = bindNodeCallback(writeFileFs);
-
+/**
+ * @param {string | number} text
+ */
 export const ok = text =>
   colors.green(success) + ' ' + colors.green().bold(text);
 
+/**
+ * @param {string | number} text
+ */
 export const fail = text => colors.red(error) + ' ' + colors.red().bold(text);
 
 /**

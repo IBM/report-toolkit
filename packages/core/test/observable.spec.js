@@ -1,4 +1,4 @@
-import {_} from '@report-toolkit/common';
+import {_, config} from '@report-toolkit/common';
 import {ERROR} from '@report-toolkit/common/src/constants.js';
 import {
   RTKERR_INVALID_PARAMETER,
@@ -71,8 +71,11 @@ describe('@report-toolkit/core:observable', function() {
           ])
         )
       },
-      '@report-toolkit/config': {
-        parseConfig: sandbox.stub().returnsOperatorFunction()
+      '@report-toolkit/common': {
+        config: {
+          parseConfig: sandbox.stub().returnsOperatorFunction(),
+          BUILTIN_CONFIGS: config.BUILTIN_CONFIGS
+        }
       }
     };
 
@@ -252,7 +255,10 @@ describe('@report-toolkit/core:observable', function() {
 
       it('should parse a config', async function() {
         await subject({}).toPromise();
-        expect(stubs['@report-toolkit/config'].parseConfig, 'was called');
+        expect(
+          stubs['@report-toolkit/common'].config.parseConfig,
+          'was called'
+        );
       });
 
       it('should register plugins from cwd', async function() {

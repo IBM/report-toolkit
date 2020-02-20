@@ -34,6 +34,7 @@ export const OPTIONS = {
   FILTER_TRANSFORM: {
     exclude: {
       coerce: toUniqueArray,
+      /** @type {string[]}  */
       default: [],
       description: 'Exclude properties (keypaths allowed)',
       group: GROUPS.FILTER_TRANSFORM,
@@ -42,6 +43,7 @@ export const OPTIONS = {
     },
     include: {
       coerce: toUniqueArray,
+      /** @type {string[]} */
       default: [],
       description: 'Include properties (keypaths allowed)',
       group: GROUPS.FILTER_TRANSFORM,
@@ -127,7 +129,9 @@ export const getTransformerOptions = ({
     _.reduce(
       (acc, transformName) => {
         const transformSpecificOptions =
-          OPTIONS[`${transformName.toUpperCase()}_TRANSFORM`];
+          OPTIONS[
+            /** @type {keyof OPTIONS} */ (`${transformName.toUpperCase()}_TRANSFORM`)
+          ];
         if (transformSpecificOptions) {
           acc = {...acc, ...transformSpecificOptions};
         }
@@ -175,30 +179,36 @@ export const mergeCommandConfig = (
   defaultConfig = {}
 ) => {
   const config = _.omit(
-    commandName,
+    'commands',
     _.mergeAll([
-      _.defaultsDeep(defaultConfig, _.getOr({}, commandName, defaultConfig)),
+      // overwrite default config with more-specific default command config, if it exists.
+      _.defaultsDeep(
+        defaultConfig,
+        _.getOr({}, `commands.${commandName}`, defaultConfig)
+      ),
+      // overwrite transformer default with arg-supplied transformer config
       {
-        transformer: _.mapValues(
+        transformers: _.mapValues(
           transformerConfig =>
             _.defaultsDeep(
               transformerConfig,
               _.omit(['$0', 'config', '_'], argv)
             ),
-          _.getOr({}, 'transformer', defaultConfig)
+          _.getOr({}, 'transformers', defaultConfig)
         )
       },
+      // overwrite config with command-specific config
       _.defaultsDeep(
         _.getOr({}, 'config', argv),
-        _.getOr({}, `config.${commandName}`, argv)
+        _.getOr({}, `config.commands.${commandName}`, argv)
       ),
       _.omit(['$0', 'config', '_'], argv)
     ])
   );
   // @ts-ignore
-  if (_.isEmpty(config.transformer)) {
+  if (_.isEmpty(config.transformers)) {
     // @ts-ignore
-    delete config.transformer;
+    delete config.transformers;
   }
   createDebugger(
     'cli',
