@@ -28,6 +28,7 @@ export const command = 'transform <file..>';
 
 export const desc = 'Transform a report';
 
+// @ts-ignore
 export const builder = yargs =>
   yargs
     .positional('file', {
@@ -43,6 +44,7 @@ export const builder = yargs =>
       })
     });
 
+// @ts-ignore
 export const handler = argv => {
   /**
    * @type {Observable<Report>}

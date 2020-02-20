@@ -23,7 +23,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         const argv = {config: {foo: {bar: 'baz'}}};
         const defaultConfig = {
           foo: {bar: 'quux'},
-          commandName: {foo: {bar: 'spam'}}
+          commands: {commandName: {foo: {bar: 'spam'}}}
         };
         expect(
           mergeCommandConfig('commandName', argv, defaultConfig),
@@ -36,17 +36,17 @@ describe('@report-toolkit/cli:commands:common', function() {
         const argv = {
           config: {
             foo: {bar: 'baz'},
-            commandName: {foo: {bar: 'butts'}}
+            commands: {commandName: {foo: {bar: 'butts'}}}
           }
         };
         const defaultConfig = {
           foo: {bar: 'quux'},
-          commandName: {foo: {bar: 'spam'}}
+          commands: {commandName: {foo: {bar: 'spam'}}}
         };
         expect(
           mergeCommandConfig('commandName', argv, defaultConfig),
           'to equal',
-          argv.config.commandName
+          argv.config.commands.commandName
         );
       });
 
@@ -54,7 +54,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         const argv = {config: {foo: {bar: 'baz'}}};
         const defaultConfig = {
           foo: {bar: 'quux'},
-          commandName: {foo: {bar: 'spam'}}
+          commands: {commandName: {foo: {bar: 'spam'}}}
         };
         expect(
           mergeCommandConfig('commandName', argv, defaultConfig),
@@ -66,23 +66,23 @@ describe('@report-toolkit/cli:commands:common', function() {
       it('should prefer default command-specific config over default config', function() {
         const defaultConfig = {
           foo: {bar: 'quux'},
-          commandName: {foo: {bar: 'spam'}}
+          commands: {commandName: {foo: {bar: 'spam'}}}
         };
         expect(
           mergeCommandConfig('commandName', {}, defaultConfig),
           'to equal',
-          defaultConfig.commandName
+          defaultConfig.commands.commandName
         );
       });
 
       it('should prefer argv over anything', function() {
         const argv = {
-          config: {foo: 'baz', commandName: {foo: 'butts'}},
+          config: {foo: 'baz', commands: {commandName: {foo: 'butts'}}},
           foo: 'rubberduck'
         };
         const defaultConfig = {
           foo: 'quux',
-          commandName: {foo: 'spam'}
+          commands: {commandName: {foo: 'spam'}}
         };
         expect(
           mergeCommandConfig('commandName', argv, defaultConfig),
@@ -97,7 +97,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         const argv = {
           config: {
             foo: 'baz',
-            commandName: {foo: 'butts'}
+            commands: {commandName: {foo: 'butts'}}
           },
           _: ['some', 'positional', 'args'],
           $0: 'report-toolkit',
@@ -105,7 +105,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         };
         const defaultConfig = {
           foo: 'quux',
-          commandName: {foo: 'spam'}
+          commands: {commandName: {foo: 'spam'}}
         };
         expect(
           mergeCommandConfig('commandName', argv, defaultConfig),
@@ -120,7 +120,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         const argv = {
           config: {
             foo: 'baz',
-            commandName: {foo: 'butts'}
+            commands: {commandName: {foo: 'butts'}}
           },
           _: ['some', 'positional', 'args'],
           'max-width': 72,
@@ -129,8 +129,8 @@ describe('@report-toolkit/cli:commands:common', function() {
         };
         const defaultConfig = {
           foo: 'quux',
-          commandName: {foo: 'spam'},
-          transformer: {
+          commands: {commandName: {foo: 'spam'}},
+          transformers: {
             foo: {
               'max-width': 80
             }
@@ -141,7 +141,7 @@ describe('@report-toolkit/cli:commands:common', function() {
           'to equal',
           {
             foo: 'rubberduck',
-            transformer: {foo: {'max-width': 72, foo: 'rubberduck'}},
+            transformers: {foo: {'max-width': 72, foo: 'rubberduck'}},
             'max-width': 72
           }
         );

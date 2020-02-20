@@ -40,6 +40,7 @@ export const command = 'diff <file1> <file2>';
 
 export const desc = 'Diff two reports';
 
+// @ts-ignore
 export const builder = yargs =>
   yargs.options({
     includeProp: {
@@ -68,11 +69,7 @@ export const builder = yargs =>
     ...getTransformerOptions({sourceType: 'object'})
   });
 
-/**
- * @todo handle same-file issue
- * @todo handle output-to-file
- * @param {*} argv
- */
+// @ts-ignore
 export const handler = argv => {
   const {
     file1,
@@ -88,7 +85,7 @@ export const handler = argv => {
     excludeProperties,
     showSecretsUnsafe: false,
     sort: false,
-    transformer: {
+    transformers: {
       table: {
         outputHeader: `Diff: ${file1} <=> ${file2}`,
         maxWidth: terminalColumns,
@@ -127,7 +124,7 @@ export const handler = argv => {
     .pipe(
       transform(source, {
         beginWith: 'object',
-        defaultTransformerConfig: config.transformer.table
+        defaultTransformerConfig: config.transformers.table
       }),
       toOutput(argv.output, {color: argv.color})
     )

@@ -9,7 +9,6 @@
   "dependencies": {
     "@report-toolkit/cli": "^0.5.1",
     "@report-toolkit/common": "^0.5.1",
-    "@report-toolkit/config": "^0.5.1",
     "@report-toolkit/core": "^0.5.1",
     "@report-toolkit/diff": "^0.5.1",
     "@report-toolkit/fs": "^0.5.1",

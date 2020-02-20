@@ -2,10 +2,10 @@ import path from 'path';
 import {readdirSync} from 'readdir-withfiletypes';
 import rollupExternalModules from 'rollup-external-modules';
 import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
+import commonjs from '@rollup/plugin-commonjs';
 import hashbang from 'rollup-plugin-hashbang';
 import json from 'rollup-plugin-json';
-import resolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 
 const IGNORED_PACKAGES = ['docs'];
 const packagesDir = path.join(__dirname, 'packages');
@@ -32,7 +32,7 @@ const makeConfigs = pkgpath => {
       commonjs({
         include: [
           /node_modules/,
-          /packages\/config\/src\/configs\/recommended\.js/
+          /packages\/common\/src\/configs\/recommended\.js/
         ]
       }),
       json(),

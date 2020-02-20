@@ -15,7 +15,7 @@ const {inspect, transform, fromTransformerChain} = core;
 const {filter, take} = observable;
 
 const DEFAULT_INSPECT_CONFIG = {
-  transformer: {
+  transformers: {
     table: {
       colWidths: [12, 20, 15],
       fields: [
@@ -53,6 +53,7 @@ export const command = 'inspect <file..>';
 
 export const desc = 'Inspect Diagnostic Report file(s) for problems';
 
+// @ts-ignore
 export const builder = yargs =>
   yargs
     .positional('file', {
@@ -70,6 +71,7 @@ export const builder = yargs =>
       ...getTransformerOptions({sourceType: 'object'})
     });
 
+// @ts-ignore
 export const handler = argv => {
   const config = mergeCommandConfig('inspect', argv, DEFAULT_INSPECT_CONFIG);
   const {file, severity, output, transform: transformer, color} = config;
@@ -94,7 +96,7 @@ export const handler = argv => {
     .pipe(
       transform(source, {
         beginWith: 'object',
-        defaultTransformerConfig: config.transformer.table
+        defaultTransformerConfig: config.transformers.table
       }),
       toOutput(output, {color})
     )
