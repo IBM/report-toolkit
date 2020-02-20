@@ -94,10 +94,10 @@ Diagnostic Reports landed as an experimental feature in Node.js v11.8.0.
 
 - [ ] Documentation
   - [x] Real website (https://ibm.github.io/report-toolkit)
-  - [ ] API docs
+  - [ ] API docs (_incomplete_: https://ibm.github.io/report-toolkit/api)
   - [ ] Tutorials
     - [x] Quick start guide (https://ibm.github.io/report-toolkit/quick-start)
-    - [ ] CLI usage guide
+    - [x] CLI usage guide
     - [ ] Programmatic usage guide
     - [ ] Configuration guide
     - [ ] Plugin authoring guide
