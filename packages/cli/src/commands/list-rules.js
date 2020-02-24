@@ -22,7 +22,13 @@ const DEFAULT_LIST_RULES_CONFIG = {
       value: _.getOr('(no description)', 'description')
     }
   ],
-  transformers: {table: {outputHeader: 'Available Rules'}}
+  transformers: {
+    table: {
+      outputHeader: 'Available Rules',
+      colWidths: [20, 60],
+      truncate: false
+    }
+  }
 };
 
 export const command = 'list-rules';

@@ -116,7 +116,7 @@ const normalizeColWidthPcts = (fields, colWidths, maxWidth) => {
   const colWidthPcts = fieldWidthPcts(fields);
   if (_.some(_.isNaN, colWidthPcts)) {
     const maxPct = 100 - safeSum(colWidthPcts);
-    if (maxPct <= 100) {
+    if (maxPct < 100) {
       const fieldsCount =
         _.size(fields) - _.size(_.filter(_.isNumber, colWidthPcts));
       return _.map(
