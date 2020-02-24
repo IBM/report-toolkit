@@ -2,7 +2,7 @@
 title: report-toolkit Quick Start
 ---
 
-import {Metadata, EmbedCode} from '../../components';
+import {Metadata} from '../../components';
 import {reportExample} from './index.module.scss';
 
 <PageDescription>
@@ -118,7 +118,9 @@ rtk --help
 
 You should see:
 
-<EmbedCode name="cli-output" />
+```text file=cli-output.txt
+
+```
 
 We see <Metadata prop="executable"/> provides _commands_; the command we want is `redact`.
 
@@ -139,7 +141,7 @@ Here's an example _excerpt_ from `report-redacted.json`:
 <Column colMd={2} colLg={3} offsetMd={1} offsetLg={1}>
   <Aside>
 
-If <Metadata prop="packageName"/> _didn't_ catch all your secrets, fear not; you can customize its behavior to suit your environment. See the [Configuration Guide](/configuration-guide) for more information.
+If <Metadata prop="packageName"/> _didn't_ catch all your secrets, fear not; you can customize its behavior to suit your environment. See the [Configuration Guide](/config) for more information.
 
   </Aside>
 </Column>
@@ -229,7 +231,9 @@ rtk diff report-1.json report-2.json
 
 You'll get something like the below (but probably with fancy colors):
 
-<EmbedCode name="diff-output" />
+```text file=diff-output.txt
+
+```
 
 By default, <Metadata prop="executable"/> will display a diff in a tabular format, intended for human consumption.
 
@@ -300,7 +304,9 @@ rtk inspect report-1.json --severity info
 
 The output should now look _something_ like this (and in color):
 
-<EmbedCode name="inspect-output-1" />
+```text file=inspect-output-1.txt
+
+```
 
 Above, we see that two rules (`cpu-usage` and `memory-usage`) each output a message. Reading the message, we see that the allowed CPU usage and memory usage, respectively, are within the default thresholds for each rule.
 
@@ -320,7 +326,9 @@ rtk inspect report-high-cpu-usage.example.json
 
 Note that the above command _does not_ include `--severity info`. Now, we should see an error:
 
-<EmbedCode name="inspect-output-2" />
+```text file=inspect-output-2.txt
+
+```
 
 In `report-high-cpu-usage.example.json`, the reported CPU usage (precisely, the _mean_ across all CPUs) is greater than the default threshold of 50%.
 
@@ -363,7 +371,9 @@ rtk transform -t filter --include header.componentVersions.node \
 
 Which will result in something like this (depending on the version of `node` you used to generate the report):
 
-<EmbedCode name="transform-output-1" language="json" />
+```json file=transform-output-1.txt
+
+```
 
 Likewise, the `--exclude` argument would allow you to, say, omit the entirety the `environmentVariables` and `sharedObjects` properties:
 
@@ -397,7 +407,9 @@ rtk transform -t stack-hash report-3.json
 
 Which will result in something akin to:
 
-<EmbedCode name="transform-output-2" language="json" />
+```json file=transform-output-2.txt
+
+```
 
 If we repeat the command using a different filename (`report-4.json`):
 
@@ -414,7 +426,9 @@ rtk transform -t stack-hash report-4.json
 
 We'll get the _same_ hash, even though the `dumpEventTime` (when the report file was created) and `filepath` differ:
 
-<EmbedCode name="transform-output-3" language="json" />
+```json file=transform-output-3.txt
+
+```
 
 But _not_ if the message is different:
 
@@ -431,7 +445,9 @@ rtk transform -t stack-hash report-5.json
 
 Results in:
 
-<EmbedCode name="transform-output-4" language="json" />
+```json file=transform-output-4.txt
+
+```
 
 You can see that the `sha1` property is different, because the exception thrown has a different message.
 

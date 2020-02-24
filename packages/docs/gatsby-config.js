@@ -14,7 +14,8 @@ module.exports = {
           baseUrl: 'https://github.com/IBM/report-toolkit',
           subDirectory: 'packages/docs'
         },
-        titleType: 'append'
+        titleType: 'append',
+        gatsbyRemarkPlugins: ['gatsby-remark-import-code']
       },
       resolve: 'gatsby-theme-carbon'
     }
