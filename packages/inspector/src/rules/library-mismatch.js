@@ -41,7 +41,7 @@ export const id = 'library-mismatch';
 export const meta = {
   docs: {
     category: 'runtime',
-    description: 'Identify potential library version mismatches',
+    description: 'Identify potential shared library version mismatches',
     url: 'https://more-information-for-this-rule'
   },
   schema: {
