@@ -1,4 +1,3 @@
-
 - title: 'Quick Start'
   pages:
     - path: '/quick-start'
@@ -11,3 +10,7 @@
   pages:
     - path: '/api'
       title: 'API Docs'
+- title: 'Configuration'
+  pages:
+    - path: '/config'
+      title: 'Configuration'
