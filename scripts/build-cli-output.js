@@ -15,6 +15,7 @@ const OUTPUT_PATH = resolve(
   'docs',
   'src',
   'pages',
+  'quick-start',
   'cli-output.txt'
 );
 
