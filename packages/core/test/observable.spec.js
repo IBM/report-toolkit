@@ -287,7 +287,7 @@ describe('@report-toolkit/core:observable', function() {
 
       it('should emit a stream of transformer ID / config pairs', function() {
         const config = {
-          transformer: {
+          transformers: {
             foo: {a: 'b'},
             bar: {b: 'c'},
             baz: {c: 'd'}
@@ -299,22 +299,22 @@ describe('@report-toolkit/core:observable', function() {
           {
             id: 'foo',
             config: {
-              ..._.omit('transformer', config),
-              ...config.transformer.foo
+              ..._.omit('transformers', config),
+              ...config.transformers.foo
             }
           },
           {
             id: 'bar',
             config: {
-              ..._.omit('transformer', config),
-              ...config.transformer.bar
+              ..._.omit('transformers', config),
+              ...config.transformers.bar
             }
           },
           {
             id: 'baz',
             config: {
-              ..._.omit('transformer', config),
-              ...config.transformer.baz
+              ..._.omit('transformers', config),
+              ...config.transformers.baz
             }
           }
         );
@@ -323,14 +323,14 @@ describe('@report-toolkit/core:observable', function() {
       it('should override root config with transformer-specific config', function() {
         const config = {
           a: 'b',
-          transformer: {
+          transformers: {
             foo: {a: 'c'}
           }
         };
         return expect(subject('foo', config), 'to complete with value', {
           id: 'foo',
           config: {
-            ...config.transformer.foo
+            ...config.transformers.foo
           }
         });
       });

@@ -319,8 +319,8 @@ export function fromTransformerChain(transformerIds, config = {}) {
     map(id => ({
       id,
       config: _.merge(
-        _.omit('transformer', config),
-        _.getOr({}, `transformer.${id}`, config)
+        _.omit('transformers', config),
+        _.getOr({}, `transformers.${id}`, config)
       )
     })),
     debug(blueprint => [`created transformer blueprint %O`, blueprint])
