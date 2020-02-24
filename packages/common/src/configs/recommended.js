@@ -1,7 +1,7 @@
 /**
- * The "recommended" config, which can be referenced by its alias, `rtk:recommended`.
- * This is _also_ the _default_ config if no config file is used.
- * @type {import('../config').ConfigListItem[]}
+ * The "recommended" config, which can be referenced by its alias,
+ * `rtk:recommended`.  This is _also_ the _default_ config if no config file is
+ * used.
  **/
 exports.config = [
   {
@@ -14,7 +14,4 @@ exports.config = [
   }
 ];
 
-/**
- * @type {import('../config').BuiltinConfigAliases}
- */
 exports.alias = 'rtk:recommended';
