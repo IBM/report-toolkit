@@ -326,7 +326,6 @@ export class Rule {
 
   /**
    * Given a {@link Config}, get associated rule config and create a `RuleConfig`.
-   * @param {import('@report-toolkit/common/src/config').Config} config
    */
   toRuleConfig(config) {
     return createRuleConfig(_.get(this.id, _.get('rules', config)), this);
