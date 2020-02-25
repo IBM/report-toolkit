@@ -157,7 +157,7 @@ export function normalizeFlattenedConfig(config) {
 }
 
 /**
- * Given an `Observable` of {@link ConfigList} arrays, return a single,
+ * Given an `Observable` of {@link ExportedConfig} arrays, return a single,
  * flattened {@link Config} object.  Config object will have a
  * `kFlattenedConfig` `Symbol` property set to `true`.
  * @todo Eliminate extra empty properties
@@ -182,7 +182,7 @@ export function parseConfig() {
 
 /**
  * The exports of a config file. There should be only one; `config`, which may
- * be a {@link Config} or {@link ConfigList}.
+ * be a {@link Config} or {@link ExportedConfig}.
  * @typedef {Object} ConfigModule
  * @property {ConfigListItem[]} config - The exported configuration
  */
