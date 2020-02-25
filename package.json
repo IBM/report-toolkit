@@ -58,7 +58,8 @@
     "pretest": "npm run build:dist",
     "test": "nyc mocha \"./packages/*/test/**/*.spec.js\"",
     "posttest": "concurrently npm:lint npm:typecheck",
-    "typecheck": "tsc -p tsconfig.base.json --allowJs --checkJs --noEmit",
+    "pretypecheck": "npm run clean:declarations",
+    "typecheck": "tsc -p tsconfig.base.json --allowJs --checkJs --declaration --noEmit",
     "preversion": "npm test"
   },
   "husky": {
