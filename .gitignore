@@ -78,4 +78,4 @@ packages/docs/src/pages/api
 packages/docs/.cache
 packages/docs/public
 packages/docs/src/pages/quick-start/cli-output.txt
-packages/docs/src/pages/config/recommended.js
+packages/docs/src/pages/config/recommended.js.txt
