@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/ibm/report-toolkit/compare/v0.5.1...v0.6.0) (2020-02-25)
+
+### Bug Fixes
+
+- **cli:** audit & normalize allowed transformers for each command ([a1f106a](https://github.com/ibm/report-toolkit/commit/a1f106a592bbf70f13b82308baa637920f1b559a))
+- **cli:** disable all transformers on redact cmd for simplicity ([b8c9c6d](https://github.com/ibm/report-toolkit/commit/b8c9c6dd4161b8d70bd402f391995b40830b79bd))
+- **cli:** fix default width of "Op" field; closes [#38](https://github.com/ibm/report-toolkit/issues/38) ([e804be0](https://github.com/ibm/report-toolkit/commit/e804be0e24952f40420bbb167b96f83a13af9192))
+- **cli:** fix wonky column calculation issues ([89f07d8](https://github.com/ibm/report-toolkit/commit/89f07d8394a9c29be2dd0e2c9d6b26ea4b068d7a))
+- **cli:** half-fix req'd command ([23334c0](https://github.com/ibm/report-toolkit/commit/23334c0ad21b2bdb16673446ea9b05dddad50d07))
+- **common:** config overhaul; closes [#47](https://github.com/ibm/report-toolkit/issues/47) ([513966a](https://github.com/ibm/report-toolkit/commit/513966a052076909b2d28d0735b9da8761a9757a))
+- **core:** default config loads correctly ([2984c7f](https://github.com/ibm/report-toolkit/commit/2984c7f82e3a1c8c7b9b20beebb0885a42993272))
+- **core:** fixed transformer options going missing ([1218f03](https://github.com/ibm/report-toolkit/commit/1218f03261166e0ca5e5a6b096871f812076b70c))
+- **transformers:** filter only works with reports; closes [#79](https://github.com/ibm/report-toolkit/issues/79) ([8eccf9e](https://github.com/ibm/report-toolkit/commit/8eccf9e9950b9a67ea8964696be70ac07e9541e1))
+
+### Features
+
+- **fs:** search for config in usual places; closes [#83](https://github.com/ibm/report-toolkit/issues/83) ([b11a329](https://github.com/ibm/report-toolkit/commit/b11a3290296d16c51523d3cad13ebde8f353172f))
+
 ## [0.5.1](https://github.com/ibm/report-toolkit/compare/v0.5.0...v0.5.1) (2020-02-03)
 
 ### Bug Fixes

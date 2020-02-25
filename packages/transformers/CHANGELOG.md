@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/ibm/report-toolkit/compare/v0.5.1...v0.6.0) (2020-02-25)
+
+### Bug Fixes
+
+- **cli:** audit & normalize allowed transformers for each command ([a1f106a](https://github.com/ibm/report-toolkit/commit/a1f106a592bbf70f13b82308baa637920f1b559a))
+- **cli:** fix wonky column calculation issues ([89f07d8](https://github.com/ibm/report-toolkit/commit/89f07d8394a9c29be2dd0e2c9d6b26ea4b068d7a))
+- **transformers:** filter only works with reports; closes [#79](https://github.com/ibm/report-toolkit/issues/79) ([8eccf9e](https://github.com/ibm/report-toolkit/commit/8eccf9e9950b9a67ea8964696be70ac07e9541e1))
+
 ## [0.5.1](https://github.com/ibm/report-toolkit/compare/v0.5.0...v0.5.1) (2020-02-03)
 
 **Note:** Version bump only for package @report-toolkit/transformers
