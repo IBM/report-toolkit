@@ -26,6 +26,7 @@ class Report {
     this.javascriptHeap = {...report.javascriptHeap};
     this.resourceUsage = {...report.resourceUsage};
     this.libuv = [...report.libuv];
+    this.workers = [...(report.workers || [])];
     this.environmentVariables = {...report.environmentVariables};
     this.userLimits = {...report.userLimits};
     this.sharedObjects = [...report.sharedObjects];
@@ -60,6 +61,7 @@ class Report {
    * @param {any} value
    */
   static isReport(value) {
+    // @ts-ignore
     return _.isObject(value) && value[kReport] === true;
   }
 
@@ -73,10 +75,13 @@ class Report {
     }
     if (_.isObject(value)) {
       // win32 doesn't report 'userLimits'
-      const propsToCheck =
+      let propsToCheck =
         _.get('header.platform', value) === 'win32'
           ? _.pull('userLimits', REPORT_KNOWN_ROOT_PROPERTIES)
           : REPORT_KNOWN_ROOT_PROPERTIES;
+      if (_.getOr(0, 'header.reportVersion', value) < 2) {
+        propsToCheck = _.pull('workers', propsToCheck);
+      }
       return _.every(key => {
         const hasValue = _.has(key, value);
         if (!hasValue) {
