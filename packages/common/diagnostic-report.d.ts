@@ -15,6 +15,7 @@ export interface ReportHeader {
   dumpEventTime: string;
   dumpEventTimeStamp: string;
   processId: number;
+  threadId: number | null;
   cwd: string;
   commandLine: string[];
   nodejsVersion: string;
@@ -106,4 +107,5 @@ export interface DiagnosticReport {
     [key: string]: ReportUserLimit;
   };
   sharedObjects: string[];
+  workers: DiagnosticReport[];
 }

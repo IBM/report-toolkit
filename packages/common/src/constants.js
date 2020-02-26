@@ -6,6 +6,7 @@
  * - `javascriptHeap`
  * - `resourceUsage`
  * - `libuv`
+ * - `workers` (v2)
  * - `environmentVariables`
  * - `userLimits`
  * - `sharedObjects`
@@ -17,6 +18,7 @@ export const REPORT_KNOWN_ROOT_PROPERTIES = Object.freeze([
   'javascriptHeap',
   'resourceUsage',
   'libuv',
+  'workers',
   'environmentVariables',
   'userLimits',
   'sharedObjects'

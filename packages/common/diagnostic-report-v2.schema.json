@@ -1,0 +1,437 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "DiagnosticReport": {
+      "properties": {
+        "environmentVariables": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "header": {
+          "$ref": "#/definitions/ReportHeader"
+        },
+        "javascriptHeap": {
+          "$ref": "#/definitions/ReportJSHeap"
+        },
+        "javascriptStack": {
+          "$ref": "#/definitions/ReportJSStack"
+        },
+        "libuv": {
+          "items": {
+            "properties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "nativeStack": {
+          "items": {
+            "$ref": "#/definitions/NativeStackFrame"
+          },
+          "type": "array"
+        },
+        "resourceUsage": {
+          "$ref": "#/definitions/ReportResourceUsage"
+        },
+        "sharedObjects": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "userLimits": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ReportUserLimit"
+          },
+          "type": "object"
+        },
+        "workers": {
+          "items": {
+            "$ref": "#/definitions/DiagnosticReport"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "environmentVariables",
+        "header",
+        "javascriptHeap",
+        "javascriptStack",
+        "libuv",
+        "nativeStack",
+        "resourceUsage",
+        "sharedObjects",
+        "workers"
+      ],
+      "type": "object"
+    },
+    "NativeStackFrame": {
+      "properties": {
+        "pc": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        }
+      },
+      "required": ["pc", "symbol"],
+      "type": "object"
+    },
+    "ReportHeader": {
+      "properties": {
+        "arch": {
+          "type": "string"
+        },
+        "commandLine": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "componentVersions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "cpus": {
+          "items": {
+            "$ref": "#/definitions/ReportHeaderCpu"
+          },
+          "type": "array"
+        },
+        "cwd": {
+          "type": "string"
+        },
+        "dumpEventTime": {
+          "type": "string"
+        },
+        "dumpEventTimeStamp": {
+          "type": "string"
+        },
+        "event": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "nodejsVersion": {
+          "type": "string"
+        },
+        "osMachine": {
+          "type": "string"
+        },
+        "osName": {
+          "type": "string"
+        },
+        "osRelease": {
+          "type": "string"
+        },
+        "osVersion": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "processId": {
+          "type": "number"
+        },
+        "release": {
+          "properties": {
+            "headersUrl": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "sourceUrl": {
+              "type": "string"
+            }
+          },
+          "required": ["headersUrl", "name", "sourceUrl"],
+          "type": "object"
+        },
+        "threadId": {
+          "type": ["null", "number"]
+        },
+        "trigger": {
+          "type": "string"
+        },
+        "wordSize": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "arch",
+        "commandLine",
+        "componentVersions",
+        "cpus",
+        "cwd",
+        "dumpEventTime",
+        "dumpEventTimeStamp",
+        "event",
+        "filename",
+        "host",
+        "nodejsVersion",
+        "osMachine",
+        "osName",
+        "osRelease",
+        "osVersion",
+        "platform",
+        "processId",
+        "release",
+        "threadId",
+        "trigger",
+        "wordSize"
+      ],
+      "type": "object"
+    },
+    "ReportHeaderCpu": {
+      "properties": {
+        "idle": {
+          "type": "number"
+        },
+        "irq": {
+          "type": "number"
+        },
+        "model": {
+          "type": "string"
+        },
+        "nice": {
+          "type": "number"
+        },
+        "speed": {
+          "type": "number"
+        },
+        "sys": {
+          "type": "number"
+        },
+        "user": {
+          "type": "number"
+        }
+      },
+      "required": ["idle", "irq", "model", "nice", "speed", "sys", "user"],
+      "type": "object"
+    },
+    "ReportHeapSpace": {
+      "properties": {
+        "available": {
+          "type": "number"
+        },
+        "capacity": {
+          "type": "number"
+        },
+        "committedMemory": {
+          "type": "number"
+        },
+        "memorySize": {
+          "type": "number"
+        },
+        "used": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "available",
+        "capacity",
+        "committedMemory",
+        "memorySize",
+        "used"
+      ],
+      "type": "object"
+    },
+    "ReportJSHeap": {
+      "properties": {
+        "availableMemory": {
+          "type": "number"
+        },
+        "heapSpaces": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ReportHeapSpace"
+          },
+          "type": "object"
+        },
+        "memoryLimit": {
+          "type": "number"
+        },
+        "totalCommittedMemory": {
+          "type": "number"
+        },
+        "totalMemory": {
+          "type": "number"
+        },
+        "usedMemory": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "availableMemory",
+        "heapSpaces",
+        "memoryLimit",
+        "totalCommittedMemory",
+        "totalMemory",
+        "usedMemory"
+      ],
+      "type": "object"
+    },
+    "ReportJSStack": {
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "stack": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": ["message", "stack"],
+      "type": "object"
+    },
+    "ReportResourceUsage": {
+      "properties": {
+        "cpuConsumptionPercent": {
+          "type": "number"
+        },
+        "fsActivity": {
+          "properties": {
+            "reads": {
+              "type": "number"
+            },
+            "writes": {
+              "type": "number"
+            }
+          },
+          "required": ["reads", "writes"],
+          "type": "object"
+        },
+        "kernelCpuSeconds": {
+          "type": "number"
+        },
+        "maxRss": {
+          "type": "number"
+        },
+        "pageFaults": {
+          "properties": {
+            "IONotRequired": {
+              "type": "number"
+            },
+            "IORequired": {
+              "type": "number"
+            }
+          },
+          "required": ["IONotRequired", "IORequired"],
+          "type": "object"
+        },
+        "userCpuSeconds": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "cpuConsumptionPercent",
+        "fsActivity",
+        "kernelCpuSeconds",
+        "maxRss",
+        "pageFaults",
+        "userCpuSeconds"
+      ],
+      "type": "object"
+    },
+    "ReportUserLimit": {
+      "properties": {
+        "hard": {
+          "anyOf": [
+            {
+              "enum": ["unlimited"],
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "soft": {
+          "anyOf": [
+            {
+              "enum": ["unlimited"],
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "required": ["hard", "soft"],
+      "type": "object"
+    }
+  },
+  "properties": {
+    "environmentVariables": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "header": {
+      "$ref": "#/definitions/ReportHeader"
+    },
+    "javascriptHeap": {
+      "$ref": "#/definitions/ReportJSHeap"
+    },
+    "javascriptStack": {
+      "$ref": "#/definitions/ReportJSStack"
+    },
+    "libuv": {
+      "items": {
+        "properties": {},
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "nativeStack": {
+      "items": {
+        "$ref": "#/definitions/NativeStackFrame"
+      },
+      "type": "array"
+    },
+    "resourceUsage": {
+      "$ref": "#/definitions/ReportResourceUsage"
+    },
+    "sharedObjects": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "userLimits": {
+      "additionalProperties": {
+        "$ref": "#/definitions/ReportUserLimit"
+      },
+      "type": "object"
+    },
+    "workers": {
+      "items": {
+        "$ref": "#/definitions/DiagnosticReport"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "environmentVariables",
+    "header",
+    "javascriptHeap",
+    "javascriptStack",
+    "libuv",
+    "nativeStack",
+    "resourceUsage",
+    "sharedObjects",
+    "workers"
+  ],
+  "type": "object"
+}
