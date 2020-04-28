@@ -1,7 +1,7 @@
 import path from 'path';
 import {readdirSync} from 'readdir-withfiletypes';
 import rollupExternalModules from 'rollup-external-modules';
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import hashbang from 'rollup-plugin-hashbang';
 import json from 'rollup-plugin-json';
@@ -16,7 +16,6 @@ const packagesDir = path.join(__dirname, 'packages');
  */
 const makeConfigs = pkgpath => {
   const pkg = require(`${pkgpath}/package.json`);
-  const configs = [];
   const cjsConfig = {
     external: rollupExternalModules,
     input: require.resolve(`${pkgpath}/${pkg.module}`),
@@ -37,10 +36,15 @@ const makeConfigs = pkgpath => {
       }),
       json(),
       babel({
-        exclude: [path.join(pkgpath, 'node_modules', '**')]
+        exclude: [path.join(pkgpath, 'node_modules', '**')],
+        babelHelpers: 'bundled'
       })
     ]
   };
+  /**
+   * @type {typeof cjsConfig[]}
+   */
+  const configs = [];
   if (pkgpath.endsWith('cli') || pkgpath.endsWith('report-toolkit')) {
     cjsConfig.plugins.unshift(hashbang());
   }
