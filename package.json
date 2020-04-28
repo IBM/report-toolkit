@@ -136,7 +136,7 @@
     "syncpack": "^4.5.5",
     "typedoc": "^0.16.11",
     "typedoc-plugin-markdown": "^2.2.17",
-    "typescript": "~3.7.5",
+    "typescript": "^3.8.3",
     "unexpected": "^11.14.0",
     "unexpected-rxjs": "^0.2.4",
     "unexpected-sinon": "^10.11.2"
