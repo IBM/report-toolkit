@@ -19,7 +19,7 @@ export {rules} from './rules/index.js';
 
 /**
  * Pipes `Report` objects into each `RuleConfig`, then filters on severity level.
- * @param {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common').Report>} reports - Stream of Report objects
+ * @param {import('rxjs').Observable<import('@report-toolkit/common').Report>} reports - Stream of Report objects
  * @returns {import('rxjs').OperatorFunction<RuleConfig,Message>}
  */
 export const inspectReports = reports => ruleConfigs =>

@@ -181,10 +181,10 @@ function toReportDiff(opts = {}) {
  *   console.log(`[${op}] <${path}> ${oldValue} => ${newValue}`);
  * })
  * ```
- * @param {import('@report-toolkit/common/src/report').ReportLike|import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').ReportLike>} report1 - First report to diff
- * @param {import('@report-toolkit/common/src/report').ReportLike|import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').ReportLike>} report2 - Second report to diff
+ * @param {import('@report-toolkit/common/src/report').ReportLike|import('rxjs').Observable<import('@report-toolkit/common/src/report').ReportLike>} report1 - First report to diff
+ * @param {import('@report-toolkit/common/src/report').ReportLike|import('rxjs').Observable<import('@report-toolkit/common/src/report').ReportLike>} report2 - Second report to diff
  * @param {Partial<DiffOptions>} [opts] Options
- * @returns {import('@report-toolkit/common/src/observable').Observable<DiffResult>} Results, one per difference
+ * @returns {import('rxjs').Observable<DiffResult>} Results, one per difference
  * @todo support JSON reports
  */
 export function diff(report1, report2, opts = {}) {
@@ -215,9 +215,9 @@ export function diff(report1, report2, opts = {}) {
  *   console.log(`${filename}: ${message}`);
  * });
  * ```
- * @param {import('@report-toolkit/common/src/report').ReportLike|import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').ReportLike>} reports - One or more Reports
+ * @param {import('@report-toolkit/common/src/report').ReportLike|import('rxjs').Observable<import('@report-toolkit/common/src/report').ReportLike>} reports - One or more Reports
  * @param {Partial<InspectOptions>} [opts] - Options
- * @returns {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/inspector/src/message').Message>}
+ * @returns {import('rxjs').Observable<import('@report-toolkit/inspector/src/message').Message>}
  */
 export function inspect(reports, opts = {}) {
   const {
@@ -275,7 +275,7 @@ export function inspect(reports, opts = {}) {
  * @param {object} config - Raw config object
  * @todo ALWAYS load builtin plugin(s)
  * @todo Document config shape
- * @returns {import('@report-toolkit/common/src/observable').Observable<Config>} Normalized config object(s)
+ * @returns {import('rxjs').Observable<Config>} Normalized config object(s)
  */
 export function loadConfig(config) {
   return fromAny(config).pipe(
@@ -312,7 +312,7 @@ export function loadConfig(config) {
  * ```
  * @param {string[]|string} transformerIds - List of Transformer IDs
  * @param {Partial<Config>} [config] - Normalized config object
- * @returns {import('@report-toolkit/common/src/observable').Observable<TransformerBlueprint>}
+ * @returns {import('rxjs').Observable<TransformerBlueprint>}
  */
 export function fromTransformerChain(transformerIds, config = {}) {
   return fromAny(transformerIds).pipe(
@@ -348,7 +348,7 @@ export function fromTransformerChain(transformerIds, config = {}) {
  *   console.log(line);
  * });
  * ```
- * @param {import('@report-toolkit/common/src/observable').Observable<any>} source - Source data to transform.  Objects, {@link @report-toolkit/common.report.Report|Reports}, etc.
+ * @param {import('rxjs').Observable<any>} source - Source data to transform.  Objects, {@link @report-toolkit/common.report.Report|Reports}, etc.
  * @param {Partial<TransformOptions>} [opts] - Options for the transformation
  * @returns {import('rxjs').OperatorFunction<TransformerBlueprint,any>} Result of running `source` through the transformer chains.
  */
@@ -406,7 +406,7 @@ export function registeredRuleDefinitions() {
 /**
  * @hidden
  * @todo XXX this is not the right place to load the builtins, and it's essentially redundant with {@link registeredRuleDefinitions}.
- * @returns {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/inspector/src/rule').RuleDefinition>}
+ * @returns {import('rxjs').Observable<import('@report-toolkit/inspector/src/rule').RuleDefinition>}
  */
 export function fromRegisteredRuleDefinitions() {
   return iif(
@@ -428,7 +428,7 @@ export function fromRegisteredRuleDefinitions() {
  *
  * ```
  * @param {string} pluginId - ID of plugin to register; a resolvable path to a module
- * @returns {import('@report-toolkit/common/src/observable').Observable<RTKPlugin>} A plugin instance, but YAGNI.
+ * @returns {import('rxjs').Observable<RTKPlugin>} A plugin instance, but YAGNI.
  */
 export function use(pluginId) {
   return iif(

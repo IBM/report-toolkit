@@ -23,12 +23,12 @@ const configMap = new WeakMap();
 /**
  * Represents a Transformer having a transform() function and
  * metadata.
- * @template T,U
+ * @template Input,Output
  */
 class Transformer {
   /**
    * Sets defaults and instance props
-   * @param {TransformFunction<T,U>} transform
+   * @param {TransformFunction<Input,Output>} transform
    * @param {TransformerMeta} meta - Transformer metdata
    * @param {object} [config] - Transformer config
    */
@@ -66,8 +66,9 @@ class Transformer {
 
   /**
    * Pipe one Transformer to another
-   * @param {Transformer} transformer
-   * @returns {Transformer}
+   * @template T
+   * @param {Transformer<Output,T>} transformer
+   * @returns {Transformer<Output,T>}
    */
   pipe(transformer) {
     if (!this.canPipeTo(transformer)) {
@@ -89,38 +90,49 @@ class Transformer {
   }
 
   /**
-   *
-   * @param {Transformer} transformer
-   * @returns {Transformer}
+   * Sets a source Transformer for this Transformer.  The output of the source
+   * Transformer must be a valid input for this Transformer.
+   * @template T
+   * @param {Transformer<T,Input>} sourceTransformer
+   * @returns {Transformer<Input,Output>}
    */
-  pipeFrom(transformer) {
-    this._source = transformer;
+  pipeFrom(sourceTransformer) {
+    this._source = sourceTransformer;
     return this;
   }
 
   /**
    * Returns `true` if this Transformer can pipe to another
-   * @param {Transformer} transformer - Transformer to compare
+   * @template T,U
+   * @param {Transformer<T,U>} transformer - Transformer to compare
    */
   canPipeTo(transformer) {
     return _.includes(this.output, transformer.input);
   }
 
+  /**
+   * Returns `true` if this Transformer can accept input of type `type`
+   * @param {string} type - Input type
+   */
   canBeginWith(type) {
     return _.includes(type, this.input);
   }
 
+  /**
+   * Returns `true` if this Transformer can output data of type `type`
+   * @param {string} type - Output type
+   */
   canEndWith(type) {
     return this.output === type;
   }
 
   /**
    * Creates a Transformer
-   * @template T,U
-   * @param {TransformFunction<T,U>} transform - Transformer function
+   * @template Input,Output
+   * @param {TransformFunction<Input,Output>} transform - Transformer function
    * @param {TransformerMeta} meta - Transformer meta
    * @param {object} [config] - Transformer config
-   * @returns {Transformer<T,U>}
+   * @returns {Transformer<Input,Output>}
    */
   static create(transform, meta, config = {}) {
     return new Transformer(transform, meta, config);
@@ -153,10 +165,9 @@ Transformer.normalizeFields = _.pipe(
       const valueFn = _.isFunction(field.value)
         ? row => {
             // yuck
-            const fn =
-              /**
-               * @type {function(typeof row): string}
-               */ (field.value);
+            const fn = /**
+             * @type {function(typeof row): string}
+             */ (field.value);
             return fn(row);
           }
         : _.get(field.value);
@@ -183,5 +194,5 @@ export const createTransformer = Transformer.create;
 
 /**
  * @template T,U
- * @typedef {(opts?: object)=>import('rxjs/internal/types').OperatorFunction<T,U>} TransformFunction
+ * @typedef {(opts?: object)=>import('rxjs').OperatorFunction<T,U>} TransformFunction
  */
