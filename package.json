@@ -150,7 +150,11 @@
   "nyc": {
     "exclude": [
       ".*",
-      "**/*.spec.js"
+      "**/*.spec.js",
+      "*.config.js",
+      "node_modules",
+      "scripts/**/*.js",
+      "packages/docs/**/*.js"
     ],
     "reporter": [
       "lcov",
