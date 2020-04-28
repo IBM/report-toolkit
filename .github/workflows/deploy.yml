@@ -1,34 +1,34 @@
-name: Deploy Site on Release
+name: 'Deploy Site on Release'
 
 on:
   release:
-    types: [published]
+    types: ['published']
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
+      - name: 'Checkout'
+        uses: 'actions/checkout@master'
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - name: 'Use Node.js'
+        uses: 'actions/setup-node@v1'
 
-      - name: Cache node modules
-        uses: actions/cache@v1
+      - name: 'Cache node modules'
+        uses: 'actions/cache@v1'
         env:
-          cache-name: cache-node-modules
+          cache-name: 'cache-node-modules'
         with:
-          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          path: '~/.npm' # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: "${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}"
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: 'Install Dependencies'
+        run: 'npm ci'
 
-      - name: Publish to https://ibm.github.io/report-toolkit
-        run: npm run publish:docs
+      - name: 'Publish to https://ibm.github.io/report-toolkit'
+        run: 'npm run publish:docs'

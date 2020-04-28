@@ -35,7 +35,7 @@ plugins:
   - 'react-hooks'
 root: true
 rules:
-  import/exports-last: error
+  import/exports-last: 'error'
   import/extensions:
     - 'error'
     - 'always'
@@ -50,8 +50,8 @@ rules:
   react/no-access-state-in-setstate: 0
   standard/computed-property-even-spacing: 0
   strict:
-    - error
-    - safe
+    - 'error'
+    - 'safe'
 settings:
   react:
     version: 'latest'
