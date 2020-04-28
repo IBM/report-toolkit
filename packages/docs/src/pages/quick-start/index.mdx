@@ -73,12 +73,20 @@ ahead to the [next section](#redact-secrets-from-a-report).
 
 </InlineNotification>
 
-At the time of this writing (2019-09-23), the diagnostic report functionality is "hidden" behind a flag to the `node` executable; `--experimental-report`.
+<InlineNotification kind="warning">
+
+If you're using a Node.js version _older_ than v14.0.0, the diagnostic report functionality is "hidden" behind a flag to the `node` executable; `--experimental-report`.
+
+The following shell script examples will _not_ contain the `--experimental-report` flag!
+
+You will need to add it yourself when calling `node`; e.g., `node --experimental-report [other arguments]`.
+
+</InlineNotification>
 
 The quickest way to generate a report is to evaluate an inline script, like so:
 
 ```bash
-node --experimental-report --report-filename report.json --eval "process.report.writeReport()"
+node --report-filename report.json --eval "process.report.writeReport()"
 ```
 
 You'll see this:
@@ -198,7 +206,7 @@ Node.js report completed
 To create a _second_ report, repeat the command with the filename changed to `report-2.json`:
 
 ```bash
-node --experimental-report --report-filename report-2.json \
+node --report-filename report-2.json \
   --eval "process.report.writeReport()"
 ```
 
@@ -414,7 +422,7 @@ Which will result in something akin to:
 If we repeat the command using a different filename (`report-4.json`):
 
 ```bash
-node --experimental-report --report-filename report-4.json \
+node --report-filename report-4.json \
   --report-uncaught-exception --eval "throw new Error('oh no')"
 ```
 
@@ -433,7 +441,7 @@ We'll get the _same_ hash, even though the `dumpEventTime` (when the report file
 But _not_ if the message is different:
 
 ```bash
-node --experimental-report --report-filename report-5.json \
+node --report-filename report-5.json \
   --report-uncaught-exception --eval "throw new Error('pizza party')"
 ```
 
