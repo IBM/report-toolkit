@@ -40,7 +40,7 @@ export const handler = argv => {
   // XXX: this is a really wonky way to do it; see `files` usage below
   const files = [...argv.file];
   /**
-   * @type {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common').Report>}
+   * @type {import('rxjs').Observable<import('@report-toolkit/common').Report>}
    */
   const source = fromFilepathsToReports(argv.file, {showSecretsUnsafe: false});
   fromTransformerChain(argv.transform, config)

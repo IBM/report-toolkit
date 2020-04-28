@@ -48,8 +48,8 @@ export class RuleConfig {
 
   /**
    *
-   * @param {import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').Report>} reports
-   * @returns {import('@report-toolkit/common/src/observable').Observable<import('./message').Message>}
+   * @param {import('rxjs').Observable<import('@report-toolkit/common/src/report').Report>} reports
+   * @returns {import('rxjs').Observable<import('./message').Message>}
    */
   inspect(reports) {
     return this.rule.inspect({config: this.config, reports});

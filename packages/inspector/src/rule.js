@@ -213,8 +213,8 @@ export class Rule {
    *    actual `string` `message` props), and normalize the `Message` by adding
    *    relevant metadata (`Rule` ID, user-supplied config used, default
    *    severity, etc.)
-   * @param {{reports: import('@report-toolkit/common/src/observable').Observable<import('@report-toolkit/common/src/report').Report>, config?: object}} opts
-   * @returns {import('@report-toolkit/common/src/observable').Observable<import('./message').Message>}
+   * @param {{reports: import('rxjs').Observable<import('@report-toolkit/common/src/report').Report>, config?: object}} opts
+   * @returns {import('rxjs').Observable<import('./message').Message>}
    */
   inspect({reports, config = {}}) {
     return from(this.handlers(config)).pipe(

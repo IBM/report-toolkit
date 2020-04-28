@@ -192,7 +192,7 @@ export const compatibleTransformers = sourceType =>
  */
 /**
  * @template T
- * @typedef {import('@report-toolkit/common/src/observable').Observable<T>} Observable
+ * @typedef {import('rxjs').Observable<T>} Observable
  */
 /**
  * @template T,U
