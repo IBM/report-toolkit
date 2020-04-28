@@ -10,10 +10,10 @@ import {
   RTKERR_INVALID_CONFIG
 } from '../src/error.js';
 
-describe('@report-toolkit/common:config', function() {
-  describe('function', function() {
-    describe('filterEnabledRules()', function() {
-      it('should return an array of enabled rule IDs', function() {
+describe('@report-toolkit/common:config', function () {
+  describe('function', function () {
+    describe('filterEnabledRules()', function () {
+      it('should return an array of enabled rule IDs', function () {
         expect(
           // @ts-ignore -- partial type OK here
           filterEnabledRules({rules: {bar: false, foo: true}}),
@@ -23,9 +23,9 @@ describe('@report-toolkit/common:config', function() {
       });
     });
 
-    describe('parseConfig()', function() {
-      describe('when the ExportedConfig has already been flattened', function() {
-        it('should return the Config', function() {
+    describe('parseConfig()', function () {
+      describe('when the ExportedConfig has already been flattened', function () {
+        it('should return the Config', function () {
           const config = normalizeFlattenedConfig({});
           expect(
             of([config]).pipe(parseConfig()),
@@ -35,8 +35,8 @@ describe('@report-toolkit/common:config', function() {
         });
       });
 
-      describe('when the Config has already been flattened', function() {
-        it('should return the Config', function() {
+      describe('when the Config has already been flattened', function () {
+        it('should return the Config', function () {
           const config = normalizeFlattenedConfig({});
           expect(
             of(config).pipe(parseConfig()),
@@ -46,8 +46,8 @@ describe('@report-toolkit/common:config', function() {
         });
       });
 
-      describe('when the ExportedConfig references a valid builtin', function() {
-        it('should return a flattened Config', function() {
+      describe('when the ExportedConfig references a valid builtin', function () {
+        it('should return a flattened Config', function () {
           /** @type {import('../src/config').ExportedConfig} */
           const config = ['rtk:recommended'];
           expect(of(config).pipe(parseConfig()), 'to complete with value', {
@@ -65,8 +65,8 @@ describe('@report-toolkit/common:config', function() {
         });
       });
 
-      describe('when the ExportedConfig references an invalid builtin', function() {
-        it('should fail', function() {
+      describe('when the ExportedConfig references an invalid builtin', function () {
+        it('should fail', function () {
           // @ts-ignore
           const config = ['rtk:not-recommended'];
           expect(
@@ -80,8 +80,8 @@ describe('@report-toolkit/common:config', function() {
         });
       });
 
-      describe('when the ExportedConfig is of an invalid format', function() {
-        it('should fail', function() {
+      describe('when the ExportedConfig is of an invalid format', function () {
+        it('should fail', function () {
           // @ts-ignore
           const config = [[{wtf: 'is this'}]];
           expect(
@@ -95,8 +95,8 @@ describe('@report-toolkit/common:config', function() {
         });
       });
 
-      describe('when the ExportedConfig contains an invalid key', function() {
-        it('should fail', function() {
+      describe('when the ExportedConfig contains an invalid key', function () {
+        it('should fail', function () {
           // @ts-ignore
           const config = [{wtf: 'is this'}];
           expect(

@@ -91,7 +91,7 @@ export const redact = (obj, opts = {}) => {
       /**
        * @param {string} value
        */
-      function(value) {
+      function (value) {
         // potential optimization: keys whose keypaths are longer than the current
         // path will never match, so we could disregard them if we pre-processed
         // the `keys` array further

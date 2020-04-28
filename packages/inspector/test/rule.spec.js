@@ -5,26 +5,26 @@ import {Rule} from '../src/rule.js';
 
 const {RTKERR_INVALID_RULE_CONFIG, RTKERR_INVALID_RULE_DEFINITION} = error;
 
-describe('@report-toolkit/inspector:rule', function() {
+describe('@report-toolkit/inspector:rule', function () {
   let sandbox;
   const ajv = AJV();
 
-  beforeEach(function() {
+  beforeEach(function () {
     sandbox = sinon.createSandbox();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
   });
 
-  describe('Rule', function() {
-    describe('constructor', function() {
-      it('should apply default "meta" property', function() {
+  describe('Rule', function () {
+    describe('constructor', function () {
+      it('should apply default "meta" property', function () {
         expect(new Rule({inspect: _.noop}), 'to satisfy', {meta: {}});
       });
 
-      describe('when called with rule def missing an "inspect" function', function() {
-        it('should throw', function() {
+      describe('when called with rule def missing an "inspect" function', function () {
+        it('should throw', function () {
           expect(
             () => new Rule({}),
             'to throw with code',
@@ -34,17 +34,17 @@ describe('@report-toolkit/inspector:rule', function() {
       });
     });
 
-    describe('static method', function() {
-      describe('create()', function() {
-        it('should create a Rule', function() {
+    describe('static method', function () {
+      describe('create()', function () {
+        it('should create a Rule', function () {
           expect(Rule.create({inspect: _.noop}), 'to be a', Rule);
         });
       });
     });
 
-    describe('property', function() {
-      describe('id', function() {
-        it('should return the Rule id', function() {
+    describe('property', function () {
+      describe('id', function () {
+        it('should return the Rule id', function () {
           expect(
             new Rule({id: 'foo', inspect: _.noop}),
             'to have property',
@@ -54,8 +54,8 @@ describe('@report-toolkit/inspector:rule', function() {
         });
       });
 
-      describe('description', function() {
-        it('should return the description', function() {
+      describe('description', function () {
+        it('should return the description', function () {
           expect(
             new Rule({inspect: _.noop, meta: {docs: {description: 'foo'}}}),
             'to have property',
@@ -65,8 +65,8 @@ describe('@report-toolkit/inspector:rule', function() {
         });
       });
 
-      describe('url', function() {
-        it('should return the url', function() {
+      describe('url', function () {
+        it('should return the url', function () {
           expect(
             new Rule({
               inspect: _.noop,
@@ -79,8 +79,8 @@ describe('@report-toolkit/inspector:rule', function() {
         });
       });
 
-      describe('meta', function() {
-        it('should return the metadata', function() {
+      describe('meta', function () {
+        it('should return the metadata', function () {
           expect(
             new Rule({inspect: _.noop, meta: 'foo'}),
             'to have property',
@@ -90,24 +90,24 @@ describe('@report-toolkit/inspector:rule', function() {
         });
       });
 
-      describe('validate', function() {
+      describe('validate', function () {
         let rule;
-        beforeEach(function() {
+        beforeEach(function () {
           sandbox.spy(ajv, 'compile');
         });
 
-        describe('when a rule has no schema', function() {
-          beforeEach(function() {
+        describe('when a rule has no schema', function () {
+          beforeEach(function () {
             rule = new Rule({inspect: _.noop});
           });
 
-          it('should be a noop', function() {
+          it('should be a noop', function () {
             expect(rule.validate, 'to be', _.identity);
           });
         });
 
-        describe('when a rule has a schema', function() {
-          beforeEach(function() {
+        describe('when a rule has a schema', function () {
+          beforeEach(function () {
             rule = new Rule({
               id: 'foo',
               inspect: _.noop,
@@ -124,7 +124,7 @@ describe('@report-toolkit/inspector:rule', function() {
               }
             });
           });
-          it('should throw if passed an invalid config', function() {
+          it('should throw if passed an invalid config', function () {
             expect(
               () => rule.validate({foo: 'baz'}),
               'to throw with code',
@@ -136,8 +136,8 @@ describe('@report-toolkit/inspector:rule', function() {
     });
   });
 
-  describe('instance method', function() {
-    describe('inspect()', function() {
+  describe('instance method', function () {
+    describe('inspect()', function () {
       it('should call the `inspect` method of the rule definition');
     });
   });

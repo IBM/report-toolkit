@@ -2,8 +2,8 @@ import {of} from '@report-toolkit/common/src/observable.js';
 
 import {transform} from '../src/json.js';
 
-describe('@report-toolkit/transformers:json', function() {
-  it('should parse a JS object and return JSON', function() {
+describe('@report-toolkit/transformers:json', function () {
+  it('should parse a JS object and return JSON', function () {
     return expect(
       of(
         {
@@ -33,8 +33,8 @@ describe('@report-toolkit/transformers:json', function() {
     );
   });
 
-  describe('when "pretty" option enabled', function() {
-    it('should parse a JS object and return pretty JSON', function() {
+  describe('when "pretty" option enabled', function () {
+    it('should parse a JS object and return pretty JSON', function () {
       return expect(
         of(
           {

@@ -7,17 +7,17 @@ const REPORT_005_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-005-secrets.json'
 );
 
-describe('@report-toolkit/cli:command:transform', function() {
-  describe('when no file specified', function() {
-    it('should fail', function() {
+describe('@report-toolkit/cli:command:transform', function () {
+  describe('when no file specified', function () {
+    it('should fail', function () {
       return expect(run('transform'), 'to be rejected with error satisfying', {
         exitCode: 1
       });
     });
   });
 
-  describe('when no --transform specified', function() {
-    it('should redact and output JSON', function() {
+  describe('when no --transform specified', function () {
+    it('should redact and output JSON', function () {
       // report-005 is the same as report-001, except it is not completely redacted.
       // when it's redacted, it's equal to report-001.
       return expect(
@@ -36,8 +36,8 @@ describe('@report-toolkit/cli:command:transform', function() {
     });
   });
 
-  describe('when compatible --transforms specified', function() {
-    it('should succeed', function() {
+  describe('when compatible --transforms specified', function () {
+    it('should succeed', function () {
       return expect(
         // filters contrived, as -i header.release.name would work
         runAsJSON([

@@ -44,9 +44,7 @@ module.exports = class GatsbyMarkdownTheme extends MarkdownTheme {
     handlebars.registerHelper(
       'relativeURL',
       /** @param {string} url */ url =>
-        relativeURL(url)
-          .replace(FILE_EXT, '')
-          .replace('/index', '')
+        relativeURL(url).replace(FILE_EXT, '').replace('/index', '')
     );
 
     renderer.removeComponent('breadcrumbs');

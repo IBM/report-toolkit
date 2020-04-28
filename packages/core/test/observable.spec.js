@@ -19,7 +19,7 @@ const REPORT_002_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('@report-toolkit/core:observable', function() {
+describe('@report-toolkit/core:observable', function () {
   let sandbox;
   /**
    * @type {import('../src/observable')}
@@ -43,7 +43,7 @@ describe('@report-toolkit/core:observable', function() {
 
   let stubs;
 
-  beforeEach(function() {
+  beforeEach(function () {
     sandbox = sinon.createSandbox();
 
     stubs = {
@@ -82,22 +82,22 @@ describe('@report-toolkit/core:observable', function() {
     core = proxyquire(require.resolve('../src/observable'), stubs);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
   });
 
-  describe('function', function() {
-    describe('diff()', function() {
+  describe('function', function () {
+    describe('diff()', function () {
       /**
        * @type {import('../src/observable').diff}
        */
       let diff;
 
-      beforeEach(function() {
+      beforeEach(function () {
         diff = core.diff;
       });
 
-      it('should diff two reports', function() {
+      it('should diff two reports', function () {
         return expect(
           diff(REPORT_001, REPORT_002),
           'to complete with values',
@@ -117,7 +117,7 @@ describe('@report-toolkit/core:observable', function() {
         );
       });
 
-      it('should fail if fewer than two parameters are supplied', function() {
+      it('should fail if fewer than two parameters are supplied', function () {
         // this is invalid usage, so ignore the TS failure
         // @ts-ignore
         return expect(diff(REPORT_001), 'to emit error satisfying', {
@@ -125,7 +125,7 @@ describe('@report-toolkit/core:observable', function() {
         });
       });
 
-      it('should fail if the second parameter is not a report-like object', function() {
+      it('should fail if the second parameter is not a report-like object', function () {
         // @ts-ignore
         return expect(diff(REPORT_001, {}), 'to emit error satisfying', {
           code: RTKERR_INVALID_REPORT
@@ -133,13 +133,13 @@ describe('@report-toolkit/core:observable', function() {
       });
     });
 
-    describe('inspect()', function() {
-      beforeEach(function() {
+    describe('inspect()', function () {
+      beforeEach(function () {
         subject = core.inspect;
       });
 
-      describe('when passed raw report objects', function() {
-        it('should emit inspection results for a single report', function() {
+      describe('when passed raw report objects', function () {
+        it('should emit inspection results for a single report', function () {
           return expect(
             subject(REPORT_002),
             'to complete with values',
@@ -148,7 +148,7 @@ describe('@report-toolkit/core:observable', function() {
           );
         });
 
-        it('should emit inspection results for two reports', function() {
+        it('should emit inspection results for two reports', function () {
           return expect(
             subject([REPORT_002, REPORT_001]),
             'to complete with values',
@@ -158,8 +158,8 @@ describe('@report-toolkit/core:observable', function() {
         });
       });
 
-      describe('when passed Observables of raw report objects', function() {
-        it('should emit inspection results for a single report', function() {
+      describe('when passed Observables of raw report objects', function () {
+        it('should emit inspection results for a single report', function () {
           return expect(
             subject(of(REPORT_002)),
             'to complete with values',
@@ -168,7 +168,7 @@ describe('@report-toolkit/core:observable', function() {
           );
         });
 
-        it('should emit inspection results for two reports', function() {
+        it('should emit inspection results for two reports', function () {
           return expect(
             subject(of(REPORT_002, REPORT_001)),
             'to complete with values',
@@ -179,16 +179,16 @@ describe('@report-toolkit/core:observable', function() {
       });
     });
 
-    describe('use()', function() {
+    describe('use()', function () {
       let pluginPath;
 
-      beforeEach(function() {
+      beforeEach(function () {
         subject = core.use;
         pluginPath = require.resolve('./fixture/plugins/baz');
         core.deregisterPlugins();
       });
 
-      it('should emit a plugin from an arbitrary path', function() {
+      it('should emit a plugin from an arbitrary path', function () {
         return expect(
           subject(require.resolve('./fixture/plugins/baz')),
           'to complete with value satisfying',
@@ -198,12 +198,12 @@ describe('@report-toolkit/core:observable', function() {
         );
       });
 
-      it('should register a plugin', async function() {
+      it('should register a plugin', async function () {
         await subject(pluginPath).toPromise();
         expect(core.isPluginRegistered(pluginPath), 'to be true');
       });
 
-      it('should allow access to a registered plugin', async function() {
+      it('should allow access to a registered plugin', async function () {
         await subject(pluginPath).toPromise();
         return expect(
           core.fromRegisteredRuleDefinitions(),
@@ -213,47 +213,47 @@ describe('@report-toolkit/core:observable', function() {
       });
     });
 
-    describe('isPluginRegistered()', function() {
+    describe('isPluginRegistered()', function () {
       let pluginPath;
       let subject;
 
-      beforeEach(function() {
+      beforeEach(function () {
         subject = core.isPluginRegistered;
         pluginPath = require.resolve('./fixture/plugins/baz');
         core.deregisterPlugins();
       });
 
-      describe('when a plugin is not registered', function() {
-        it('should return false', function() {
+      describe('when a plugin is not registered', function () {
+        it('should return false', function () {
           expect(subject(pluginPath), 'to be false');
         });
       });
 
-      describe('when a plugin is registered', function() {
-        beforeEach(async function() {
+      describe('when a plugin is registered', function () {
+        beforeEach(async function () {
           await core.use(pluginPath).toPromise();
         });
-        it('should return true', function() {
+        it('should return true', function () {
           expect(subject(pluginPath), 'to be true');
         });
       });
     });
 
-    describe('loadConfig()', function() {
+    describe('loadConfig()', function () {
       let subject;
       let cwd;
 
-      beforeEach(function() {
+      beforeEach(function () {
         subject = core.loadConfig;
         cwd = process.cwd();
         core.deregisterPlugins();
       });
 
-      afterEach(function() {
+      afterEach(function () {
         process.chdir(cwd);
       });
 
-      it('should parse a config', async function() {
+      it('should parse a config', async function () {
         await subject({}).toPromise();
         expect(
           stubs['@report-toolkit/common'].config.parseConfig,
@@ -261,7 +261,7 @@ describe('@report-toolkit/core:observable', function() {
         );
       });
 
-      it('should register plugins from cwd', async function() {
+      it('should register plugins from cwd', async function () {
         process.chdir(__dirname);
         await subject({
           plugins: ['./fixture/plugins/baz']
@@ -269,7 +269,7 @@ describe('@report-toolkit/core:observable', function() {
         expect(core.isPluginRegistered('./fixture/plugins/baz'), 'to be true');
       });
 
-      it('should register default plugins', async function() {
+      it('should register default plugins', async function () {
         await subject({}).toPromise();
         expect(
           core.isPluginRegistered('@report-toolkit/inspector'),
@@ -278,14 +278,14 @@ describe('@report-toolkit/core:observable', function() {
       });
     });
 
-    describe('fromTransformerChain()', function() {
+    describe('fromTransformerChain()', function () {
       let subject;
 
-      beforeEach(function() {
+      beforeEach(function () {
         subject = core.fromTransformerChain;
       });
 
-      it('should emit a stream of transformer ID / config pairs', function() {
+      it('should emit a stream of transformer ID / config pairs', function () {
         const config = {
           transformers: {
             foo: {a: 'b'},
@@ -320,7 +320,7 @@ describe('@report-toolkit/core:observable', function() {
         );
       });
 
-      it('should override root config with transformer-specific config', function() {
+      it('should override root config with transformer-specific config', function () {
         const config = {
           a: 'b',
           transformers: {
@@ -336,14 +336,14 @@ describe('@report-toolkit/core:observable', function() {
       });
     });
 
-    describe('transform()', function() {
+    describe('transform()', function () {
       let subject;
 
-      beforeEach(function() {
+      beforeEach(function () {
         subject = core.transform;
       });
 
-      it('should reject unknown transformers', function() {
+      it('should reject unknown transformers', function () {
         return expect(
           of({id: 'foo', config: {}}).pipe(subject(of('some-data'))),
           'to emit error satisfying',

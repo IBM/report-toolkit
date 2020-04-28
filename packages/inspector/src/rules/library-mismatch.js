@@ -8,7 +8,7 @@ export const inspect = (config = {}) => {
   return context => {
     const {header, sharedObjects} = context;
     return (
-      (Object.keys(header.componentVersions)
+      Object.keys(header.componentVersions)
         .filter(component => !ignoredComponents.has(component))
         // this should be a flatMap()
         .reduce((acc, component) => {
@@ -33,7 +33,7 @@ export const inspect = (config = {}) => {
                   `Custom shared library at ${filepath} in use conflicting with ${component}@${version}`
               )
           ];
-        }, []))
+        }, [])
     );
   };
 };

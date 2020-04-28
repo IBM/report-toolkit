@@ -8,20 +8,20 @@ const REPORT_002_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('@report-toolkit/inspector', function() {
+describe('@report-toolkit/inspector', function () {
   let sandbox;
 
-  beforeEach(function() {
+  beforeEach(function () {
     sandbox = sinon.createSandbox();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
   });
 
-  describe('function', function() {
-    describe('inspectReports()', function() {
-      it('should return an Observable which completes with results for one or more reports', function() {
+  describe('function', function () {
+    describe('inspectReports()', function () {
+      it('should return an Observable which completes with results for one or more reports', function () {
         return expect(
           of({
             inspect: sandbox

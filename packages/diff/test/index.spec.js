@@ -9,16 +9,16 @@ import REPORT_2 from '@report-toolkit/common/test/fixture/reports/report-002-lib
 
 import {diff} from '../src/index.js';
 
-describe('@report-toolkit/diff', function() {
-  describe('function', function() {
-    describe('diffReports()', function() {
+describe('@report-toolkit/diff', function () {
+  describe('function', function () {
+    describe('diffReports()', function () {
       let source;
 
-      beforeEach(function() {
+      beforeEach(function () {
         source = of([REPORT_1, REPORT_2]);
       });
 
-      it('should diff two reports using default properties', function() {
+      it('should diff two reports using default properties', function () {
         return expect(
           source.pipe(diff()),
           'to complete with values',
@@ -26,7 +26,7 @@ describe('@report-toolkit/diff', function() {
         );
       });
 
-      it('should not include omitted paths', function() {
+      it('should not include omitted paths', function () {
         // XXX: yes, this is incredibly slow
         this.timeout(6000);
         this.slow(2250);

@@ -1,7 +1,7 @@
 import {runAsCSV, runAsJSON} from './cli-helper.js';
 
-describe('@report-toolkit/cli:command:list-rules', function() {
-  it('should list available rules', function() {
+describe('@report-toolkit/cli:command:list-rules', function () {
+  it('should list available rules', function () {
     return expect(
       runAsJSON('list-rules'),
       'to be fulfilled with value satisfying',
@@ -12,9 +12,9 @@ describe('@report-toolkit/cli:command:list-rules', function() {
     );
   });
 
-  describe('when used with transform', function() {
-    describe('csv', function() {
-      it('should list available rules', function() {
+  describe('when used with transform', function () {
+    describe('csv', function () {
+      it('should list available rules', function () {
         return expect(
           runAsCSV('list-rules'),
           'to be fulfilled with value satisfying',

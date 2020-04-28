@@ -42,10 +42,7 @@ export {observable};
  * @returns {Promise<import('./observable').DiffResult[]>} Array of results, one per difference
  */
 export async function diff(report1, report2, opts = {}) {
-  return observable
-    .diff(report1, report2, opts)
-    .pipe(toArray())
-    .toPromise();
+  return observable.diff(report1, report2, opts).pipe(toArray()).toPromise();
 }
 
 /**
@@ -78,10 +75,7 @@ export async function diff(report1, report2, opts = {}) {
  * @returns {Promise<import('@report-toolkit/inspector/src/message').Message[]>}
  */
 export async function inspect(reports, opts = {}) {
-  return observable
-    .inspect(reports, opts)
-    .pipe(toArray())
-    .toPromise();
+  return observable.inspect(reports, opts).pipe(toArray()).toPromise();
 }
 
 /**
@@ -132,9 +126,7 @@ export async function loadConfig(config) {
  * @param {Partial<import('./observable').ToReportFromObjectOptions>} [opts]
  */
 export async function toReportFromObject(value, opts = {}) {
-  return of(value)
-    .pipe(observable.toReportFromObject(opts))
-    .toPromise();
+  return of(value).pipe(observable.toReportFromObject(opts)).toPromise();
 }
 
 /**

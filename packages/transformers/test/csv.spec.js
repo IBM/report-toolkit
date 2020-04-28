@@ -2,8 +2,8 @@ import {of} from '@report-toolkit/common/src/observable.js';
 
 import {transform} from '../src/csv.js';
 
-describe('@report-toolkit/transformers:csv', function() {
-  it('should convert a JS object to CSV', function() {
+describe('@report-toolkit/transformers:csv', function () {
+  it('should convert a JS object to CSV', function () {
     return expect(
       of({bar: 2, baz: 3, foo: 1}, {bar: 5, baz: 6, foo: 4}).pipe(
         transform({
