@@ -7,9 +7,9 @@ const REPORT_002_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json'
 );
 
-describe('@report-toolkit/cli:command:diff', function() {
-  describe('when run with a single report file', function() {
-    it('should exit with code 1', function() {
+describe('@report-toolkit/cli:command:diff', function () {
+  describe('when run with a single report file', function () {
+    it('should exit with code 1', function () {
       return expect(
         runWithOptions(['diff', REPORT_001_FILEPATH]),
         'to be rejected with error satisfying',
@@ -20,8 +20,8 @@ describe('@report-toolkit/cli:command:diff', function() {
     });
   });
 
-  describe('when run with two report files', function() {
-    it('should exit with code 0', function() {
+  describe('when run with two report files', function () {
+    it('should exit with code 0', function () {
       return expect(
         runWithOptions(['diff', REPORT_001_FILEPATH, REPORT_002_FILEPATH]),
         'to be fulfilled with value satisfying',

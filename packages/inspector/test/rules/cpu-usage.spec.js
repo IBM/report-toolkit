@@ -21,16 +21,16 @@ const REPORT_009_FILEPATH = require.resolve(
   '@report-toolkit/common/test/fixture/reports/report-009-cpu-usage-multicore.json'
 );
 
-describe('@report-toolkit/rules:cpu-usage', function() {
+describe('@report-toolkit/rules:cpu-usage', function () {
   let inspect;
 
-  describe('when "header.cpus" prop missing', function() {
-    beforeEach(function() {
+  describe('when "header.cpus" prop missing', function () {
+    beforeEach(function () {
       inspect = createInspect('../../src/rules/cpu-usage.js');
     });
 
-    describe('when run against a single file', function() {
-      it('should report "warning" message', function() {
+    describe('when run against a single file', function () {
+      it('should report "warning" message', function () {
         return expect(
           inspect(REPORT_008_FILEPATH),
           'to complete with value satisfying',
@@ -47,8 +47,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
       });
     });
 
-    describe('when run against multiple files', function() {
-      it('should report a "warning" message and an "info" message', function() {
+    describe('when run against multiple files', function () {
+      it('should report a "warning" message and an "info" message', function () {
         return expect(
           inspect([REPORT_008_FILEPATH, REPORT_001_FILEPATH]),
           'to complete with values satisfying',
@@ -74,14 +74,14 @@ describe('@report-toolkit/rules:cpu-usage', function() {
     });
   });
 
-  describe(`mode: ${MODE_MEAN} (defaults)`, function() {
-    beforeEach(function() {
+  describe(`mode: ${MODE_MEAN} (defaults)`, function () {
+    beforeEach(function () {
       inspect = createInspect('../../src/rules/cpu-usage.js');
     });
 
-    describe('when run against a single file', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against a single file', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
@@ -97,8 +97,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        it('should report "error" message', function() {
+      describe('when cpu usage not within allowed limits', function () {
+        it('should report "error" message', function () {
           return expect(
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
@@ -113,8 +113,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
           );
         });
 
-        describe('when multiple CPU cores are present', function() {
-          it('should adjust the limit accordingly', function() {
+        describe('when multiple CPU cores are present', function () {
+          it('should adjust the limit accordingly', function () {
             return expect(
               inspect(REPORT_009_FILEPATH),
               'to complete with value satisfying',
@@ -132,9 +132,9 @@ describe('@report-toolkit/rules:cpu-usage', function() {
       });
     });
 
-    describe('when run against multiple files', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against multiple files', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH], {
               severity: INFO
@@ -152,12 +152,12 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        beforeEach(function() {
+      describe('when cpu usage not within allowed limits', function () {
+        beforeEach(function () {
           inspect = createInspect('../../src/rules/cpu-usage.js', {max: 30});
         });
 
-        it('should report "error" message', function() {
+        it('should report "error" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH]),
             'to complete with value satisfying',
@@ -175,14 +175,14 @@ describe('@report-toolkit/rules:cpu-usage', function() {
     });
   });
 
-  describe(`mode: ${MODE_MIN}`, function() {
-    beforeEach(function() {
+  describe(`mode: ${MODE_MIN}`, function () {
+    beforeEach(function () {
       inspect = createInspect('../../src/rules/cpu-usage.js', {mode: MODE_MIN});
     });
 
-    describe('when run against a single file', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against a single file', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
@@ -198,8 +198,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        it('should report "error" message', function() {
+      describe('when cpu usage not within allowed limits', function () {
+        it('should report "error" message', function () {
           return expect(
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
@@ -216,9 +216,9 @@ describe('@report-toolkit/rules:cpu-usage', function() {
       });
     });
 
-    describe('when run against multiple files', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against multiple files', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH], {
               severity: INFO
@@ -236,15 +236,15 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        beforeEach(function() {
+      describe('when cpu usage not within allowed limits', function () {
+        beforeEach(function () {
           inspect = createInspect('../../src/rules/cpu-usage.js', {
             min: 10,
             mode: MODE_MIN
           });
         });
 
-        it('should report "error" message', function() {
+        it('should report "error" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH]),
             'to complete with value satisfying',
@@ -262,14 +262,14 @@ describe('@report-toolkit/rules:cpu-usage', function() {
     });
   });
 
-  describe(`mode: ${MODE_MAX}`, function() {
-    beforeEach(function() {
+  describe(`mode: ${MODE_MAX}`, function () {
+    beforeEach(function () {
       inspect = createInspect('../../src/rules/cpu-usage.js', {mode: MODE_MAX});
     });
 
-    describe('when run against a single file', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against a single file', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
@@ -285,8 +285,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        it('should report "error" message', function() {
+      describe('when cpu usage not within allowed limits', function () {
+        it('should report "error" message', function () {
           return expect(
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
@@ -303,9 +303,9 @@ describe('@report-toolkit/rules:cpu-usage', function() {
       });
     });
 
-    describe('when run against multiple files', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against multiple files', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_002_FILEPATH], {
               severity: INFO
@@ -323,14 +323,14 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        beforeEach(function() {
+      describe('when cpu usage not within allowed limits', function () {
+        beforeEach(function () {
           inspect = createInspect('../../src/rules/cpu-usage.js', {
             mode: MODE_MAX
           });
         });
 
-        it('should report "error" message', function() {
+        it('should report "error" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH]),
             'to complete with value satisfying',
@@ -348,14 +348,14 @@ describe('@report-toolkit/rules:cpu-usage', function() {
     });
   });
 
-  describe(`mode: ${MODE_ALL}`, function() {
-    beforeEach(function() {
+  describe(`mode: ${MODE_ALL}`, function () {
+    beforeEach(function () {
       inspect = createInspect('../../src/rules/cpu-usage.js', {mode: MODE_ALL});
     });
 
-    describe('when run against a single file', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against a single file', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect(REPORT_001_FILEPATH),
             'to complete with value satisfying',
@@ -371,8 +371,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        it('should report "error" message', function() {
+      describe('when cpu usage not within allowed limits', function () {
+        it('should report "error" message', function () {
           return expect(
             inspect(REPORT_006_FILEPATH),
             'to complete with value satisfying',
@@ -389,9 +389,9 @@ describe('@report-toolkit/rules:cpu-usage', function() {
       });
     });
 
-    describe('when run against multiple files', function() {
-      describe('when cpu usage within allowed limits', function() {
-        it('should report "info" message', function() {
+    describe('when run against multiple files', function () {
+      describe('when cpu usage within allowed limits', function () {
+        it('should report "info" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_002_FILEPATH], {
               severity: INFO
@@ -417,8 +417,8 @@ describe('@report-toolkit/rules:cpu-usage', function() {
         });
       });
 
-      describe('when cpu usage not within allowed limits', function() {
-        it('should report "error" message', function() {
+      describe('when cpu usage not within allowed limits', function () {
+        it('should report "error" message', function () {
           return expect(
             inspect([REPORT_001_FILEPATH, REPORT_006_FILEPATH], {
               severity: INFO

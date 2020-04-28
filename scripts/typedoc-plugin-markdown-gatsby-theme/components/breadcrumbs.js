@@ -8,7 +8,7 @@ class CarbonBreadcrumbsComponent extends ContextAwareRendererComponent {
     super.initialize();
     const component = this;
     this.componentName = 'breadcrumbs';
-    MarkdownTheme.handlebars.registerHelper('breadcrumbs', function() {
+    MarkdownTheme.handlebars.registerHelper('breadcrumbs', function () {
       return component.breadcrumb(
         /**
          * @type {import('typedoc/dist/lib/output/events').PageEvent} */ (this)

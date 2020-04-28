@@ -3,25 +3,25 @@ import REPORT_001 from '@report-toolkit/common/test/fixture/reports/report-001.j
 // @ts-ignore
 import REPORT_002 from '@report-toolkit/common/test/fixture/reports/report-002-library-mismatch.json';
 
-describe('@report-toolkit/core', function() {
+describe('@report-toolkit/core', function () {
   let sandbox;
   let subject;
 
-  beforeEach(function() {
+  beforeEach(function () {
     sandbox = sinon.createSandbox();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
   });
 
-  describe('function', function() {
+  describe('function', function () {
     let inspectStub;
     let diffStub;
     let loadConfigStub;
     let toReportFromObjectStub;
 
-    beforeEach(function() {
+    beforeEach(function () {
       inspectStub = sandbox.stub().returnsObservableOf([]);
       diffStub = sandbox.stub().returnsObservableOf([]);
       toReportFromObjectStub = sandbox.stub().returnsOperatorFunction();
@@ -36,29 +36,29 @@ describe('@report-toolkit/core', function() {
       });
     });
 
-    describe('inspect()', function() {
-      it('should delegate to observable.inspect()', async function() {
+    describe('inspect()', function () {
+      it('should delegate to observable.inspect()', async function () {
         await subject.inspect([REPORT_001, REPORT_002], []);
         expect(inspectStub, 'was called');
       });
     });
 
-    describe('diff()', function() {
-      it('should delegate to observable.diff()', async function() {
+    describe('diff()', function () {
+      it('should delegate to observable.diff()', async function () {
         await subject.diff([REPORT_001, REPORT_002]);
         expect(diffStub, 'was called');
       });
     });
 
-    describe('loadConfig()', function() {
-      it('should delegate to observable.loadConfig()', async function() {
+    describe('loadConfig()', function () {
+      it('should delegate to observable.loadConfig()', async function () {
         await subject.loadConfig({});
         expect(loadConfigStub, 'was called');
       });
     });
 
-    describe('toReportFromObject()', function() {
-      it('should delegate to observable.toReportFromObject()', async function() {
+    describe('toReportFromObject()', function () {
+      it('should delegate to observable.toReportFromObject()', async function () {
         await subject.toReportFromObject({});
         expect(toReportFromObjectStub, 'was called');
       });

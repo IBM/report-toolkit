@@ -20,8 +20,8 @@ const REPORT_003_FILEPATH = require.resolve(
 
 const {of} = observable;
 
-describe('@report-toolkit/transformers:stack-hash', function() {
-  it('should emit an object containing a unique hash', function() {
+describe('@report-toolkit/transformers:stack-hash', function () {
+  it('should emit an object containing a unique hash', function () {
     return expect(
       of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(transform()),
       'to complete with value satisfying',
@@ -35,8 +35,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
     );
   });
 
-  describe('when the same stack occurs in a different report', function() {
-    it('should emit an object containing the same hash', async function() {
+  describe('when the same stack occurs in a different report', function () {
+    it('should emit an object containing the same hash', async function () {
       const {sha1} = await of(createReport(REPORT_003, REPORT_003_FILEPATH))
         .pipe(transform())
         .toPromise();
@@ -54,8 +54,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
     });
   });
 
-  describe('when passed a custom `strip` function', function() {
-    it('should emit an object containing a unique hash', function() {
+  describe('when passed a custom `strip` function', function () {
+    it('should emit an object containing a unique hash', function () {
       return expect(
         of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(
           transform({strip: msg => msg.slice(6)})
@@ -72,8 +72,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
     });
   });
 
-  describe('when passed a custom `strip` string', function() {
-    it('should emit an object containing a unique hash', function() {
+  describe('when passed a custom `strip` string', function () {
+    it('should emit an object containing a unique hash', function () {
       return expect(
         of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(
           transform({strip: 'Error '})
@@ -90,8 +90,8 @@ describe('@report-toolkit/transformers:stack-hash', function() {
     });
   });
 
-  describe('when passed a custom `strip` RegExp', function() {
-    it('should emit an object containing a unique hash', function() {
+  describe('when passed a custom `strip` RegExp', function () {
+    it('should emit an object containing a unique hash', function () {
       return expect(
         of(createReport(REPORT_001, REPORT_001_FILEPATH)).pipe(
           transform({strip: /^Error\s/})

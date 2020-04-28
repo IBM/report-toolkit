@@ -19,23 +19,23 @@ const etcConfig = [
   }
 ];
 
-describe('@report-toolkit/fs:fs-config-loader', function() {
+describe('@report-toolkit/fs:fs-config-loader', function () {
   let sandbox;
 
-  beforeEach(function() {
+  beforeEach(function () {
     sandbox = sinon.createSandbox();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
   });
 
-  describe('function', function() {
-    describe('fromFilesystemToConfig()', function() {
-      describe('when a config is available within default search path', function() {
+  describe('function', function () {
+    describe('fromFilesystemToConfig()', function () {
+      describe('when a config is available within default search path', function () {
         let subject;
 
-        beforeEach(function() {
+        beforeEach(function () {
           const searchStub = sandbox.stub();
           searchStub
             .withArgs(process.cwd())
@@ -51,8 +51,8 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
           }).fromFilesystemToConfig;
         });
 
-        describe('when passed no parameters', function() {
-          it('should load a config from the default directory', function() {
+        describe('when passed no parameters', function () {
+          it('should load a config from the default directory', function () {
             return expect(
               subject(),
               'to complete with value',
@@ -60,8 +60,8 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
             ).and('to emit once');
           });
 
-          describe('when not found at default directory', function() {
-            beforeEach(function() {
+          describe('when not found at default directory', function () {
+            beforeEach(function () {
               const searchStub = sandbox.stub();
               searchStub.resolves();
               searchStub
@@ -77,7 +77,7 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
               ).fromFilesystemToConfig;
             });
 
-            it('should try other directories', function() {
+            it('should try other directories', function () {
               return expect(subject(), 'to complete with value', etcConfig).and(
                 'to emit once'
               );
@@ -85,8 +85,8 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
           });
         });
 
-        describe('when passed an explicit search path', function() {
-          it('should load a config from the search path', function() {
+        describe('when passed an explicit search path', function () {
+          it('should load a config from the search path', function () {
             return expect(
               subject({
                 searchPath: join(__dirname, 'fixture', 'config')
@@ -98,17 +98,17 @@ describe('@report-toolkit/fs:fs-config-loader', function() {
         });
       });
 
-      describe('when passed an object', function() {
+      describe('when passed an object', function () {
         let subject;
 
-        beforeEach(function() {
+        beforeEach(function () {
           subject = proxyquire(
             require.resolve('../src/fs-config-loader.js'),
             {}
           ).fromFilesystemToConfig;
         });
 
-        it('should return identity', function() {
+        it('should return identity', function () {
           return expect(
             subject({config: customConfig}),
             'to complete with value',

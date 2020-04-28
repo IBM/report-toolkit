@@ -1,15 +1,15 @@
 import {mergeCommandConfig} from '../src/commands/common.js';
 
-describe('@report-toolkit/cli:commands:common', function() {
-  describe('mergeCommandConfig()', function() {
-    describe('when no parameters supplied', function() {
-      it('should not throw', function() {
+describe('@report-toolkit/cli:commands:common', function () {
+  describe('mergeCommandConfig()', function () {
+    describe('when no parameters supplied', function () {
+      it('should not throw', function () {
         expect(mergeCommandConfig, 'not to throw');
       });
     });
 
-    describe('when parameters supplied', function() {
-      it('should prefer user config over default config', function() {
+    describe('when parameters supplied', function () {
+      it('should prefer user config over default config', function () {
         const argv = {config: {foo: {bar: 'baz'}}};
         const defaultConfig = {foo: {bar: 'quux'}};
         expect(
@@ -19,7 +19,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should prefer user config over default command-specific config', function() {
+      it('should prefer user config over default command-specific config', function () {
         const argv = {config: {foo: {bar: 'baz'}}};
         const defaultConfig = {
           foo: {bar: 'quux'},
@@ -32,7 +32,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should prefer user command-specific config over user config and default command-specific config', function() {
+      it('should prefer user command-specific config over user config and default command-specific config', function () {
         const argv = {
           config: {
             foo: {bar: 'baz'},
@@ -50,7 +50,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should remove command-specific config from result', function() {
+      it('should remove command-specific config from result', function () {
         const argv = {config: {foo: {bar: 'baz'}}};
         const defaultConfig = {
           foo: {bar: 'quux'},
@@ -63,7 +63,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should prefer default command-specific config over default config', function() {
+      it('should prefer default command-specific config over default config', function () {
         const defaultConfig = {
           foo: {bar: 'quux'},
           commands: {commandName: {foo: {bar: 'spam'}}}
@@ -75,7 +75,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should prefer argv over anything', function() {
+      it('should prefer argv over anything', function () {
         const argv = {
           config: {foo: 'baz', commands: {commandName: {foo: 'butts'}}},
           foo: 'rubberduck'
@@ -93,7 +93,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should omit "_" and "$0" from argv', function() {
+      it('should omit "_" and "$0" from argv', function () {
         const argv = {
           config: {
             foo: 'baz',
@@ -116,7 +116,7 @@ describe('@report-toolkit/cli:commands:common', function() {
         );
       });
 
-      it('should prefer argv over transform-specific config', function() {
+      it('should prefer argv over transform-specific config', function () {
         const argv = {
           config: {
             foo: 'baz',

@@ -4,16 +4,16 @@ import {createInspect, getDefaultConfigValue} from './rules-helper.js';
 
 const RULE_PATH = '../../src/rules/long-timeout.js';
 
-describe('@report-toolkit/rules:long-timeout', function() {
+describe('@report-toolkit/rules:long-timeout', function () {
   let inspect;
 
-  beforeEach(function() {
+  beforeEach(function () {
     inspect = createInspect(RULE_PATH);
   });
 
-  describe('inspection', function() {
-    describe('when finding an unexpired but unreferenced libuv handle w/timer scheduled beyond the default threshold', function() {
-      it('should not report', function() {
+  describe('inspection', function () {
+    describe('when finding an unexpired but unreferenced libuv handle w/timer scheduled beyond the default threshold', function () {
+      it('should not report', function () {
         return expect(
           inspect(
             '@report-toolkit/common/test/fixture/reports/report-004-long-timeout-unref.json'
@@ -23,8 +23,8 @@ describe('@report-toolkit/rules:long-timeout', function() {
       });
     });
 
-    describe('when finding an unexpired & referenced libuv handle w/timer scheduled beyond the default threshold', function() {
-      it('should report', function() {
+    describe('when finding an unexpired & referenced libuv handle w/timer scheduled beyond the default threshold', function () {
+      it('should report', function () {
         return expect(
           inspect(
             '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json'
@@ -41,8 +41,8 @@ describe('@report-toolkit/rules:long-timeout', function() {
       });
     });
 
-    describe('when finding a referenced but expired libuv handle w/timer scheduled beyond the default threshold', function() {
-      it('should not report', function() {
+    describe('when finding a referenced but expired libuv handle w/timer scheduled beyond the default threshold', function () {
+      it('should not report', function () {
         return expect(
           inspect(
             '@report-toolkit/common/test/fixture/reports/report-007-long-timeout-expired.json'
@@ -52,13 +52,13 @@ describe('@report-toolkit/rules:long-timeout', function() {
       });
     });
 
-    describe('when provided a user-defined threshold', function() {
-      beforeEach(function() {
+    describe('when provided a user-defined threshold', function () {
+      beforeEach(function () {
         inspect = createInspect(RULE_PATH, {timeout: 50000});
       });
 
-      describe('when finding an unexpired & referenced libuv handle w/timer scheduled beyond the default threshold', function() {
-        it('should report', function() {
+      describe('when finding an unexpired & referenced libuv handle w/timer scheduled beyond the default threshold', function () {
+        it('should report', function () {
           return expect(
             inspect(
               '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json'
@@ -77,9 +77,9 @@ describe('@report-toolkit/rules:long-timeout', function() {
     });
   });
 
-  describe('config', function() {
-    describe('when config contains no "threshold" prop', function() {
-      it('should apply the default value', function() {
+  describe('config', function () {
+    describe('when config contains no "threshold" prop', function () {
+      it('should apply the default value', function () {
         return expect(
           inspect(
             '@report-toolkit/common/test/fixture/reports/report-003-long-timeout.json'
