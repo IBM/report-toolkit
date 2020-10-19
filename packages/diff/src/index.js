@@ -1,5 +1,5 @@
 import {_, constants, createDebugger, observable} from '@report-toolkit/common';
-import ptr from 'json-ptr';
+import {JsonPointer} from 'json-ptr';
 import {createPatch} from 'rfc6902';
 const {Observable, filter, mergeMap, pipeIf, map} = observable;
 
@@ -75,7 +75,7 @@ export function diff(opts = {}) {
                   const nextPathParts = patchObj.path.split('/');
                   const nextPathIdx = Number(nextPathParts.pop()) + offset;
                   const nextPath = nextPathParts.concat(nextPathIdx).join('/');
-                  oldValue = ptr.get(reportA, nextPath);
+                  oldValue = JsonPointer.get(reportA, nextPath);
                   offset++;
                   nextValue = {...patchObj, oldValue, path: nextPath};
                 } else {
@@ -83,7 +83,7 @@ export function diff(opts = {}) {
                   if (patchObj.op === 'add') {
                     nextValue = patchObj;
                   } else {
-                    oldValue = ptr.get(reportA, patchObj.path);
+                    oldValue = JsonPointer.get(reportA, patchObj.path);
                     nextValue = {...patchObj, oldValue};
                   }
                   offset = 1;
