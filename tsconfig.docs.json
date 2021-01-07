@@ -12,10 +12,10 @@
     "packages/inspector/src/rule.d.ts",
     "packages/inspector/src/rule-config.d.ts",
     "packages/inspector/src/message.d.ts",
-    "packages/transformers/src/index.d.ts"
   ],
   "typedocOptions": {
     "exclude": [
+      "packages/common/diagnostic-report.d.ts",
       "packages/common/src/error*",
       "packages/common/src/debug*",
       "packages/common/src/index*",
@@ -23,7 +23,7 @@
       "packages/common/src/redact*",
       "packages/common/src/symbols*",
       "packages/common/src/util*",
-      "packages/diff,cli,fs,report-toolkit,config}/src/**/*",
+      "packages/diff,cli,fs,report-toolkit,config,transformers}/src/**/*",
       "packages/inspector/src/rules/*",
       "packages/inspector/src/ajv*",
       "packages/inspector/src/index*",

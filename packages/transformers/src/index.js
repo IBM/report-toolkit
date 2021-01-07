@@ -75,7 +75,7 @@ export const isKnownTransformer = id => Boolean(transformerModules[id]);
 export {Transformer};
 
 /**
- * @returns {OperatorFunction<TransformerConfig,Transformer>}
+ * @returns {OperatorFunction<TransformerConfig,Transformer<any,any>>}
  */
 export const toTransformer = () => observable =>
   observable.pipe(
@@ -91,7 +91,7 @@ export const toTransformer = () => observable =>
 /**
  *
  * @param {Partial<TransformOptions>} [opts]
- * @returns {OperatorFunction<Transformer,Transformer>}
+ * @returns {OperatorFunction<Transformer<any,any>,Transformer<any,any>>}
  */
 export const validateTransformerChain = ({
   beginWith = 'report',
@@ -148,7 +148,7 @@ export const validateTransformerChain = ({
  * @param {Observable<any>} source
  */
 export const runTransformer = source => /**
- * @param {Observable<Transformer>} observable
+ * @param {Observable<Transformer<any,any>>} observable
  */ observable =>
   observable.pipe(
     toArray(),

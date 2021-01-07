@@ -66,8 +66,8 @@ class Transformer {
 
   /**
    * Pipe one Transformer to another
-   * @param {Transformer} transformer
-   * @returns {Transformer}
+   * @param {Transformer<any,any>} transformer
+   * @returns {Transformer<any,any>}
    */
   pipe(transformer) {
     if (!this.canPipeTo(transformer)) {
@@ -90,8 +90,8 @@ class Transformer {
 
   /**
    *
-   * @param {Transformer} transformer
-   * @returns {Transformer}
+   * @param {Transformer<any,any>} transformer
+   * @returns {Transformer<any,any>}
    */
   pipeFrom(transformer) {
     this._source = transformer;
@@ -100,7 +100,7 @@ class Transformer {
 
   /**
    * Returns `true` if this Transformer can pipe to another
-   * @param {Transformer} transformer - Transformer to compare
+   * @param {Transformer<any,any>} transformer - Transformer to compare
    */
   canPipeTo(transformer) {
     return _.includes(this.output, transformer.input);
@@ -182,5 +182,10 @@ export const createTransformer = Transformer.create;
 
 /**
  * @template T,U
- * @typedef {(opts?: object)=>import('rxjs/internal/types').OperatorFunction<T,U>} TransformFunction
+ * @typedef {import('rxjs/internal/types').OperatorFunction<T,U>} OperatorFunction<T,U>
+ */
+
+/**
+ * @template T,U
+ * @typedef {(opts?: object)=>OperatorFunction<T,U>} TransformFunction
  */

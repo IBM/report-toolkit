@@ -119,29 +119,6 @@ function toReport(opts = {}) {
 
 /**
  *
- * @param {object} [config] - Raw rule configuration
- * @returns {import('rxjs').OperatorFunction<import('@report-toolkit/inspector/src/rule').RuleDefinition,import('@report-toolkit/inspector/src/rule-config').RuleConfig>}
- */
-function toRuleConfig(config = {}) {
-  const ruleIdsCount = _.getOr(0, 'rules.length', config);
-  return ruleDefs =>
-    ruleDefs.pipe(
-      pipeIf(
-        !ruleIdsCount,
-        debug(() => 'enabling all rules by default')
-      ),
-      pipeIf(
-        ruleIdsCount,
-        filter(({id}) => Boolean(_.get(id, config.rules)))
-      ),
-      map(ruleDefinition =>
-        inspector.createRule(ruleDefinition).toRuleConfig(config)
-      )
-    );
-}
-
-/**
- *
  * @param {Partial<DiffOptions>} [opts]
  * @returns {import('rxjs').OperatorFunction<import('@report-toolkit/common/src/report').Report[],object>}
  */
@@ -160,6 +137,30 @@ function toReportDiff(opts = {}) {
         }
       }),
       diffReports(opts)
+    );
+}
+
+/**
+ *
+ * @param {object} [config] - Raw rule configuration
+ * @hidden
+ * @returns {import('rxjs').OperatorFunction<import('@report-toolkit/inspector/src/rule').RuleDefinition,import('@report-toolkit/inspector/src/rule-config').RuleConfig>}
+ */
+export function toRuleConfig(config = {}) {
+  const hasEnabledRules = _.some(Boolean, config.rules || {});
+  return ruleDefs =>
+    ruleDefs.pipe(
+      pipeIf(
+        !hasEnabledRules,
+        debug(() => 'enabling all rules by default')
+      ),
+      pipeIf(
+        hasEnabledRules,
+        filter(({id}) => Boolean(_.get(id, config.rules)))
+      ),
+      map(ruleDefinition =>
+        inspector.createRule(ruleDefinition).toRuleConfig(config)
+      )
     );
 }
 
