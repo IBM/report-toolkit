@@ -20,12 +20,10 @@ const REPORT_002_FILEPATH = require.resolve(
 );
 
 describe('@report-toolkit/core:observable', function () {
-  let sandbox;
   /**
    * @type {import('../src/observable')}
    */
   let core;
-  let subject;
 
   const msg001 = {
     filepath: REPORT_001_FILEPATH,
@@ -43,17 +41,22 @@ describe('@report-toolkit/core:observable', function () {
 
   let stubs;
 
+  let createRuleStub;
+
   beforeEach(function () {
-    sandbox = sinon.createSandbox();
+    createRuleStub = sinon
+      .stub()
+      .returns({toRuleConfig: sinon.stub().returns({some: 'config'})});
 
     stubs = {
       '@report-toolkit/inspector': {
-        inspectReports: sandbox
+        inspectReports: sinon
           .stub()
-          .returnsOperatorFunction(switchMapTo([msg001, msg002]))
+          .returnsOperatorFunction(switchMapTo([msg001, msg002])),
+        createRule: createRuleStub
       },
       '@report-toolkit/diff': {
-        diffReports: sandbox.stub().returnsOperatorFunction(
+        diffReports: sinon.stub().returnsOperatorFunction(
           switchMapTo([
             {
               oldValue: 45164,
@@ -73,7 +76,7 @@ describe('@report-toolkit/core:observable', function () {
       },
       '@report-toolkit/common': {
         config: {
-          parseConfig: sandbox.stub().returnsOperatorFunction(),
+          parseConfig: sinon.stub().returnsOperatorFunction(),
           BUILTIN_CONFIGS: config.BUILTIN_CONFIGS
         }
       }
@@ -83,7 +86,7 @@ describe('@report-toolkit/core:observable', function () {
   });
 
   afterEach(function () {
-    sandbox.restore();
+    sinon.restore();
   });
 
   describe('function', function () {
@@ -134,6 +137,8 @@ describe('@report-toolkit/core:observable', function () {
     });
 
     describe('inspect()', function () {
+      /** @type {typeof core.inspect} */
+      let subject;
       beforeEach(function () {
         subject = core.inspect;
       });
@@ -180,6 +185,9 @@ describe('@report-toolkit/core:observable', function () {
     });
 
     describe('use()', function () {
+      /** @type {typeof core.use} */
+      let subject;
+      /** @type {string} */
       let pluginPath;
 
       beforeEach(function () {
@@ -215,6 +223,7 @@ describe('@report-toolkit/core:observable', function () {
 
     describe('isPluginRegistered()', function () {
       let pluginPath;
+      /** @type {typeof core.isPluginRegistered} */
       let subject;
 
       beforeEach(function () {
@@ -240,6 +249,7 @@ describe('@report-toolkit/core:observable', function () {
     });
 
     describe('loadConfig()', function () {
+      /** @type {typeof core.loadConfig} */
       let subject;
       let cwd;
 
@@ -279,6 +289,7 @@ describe('@report-toolkit/core:observable', function () {
     });
 
     describe('fromTransformerChain()', function () {
+      /** @type {typeof core.fromTransformerChain} */
       let subject;
 
       beforeEach(function () {
@@ -337,6 +348,7 @@ describe('@report-toolkit/core:observable', function () {
     });
 
     describe('transform()', function () {
+      /** @type {typeof core.transform} */
       let subject;
 
       beforeEach(function () {
@@ -349,6 +361,30 @@ describe('@report-toolkit/core:observable', function () {
           'to emit error satisfying',
           {code: 'RTKERR_UNKNOWN_TRANSFORMER'}
         );
+      });
+    });
+
+    describe('toRuleConfig()', function () {
+      /** @type {typeof core.toRuleConfig} */
+      let subject;
+
+      beforeEach(function () {
+        subject = core.toRuleConfig;
+      });
+
+      it('should generate a rule config for only enabled rules', async function () {
+        const ruleDefs = [
+          {id: 'foo', inspect: sinon.stub()},
+          {id: 'bar', inspect: sinon.stub()}
+        ];
+
+        await of(...ruleDefs)
+          .pipe(subject({rules: {foo: true, bar: false}}))
+          .toPromise();
+
+        expect(createRuleStub, 'to have no calls satisfying', [
+          ruleDefs[1]
+        ]).and('was called once');
       });
     });
   });

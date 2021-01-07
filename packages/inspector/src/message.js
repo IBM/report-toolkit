@@ -84,10 +84,14 @@ export const createMessage = (message, opts = {}) => {
  * @property {boolean} isAggregate - `true` if {@link Message} references multiple files
  * @property {Error} error - If present, an `Error` which was thrown by the Rule
  * @property {object} config - Rule configuration
- * @property {import('@report-toolkit/common/src/constants').ERROR|import('@report-toolkit/common/src/constants').WARNING|import('@report-toolkit/common/src/constants').INFO} severity - The severity of the {@link Message}
+ * @property {constants.ERROR|constants.WARNING|constants.INFO} severity - The severity of the {@link Message}
  * @property {string} message - The message text itself, if first param not passed to {@link Message.createMessage}.
  */
 
 /**
  * @typedef {string|Partial<MessageOptions>} RawMessage
+ */
+
+/**
+ * @typedef {import('@report-toolkit/common/src/constants')} constants
  */
