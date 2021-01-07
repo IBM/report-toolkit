@@ -1,6 +1,6 @@
 import {_, createDebugPipe, error, observable} from '@report-toolkit/common';
 import path from 'path';
-import {cosmiconfig} from 'cosmiconfig';
+import cosmiconfig from 'cosmiconfig';
 import xdgBasedir from 'xdg-basedir';
 import globalDirs from 'global-dirs';
 import os from 'os';
@@ -32,6 +32,7 @@ if (os.platform() !== 'win32') {
 }
 
 const getExplorer = _.memoize(opts =>
+  // @ts-ignore
   cosmiconfig(
     RC_NAMESPACE,
     _.defaultsDeep(
