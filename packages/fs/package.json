@@ -6,7 +6,7 @@
   "dependencies": {
     "@report-toolkit/common": "^0.6.0",
     "cosmiconfig": "^5.2.1",
-    "global-dirs": "^2.0.1",
+    "global-dirs": "^2.1.0",
     "xdg-basedir": "^4.0.0"
   },
   "engines": {

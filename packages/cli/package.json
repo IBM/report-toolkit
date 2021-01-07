@@ -13,9 +13,9 @@
     "cli-table3": "^0.5.1",
     "log-symbols": "^3.0.0",
     "strip-ansi": "^6.0.0",
-    "term-size": "^2.2.0",
+    "term-size": "^2.2.1",
     "wrap-ansi": "^6.2.0",
-    "yargs": "^15.1.0"
+    "yargs": "^15.4.1"
   },
   "engines": {
     "node": ">=10"

@@ -73,7 +73,7 @@ report*.json
 
 dist/
 .rollup
-packages/**/*.d.ts
+packages/**/*.d.ts*
 packages/docs/src/pages/api
 packages/docs/.cache
 packages/docs/public

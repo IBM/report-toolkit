@@ -5,7 +5,7 @@
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
     "@report-toolkit/common": "^0.6.0",
-    "ajv": "^6.10.0"
+    "ajv": "^6.12.6"
   },
   "devDependencies": {
     "@report-toolkit/fs": "^0.6.0"

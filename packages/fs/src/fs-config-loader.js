@@ -1,6 +1,6 @@
 import {_, createDebugPipe, error, observable} from '@report-toolkit/common';
 import path from 'path';
-import cosmiconfig from 'cosmiconfig';
+import {cosmiconfig} from 'cosmiconfig';
 import xdgBasedir from 'xdg-basedir';
 import globalDirs from 'global-dirs';
 import os from 'os';
@@ -46,7 +46,7 @@ const getExplorer = _.memoize(opts =>
 
 /**
  *
- * @param {cosmiconfig.ExplorerOptions} [opts] - Extra opts for cosmiconfig
+ * @param {import('cosmiconfig').Options} [opts] - Extra opts for cosmiconfig
  * @returns {import('rxjs').OperatorFunction<string,object>}
  */
 function toConfigFromSearchPath(opts = {}) {
@@ -64,7 +64,7 @@ function toConfigFromSearchPath(opts = {}) {
 
 /**
  *
- * @param {cosmiconfig.ExplorerOptions} [opts] - Extra opts for cosmiconfig
+ * @param {import('cosmiconfig').Options} [opts] - Extra opts for cosmiconfig
  * @returns {import('rxjs').OperatorFunction<string,object>}
  */
 function toConfigFromFilepath(opts = {}) {
