@@ -1,10 +1,10 @@
 {
   "name": "@report-toolkit/diff",
   "description": "",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "dependencies": {
-    "@report-toolkit/common": "^0.6.0",
+    "@report-toolkit/common": "^0.6.1",
     "json-ptr": "^2.0.0",
     "rfc6902": "^3.1.1"
   },

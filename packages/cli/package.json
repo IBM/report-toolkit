@@ -1,15 +1,15 @@
 {
   "name": "@report-toolkit/cli",
   "description": "",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Christopher Hiller <christopher.hiller@ibm.com> (https://boneskull.com/)",
   "bin": {
     "report-toolkit": "dist/report-toolkit-cli.cjs.js"
   },
   "dependencies": {
-    "@report-toolkit/common": "^0.6.0",
-    "@report-toolkit/core": "^0.6.0",
-    "@report-toolkit/fs": "^0.6.0",
+    "@report-toolkit/common": "^0.6.1",
+    "@report-toolkit/core": "^0.6.1",
+    "@report-toolkit/fs": "^0.6.1",
     "cli-table3": "^0.5.1",
     "log-symbols": "^3.0.0",
     "strip-ansi": "^6.0.0",
