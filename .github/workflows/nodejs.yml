@@ -17,7 +17,7 @@ jobs:
       - name: 'Use Node.js ${{ matrix.node_version }}'
         uses: 'actions/setup-node@v1'
         with:
-          version: '${{ matrix.node_version }}'
+          node_version: '${{ matrix.node_version }}'
 
       - name: 'Cache node modules'
         uses: 'actions/cache@v1'
