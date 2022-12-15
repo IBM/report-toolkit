@@ -6,7 +6,7 @@
   "dependencies": {
     "@report-toolkit/common": "^0.6.1",
     "json-ptr": "^2.0.0",
-    "rfc6902": "^3.1.1"
+    "rfc6902": "^5.0.0"
   },
   "engines": {
     "node": ">=10"
